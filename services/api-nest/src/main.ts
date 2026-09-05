@@ -9,9 +9,13 @@ const cookieParser = require("cookie-parser");
 import { AppModule } from "./app.module";
 import { securityHeadersMiddleware } from "./common/security-headers.middleware";
 import { loadPhase0Env } from "./config/phase0.env";
+import { ResendEmailProvider } from "./wallet/resend-email.provider";
 
 async function bootstrap() {
   const env = loadPhase0Env();
+  // Section 6.2 - fail closed at startup rather than silently minting
+  // accepted_dev responses for real users in production/staging.
+  new ResendEmailProvider().assertReadyForEnv();
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   // PART9-pre2 — httpOnly 세션쿠키 파싱 (JwtAuthGuard cookie fallback)
   app.use(cookieParser());

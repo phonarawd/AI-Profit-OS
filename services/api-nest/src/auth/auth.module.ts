@@ -5,6 +5,8 @@ import { UserUxPrefsModule } from "../ux-prefs/user-ux-prefs.module";
 import { LedgerModule } from "../ledger/ledger.module";
 import { PostgresService } from "../db/postgres";
 import { ResendEmailProvider } from "../wallet/resend-email.provider";
+import { TurnstileService } from "../common/turnstile.service";
+import { TurnstileGuard } from "../common/turnstile.guard";
 import { AuthController } from "./auth.controller";
 import { AuthRateLimitGuard } from "./auth-rate-limit.guard";
 import { AuthService } from "./auth.service";
@@ -13,6 +15,12 @@ import { MagicLinkService } from "./magic-link.service";
 import { OauthIdentityService, defaultOauthHttp } from "./oauth-identity.service";
 import { WebauthnAssertService } from "./webauthn-assert.service";
 import { PostgresProofStore } from "./identity-proof.store";
+import { PwnedPasswordService } from "./pwned-password.service";
+import { SessionRotationService } from "./session-rotation.service";
+import { ClassicSignupService } from "./classic-signup.service";
+import { PasswordAuthService } from "./password-auth.service";
+import { PasswordResetService } from "./password-reset.service";
+import { FindIdService } from "./find-id.service";
 
 @Module({
   imports: [EventsModule, LedgerModule, InboxModule, UserUxPrefsModule],
@@ -22,6 +30,17 @@ import { PostgresProofStore } from "./identity-proof.store";
     PrivacyAccountService,
     AuthRateLimitGuard,
     ResendEmailProvider,
+    TurnstileService,
+    TurnstileGuard,
+    SessionRotationService,
+    {
+      provide: PwnedPasswordService,
+      useFactory: () => new PwnedPasswordService(true),
+    },
+    ClassicSignupService,
+    PasswordAuthService,
+    PasswordResetService,
+    FindIdService,
     {
       provide: PostgresProofStore,
       useFactory: (db: PostgresService) => new PostgresProofStore(db),

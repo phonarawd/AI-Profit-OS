@@ -154,10 +154,24 @@ for (const bad of [
     fails.push(`auth.service.ts must not hardcode fake identity: ${bad}`);
   }
 }
+// S1F Section 7 refactor: real JWT signing + the auth_sessions INSERT now
+// live in session-rotation.service.ts (SessionRotationService), which
+// auth.service.ts's mintSession()/refreshFromToken() delegate to for every
+// caller (oauth/passkey/magic-link/classic) - checked as a union so this
+// stays a real regression guard against a hardcoded skeleton, not tied to
+// one specific file layout.
+const sessionRotationSvc = read("services/api-nest/src/auth/session-rotation.service.ts");
+const combinedSessionCode = svc + "\n" + sessionRotationSvc;
 for (const needle of [
   "jwtCore.sign",
-  "INSERT INTO public.users",
   "INSERT INTO public.auth_sessions",
+]) {
+  if (!combinedSessionCode.includes(needle)) {
+    fails.push(`auth.service.ts + session-rotation.service.ts missing: ${needle}`);
+  }
+}
+for (const needle of [
+  "INSERT INTO public.users",
   "auth_oauth_identities",
   "auth_passkeys",
   "provisionLedgerBucketsForUser",

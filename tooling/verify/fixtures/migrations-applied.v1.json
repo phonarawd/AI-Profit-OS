@@ -127,5 +127,12 @@
     "20260902032000",
     "20260902155632"
   ],
-  "committedUnapplied": []
+  "committedUnapplied": [
+    {
+      "version": "20260905110000",
+      "name": "classic_signup_sessions_and_admin",
+      "status": "AWAITING_FOUNDER_APPROVAL",
+      "reason": "apply_migration to mgsytcetsiecllmhcyox was blocked by a Cursor safety hook (Blocked: Production migration apply). Migration is additive-only (ADD COLUMN IF NOT EXISTS / CREATE INDEX IF NOT EXISTS / new tables), reviewed read-only against live schema before writing (3 users, 0 case-variant duplicates, 1 phone value, exact constraint names confirmed via pg_constraint), and contains its own fail-loud DO-block duplicate checks. Apply via the same Founder-authorized supabase db push path used for REL-701-DB."
+    }
+  ]
 }

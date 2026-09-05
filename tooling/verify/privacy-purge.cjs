@@ -15,7 +15,10 @@
  *    de-referenced first (no NO ACTION violation at delete time)
  * 6. the whole mutation runs inside exactly one transaction
  * 7. financial guards (locked balance / pending withdraw) are still evaluated
- * 8. refresh() denies a deleted account; session() treats a missing row as revoked
+ * 8. refresh denies a deleted/non-active account; session() treats a missing row as revoked
+ *    (S1F Section 7: refresh() -> refreshFromToken(), assertAccountActive() ->
+ *    isAccountActive(), same security property, checked as a union below so
+ *    this stays tied to the property, not one specific method name)
  */
 const fs = require("fs");
 const path = require("path");
@@ -261,11 +264,22 @@ for (const [retainedTable, def] of schemaTables) {
 
 // ── 8. session/refresh authority reflects deletion ──
 {
-  if (!/assertAccountActive/.test(authServiceSrc)) {
-    fails.push("refresh() must check assertAccountActive before minting a new session");
+  const hasActiveCheckFn = /assertAccountActive|isAccountActive/.test(authServiceSrc);
+  if (!hasActiveCheckFn) {
+    fails.push("refresh must check the account is still active before minting a new session");
   }
-  if (!/refresh\([\s\S]*?assertAccountActive/.test(authServiceSrc)) {
-    fails.push("assertAccountActive must run inside refresh()");
+  // Accept either the pre-S1F single throwing assert inside refresh(), or
+  // the S1F refreshFromToken() shape (non-throwing isAccountActive() check
+  // followed by an explicit family revoke + throw) - same property either
+  // way: an inactive account can never come out of this function with a
+  // fresh session.
+  const oldShape = /refresh\([\s\S]*?assertAccountActive/.test(authServiceSrc);
+  const newShape =
+    /refreshFromToken\([\s\S]*?isAccountActive\([\s\S]*?revokeFamily\([\s\S]*?ForbiddenException/.test(
+      authServiceSrc,
+    );
+  if (!oldShape && !newShape) {
+    fails.push("the active-account check must run inside the refresh/refreshFromToken code path");
   }
   if (!/rows\[0\]\s*\?\s*r\.rows\[0\]\.revoked === true\s*:\s*true/.test(authServiceSrc)) {
     fails.push("session() must treat a missing auth_sessions row as revoked, not as healthy");
