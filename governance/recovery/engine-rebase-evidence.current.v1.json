@@ -1,48 +1,51 @@
 {
   "schema": "governance.recovery.engine-rebase-evidence.v1",
-  "computed_at": "2026-09-02T18:01:02.984Z",
-  "predecessor_head_sha": "74683b6e39a73069caeade902e7600a352690f67",
+  "computed_at": "2026-09-05T04:48:59.730Z",
+  "predecessor_head_sha": "0d8825e8f333ca309a1d6eaf26a3d826722d11fd",
   "baseline_id": "ea-baseline-0d8825e8f333-5ac0f4291966",
-  "live_aggregate": "5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9",
+  "live_aggregate": "7b46b6b27a89d0c36f3c9cf4acdcd545da93eae938602af83c3c86510773a4a1",
   "baseline_aggregate": "5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9",
   "path_count_live": 491,
   "path_count_baseline": 491,
-  "changed_paths": 0,
+  "changed_paths": 1,
   "added_paths": [],
-  "mutated_paths": [],
+  "mutated_paths": [
+    "services/api-nest/clock.core.cjs"
+  ],
   "missing_paths": [],
-  "drift": false,
+  "drift": true,
   "cert_mirrors": {
     "STATUS": true,
-    "CERT_ISSUED_1": true,
-    "REBASE_REQUIRED_0": true,
-    "ACK_RECEIVED_1": true
+    "CERT_ISSUED_0": true,
+    "REBASE_REQUIRED_1": true,
+    "ACK_RECEIVED_0": true
   },
   "ack_eligibility": {
     "all_drift_explained": true,
     "unexplained_protected_change": 0,
     "baseline_washing": 0,
-    "required_qa_rerun_complete": true,
+    "required_qa_rerun_complete": false,
     "p0_unresolved": 0,
     "p1_unresolved": 0,
-    "p2_release_blocking_unresolved": 0,
+    "p2_release_blocking_unresolved": "UNPROVEN",
     "money_safety": "TRON_FAIL_CLOSED_PASS",
     "auth_security": "CSRF_DESIGN_PROVEN_GHAS_NOT_DISMISSED",
     "migration_staging": "STAGING_TOPOLOGY_READY_FULL_E2E_PENDING",
-    "ACK_RECEIVED": 1,
-    "FINAL_ACCEPTANCE": "ISSUED"
+    "ACK_RECEIVED": 0,
+    "FINAL_ACCEPTANCE": "NOT_ISSUED"
   },
-  "required_reruns": [],
-  "invalidated_suites": [],
+  "required_reruns": [
+    "QA1",
+    "QA4",
+    "QA8"
+  ],
+  "invalidated_suites": [
+    "QA1",
+    "QA4",
+    "QA8"
+  ],
   "baseline_washing_check": "PASS_NO_IN_PLACE_HASH_REWRITE",
-  "note": "Historical pre-rebase drift is preserved in archive. Current epoch was formally rebased under ENGINE_ACCEPTANCE_REBASE_V1. QA0-QA9 were rerun on the current epoch. FINAL_ACCEPTANCE is ISSUED. No in-place predecessor hash washing occurred.",
+  "note": "1-path drift vs baseline ea-baseline-0d8825e8f333-5ac0f4291966 (measured 2026-09-02T17:41:00.381Z), caused solely by commit a1d5c1516022a2bc58b16ff8c866ba19a4db8c10 (CodeQL js/regex/missing-regexp-anchor fix, \\b-anchor added to the DB_URL_DENY regex in services/api-nest/clock.core.cjs), which landed 2026-09-05 in the same D1 zero-known-defect audit lineage AFTER this baseline was formally issued. This evidence file previously and incorrectly still recorded the pre-drift 0-changed-path/ISSUED state (stale since 2026-09-02); refreshed here to the live, honest state. ACK is not issued. Baseline hashes were not rewritten (baseline.v1.json itself is untouched). Formal ENGINE_ACCEPTANCE_REBASE_V1 ACK and current-epoch QA0-QA9 rerun (QA7 needs real GitHub Actions evidence per this repo's own established practice) are still required before FINAL_ACCEPTANCE can move to ISSUED. See governance/engine-acceptance/FINAL_ACCEPTANCE.md and _audit-d0-20260904/FOUNDER-GATE-REL502-REBASE.md for full history and evidence.",
   "inventory_ref": "governance/recovery/engine-drift-inventory.current.v1.json",
-  "historical_inventory_ref": "governance/recovery/archive/engine-drift-inventory.pre-rebase-20260902.v1.json",
-  "historical_evidence_ref": "governance/recovery/archive/engine-rebase-evidence.pre-rebase-20260902.v1.json",
-  "predecessor_baseline_id": "ea-baseline-74683b6e39a7-590263f0f273",
-  "current_baseline_id": "ea-baseline-0d8825e8f333-5ac0f4291966",
-  "rebase_id": "ea-rebase-ec3c9604d2ab-5ac0f4291966",
-  "CURRENT_AUTHORITATIVE": true,
-  "HISTORICAL_PRE_REBASE_EVIDENCE": false,
-  "scope_head_sha": "b2c4755d6e3f56b4f44f198e595acf86086210c9"
+  "scope_head_sha": "6587db1ba38afae05301568a9d5b1a6f5990ba54"
 }
