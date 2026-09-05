@@ -27,15 +27,15 @@ NEXT = ENGINE_ACCEPTANCE_REBASE_V1
 BASELINE_ID = ea-baseline-0d8825e8f333-5ac0f4291966
 PREDECESSOR_BASELINE_ID = ea-baseline-74683b6e39a7-590263f0f273
 REBASE_ID = pending
-LIVE_AGGREGATE = d6f82920868925538cb2ed471815050510e3d503dd4fb360e4ebcc496b4980b6
+LIVE_AGGREGATE = cb6d0ebabf8a7a22bde1e316b86613fa3fd82e1ff3960096289a7e143d9ceacb
 BASELINE_AGGREGATE = 5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9
-PATH_COUNT_LIVE = 508
+PATH_COUNT_LIVE = 509
 PATH_COUNT_BASELINE = 491
-CHANGED_PATHS = 33
-ADDED_PATHS = 17
-MUTATED_PATHS = 16
+CHANGED_PATHS = 35
+ADDED_PATHS = 18
+MUTATED_PATHS = 17
 MISSING_PATHS = 0
-EXIT_GATE = D1-S1F (2026-09-05) · S1F Founder 프로덕션 출시 지시서에 따른 classic-signup/session-rotation/turnstile/rate-limit/admin-users 신설(commit f2812062) + frontend(440fc2ed) + CodeQL clock.core.cjs 구조적 재작성(commit 7f9baf0a) + verify wiring(eb4737f8) + client refresh retry(d6023f16) + reuse-detection tests(0a9bf4ea) 가 REBASE 없이 protected-scope 를 추가 변경(17 added · 16 mutated) · ENGINE_ACCEPTANCE_REBASE_V1 ACK 후 current-epoch QA0-QA9 재실행 전까지 ISSUED 금지
+EXIT_GATE = D1-S1F (2026-09-05) · S1F Founder 프로덕션 출시 지시서에 따른 classic-signup/session-rotation/turnstile/rate-limit/admin-users 신설(commit f2812062) + frontend(440fc2ed) + CodeQL clock.core.cjs 구조적 재작성(commit 7f9baf0a) + verify wiring(eb4737f8) + client refresh retry(d6023f16) + reuse-detection tests(0a9bf4ea) + PUTDUK continuation session(2026-09-06)의 settlement/safe-stop claim-before-post race 수정(commit f29a8e06)이 REBASE 없이 protected-scope 를 추가 변경(18 added · 17 mutated) · ENGINE_ACCEPTANCE_REBASE_V1 ACK 후 current-epoch QA0-QA9 재실행 전까지 ISSUED 금지
 ```
 
 ## 판정 (D1-S1E 정정, 2026-09-05, append 성격의 사실 정정)
@@ -159,3 +159,40 @@ governance/security/CODEQL_LEDGER.md §3.5를 가리키는 CodeQL 리뷰 주석 
 발급 조건에 맞춰 역산하지 않았다. `ev.qa.ready`는 현재 `true`(current-epoch QA1-9 evidence
 존재)이지만 `ev.scope.drift`가 `true`인 한 `canIssue`는 계속 `false`다 — QA 준비 상태와 무관하게
 protected-scope drift 단독으로 발급을 막는다.
+
+## 판정 (PUTDUK continuation session 정정, 2026-09-06, append 성격의 사실 정정)
+
+S1F 정정 이후, 같은 D1 감사 branch의 후속 세션(Founder의 PUTDUK 실제 운영 출시 연속 실행 프롬프트,
+Step 7.2)이 `services/api-nest` protected-scope root를 두 곳 더 변경했다:
+
+- `services/api-nest/src/trades/trades.execution.service.ts` (MUTATED) — finalizeMatchSuccess/
+  finalizeSafeStop가 journal을 status-guarded claim UPDATE 이전에 무조건 post하던 순서를
+  뒤집었다. 두 동시 execute-tick 호출이 같은 running 거래에서 서로 다른 terminal 결과를 판단하면
+  claim에 실패한 쪽도 journal(settlement 또는 participate_unlock)을 post해 원금이 이중으로
+  움직일 수 있었던 real race를 닫는 구조적 수정이다.
+- `services/api-nest/src/trades/trades.execution.race.selftest.ts` (ADDED) — 그 수정의 회귀
+  스위트(FakeTradeDb/FakePostingService · 7 케이스). 수정 전 코드로 되돌려(git stash) 같은 스위트를
+  재실행해 실제로 FAIL하는지, 수정 코드로는 ALL PASS하는지 둘 다 확인했다
+  (`tooling/verify/trades-execution-race.runtime.cjs`).
+
+이 정정은 그 사실을 은폐하거나 STATUS를 조작하지 않고 LIVE_AGGREGATE/PATH_COUNT_LIVE/
+CHANGED_PATHS/ADDED_PATHS/MUTATED_PATHS만 현재 HEAD의 실측값으로 갱신한다. STATUS/CERT_ISSUED/
+PROTECTED_SCOPE_DRIFT/REBASE_REQUIRED는 이미 정확했으므로(모두 drift=true 상태를 가리킴)
+변경하지 않는다 — 이미 NOT_ISSUED로 정정되어 있었기 때문에, 이번 추가 drift도 새 결함을 만든
+것이 아니라 기존에 열려 있던 같은 GAP을 더 정확한 숫자로 다시 진술하는 것이다.
+
+live protected aggregate `cb6d0ebabf8a7a22bde1e316b86613fa3fd82e1ff3960096289a7e143d9ceacb`는
+baseline aggregate `5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9`와 다르다
+(추가 18 · 변경 17 · 누락 0, 총 35 경로 — S1F 정정 시점의 33개 경로에 위 두 경로가 더해진 값).
+재계산은 `tooling/verify/lib/rel-502-psm.cjs`의 `compareProtectedScope()`를 그대로 호출한
+실측값이며 hash를 손으로 만들지 않았다.
+
+이 세션이 검토했지만 protected-scope 밖이라 이 목록에 없는 변경(참고용, 은폐 아님): 관리자
+회원목록 배선(`apps/admin/**`), 세션 refresh 멀티탭 조정(`apps/web/lib/session-refresh-fetch.ts`),
+classic-signup migration의 constraint 재실행 안전성 수정(`supabase/migrations/**`) —
+`protected-scope.v1.json`이 정의하는 root가 `services/api-nest` 계열에 한정되어 있어 이 파일들의
+변경은 REL-502 drift 판정에 들어가지 않는다.
+
+은폐 금지 · STATUS = NOT_ISSUED (불변) · CERT_ISSUED = 0 (불변) · PROTECTED_SCOPE_DRIFT = 1 (불변).
+이 세션은 ACK를 대리 작성하지 않았고, QA0-QA9를 로컬에서 가짜로 재실행하지 않았으며, 숫자를
+발급 조건에 맞춰 역산하지 않았다.
