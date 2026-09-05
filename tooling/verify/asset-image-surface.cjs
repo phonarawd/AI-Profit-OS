@@ -375,10 +375,11 @@ const oppMediaUi = read("apps/web/components/spark-dash-profits/OpportunityMedia
 if (!oppCardUi.includes("OpportunityMedia") && !oppMediaUi.includes("productMediaUrl")) {
   fails.push("live card must render OpportunityMedia bound to policy-gated productMediaUrl");
 }
-if (!oppMediaUi.includes("시세 참고") && !oppCardUi.includes("시세 참고")) {
-  console.warn(
-    "[verify:asset-image-surface] WARN: live product media has no visible 시세 참고용 note - tracked gap",
-  );
+const hasImageRightsNoteWiring =
+  oppMediaUi.includes("T.execution.imageRightsNote") ||
+  oppCardUi.includes("T.execution.imageRightsNote");
+if (!hasImageRightsNoteWiring) {
+  fails.push("live product media must render T.execution.imageRightsNote (시세 참고용 note)");
 }
 
 // NOTE (2026-09-04): packages/ui/components/opportunity/CategoryFilterChips.tsx
