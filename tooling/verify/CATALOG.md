@@ -235,6 +235,7 @@
 | usdt-deposit-closure | REL-114 — `/wallet/deposit` USDT address owner · credit 0 · happy+deny — **live** |
 | krw-deposit-closure | REL-115 — `/wallet/deposit?tab=krw` pending≠credit · PG 0 · happy+deny — **live** |
 | withdraw-flow-wire | UI PART9f2 — WithdrawAmountPanel + step-up challenge/verify + POST `/wallet/withdraw` idempotencyKey · PrincipalConfirmSheet client token pointer — **live** |
+| withdraw-treasury-solvency | withdraw broadcast treasury unknown/stale/short and unbound signer fail-closed — **live** |
 | withdraw-stepup-security | Money 43.6 -- no fake WebAuthn proof, server verified email only, expiring HMAC token, atomic consume, proven PIN enrollment -- **live** |
 | adapter-ingest-fail-closed | Adapters ingest -- token unset 503, wrong token 401, fail-open removed -- **live** |
 | usdt-ingest-machine-auth | Money 43.1 -- machine-auth observe/tick/sweeper, address-index owner only, body.userId ignored -- **live** |

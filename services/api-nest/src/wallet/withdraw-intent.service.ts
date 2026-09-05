@@ -32,6 +32,10 @@ import { WithdrawKycGuard } from "./withdraw-kyc.guard";
 import { WithdrawStepUpService } from "./withdraw-stepup.service";
 import type { WithdrawAsset, WithdrawMode } from "./wallet.types";
 import type { WithdrawStepUpMethod } from "./withdraw-stepup.policy";
+import {
+  assertCanBroadcast,
+  type TreasurySolvencyInput,
+} from "./withdraw-treasury-solvency";
 
 type CapabilityRow = {
   withdraw_apply_blocked: boolean;
@@ -101,6 +105,13 @@ export class WithdrawIntentService {
     private readonly minHolding: MinHoldingService,
     private readonly bus: InProcessEventBus,
   ) {}
+
+  /** 실자금 전송 직전. 잔액 미관측·스테일·부족·서명기 미바인딩이면 전송 0. */
+  evaluateBroadcastReadiness(
+    input: TreasurySolvencyInput & { signerBound: boolean },
+  ) {
+    return assertCanBroadcast(input);
+  }
 
   /**
    * §49.3 server guards (order fixed):

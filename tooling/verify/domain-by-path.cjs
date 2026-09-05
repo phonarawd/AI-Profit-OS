@@ -609,6 +609,20 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^services\/api-nest\/src\/wallet\/withdraw-treasury-solvency/.test(f) ||
+      /^tooling\/verify\/withdraw-treasury-solvency\.cjs$/.test(f),
+    scripts: ["withdraw-treasury-solvency.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/web\/app\/robots\.ts$/.test(f) ||
+      /^apps\/web\/app\/sitemap\.ts$/.test(f) ||
+      /^apps\/web\/app\/layout\.tsx$/.test(f) ||
+      /^tooling\/verify\/seo-schema\.cjs$/.test(f),
+    scripts: ["seo-schema.cjs"],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/app\/wallet\/deposit\//.test(f) ||
       /^apps\/web\/app\/me\/kyc\//.test(f) ||
       /^apps\/web\/app\/me\/support\//.test(f) ||
