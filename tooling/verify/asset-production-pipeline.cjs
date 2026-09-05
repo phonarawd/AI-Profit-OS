@@ -6,6 +6,7 @@ const { spawnSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
+const { gitBlobSha256 } = require("./lib/git-blob-hash.cjs");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
@@ -153,6 +154,32 @@ if (!fs.existsSync(sparkDir)) {
     if (!fs.existsSync(path.join(root, rel))) {
       fails.push(`Home locked asset missing: ${rel}`);
     }
+  }
+}
+
+// D1-S1E (2026-09-05): lock-hash-vs-committed-git-blob provenance check.
+// Root cause this guards against: a lock's recorded sha256 can be silently wrong if it was
+// ever computed from a local working-tree file whose bytes differ from what git actually has
+// committed (e.g. stray CRLF/LF conversion from a past core.autocrlf setting, invisible to
+// `git status` because of its stat-cache fast path - see session-1e-correction/logs/d1s1e-*.log
+// for the full forensic proof this exact bug already happened once for 38 files). Comparing the
+// disk file alone (as the block above does) cannot catch this class of defect on the SAME
+// contaminated machine, because both 'actual' and 'expected' would agree with each other while
+// both disagree with the one thing that matters: what a clean checkout (any CI runner, any other
+// contributor's machine, a fresh clone) actually receives. This block is platform-independent and
+// runs on every invocation (local and CI) so drift is caught immediately, not just when someone
+// happens to run on a machine with a clean working tree.
+for (const rel of Object.keys(lockFiles)) {
+  const blob = gitBlobSha256(root, "HEAD", rel);
+  if (!blob.ok) {
+    fails.push(`Home lock provenance check could not read committed blob for ${rel}: ${blob.error}`);
+    continue;
+  }
+  const expected = lockFiles[rel]?.sha256;
+  if (expected && blob.sha256 !== expected) {
+    fails.push(
+      `Home lock hash disagrees with committed git blob (provenance drift, not a disk-only issue): ${rel} lock=${expected.slice(0, 12)} blob=${blob.sha256.slice(0, 12)}`,
+    );
   }
 }
 

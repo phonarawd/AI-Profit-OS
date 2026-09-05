@@ -27,6 +27,170 @@
     "apps/web/public/spark-dash/spark-mark.svg": {
       "sha256": "552f9e89c0ee0b81a143106c90a784db3c274d6fe74b4adc989c2b37c82e30d6",
       "bytes": 1019
+    },
+    "apps/web/public/spark-dash/ai-eye-right.svg": {
+      "sha256": "7ca4290660c076231a89496b7e863fc244540249638b7b231b9b279c4e667fa8",
+      "bytes": 922
+    },
+    "apps/web/public/spark-dash/ai-orb.svg": {
+      "sha256": "8ff0f7730cfa9ea54d4e69973cd355596ce71ed525c5dc5bf1583525d4ab2370",
+      "bytes": 1295
+    },
+    "apps/web/public/spark-dash/ai-pink-glow.svg": {
+      "sha256": "39b2e52aaa7b560fde45e000db96bea24869db8fa64bcc2f123c0ccd95ad3784",
+      "bytes": 680
+    },
+    "apps/web/public/spark-dash/ai-ring.svg": {
+      "sha256": "b2d2a93109dd5cf899879d0c19cc9d51af719e19267d803c5ef8682c0f824dd4",
+      "bytes": 960
+    },
+    "apps/web/public/spark-dash/ambient-glow.svg": {
+      "sha256": "455213d1ea475778640d3aeb4c807cdebdd3db94223a819e81d1826cc7df5c5c",
+      "bytes": 698
+    },
+    "apps/web/public/spark-dash/avatar-body.svg": {
+      "sha256": "eff7b15a14fca38ae5608c5fcad4997d93adc37c05eba7ef90d15e8313f0a02a",
+      "bytes": 248
+    },
+    "apps/web/public/spark-dash/avatar-face.svg": {
+      "sha256": "5f974e2768eb8e17a090a04ce201613f3a56604215e2cd7afcf1da810519aebe",
+      "bytes": 237
+    },
+    "apps/web/public/spark-dash/avatar-online.svg": {
+      "sha256": "1c87e4f13ac43ab0908bb70aea71a272d9b3cd7a7d1b07c3ef4da753d5fbaeda",
+      "bytes": 235
+    },
+    "apps/web/public/spark-dash/brand-spark.svg": {
+      "sha256": "8b4b0335e232dfb901f256140fce00bacb8e3c7c8bb1eb94225cb6e03e8ac2a0",
+      "bytes": 492
+    },
+    "apps/web/public/spark-dash/energy-bloom-1.svg": {
+      "sha256": "6f2678e13780faf437a04b107c4fee8c39dd5f6ab8f5c66ac91fbd1f17d9c90e",
+      "bytes": 686
+    },
+    "apps/web/public/spark-dash/energy-bloom-2.svg": {
+      "sha256": "c2f7aa248884eed0a8d4a4155800c91dc661e28fc888e0025f9136464ec19e89",
+      "bytes": 690
+    },
+    "apps/web/public/spark-dash/energy-bloom-3.svg": {
+      "sha256": "18a5162316c4a731af71049937a12a6466bc1a31593bd041e1dbba862516462c",
+      "bytes": 686
+    },
+    "apps/web/public/spark-dash/header-bell.svg": {
+      "sha256": "fd06dcde193eb52d1e47e41e826570655a4a832307ec19453e807baef25f40d5",
+      "bytes": 511
+    },
+    "apps/web/public/spark-dash/header-signal.svg": {
+      "sha256": "e3184e319178483f6dc36447d11fe2635f3f2eb0e1dd488507be1d871bff42f2",
+      "bytes": 477
+    },
+    "apps/web/public/spark-dash/headline-spark.svg": {
+      "sha256": "39189e85af92a0193115ba7a1cd7335090f22fd5ba806e3392503c5428fe802d",
+      "bytes": 487
+    },
+    "apps/web/public/spark-dash/hero-halo.svg": {
+      "sha256": "ee3f0e864a849e50314dfcd69113c3beddb0df767015e1c702209879fbb9d282",
+      "bytes": 706
+    },
+    "apps/web/public/spark-dash/hero-lightning-neon.svg": {
+      "sha256": "d627e0ee89d24baf6fda83f30876c32ff514ffbfe918d1de8fd1fbe41dada219",
+      "bytes": 1640
+    },
+    "apps/web/public/spark-dash/hero-lightning.svg": {
+      "sha256": "bf2a58fefa9c46fd6d316c73213f9b3a31be1760b2d10fd6a9c80c46a6621d0f",
+      "bytes": 390
+    },
+    "apps/web/public/spark-dash/icon-bell.svg": {
+      "sha256": "ef5072a2a50350c24d26186b88e4b1c19b4761a46930b5d13d0f469854b43202",
+      "bytes": 652
+    },
+    "apps/web/public/spark-dash/icon-home.svg": {
+      "sha256": "341076f485824134e7613d75a48c810162f6c39720f3c8584d03adf9304d89ba",
+      "bytes": 372
+    },
+    "apps/web/public/spark-dash/icon-opportunity.svg": {
+      "sha256": "ce172ebaccd119bbf23d73e13ebc01b4e0217e55330fa4c63438494c6aa094b2",
+      "bytes": 601
+    },
+    "apps/web/public/spark-dash/icon-partner.svg": {
+      "sha256": "6e348c4b2d50be22e791e7eb1e85c2c064d317e7aa6173ae982ba6d260d540e5",
+      "bytes": 577
+    },
+    "apps/web/public/spark-dash/icon-settings.svg": {
+      "sha256": "a4f464c3b24214a4ee5685b955384bc6100c4a4179c66fb0ed47a12c554e4e09",
+      "bytes": 728
+    },
+    "apps/web/public/spark-dash/icon-wallet.svg": {
+      "sha256": "fe85182a7afe5f0dfdbfa51d6f71a49933d240d09fdf9c532c1284728ff445d0",
+      "bytes": 493
+    },
+    "apps/web/public/spark-dash/mini-spark.svg": {
+      "sha256": "0e704b58a5228dc75c0ce8af111bf59d742088aa0e570e603c01278cd9ce9a32",
+      "bytes": 508
+    },
+    "apps/web/public/spark-dash/mobile-ai-orb.svg": {
+      "sha256": "065a9abe72b50c0b6fe0610ccffa735f21410f70ec7e9a0a361359765170a5b6",
+      "bytes": 1295
+    },
+    "apps/web/public/spark-dash/mobile-brand-spark.svg": {
+      "sha256": "a3899fee2f6c5257eb21892134dc3d34031289128f1edb2610e74b2892dce4de",
+      "bytes": 537
+    },
+    "apps/web/public/spark-dash/mobile-icon-clock.svg": {
+      "sha256": "f6741abc08d6da482acf38e62074e8142eaf0337b5f5a138deab88bca9bbd10e",
+      "bytes": 629
+    },
+    "apps/web/public/spark-dash/mobile-icon-explore.svg": {
+      "sha256": "db4f6fb2ae07721e18cf0f0a709bcfaca9fd33f5a01975e638a7eecea0f7ae99",
+      "bytes": 597
+    },
+    "apps/web/public/spark-dash/mobile-icon-home.svg": {
+      "sha256": "341076f485824134e7613d75a48c810162f6c39720f3c8584d03adf9304d89ba",
+      "bytes": 372
+    },
+    "apps/web/public/spark-dash/mobile-icon-lightning.svg": {
+      "sha256": "0d35526e3069a875111fb968579ed1d8c99d44628cd53ab07a7923bcef66a39d",
+      "bytes": 407
+    },
+    "apps/web/public/spark-dash/mobile-icon-nav-bell.svg": {
+      "sha256": "ef5072a2a50350c24d26186b88e4b1c19b4761a46930b5d13d0f469854b43202",
+      "bytes": 652
+    },
+    "apps/web/public/spark-dash/mobile-icon-nav-explore.svg": {
+      "sha256": "ce172ebaccd119bbf23d73e13ebc01b4e0217e55330fa4c63438494c6aa094b2",
+      "bytes": 601
+    },
+    "apps/web/public/spark-dash/mobile-icon-nav-wallet.svg": {
+      "sha256": "fe85182a7afe5f0dfdbfa51d6f71a49933d240d09fdf9c532c1284728ff445d0",
+      "bytes": 493
+    },
+    "apps/web/public/spark-dash/mobile-icon-notification.svg": {
+      "sha256": "fd06dcde193eb52d1e47e41e826570655a4a832307ec19453e807baef25f40d5",
+      "bytes": 511
+    },
+    "apps/web/public/spark-dash/mobile-icon-trend.svg": {
+      "sha256": "856100ea966362d7c3a3dcb52966c05519544f5f4df0e1cacc2433ff4f796d2e",
+      "bytes": 500
+    },
+    "apps/web/public/spark-dash/mobile-icon-trophy.svg": {
+      "sha256": "5cec2dabdd9c93a1e8430ff7140ba51eb19893bfbe37999197a7960a8b156966",
+      "bytes": 930
+    },
+    "apps/web/public/spark-dash/mobile-icon-wallet.svg": {
+      "sha256": "0aff4e9e2f8ce6ffaefdde7a1d7c5dfd9c906f98802d9a07c0d15c16eff89dd8",
+      "bytes": 493
     }
+  },
+  "evidence_2026_09_05_D1S1E": {
+    "purpose": "Second, disjoint batch of 38 corrections (distinct file set from the original 6 above). Root cause: home-lock.v1.json's recorded sha256 for these 38 apps/web/public/spark-dash/*.svg entries was computed from a LOCAL WORKING-TREE read that had stray CRLF line-ending conversion (leftover from a past core.autocrlf setting on this Windows machine, invisible to `git status` due to its stat-cache fast path), not from the canonical committed git blob. The values below are each the sha256 of `git cat-file -p HEAD:<path>` at candidate HEAD 90701431b1eb9008c3ccb00ce6d34987e1004193 - i.e. the actual bytes any clean checkout (every CI runner, any fresh clone) receives.",
+    "proof": "Exhaustive, not sampled: all 47 current lock+corrections entries were re-hashed 3 ways (lock-declared, working-tree disk, git HEAD blob) and every one of these 38 (and only these 38) showed lock==disk!=blob. A second pass then normalized CRLF->LF on both the disk and blob bytes for all 38 and found byte-for-byte identical results in all 38/38 - i.e. the only difference is line-ending representation, zero visual/semantic content change to the actual approved artwork.",
+    "evidence": [
+      "_audit-d0-20260904/session-1e-correction/scripts/analyze-home-lock-hash-drift.cjs",
+      "_audit-d0-20260904/session-1e-correction/logs/d1s1e-home-lock-hash-drift-full.json",
+      "_audit-d0-20260904/session-1e-correction/scripts/verify-crlf-only-diff.cjs",
+      "_audit-d0-20260904/session-1e-correction/logs/d1s1e-crlf-only-diff-verification.json"
+    ],
+    "remoteFailureThisCorrects": "GitHub Actions run 33917667546 (consumer-spark-worldclass / T1 push gate) FAILED at [verify:asset-production-pipeline] with exactly these 38 paths reported as 'Home committed asset replaced' - this was a false positive caused by the lock's own wrong expected-hash values, not an actual unauthorized Home asset change.",
+    "didNotChange": "apps/web/scripts/asset-pipeline/home-lock.v1.json (left byte-for-byte untouched, same as the original 6-entry correction's own stated policy) and the actual committed content of all 38 SVG files (git blob content is unchanged - this correction only fixes the ledger to describe it accurately)."
   }
 }
