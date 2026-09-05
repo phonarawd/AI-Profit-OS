@@ -1,6 +1,6 @@
 ---
 name: PUTDUK Release Master
-overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-400 COMPLETED. REL-213 COMPLETED. REL-214 COMPLETED. REL-401 COMPLETED. REL-402 COMPLETED. REL-403 COMPLETED. REL-404 COMPLETED. REL-405 COMPLETED. REL-406 COMPLETED. REL-407 COMPLETED. REL-408 COMPLETED. REL-222 COMPLETED. REL-223 COMPLETED. REL-224 COMPLETED. REL-409 COMPLETED. REL-500 COMPLETED. REL-501 COMPLETED. REL-502 COMPLETED. REL-503 COMPLETED. REL-504 COMPLETED. REL-505 COMPLETED. REL-508 COMPLETED. REL-506 COMPLETED. REL-507 COMPLETED. REL-502 ISSUED_CURRENT_EPOCH. REL-701-DB COMPLETED. FIRST_EXECUTION_TODO=REL-701. HARD_STOP_AFTER=REL-603. REL-600 COMPLETED. REL-601 COMPLETED. REL-602 COMPLETED. REL-603 COMPLETED. BATCH_REL_200_206=ADMIN_ENTRY.
+overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 117 + POST 19 = 137개 canonical task definition을 이 파일에 전부 수록(REL-701 pre/db/main 3단계 분리로 116->117 갱신). pointer-only 0. PLAN_LOCKED=TRUE. REL-400 COMPLETED. REL-213 COMPLETED. REL-214 COMPLETED. REL-401 COMPLETED. REL-402 COMPLETED. REL-403 COMPLETED. REL-404 COMPLETED. REL-405 COMPLETED. REL-406 COMPLETED. REL-407 COMPLETED. REL-408 COMPLETED. REL-222 COMPLETED. REL-223 COMPLETED. REL-224 COMPLETED. REL-409 COMPLETED. REL-500 COMPLETED. REL-501 COMPLETED. REL-502 PENDING(protected-scope 재드리프트로 정직화, directive 3.1 2026-09-05, 아래 rel-502 todo가 canonical). REL-503 COMPLETED. REL-504 COMPLETED. REL-505 COMPLETED. REL-508 COMPLETED. REL-506 COMPLETED. REL-507 COMPLETED. REL-502 NOT_ISSUED(FINAL_ACCEPTANCE.md과 동기, ISSUED_CURRENT_EPOCH 아님). REL-701-DB COMPLETED. FIRST_EXECUTION_TODO=REL-701. HARD_STOP_AFTER=REL-603. REL-600 COMPLETED. REL-601 COMPLETED. REL-602 COMPLETED. REL-603 COMPLETED. BATCH_REL_200_206=ADMIN_ENTRY.
 todos:
   - id: pre-lock-001
     content: "[PRE-LOCK, REL큐 밖] FIGMA_AUTHORITY_DISCOVERY: 실행 완료 - fileKey w7Yg8j2x9evuheOSSLqFw5 실제 MCP 접근 확인, 15개 frame 실사+분류 완료(전부 BACKUP 또는 FOUNDER_REVIEW_CANDIDATE, APPROVED_AUTHORITY 0건). Surface Matrix FIG 컬럼 갱신 완료. 본 파일 materialization 검산 PASS 후 PLAN_LOCKED=TRUE"
@@ -333,7 +333,7 @@ todos:
     content: "[Staging][A2] Rollback 연습 DONE preview Workers actual rollback + read-only regression + forward deploy, run=32718187604, evidence=governance/release-master/REL-602-STAGING-ROLLBACK.md"
     status: completed
   - id: rel-603
-    content: "[Staging][A2] Automated age-band usability cohort DONE 9x4 staging Playwright, evidence=governance/release-master/AGE_SPOTCHECK.md"
+    content: "[Staging][A2] Automated age-band usability cohort DONE 9x4 staging Playwright, evidence=governance/release-master/AGE_SPOTCHECK.md. NOTE(2026-09-05): REL-600/601/602/603 mechanisms proven PASS, but evidence SHA (602 drill head 532c087f, 2026-08-24) now 343+ commits behind HEAD - proven-mechanism record, not current-RC staging certification. Phase N of the PUTDUK FULL REAL-MONEY PRODUCTION RELEASE directive requires re-running staging against the final RC SHA before reuse."
     status: completed
   - id: rel-700
     content: "[Production] Production 준비도 게이트 집계 리뷰 DONE evidence=governance/release-master/PROD_READINESS.md"
@@ -375,7 +375,7 @@ todos:
     content: "[POST-CORE][A3][Legacy:G-GROWTH-006/06:marketing-admin-roas-health] Admin ROAS Health: /admin 돈줄 하단 Worker 실시간 지표(delivery state+retry backlog+permanent fail)+48h 대조 접힌섹션 분리, deps POST-005"
     status: pending
   - id: post-007
-    content: "[POST-CORE][A3][Legacy:G-GROWTH-007/06:marketing-seo-sitemap-jsonld] SEO 기초: sitemap.ts+robots.ts+JSON-LD(Organization+WebSite, 퍼뜩)+LandingOperatorFooter, verify:seo-schema+operator-footer"
+    content: "[PRE-LAUNCH-PROMOTED from POST-CORE][A3][Legacy:G-GROWTH-007/06:marketing-seo-sitemap-jsonld] SEO 기초: sitemap.ts+robots.ts+JSON-LD(Organization+WebSite, 퍼뜩)+LandingOperatorFooter, verify:seo-schema+operator-footer. PROMOTION NOTE(2026-09-05): PUTDUK FULL REAL-MONEY PRODUCTION RELEASE directive section 16.1 explicitly promotes this to pre-launch (AI entity grounding/search correctness depends on it) - id/queue position unchanged, label only, still executed as a normal POST-queue item until Founder re-sequences it."
     status: pending
   - id: post-008
     content: "[PHASE2][A1][HUMAN_ESCALATION][Legacy:G-GROWTH-008/06:ads-provider-onboarding] Ads Provider Onboarding: Meta/TikTok/Google 공식 Marketing/Ads API write SoT, OAuth/계정연결=HIGH+HUMAN, production live 연결도 HUMAN, deps POST-005+POST-007 completed"
@@ -402,7 +402,7 @@ todos:
     content: "[POST-CORE][A3][Legacy:D-ADMIN-015/04:product-analytics] Product Analytics: D1/D7 retention+입금->2회참여 퍼널 OTel+Admin 리텐션 위젯"
     status: pending
   - id: post-016
-    content: "[POST-CORE][A3][Legacy:D-ADMIN-017/04:admin-isolated-deploy] Admin Isolated Deploy: 별도 OpenNext Ops Worker(workers/ops-proxy 존재)+ops 도메인+IP allowlist, origin=infra/domain.manifest.json openNext.ops"
+    content: "[PRE-LAUNCH-PROMOTED from POST-CORE][A3][Legacy:D-ADMIN-017/04:admin-isolated-deploy] Admin Isolated Deploy: 별도 OpenNext Ops Worker(workers/ops-proxy 존재)+ops 도메인+IP allowlist, origin=infra/domain.manifest.json openNext.ops. PROMOTION NOTE(2026-09-05): PUTDUK FULL REAL-MONEY PRODUCTION RELEASE directive section 12 explicitly promotes this to pre-launch launch-critical (production admin must be reachable at a real isolated URL, not just code-complete) - id/queue position unchanged, label only, still executed as a normal POST-queue item until Founder re-sequences it."
     status: pending
   - id: post-017
     content: "[POST-CORE][A3][Legacy:E-PWA-005/05:store-bridge-scaffold] Store Bridge Scaffold(v2): TWA+assetlinks+Play AAB+Uptodown APK/XAPK 동일 패키지·서명, Capacitor iOS shell, verify:assetlinks, deps REL-023(Day-1 PWA 게이트 PASS 후)"
@@ -4578,7 +4578,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```text
 MASTER_FILE_EXISTS = TRUE
 PLAN_LOCKED = TRUE
-BLOCKING_ON = []
+BLOCKING_ON_AT_MATERIALIZATION = []
 PRE_LOCK_COUNT = 1
 REL_COUNT = 117
 POST_COUNT = 19
