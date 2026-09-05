@@ -116,31 +116,31 @@ for (const f of [
 }
 
 // Admin DayPulse manual-edit UI = 0 (independent of Home mounting status; still enforced)
-// No existsSync(adminRoot)-then-walk check-then-use race (js/file-system-race):
-// attempt the walk directly and treat a missing root as "nothing to scan"
-// via the readdirSync call's own ENOENT, not a separate pre-check.
+// No existsSync/statSync-then-use check-then-use race (js/file-system-race):
+// - readdirSync(dir, { withFileTypes: true }) gets each child's type from the
+//   SAME directory-read syscall (no separate statSync(p) on the child path,
+//   so there is no second syscall whose result could already be stale).
+// - the recursion/skip decision uses that in-hand Dirent type, not a fresh
+//   stat of a path that could have changed since.
+// - the one remaining real fs call on a child path (readFileSync for
+//   content) is a single attempt wrapped in try/catch(ENOENT), not gated by
+//   an earlier existence check.
 const adminRoot = path.join(root, "apps/admin");
 function walkAdmin(dir) {
   let entries;
   try {
-    entries = fs.readdirSync(dir);
+    entries = fs.readdirSync(dir, { withFileTypes: true });
   } catch (err) {
     if (err && err.code === "ENOENT") return;
     throw err;
   }
-  for (const name of entries) {
+  for (const entry of entries) {
+    const name = entry.name;
     const p = path.join(dir, name);
-    let st;
-    try {
-      st = fs.statSync(p);
-    } catch (err) {
-      if (err && err.code === "ENOENT") continue;
-      throw err;
-    }
-    if (st.isDirectory()) {
+    if (entry.isDirectory()) {
       if (name === "node_modules" || name === ".next" || name === ".open-next") continue;
       walkAdmin(p);
-    } else if (/\.(tsx?|jsx?)$/.test(name)) {
+    } else if (entry.isFile() && /\.(tsx?|jsx?)$/.test(name)) {
       let t;
       try {
         t = fs.readFileSync(p, "utf8");

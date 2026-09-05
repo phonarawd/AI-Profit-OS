@@ -63,11 +63,13 @@ protected-scope root(services/api-nest) 안에 있어 REL-502 drift를 유발하
 
 | alert | 파일 | 조치 |
 |---|---|---|
-| 38 | tooling/verify/day-pulse-live-only.cjs | `read()` 헬퍼의 `existsSync`+`readFileSync` 체크-후-사용을 단일 `readFileSync` try/catch(ENOENT)로 교체. Admin 스캔의 `existsSync(adminRoot)`+`walk()`도 동일하게 `readdirSync`/`statSync`/`readFileSync` 각각을 try/catch(ENOENT)로 감싸는 단일 시도로 재작성 - 두 곳 모두 구조적 제거(anchor/난독화 아님). 동작 동일성 확인: PASS 메시지 불변, 실제 admin 파일 트리 재스캔해 결과 0건 유지 |
+| 38 | tooling/verify/day-pulse-live-only.cjs | 1차: `read()` 헬퍼의 `existsSync`+`readFileSync` 체크-후-사용을 단일 `readFileSync` try/catch(ENOENT)로 교체 |
+| 92 (1차 수정 후 신규 번호로 재관측) | tooling/verify/day-pulse-live-only.cjs | 2차: 1차 수정 직후 실측 재스캔에서 같은 파일에 새 alert 92 발생 확인 - `walkAdmin()`의 `statSync(p)`(타입 확인) 뒤에 그 결과로 `readFileSync(p)` 실행 여부를 조건분기하는 자체가 여전히 check-then-use였음(개별 try/catch로 감쌌어도 구조는 동일). `fs.readdirSync(dir, { withFileTypes: true })`로 교체해 자식 타입 정보를 디렉터리 read와 **같은 시스템 콜**에서 얻고, 별도 `statSync(p)`를 아예 제거 - 이제 경로당 실제 fs 호출은 파일 내용을 읽는 단일 `readFileSync` try/catch(ENOENT)뿐 |
 
-이번 세션 실측 재조회(`refs/pull/221/merge`) 결과 open **3**건 확인 후 위 수정 적용,
-재스캔 전 예상 = 2건(80,81 clock.core.cjs만 AWAITING_HUMAN_REVIEW로 잔존). GitHub CodeQL
-재스캔은 push 후 자동 실행되며 이 문서는 push 직후 실측으로 재확인한다(자가 dismiss 0).
+두 수정 모두 구조적 제거(anchor/난독화 아님). 동작 동일성 확인: 두 번 모두 PASS 메시지
+불변, 실제 admin 파일 트리 재스캔해 결과 0건 유지. 1차 수정만으로는 CodeQL이 새 alert(92)를
+찾아냈다는 사실 자체가 "anchor만 추가"식 피상적 수정이 durable하지 않다는 산증거 -
+2차 수정 후 실측 재확인은 아래에 기록한다(가정치를 확정치로 쓰지 않음).
 
 ## 4. Default branch 전용 OPEN_UNTRIAGED (main, 이번 세션 미착수, 19건)
 
