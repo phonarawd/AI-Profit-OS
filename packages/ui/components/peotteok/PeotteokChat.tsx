@@ -236,14 +236,21 @@ export function PeotteokChat({
           submit(draft);
         }}
       >
-        <input
-          type="text"
+        <textarea
+          rows={1}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key !== "Enter" || e.shiftKey || e.nativeEvent.isComposing) {
+              return;
+            }
+            e.preventDefault();
+            submit(draft);
+          }}
           placeholder={T.peotteok.placeholder}
           disabled={busy}
           data-testid="peotteok-input"
-          className="min-w-0 flex-1 rounded-lux-md border border-lux-border bg-lux-bg px-3 py-2 text-sm text-lux-text placeholder:text-lux-text-muted"
+          className="min-h-[2.75rem] min-w-0 flex-1 resize-none rounded-lux-md border border-lux-border bg-lux-bg px-3 py-2 text-sm text-lux-text placeholder:text-lux-text-muted"
           autoComplete="off"
         />
         <button

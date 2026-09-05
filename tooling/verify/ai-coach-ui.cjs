@@ -50,6 +50,7 @@ for (const needle of [
   'data-lane="P"',
   'data-action="withdraw-ui"',
   "withdraw_execute_cta",
+  "isComposing",
 ]) {
   if (!ui.includes(needle)) fails.push(`PeotteokChat missing ${needle}`);
 }
