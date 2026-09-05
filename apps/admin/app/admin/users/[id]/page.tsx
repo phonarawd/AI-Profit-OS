@@ -39,6 +39,45 @@ type RiskPayload = {
   reason?: unknown;
 };
 
+type UserIdentity = {
+  id?: unknown;
+  username?: unknown;
+  email?: unknown;
+  phoneE164?: unknown;
+  displayName?: unknown;
+  declaredName?: unknown;
+  status?: unknown;
+  signupMethod?: unknown;
+  emailVerified?: unknown;
+  phoneVerified?: unknown;
+  createdAt?: unknown;
+};
+
+function maskEmail(raw: unknown): string | null {
+  const s = typeof raw === "string" ? raw : "";
+  const at = s.indexOf("@");
+  if (!s) return null;
+  if (at < 1) return s;
+  return `${s.slice(0, 1)}***${s.slice(at)}`;
+}
+
+function signupLabel(raw: unknown): string | null {
+  const map = T.admin.usersList;
+  if (raw === "classic") return map.signupClassic;
+  if (raw === "kakao") return map.signupKakao;
+  if (raw === "google") return map.signupGoogle;
+  if (raw === "passkey") return map.signupPasskey;
+  if (raw === "email_magic") return map.signupEmailMagic;
+  return typeof raw === "string" && raw ? raw : null;
+}
+
+function maskPhone(raw: unknown): string | null {
+  const s = typeof raw === "string" ? raw : "";
+  if (!s) return null;
+  if (s.length < 6) return s;
+  return `${s.slice(0, 3)}****${s.slice(-2)}`;
+}
+
 type OverrideItem = {
   opportunityId?: unknown;
   hidden?: unknown;
@@ -62,22 +101,25 @@ function UserDetailInner() {
   const [forceReason, setForceReason] = useState("");
   const [forceTarget, setForceTarget] = useState("sprout");
   const [forceNote, setForceNote] = useState<string | null>(null);
+  const [identity, setIdentity] = useState<AdminResult<UserIdentity> | null>(null);
 
   useEffect(() => {
     if (!userId) return;
     let cancelled = false;
     void (async () => {
-      const [m, r, o] = await Promise.all([
+      const [m, r, o, u] = await Promise.all([
         adminGet<MembershipPayload>(`/api/v1/admin/users/${userId}/membership`),
         adminGet<RiskPayload>(`/api/v1/admin/risk/users/${userId}/state`),
         adminGet<{ items?: OverrideItem[] }>(
           `/api/v1/admin/users/${userId}/opportunity-overrides`,
         ),
+        adminGet<UserIdentity>(`/api/v1/admin/users/${userId}`),
       ]);
       if (cancelled) return;
       setMembership(m);
       setRisk(r);
       setOverrides(o);
+      setIdentity(u);
     })();
     return () => {
       cancelled = true;
@@ -392,6 +434,54 @@ function UserDetailInner() {
         </section>
       ) : (
         <section className="mt-6 space-y-3 text-sm">
+          <div data-testid="admin-user-identity">
+            {!identity ? (
+              <p className="text-lux-text-muted">{T.admin.state.loading}</p>
+            ) : identity.ok ? (
+              <dl className="grid gap-2" data-pii="masked">
+                <div>
+                  {T.admin.usersList.identityId}{" "}
+                  <AdminTruth value={readText(identity.data.id)} />
+                </div>
+                <div>
+                  {T.admin.usersList.identityUsername}{" "}
+                  <AdminTruth value={readText(identity.data.username)} />
+                </div>
+                <div>
+                  {T.admin.usersList.identityDisplayName}{" "}
+                  <AdminTruth value={readText(identity.data.displayName)} />
+                </div>
+                <div>
+                  {T.admin.usersList.identityEmail}{" "}
+                  <AdminTruth value={maskEmail(identity.data.email)} />
+                  {identity.data.emailVerified === true
+                    ? T.admin.usersList.emailVerifiedYes
+                    : T.admin.usersList.emailVerifiedNo}
+                </div>
+                <div>
+                  {T.admin.usersList.identityPhone}{" "}
+                  <AdminTruth value={maskPhone(identity.data.phoneE164)} />
+                  {identity.data.phoneVerified === true
+                    ? T.admin.usersList.emailVerifiedYes
+                    : T.admin.usersList.identityPhoneUnverified}
+                </div>
+                <div>
+                  {T.admin.usersList.signupMethodLabel}{" "}
+                  <AdminTruth value={signupLabel(identity.data.signupMethod)} />
+                </div>
+                <div>
+                  {T.admin.usersList.statusLabel}{" "}
+                  <AdminTruth value={readStatusLabel(identity.data.status)} />
+                </div>
+                <div>
+                  {T.admin.usersList.identityCreatedAt}{" "}
+                  <AdminTruth value={readText(identity.data.createdAt)} />
+                </div>
+              </dl>
+            ) : (
+              <AdminFetchNote failure={identity.failure} />
+            )}
+          </div>
           <p className="text-lux-text-muted">
             위 메뉴에서 이 회원에게 보여 줄 수익 기회와 회원 등급을 확인할 수 있습니다.
           </p>

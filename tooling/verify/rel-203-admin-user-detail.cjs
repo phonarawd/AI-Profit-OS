@@ -12,6 +12,7 @@ const page = fs.readFileSync(
 );
 
 for (const needle of [
+  "/api/v1/admin/users/${userId}",
   "/api/v1/admin/users/${userId}/membership",
   "/api/v1/admin/risk/users/${userId}/state",
   "/api/v1/admin/users/${userId}/opportunity-overrides",
