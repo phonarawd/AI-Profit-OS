@@ -319,7 +319,7 @@ export function ProfitsMobile({ model }: { model: ProfitsDesktopModel }) {
       data-sdpm-state={model.viewState}
     >
       <ProfitsMobileHeader />
-      <div className="sdpm-scroll" data-sdpm="scroll">
+      <div className="sdpm-scroll" data-sdpm="scroll" data-virtual={windowed ? "on" : "off"}>
         <div className="sdpm-stack">
           {model.viewState === "LOADING" ? <ProfitsMobileSkeleton /> : null}
           {model.viewState === "ERROR" ? (

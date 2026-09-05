@@ -130,6 +130,39 @@ if (!usesSdk(listSrc, "fetchOpportunityFeed")) {
   fail("/profits must live-wire fetchOpportunityFeed");
 }
 
+// D1-BLK-009 windowing structural + live parity (2026-09-05, PUTDUK-FULL-
+// RELEASE Phase C): both desktop's windowing (VirtualOpportunityGrid.tsx)
+// AND mobile's (ProfitsMobile.tsx) now have a full live Playwright cycle
+// (20 initial -> scroll -> all N, zero omission/duplication - see
+// profits-closure.spec.cjs's desktop AND mobile windowing tests; mobile's
+// scroll is dispatched via a hover+wheel sequence targeted at its own
+// inner scroll container [data-sdpm='scroll'], which also carries a
+// synchronous data-virtual attribute so the windowed code path itself is
+// asserted without racing the live DOM count). The structural checks below
+// are kept as an additional, cheap defense-in-depth net (catch a future
+// accidental threshold/observer removal even before Playwright reruns).
+const virtualGridSrc = read(
+  "apps/web/components/spark-dash-profits/VirtualOpportunityGrid.tsx",
+);
+if (!virtualGridSrc.includes("VIRTUAL_OPPORTUNITY_THRESHOLD = 20")) {
+  fail("VirtualOpportunityGrid must keep desktop windowing threshold at 20");
+}
+if (!virtualGridSrc.includes("IntersectionObserver")) {
+  fail("VirtualOpportunityGrid must use IntersectionObserver for incremental reveal");
+}
+if (!mobile.includes("VIRTUAL_PROFITS_MOBILE_THRESHOLD = 20")) {
+  fail("ProfitsMobile must keep mobile windowing threshold at 20 (parity with desktop)");
+}
+if (!mobile.includes("IntersectionObserver")) {
+  fail("ProfitsMobile must use IntersectionObserver for incremental reveal (parity with desktop)");
+}
+if (!mobile.includes('data-testid="profits-mobile-sentinel"')) {
+  fail("ProfitsMobile must expose a sentinel testid for windowing E2E proof");
+}
+if (!spec.includes("windows above 20 items")) {
+  fail("profits-closure must keep a live >20-item windowing proof");
+}
+
 if (fails.length) {
   console.error("[verify:profits-live-wire] FAIL\n- " + fails.join("\n- "));
   process.exit(1);
