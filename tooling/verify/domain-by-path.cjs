@@ -1360,6 +1360,7 @@ const RULES = [
       "trades-execution-race.runtime.cjs",
       "participate-atomicity.runtime.cjs",
       "trades-reconcile.runtime.cjs",
+      "trades-payout-reserve.runtime.cjs",
     ],
   },
   {

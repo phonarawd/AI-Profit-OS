@@ -29,10 +29,7 @@ import {
 import { PostgresService } from "../db/postgres";
 import { MoneyCircuitService } from "../risk/money-circuit.service";
 import { RiskService } from "../risk/risk.service";
-import {
-  evaluatePayoutFeasibility,
-  payoutFeasible,
-} from "../simulation/simulation.engine";
+import { payoutFeasible } from "../simulation/simulation.engine";
 import { SimulationAdminService } from "../simulation/simulation.admin.service";
 import { toRulePolicy } from "../execution-policy/execution-policy.mi";
 import { mergeEffectivePolicy } from "../membership/membership.mi";
@@ -666,11 +663,62 @@ export class TradeExecutionService {
     ) {
       return payoutFeasible(opportunityId, feasibility);
     }
-    // No report row yet — live §51.4 evaluatePayoutFeasibility (HTTP 0)
-    return evaluatePayoutFeasibility({
-      opportunityId,
-      compareReady,
-    }).payoutFeasible;
+    if (compareReady !== true) {
+      // evaluatePayoutFeasibility's own compareReady===false branch always
+      // returned false too - preserved so a stale-price opportunity still
+      // fails this gate for the same reason it always did.
+      return false;
+    }
+    // Money-safety fix (PUTDUK continuation session, Step 7.4): no
+    // per-opportunity simulation report exists yet - the code used to
+    // fall back to evaluatePayoutFeasibility() from services/simulation-
+    // engine, which (confirmed by reading it) has NO connection to any
+    // real balance at all: with no forceInfeasible/explicit override, it
+    // unconditionally returns payoutFeasible:true. R8 in settlement_rule.
+    // cjs's evaluateRules (ctx.simulationPayoutFeasible !== true ->
+    // BELOW_MIN_PROFIT) is the ONLY gate standing between a match and an
+    // actual profit credit that SYS:OPPORTUNITY_POOL cannot back - with
+    // the stub, that gate was always open. evaluatePayoutFeasibility()
+    // itself is left untouched (it is also used by the admin growth-
+    // simulation stress-test feature via its own forceInfeasible/
+    // explicit-override test hooks, which this fix does not touch) -
+    // this fallback is replaced with a real check instead.
+    return this.checkPayoutReserveFeasible();
+  }
+
+  /**
+   * Real (not simulated) payout-reserve check: SYS:OPPORTUNITY_POOL's
+   * current balance must cover the SUM of expected_profit_usdt across
+   * every currently in-flight (running/requeue) trade, not just this
+   * one. A snapshot compare-only check (no explicit reservation ledger
+   * entry) is intentionally conservative rather than exact: it assumes
+   * every other in-flight trade could ALSO succeed simultaneously, which
+   * is the safe direction to be wrong in for a solvency check, and it is
+   * re-evaluated on every single executeTick call (not just once at
+   * participate time), so a pool that becomes insufficient after this
+   * trade already started running still flips this to false on its very
+   * next tick - before finalizeMatchSuccess ever runs for it - rather
+   * than only being checked once and then trusted forever.
+   */
+  private async checkPayoutReserveFeasible(): Promise<boolean> {
+    const poolRow = await this.db.query<{ balance_usdt: string }>(
+      `SELECT balance_usdt::text
+         FROM public.ledger_accounts
+        WHERE code = $1`,
+      [SYSTEM_ACCOUNT_CODES.OPPORTUNITY_POOL],
+    );
+    const poolBalance = poolRow.rows[0]?.balance_usdt;
+    if (poolBalance == null) {
+      // Missing pool account - fail closed, never treat "unknown" as funded.
+      return false;
+    }
+    const exposureRow = await this.db.query<{ total: string }>(
+      `SELECT COALESCE(sum(expected_profit_usdt), 0)::text AS total
+         FROM public.trade_executions
+        WHERE status IN ('running', 'requeue')`,
+    );
+    const totalInFlightExposure = exposureRow.rows[0]?.total ?? "0";
+    return cmpAmount(poolBalance, totalInFlightExposure) >= 0;
   }
 
   private async resolveRulePolicy(
