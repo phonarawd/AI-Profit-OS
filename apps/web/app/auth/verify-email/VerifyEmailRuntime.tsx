@@ -1,17 +1,14 @@
 "use client";
 
-import {
-  continuePathAfterAuth,
-  verifyMagicLink,
-} from "@aipo/sdk/auth";
-import { GuestChrome } from "../../components/GuestChrome";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { continuePathAfterAuth, signupClassicActivate } from "@aipo/sdk/auth";
+import { GuestChrome } from "../../components/GuestChrome";
 import { authUserMessage } from "../auth-messages";
 
-export function MagicRuntime() {
+export function VerifyEmailRuntime() {
   const router = useRouter();
-  const [note, setNote] = useState("연결하는 중이에요");
+  const [note, setNote] = useState("가입을 완료하는 중이에요");
 
   useEffect(() => {
     const token = new URLSearchParams(window.location.search).get("token") ?? "";
@@ -20,11 +17,7 @@ export function MagicRuntime() {
       return;
     }
     let cancelled = false;
-    // S1F Section 6.2 fix: consent was already captured server-side at
-    // request() time (see SignupRuntime.tsx) - this call no longer needs
-    // to read/send anything from sessionStorage, which is exactly what
-    // makes opening this link on a different device/tab/browser work.
-    void verifyMagicLink(token, {}, { apiBase: "" })
+    void signupClassicActivate(token, { apiBase: "" })
       .then((session) => {
         if (cancelled) return;
         router.replace(continuePathAfterAuth(session.onboardingStage));
@@ -39,8 +32,8 @@ export function MagicRuntime() {
 
   return (
     <GuestChrome>
-      <main>
-        <h1>로그인</h1>
+      <main data-testid="auth-verify-email">
+        <h1>이메일 인증</h1>
         <p role="status">{note}</p>
       </main>
     </GuestChrome>

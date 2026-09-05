@@ -4,7 +4,7 @@ import {
   continuePathAfterAuth,
   fetchAuthSession,
   isKakaoOAuthReady,
-  requestMagicLink,
+  requestMagicLinkWithConsent,
   startKakaoOAuth,
 } from "@aipo/sdk/auth";
 import {
@@ -82,20 +82,20 @@ export function SignupRuntime() {
     setNote(null);
     setBusy(true);
     try {
-      await requestMagicLink(input.email ?? "", { apiBase: "" });
-      try {
-        sessionStorage.setItem(
-          "aipo.magic.terms",
-          JSON.stringify({
-            termsAcceptedAt: input.termsAcceptedAt,
-            privacyAcceptedAt: input.privacyAcceptedAt,
-            marketingConsent: input.marketingConsent,
-            referralCode: input.referralCode,
-          }),
-        );
-      } catch {
-        /* sessionStorage 없어도 요청은 접수됨 */
-      }
+      // S1F Section 6.2 fix: consent now travels with the request itself
+      // (stored server-side), not via sessionStorage - this is what makes
+      // opening the link on a different device/tab/browser work, since
+      // there is no longer anything that needs to be read back locally.
+      await requestMagicLinkWithConsent(
+        input.email ?? "",
+        {
+          termsAcceptedAt: input.termsAcceptedAt,
+          privacyAcceptedAt: input.privacyAcceptedAt,
+          marketingConsent: input.marketingConsent,
+          referralCode: input.referralCode,
+        },
+        { apiBase: "" },
+      );
       setNote("메일함을 확인해 주세요.");
     } catch (caught) {
       setError(authUserMessage(caught));

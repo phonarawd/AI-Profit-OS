@@ -16,6 +16,7 @@ export type AuthLoginProps = {
   note?: string | null;
   onKakao?: () => void | Promise<void>;
   onMagic?: (email: string) => void | Promise<void>;
+  onClassic?: (identifier: string, password: string) => void | Promise<void>;
 };
 
 /**
@@ -29,12 +30,16 @@ export function AuthLogin({
   note = null,
   onKakao,
   onMagic,
+  onClassic,
 }: AuthLoginProps = {}) {
   const kakaoReady = isKakaoOAuthReady();
   const [passkeySupported, setPasskeySupported] = useState(false);
   const [showPasskeyFallback, setShowPasskeyFallback] = useState(false);
   const [showEmail, setShowEmail] = useState(false);
+  const [showClassic, setShowClassic] = useState(false);
   const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     const supported = isWebAuthnSupported();
@@ -55,6 +60,12 @@ export function AuthLogin({
     e.preventDefault();
     if (busy) return;
     if (onMagic) void onMagic(email);
+  }
+
+  function submitClassic(e: React.FormEvent) {
+    e.preventDefault();
+    if (busy) return;
+    if (onClassic) void onClassic(identifier, password);
   }
 
   return (
@@ -149,7 +160,64 @@ export function AuthLogin({
         >
           {T.auth.emailMagic}
         </TouchButton>
+        <TouchButton
+          variant="ghost"
+          className="w-full"
+          data-testid="auth-classic-login-toggle"
+          disabled={busy}
+          onClick={() => setShowClassic((v) => !v)}
+        >
+          {T.authClassic.classicLoginToggle}
+        </TouchButton>
       </div>
+
+      {showClassic ? (
+        <form onSubmit={submitClassic} className="space-y-3" data-testid="auth-classic-login-form">
+          <label className="flex flex-col gap-1 text-sm">
+            <span className="text-lux-text-muted">{T.authClassic.classicLoginIdentifierLabel}</span>
+            <input
+              type="text"
+              name="identifier"
+              autoComplete="username"
+              required
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
+              className="touch-target rounded-lux-md border border-lux-border bg-lux-surface px-3 text-lux-text"
+              data-testid="auth-classic-login-identifier"
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-sm">
+            <span className="text-lux-text-muted">{T.authClassic.password}</span>
+            <input
+              type="password"
+              name="password"
+              autoComplete="current-password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="touch-target rounded-lux-md border border-lux-border bg-lux-surface px-3 text-lux-text"
+              data-testid="auth-classic-login-password"
+            />
+          </label>
+          <TouchButton
+            type="submit"
+            variant="secondary"
+            className="w-full"
+            data-testid="auth-classic-login-submit"
+            disabled={busy}
+          >
+            {busy ? T.auth.connecting : T.authClassic.classicLoginSubmit}
+          </TouchButton>
+          <div className="flex justify-between text-xs">
+            <a href="/auth/find-id" className="underline" data-testid="auth-find-id-link">
+              {T.authClassic.findIdLink}
+            </a>
+            <a href="/auth/reset-password" className="underline" data-testid="auth-reset-password-link">
+              {T.authClassic.resetPasswordLink}
+            </a>
+          </div>
+        </form>
+      ) : null}
 
       {showEmail ? (
         <form
