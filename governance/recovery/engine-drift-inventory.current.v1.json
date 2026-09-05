@@ -1,10 +1,10 @@
 {
   "schema": "governance.recovery.engine-drift-inventory.v1",
-  "computed_at": "2026-09-05T14:30:59.628Z",
+  "computed_at": "2026-09-05T16:55:53.344Z",
   "predecessor_head_sha": "0d8825e8f333ca309a1d6eaf26a3d826722d11fd",
-  "inventory_head_sha": "d448acb4b9458582e50149837681d3b88f7317f2",
-  "changed_paths": 33,
-  "expected_changed_paths": 33,
+  "inventory_head_sha": "3bb854be2db1efc121613a45a7114468887ef135",
+  "changed_paths": 35,
+  "expected_changed_paths": 35,
   "count_match": true,
   "by_category": {
     "AUTH_CLASSIC_SIGNUP_CORE": 5,
@@ -17,13 +17,14 @@
     "DOMAIN_CLOCK_SECURITY": 1,
     "AUTH_WIRING_REFACTOR": 6,
     "AUTH_MAGIC_LINK_CONSENT_FIX": 3,
-    "AUTH_EMAIL_FAIL_CLOSED": 2
+    "AUTH_EMAIL_FAIL_CLOSED": 2,
+    "SETTLEMENT_TERMINALIZATION_RACE": 2
   },
   "unexplained_count": 0,
   "ACK_RECEIVED": 0,
   "FINAL_ACCEPTANCE": "NOT_ISSUED",
   "REBASE_REQUIRED": 1,
-  "note": "S1F correction (2026-09-05): supersedes the D1-S1E 1-path entry (services/api-nest/clock.core.cjs only, commit a1d5c1516022a2bc58b16ff8c866ba19a4db8c10). The S1F Founder production-launch directive then landed classic signup + session rotation + Turnstile + distributed rate limiting + admin members directory (commit f2812062dfe116a0127704a085ceb8b4d0bf25ff), a further structural CodeQL fix to the same clock.core.cjs (commit 7f9baf0a32ebe365898e58de0d702cb864845e52, superseding a1d5c151's mitigation on that one file), and a reuse-detection regression suite (commit 0a9bf4ea2e05f8be5d450cbe0fca47b84ea77785) - all still on protected-scope root services/api-nest, all still without a formal ENGINE_ACCEPTANCE_REBASE_V1 ACK. Live drift is now 33 paths (17 added, 16 modified, 0 missing), fully enumerated below with per-path category/reason/security_impact/required_rerun - not a single collapsed count. Formal rebase + current-epoch QA0-QA9 rerun are still required before FINAL_ACCEPTANCE can move to ISSUED. This correction does not ACK anything and does not rewrite baseline.v1.json.",
+  "note": "S1F correction (2026-09-05): supersedes the D1-S1E 1-path entry (services/api-nest/clock.core.cjs only, commit a1d5c1516022a2bc58b16ff8c866ba19a4db8c10). The S1F Founder production-launch directive then landed classic signup + session rotation + Turnstile + distributed rate limiting + admin members directory (commit f2812062dfe116a0127704a085ceb8b4d0bf25ff), a further structural CodeQL fix to the same clock.core.cjs (commit 7f9baf0a32ebe365898e58de0d702cb864845e52, superseding a1d5c151's mitigation on that one file), and a reuse-detection regression suite (commit 0a9bf4ea2e05f8be5d450cbe0fca47b84ea77785) - all still on protected-scope root services/api-nest, all still without a formal ENGINE_ACCEPTANCE_REBASE_V1 ACK. Live drift is now 33 paths (17 added, 16 modified, 0 missing), fully enumerated below with per-path category/reason/security_impact/required_rerun - not a single collapsed count. Formal rebase + current-epoch QA0-QA9 rerun are still required before FINAL_ACCEPTANCE can move to ISSUED. This correction does not ACK anything and does not rewrite baseline.v1.json. PUTDUK continuation session correction (2026-09-06, commit f29a8e06): added 2 more protected-scope paths (trades.execution.service.ts modified, trades.execution.race.selftest.ts added) for the settlement/safe-stop claim-before-post race fix described per-path below. Live drift is now 35 paths (18 added, 17 modified, 0 missing). STATUS/ACK/REBASE_REQUIRED unchanged - still NOT_ISSUED pending formal ENGINE_ACCEPTANCE_REBASE_V1.",
   "required_rerun_matrix": {
     "QA0": [],
     "QA1": [
@@ -59,7 +60,9 @@
       "services/api-nest/src/common/admin-capabilities.ts",
       "services/api-nest/src/config/phase0.env.ts",
       "services/api-nest/src/main.ts",
-      "services/api-nest/src/wallet/resend-email.provider.ts"
+      "services/api-nest/src/wallet/resend-email.provider.ts",
+      "services/api-nest/src/trades/trades.execution.service.ts",
+      "services/api-nest/src/trades/trades.execution.race.selftest.ts"
     ],
     "QA2": [
       "services/api-nest/src/auth/classic-signup.policy.ts",
@@ -85,7 +88,9 @@
       "services/api-nest/src/auth/jwt-auth.guard.ts",
       "services/api-nest/src/auth/magic-link.service.ts",
       "services/api-nest/src/common/admin-capabilities.ts",
-      "services/api-nest/src/wallet/resend-email.provider.ts"
+      "services/api-nest/src/wallet/resend-email.provider.ts",
+      "services/api-nest/src/trades/trades.execution.service.ts",
+      "services/api-nest/src/trades/trades.execution.race.selftest.ts"
     ],
     "QA3": [],
     "QA4": [
@@ -127,7 +132,9 @@
       "services/api-nest/src/common/admin-capabilities.ts",
       "services/api-nest/src/config/phase0.env.ts",
       "services/api-nest/src/main.ts",
-      "services/api-nest/src/wallet/resend-email.provider.ts"
+      "services/api-nest/src/wallet/resend-email.provider.ts",
+      "services/api-nest/src/trades/trades.execution.service.ts",
+      "services/api-nest/src/trades/trades.execution.race.selftest.ts"
     ],
     "QA9": []
   },
@@ -875,6 +882,52 @@
       "category": "AUTH_EMAIL_FAIL_CLOSED",
       "reason": "assertReadyForEnv() added; sendOtp/sendMagicLink now throw ServiceUnavailableException on a genuine send failure instead of returning {ok:true,status:\"accepted\"}; added sendSignupVerification/sendPasswordReset/sendFindIdResult for the new classic-auth flows.",
       "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/trades/trades.execution.service.ts",
+      "kind": "modified",
+      "owning_commit": "f29a8e0679f808182f3f33a9ae7269f0e7aeeced",
+      "owning_subject": "fix(money): close success-vs-safe-stop double-journal race in trade settlement (Step 7.2)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f29a8e0679f808182f3f33a9ae7269f0e7aeeced",
+          "subject": "fix(money): close success-vs-safe-stop double-journal race in trade settlement (Step 7.2)"
+        }
+      ],
+      "category": "SETTLEMENT_TERMINALIZATION_RACE",
+      "reason": "finalizeMatchSuccess/finalizeSafeStop previously posted their ledger journal (settlement:<tradeId> vs participate_unlock:<tradeId> - different idempotency keys) BEFORE the status-guarded claim UPDATE. Two concurrent executeTick calls racing on the same still-running trade could each decide a different terminal result and each post their own journal, double-crediting principal for one locked amount. Reordered both methods to claim the terminal transition first via the existing atomic single-statement UPDATE; only the winner may post a journal. Covered by the new trades.execution.race.selftest.ts (7 cases), independently confirmed to fail against the pre-fix code (git stash rollback + rerun) and pass against the fix.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/trades/trades.execution.race.selftest.ts",
+      "kind": "added",
+      "owning_commit": "f29a8e0679f808182f3f33a9ae7269f0e7aeeced",
+      "owning_subject": "fix(money): close success-vs-safe-stop double-journal race in trade settlement (Step 7.2)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f29a8e0679f808182f3f33a9ae7269f0e7aeeced",
+          "subject": "fix(money): close success-vs-safe-stop double-journal race in trade settlement (Step 7.2)"
+        }
+      ],
+      "category": "SETTLEMENT_TERMINALIZATION_RACE",
+      "reason": "Regression suite for the fix above (FakeTradeDb/FakePostingService, compiled-dist convention like session-rotation.reuse.selftest.ts since TradeExecutionService uses TypeScript parameter properties). Test-only file, no production code path.",
+      "security_impact": "LOW",
       "schema_impact": false,
       "prompt_impact": false,
       "required_rerun": [
