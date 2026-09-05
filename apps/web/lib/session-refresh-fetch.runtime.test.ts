@@ -163,3 +163,113 @@ test("non-api path 401 is left untouched", async () => {
   assert.equal(res.status, 401);
   assert.equal(refreshCalls, 0);
 });
+
+// Multi-tab race fix (PUTDUK continuation session, Step 5): the module-level
+// sharedRefreshPromise above only dedupes within one tab's own JS heap. When
+// the Web Locks API is available, refreshOnce must route the actual refresh
+// call through navigator.locks.request so a second tab racing on the same
+// still-valid refresh token waits instead of also calling refresh (which the
+// server's rotation reuse-detection would treat as a replay and revoke the
+// whole session family for - see session-rotation.reuse.selftest.ts).
+test("refresh is coordinated through navigator.locks when available", async () => {
+  let refreshCalls = 0;
+  let walletCalls = 0;
+  let lockRequestCalls = 0;
+  let requestedLockName: string | null = null;
+  // Node's global `navigator` is an accessor with no setter - plain
+  // assignment throws ("has only a getter"). Overriding via
+  // defineProperty (and restoring the original descriptor after) is the
+  // correct way to stub it for this one test.
+  const originalNavigatorDescriptor = Object.getOwnPropertyDescriptor(
+    globalThis,
+    "navigator",
+  );
+  Object.defineProperty(globalThis, "navigator", {
+    value: {
+      locks: {
+        async request<T>(name: string, cb: () => Promise<T>): Promise<T> {
+          lockRequestCalls += 1;
+          requestedLockName = name;
+          return cb();
+        },
+      },
+    },
+    configurable: true,
+  });
+  try {
+    currentImpl = async (input) => {
+      const url = requestUrl(input);
+      if (url.includes("/api/v1/auth/refresh")) {
+        refreshCalls += 1;
+        return new Response(JSON.stringify({ ok: true }), { status: 200 });
+      }
+      walletCalls += 1;
+      if (walletCalls === 1) return new Response(null, { status: 401 });
+      return new Response(JSON.stringify({ items: [] }), { status: 200 });
+    };
+    const res = await windowFetch()("/api/v1/wallet/buckets");
+    assert.equal(res.status, 200);
+    assert.equal(refreshCalls, 1);
+    assert.equal(lockRequestCalls, 1);
+    assert.equal(requestedLockName, "putduk-session-refresh-v1");
+  } finally {
+    if (originalNavigatorDescriptor) {
+      Object.defineProperty(globalThis, "navigator", originalNavigatorDescriptor);
+    } else {
+      delete (globalThis as unknown as { navigator?: unknown }).navigator;
+    }
+  }
+});
+
+test("without navigator.locks (older browser), refresh still dedupes and succeeds", async () => {
+  // No `navigator` in this Node test environment by default - this is the
+  // exact fallback path real old-browser users would take, and it must
+  // still behave like the pre-fix single-tab-safe implementation.
+  let refreshCalls = 0;
+  currentImpl = async (input) => {
+    const url = requestUrl(input);
+    if (url.includes("/api/v1/auth/refresh")) {
+      refreshCalls += 1;
+      return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    }
+    return new Response(JSON.stringify({ ok: true }), { status: 200 });
+  };
+  const res = await windowFetch()("/api/v1/wallet/buckets");
+  assert.equal(res.status, 200);
+  assert.equal(refreshCalls, 0);
+});
+
+// Consumed-body retry-safety fix (PUTDUK continuation session, Step 5): a
+// `Request` instance's body is a single-read stream. Retrying with the same
+// (already-fetched-from) Request object must not throw - the wrapper must
+// clone it up front so the retry has its own untouched copy.
+test("a Request object with a body survives the post-refresh retry", async () => {
+  let refreshCalls = 0;
+  let walletAttempt = 0;
+  const bodiesSeen: Array<string | null> = [];
+  currentImpl = async (input) => {
+    const url = requestUrl(input);
+    if (url.includes("/api/v1/auth/refresh")) {
+      refreshCalls += 1;
+      return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    }
+    walletAttempt += 1;
+    const req = input as Request;
+    const bodyText = req.body ? await req.clone().text() : null;
+    bodiesSeen.push(bodyText);
+    if (walletAttempt === 1) return new Response(null, { status: 401 });
+    return new Response(JSON.stringify({ ok: true }), { status: 200 });
+  };
+  const request = new Request("http://localhost:3000/api/v1/wallet/withdraw", {
+    method: "POST",
+    body: JSON.stringify({ amountUsdt: "10.00" }),
+  });
+  const res = await windowFetch()(request);
+  assert.equal(res.status, 200);
+  assert.equal(refreshCalls, 1);
+  assert.equal(walletAttempt, 2);
+  assert.deepEqual(bodiesSeen, [
+    JSON.stringify({ amountUsdt: "10.00" }),
+    JSON.stringify({ amountUsdt: "10.00" }),
+  ]);
+});

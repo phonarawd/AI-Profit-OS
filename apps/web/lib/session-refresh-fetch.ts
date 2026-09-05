@@ -60,22 +60,80 @@ export function shouldAttemptRefreshRetry(pathname: string | null): boolean {
 
 let sharedRefreshPromise: Promise<boolean> | null = null;
 
-function refreshOnce(originalFetch: typeof fetch): Promise<boolean> {
-  if (!sharedRefreshPromise) {
-    sharedRefreshPromise = originalFetch(REFRESH_PATH, {
+/**
+ * Cross-tab coordination lock name. Any origin-scoped context (tab,
+ * window, worker) requesting this same name is queued by the browser -
+ * only the holder actually calls the refresh endpoint.
+ *
+ * Bug this closes: sharedRefreshPromise above is a plain module-level
+ * variable, so it only dedupes concurrent 401s within ONE tab's own JS
+ * heap. Two tabs of the same session hitting a 401 around the same time
+ * (their access tokens share the same 15-minute TTL, so this is common,
+ * not rare) each had their own sharedRefreshPromise and both called
+ * POST /api/v1/auth/refresh with the SAME still-valid refresh cookie at
+ * nearly the same time. The server's rotation reuse-detection
+ * (session-rotation.service.ts) exists specifically to treat a second
+ * concurrent use of a token as a stolen/replayed token and revokes the
+ * ENTIRE session family - so two tabs racing to refresh could log the
+ * user out of every tab and device in that family, which is strictly
+ * worse than the "silently logged out after 15 minutes" bug this module
+ * was written to fix in the first place.
+ */
+const REFRESH_LOCK_NAME = "putduk-session-refresh-v1";
+
+type LockManagerLike = {
+  request<T>(name: string, callback: () => Promise<T>): Promise<T>;
+};
+
+function getLockManager(): LockManagerLike | null {
+  if (typeof navigator === "undefined") return null;
+  const withLocks = navigator as Navigator & { locks?: LockManagerLike };
+  return withLocks.locks ?? null;
+}
+
+async function doRefreshRequest(originalFetch: typeof fetch): Promise<boolean> {
+  try {
+    const res = await originalFetch(REFRESH_PATH, {
       method: "POST",
       credentials: "include",
       cache: "no-store",
       headers: { "Content-Type": "application/json" },
       body: "{}",
-    })
-      .then((res) => res.ok)
-      .catch(() => false)
-      .finally(() => {
-        sharedRefreshPromise = null;
-      });
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+function refreshOnce(originalFetch: typeof fetch): Promise<boolean> {
+  if (!sharedRefreshPromise) {
+    const locks = getLockManager();
+    sharedRefreshPromise = (
+      locks
+        ? locks.request(REFRESH_LOCK_NAME, () => doRefreshRequest(originalFetch))
+        : doRefreshRequest(originalFetch)
+    ).finally(() => {
+      sharedRefreshPromise = null;
+    });
   }
   return sharedRefreshPromise;
+}
+
+/**
+ * A `Request` instance's body is a single-read stream - fetch() consumes
+ * it, and reusing the same `Request` object for the post-refresh retry
+ * would throw ("body stream already read") instead of safely retrying.
+ * Cloning before the first attempt (never after - once consumed there is
+ * nothing left to clone) keeps one untouched copy available for the
+ * retry. Plain string/Blob/URLSearchParams/FormData bodies on `init.body`
+ * are not single-read streams and need no such handling.
+ */
+function cloneForRetry(input: RequestInfo | URL): RequestInfo | URL {
+  if (typeof Request !== "undefined" && input instanceof Request) {
+    return input.clone();
+  }
+  return input;
 }
 
 let installed = false;
@@ -91,6 +149,7 @@ export function installSessionRefreshFetch(): void {
   const originalFetch = window.fetch.bind(window);
 
   window.fetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+    const retryInput = cloneForRetry(input);
     const res = await originalFetch(input, init);
     if (res.status !== 401) return res;
 
@@ -100,6 +159,6 @@ export function installSessionRefreshFetch(): void {
     const refreshed = await refreshOnce(originalFetch);
     if (!refreshed) return res;
 
-    return originalFetch(input, init);
+    return originalFetch(retryInput, init);
   };
 }
