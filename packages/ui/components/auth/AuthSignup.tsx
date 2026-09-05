@@ -125,6 +125,17 @@ export function AuthSignup({
           </div>
         )}
 
+        <TouchButton
+          variant="secondary"
+          className="w-full"
+          data-testid="auth-classic-signup"
+          disabled={busy}
+          onClick={() => {
+            window.location.href = "/auth/signup/classic";
+          }}
+        >
+          {T.authClassic.classicSignupStart}
+        </TouchButton>
         <TouchButton variant="secondary" className="w-full" disabled>
           {T.auth.googleStart}
         </TouchButton>

@@ -136,7 +136,7 @@ function listingMetaFromTitleEvidence(title, asset) {
     const setOk =
       titleContains(titleNorm, setName) ||
       titleContains(titleNorm, set) ||
-      (set && titleContains(titleNorm, set.replace(/(\D+)(\d+)/, "$1 $2")));
+      (set && titleContains(titleNorm, set.replace(/^(\D+)(\d+)/, "$1 $2")));
     const numberOk =
       titleContains(titleNorm, number) ||
       titleContains(titleNorm, `#${number}`) ||

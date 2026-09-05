@@ -14,6 +14,7 @@
  */
 const fs = require("fs");
 const path = require("path");
+const { findStandaloneLiteralMatches } = require("./lib/example-literal-boundary.cjs");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
@@ -91,6 +92,21 @@ for (const wireRef of ["home-visual-v2.wire.json", "home-principal-slots.wire.js
 
 // --- Visual Master example literals must be framed as VISUAL_ONLY_EXAMPLE, never
 //     as runtime hardcode in apps/web or packages/ui source (outside this contract doc).
+//
+// D1 remediation note (2026-09-04, REM-D1-6B / S1A CONTRA-004 / S1 REM-001):
+// the original check used a naive `src.includes(lit)` substring match with no
+// numeric-boundary anchoring. That collided with legitimate KRW display
+// values: "32,000" is a literal substring of "3,332,000", so any file
+// rendering "≈ ₩3,332,000" (e.g. the SPARK_DASH visual fixtures, owner =
+// visual_fixture, production import forbidden by their own header comment)
+// was flagged as if it hardcoded the *example* literal "32,000" - it does
+// not; "32,000" never appears there as a standalone number. Fixed by
+// requiring the literal to be a standalone numeral (see
+// tooling/verify/lib/example-literal-boundary.cjs, also unit-tested by
+// tooling/verify/regression/home-product-contract.regression.cjs): not
+// immediately preceded or followed by another digit or comma (which would
+// mean it is actually embedded inside a larger number, not the example
+// literal itself).
 const EXAMPLE_LITERALS = [
   "1,720,000",
   "128,000",
@@ -113,7 +129,8 @@ for (const scanDir of runtimeScanDirs) {
   walk(scanDir, (file) => {
     const src = fs.readFileSync(file, "utf8");
     for (const lit of EXAMPLE_LITERALS) {
-      if (src.includes(lit)) {
+      const hits = findStandaloneLiteralMatches(src, lit);
+      if (hits.length > 0) {
         fails.push(
           `Visual Master example literal "${lit}" hardcoded in runtime file: ${path.relative(root, file)}`,
         );

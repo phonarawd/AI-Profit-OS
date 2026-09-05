@@ -15,6 +15,21 @@ const {
 const target = process.argv[2] || "preview";
 const surface = process.argv[3] || "all";
 
+// D1 6-G (2026-09-04): static, credential-free checks first, so a worker
+// bundle module-resolution problem (e.g. the Cloudflare Images binding
+// requirement - see that script's own header comment for the full
+// evidence chain) is caught before this preflight even asks for Cloudflare
+// API credentials, and definitely before any deploy attempt.
+const imagesBindingCheck = spawnSync(
+  "node",
+  [path.join(__dirname, "cf-images-binding-preflight.cjs")],
+  { cwd: root, stdio: "inherit" },
+);
+if (imagesBindingCheck.status !== 0) {
+  console.error("[cf:preflight] FAIL: cf-images-binding-preflight");
+  process.exit(imagesBindingCheck.status || 1);
+}
+
 requireRootDomainForProd(target);
 requireCloudflareCreds();
 loadDotEnv();

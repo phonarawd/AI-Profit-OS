@@ -91,22 +91,24 @@ for (const needle of [
   }
 }
 
-// Companion PART8b surfaces (SafeStop / Journey / AdapterHealth)
+// Companion PART8b surfaces (SafeStop / Journey)
 for (const rel of [
   "packages/ui/components/trust/SafeStopTrustMetric.tsx",
   "packages/ui/components/trust/CapitalBandJourney.tsx",
-  "packages/ui/components/trust/AdapterHealthChip.tsx",
 ]) {
   mustExist(rel);
 }
 
-const chip = read("packages/ui/components/trust/AdapterHealthChip.tsx");
-if (!chip.includes('data-testid="adapter-health-chip"')) {
-  fails.push("AdapterHealthChip missing testid");
+// AdapterHealthChip: Owner-decided RETIRE 2026-09-04 (arbitrageTypeKo scan
+// badge / AdapterHealthChip / PriceCompareMargin 3-badge trust stack - see
+// governance/runtime-surfaces.v1.json surfaces.home.retiredFeatures). The
+// component is deleted; the live Spark Dash card must not reintroduce it.
+if (fs.existsSync(path.join(root, "packages/ui/components/trust/AdapterHealthChip.tsx"))) {
+  fails.push("retired AdapterHealthChip must stay deleted, reappeared");
 }
-const card = read("packages/ui/components/opportunity/OpportunityCard.tsx");
-if (!card.includes("AdapterHealthChip")) {
-  fails.push("OpportunityCard must mount AdapterHealthChip");
+const liveCard = read("apps/web/components/spark-dash-profits/OpportunityCard.tsx");
+if (liveCard.includes("AdapterHealthChip")) {
+  fails.push("live OpportunityCard must not reintroduce retired AdapterHealthChip");
 }
 
 const me =

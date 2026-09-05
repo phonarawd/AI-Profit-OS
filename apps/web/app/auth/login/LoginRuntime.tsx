@@ -4,6 +4,7 @@ import {
   continuePathAfterAuth,
   fetchAuthSession,
   isKakaoOAuthReady,
+  loginClassic,
   requestMagicLink,
   startKakaoOAuth,
 } from "@aipo/sdk/auth";
@@ -67,6 +68,20 @@ export function LoginRuntime() {
     }
   }
 
+  async function onClassic(identifier: string, password: string) {
+    setError(null);
+    setNote(null);
+    setBusy(true);
+    try {
+      const session = await loginClassic(identifier, password, { apiBase: "" });
+      router.replace(continuePathAfterAuth(session.onboardingStage));
+    } catch (caught) {
+      setError(authUserMessage(caught));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <AuthLogin
       busy={busy}
@@ -74,6 +89,7 @@ export function LoginRuntime() {
       note={note}
       onKakao={onKakao}
       onMagic={onMagic}
+      onClassic={onClassic}
     />
   );
 }

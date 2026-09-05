@@ -505,85 +505,40 @@ if (!copyIdx.includes("feed")) {
   fails.push("T root must export feed (§5.3a)");
 }
 
-// --- UI §5.3a home slots (PART3e) ---
+// --- UI home slots (PART3e) - RETIRED (Owner 2026-09-04) ---
+// BalanceAwareHome.tsx (near-miss "deposit a bit more to qualify" section
+// mounted on Home) was Owner-decided RETIRE - see
+// governance/runtime-surfaces.v1.json surfaces.home.retiredFeatures.
+// That component, the dead HomePageClient.tsx/HomeExperience.tsx tree
+// that used to mount it, and the pre-Spark-Dash OpportunityCard.tsx it
+// rendered are all deleted (2026-09-04). This block used to mustExist()
+// + content-check all of them as a positive mount assertion - exactly
+// the verify-alive/UI-orphaned anti-pattern this repo is removing. Now
+// a negative regression guard: Home must not reintroduce the retired
+// section. The live wallet-deposit suggest/oppId deeplink checked above
+// (apps/web/app/wallet/deposit/DepositClient.tsx mounts
+// DepositAmountPanel and reads suggest/oppId) keeps working without it.
 mustExist("packages/ui/copy/ko/feed.ts");
-mustExist("packages/ui/components/opportunity/BalanceAwareHome.tsx");
 mustExist("apps/web/app/page.tsx");
+mustExist("apps/web/app/HomeDesktopClient.tsx");
 
-const feedCopy = read("packages/ui/copy/ko/feed.ts");
-for (const key of [
-  "homeTitle",
-  "sectionAffordable",
-  "sectionAffordableCount",
-  "sectionNearMiss",
-  "sectionLockedHigh",
-  "ctaDepositSuggest",
-  "badgeNearMiss",
-  "badgeLocked",
-  "peotteokLine",
-]) {
-  if (!feedCopy.includes(`${key}:`)) {
-    fails.push(`feed.ts missing §5.3a key: ${key}`);
-  }
-}
-for (const banned of ["오늘만", "강제 입금", "협박", "타이머 종료"]) {
-  if (feedCopy.includes(banned)) {
-    fails.push(`feed.ts forbidden threat copy: ${banned}`);
-  }
-}
-
-const homeUi = read("packages/ui/components/opportunity/BalanceAwareHome.tsx");
-for (const needle of [
-  'data-testid="section-affordable"',
-  'data-testid="section-near-miss"',
-  'data-testid="section-locked-high"',
-  "sectionAffordable",
-  "sectionNearMiss",
-  "sectionLockedHigh",
-  "peotteokLine",
-  "OpportunityCard",
-]) {
-  if (!homeUi.includes(needle)) {
-    fails.push(`BalanceAwareHome missing §5.3a slot: ${needle}`);
-  }
-}
-
-/**
- * PART9c — BalanceAwareHome may mount in HomePageClient (직접) 또는
- * HomeExperience(ADR-017 v1.3, presentation layer 간접 mount) 경유
- */
-let homePage = read("apps/web/app/page.tsx");
-for (const rel of [
+for (const deadPath of [
+  "packages/ui/components/opportunity/BalanceAwareHome.tsx",
+  "packages/ui/components/opportunity/OpportunityCard.tsx",
   "apps/web/app/HomePageClient.tsx",
-  "apps/web/app/_components/HomePageClient.tsx",
-  "apps/web/components/HomePageClient.tsx",
+  "packages/ui/components/home/HomeExperience.tsx",
 ]) {
-  const abs = path.join(root, rel);
-  if (fs.existsSync(abs)) {
-    homePage = `${homePage}\n${read(rel)}`;
-    break;
+  if (fs.existsSync(path.join(root, deadPath))) {
+    fails.push("retired near-miss UI must stay deleted, reappeared: " + deadPath);
   }
-}
-homePage = `${homePage}\n${read("packages/ui/components/home/HomeExperience.tsx")}`;
-if (!homePage.includes("BalanceAwareHome")) {
-  fails.push("apps/web home must mount BalanceAwareHome for §5.3a");
 }
 
-const oppCard = read("packages/ui/components/opportunity/OpportunityCard.tsx");
-for (const needle of [
-  "cta-deposit-suggest",
-  "badge-near-miss",
-  "badge-locked-high",
-  "ctaDepositSuggest",
-  "badgeNearMiss",
-  "badgeLocked",
-  "/wallet/deposit",
-  "suggest=",
-  "oppId=",
-]) {
-  if (!oppCard.includes(needle)) {
-    fails.push(`OpportunityCard nearMiss deeplink/badge missing: ${needle}`);
-  }
+
+const homeClientSrcForNearMiss = read("apps/web/app/HomeDesktopClient.tsx");
+if (homeClientSrcForNearMiss.includes("BalanceAwareHome")) {
+  fails.push(
+    "live Home (HomeDesktopClient.tsx) must not reintroduce retired BalanceAwareHome",
+  );
 }
 
 // --- Money path must not invent Engine classification in wallet money files ---

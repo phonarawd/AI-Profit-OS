@@ -209,6 +209,13 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     rollback: write("all"),
     founderOverride: write("all"),
   },
+  UsersAdminController: {
+    list: read("users"),
+    get: read("users"),
+  },
+  TradesAdminController: {
+    reconcileTick: write("circuit"),
+  },
 });
 
 export function requiredCapabilityFor(

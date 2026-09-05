@@ -8,6 +8,7 @@
 import {
   Inject,
   Injectable,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
@@ -28,10 +29,7 @@ import {
 import { PostgresService } from "../db/postgres";
 import { MoneyCircuitService } from "../risk/money-circuit.service";
 import { RiskService } from "../risk/risk.service";
-import {
-  evaluatePayoutFeasibility,
-  payoutFeasible,
-} from "../simulation/simulation.engine";
+import { payoutFeasible } from "../simulation/simulation.engine";
 import { SimulationAdminService } from "../simulation/simulation.admin.service";
 import { toRulePolicy } from "../execution-policy/execution-policy.mi";
 import { mergeEffectivePolicy } from "../membership/membership.mi";
@@ -128,6 +126,8 @@ const LIST_LIMIT = 50;
 
 @Injectable()
 export class TradeExecutionService {
+  private readonly log = new Logger(TradeExecutionService.name);
+
   constructor(
     private readonly db: PostgresService,
     private readonly posting: LedgerPostingService,
@@ -137,6 +137,98 @@ export class TradeExecutionService {
     private readonly simulation: SimulationAdminService,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
+
+  /**
+   * Money-safety fix (PUTDUK continuation session, Step 7.3): executeTick
+   * above is only ever invoked by the trade's OWNING user's own browser
+   * polling (Phase0 "polling-now" design, apps/web/app/trades/[id]/
+   * execute). If that user closes the tab, loses network, or the browser
+   * crashes right after participating, nothing calls executeTick() for
+   * that trade again - it stays "running" forever with its locked capital
+   * never resolved, invisible to every existing check.
+   *
+   * This is a durable, server-side finalization path independent of any
+   * browser: finds trades whose hard deadline has already passed (with a
+   * grace buffer so it never races a still-legitimately-polling user's own
+   * final tick) and calls executeTick on their behalf using the trade's
+   * own owning user_id - reusing 100% of the existing, already claim-
+   * before-post-atomic (Step 7.2) finalization logic instead of
+   * duplicating it. settlement_rule.evaluateExecution's own hard-deadline
+   * check (nowMs >= hardDeadlineMs -> "MATCH_TIMEOUT", checked before any
+   * other rule) guarantees this always resolves to a real terminal
+   * outcome (safe_stop, full principal refund) - never a no-op, and never
+   * a fabricated success (MATCH_SUCCESS requires the Rule's own match
+   * conditions, which the hard-deadline check short-circuits past first).
+   *
+   * Exposed via POST /api/v1/admin/trades/reconcile-tick
+   * (TradesAdminController), following the exact same Phase0 "externally-
+   * triggered batch tick" shape ChainSweeperPhase0Service.tick() already
+   * established for the wallet sweeper (wallet/chain-sweeper/tick) - no
+   * NATS/Temporal/@nestjs/schedule needed for Phase0. An operator or an
+   * external periodic caller must still actually call this endpoint on a
+   * schedule (the same still-open scheduling-infrastructure gap the
+   * pre-existing chain-sweeper tick has) - this method's job is only to
+   * guarantee a real, correct finalization path exists once called,
+   * closing the "zero code path at all" gap this fix targets.
+   */
+  async reconcileStuckTrades(opts?: {
+    limit?: number;
+    graceSec?: number;
+  }): Promise<{
+    candidates: number;
+    reconciled: number;
+    results: Array<{
+      tradeId: string;
+      userId: string;
+      status: TradeExecutionState["status"];
+      resultCode?: TradeExecutionState["resultCode"];
+    }>;
+  }> {
+    const limit = Math.min(100, Math.max(1, opts?.limit ?? 25));
+    const graceSec = Math.max(0, opts?.graceSec ?? 30);
+    const cutoffMs =
+      this.clock.nowMs() - (settlementRule.HARD_SEC + graceSec) * 1000;
+
+    const { rows } = await this.db.query<{ id: string; user_id: string }>(
+      `SELECT id::text, user_id::text
+         FROM public.trade_executions
+        WHERE status IN ('running', 'requeue')
+          AND created_at <= $1
+        ORDER BY created_at ASC
+        LIMIT $2`,
+      [new Date(cutoffMs).toISOString(), limit],
+    );
+
+    const results: Array<{
+      tradeId: string;
+      userId: string;
+      status: TradeExecutionState["status"];
+      resultCode?: TradeExecutionState["resultCode"];
+    }> = [];
+    for (const row of rows) {
+      try {
+        const state = await this.executeTick(row.user_id, row.id);
+        results.push({
+          tradeId: row.id,
+          userId: row.user_id,
+          status: state.status,
+          resultCode: state.resultCode,
+        });
+      } catch (err) {
+        this.log.error(
+          `reconcileStuckTrades: executeTick failed tradeId=${row.id} userId=${row.user_id}: ${String(err)}`,
+        );
+        results.push({ tradeId: row.id, userId: row.user_id, status: "running" });
+      }
+    }
+
+    const stillStuck = new Set(["running", "requeue"]);
+    return {
+      candidates: rows.length,
+      reconciled: results.filter((r) => !stillStuck.has(r.status)).length,
+      results,
+    };
+  }
 
   async get(userId: string, tradeId: string): Promise<TradeExecutionState> {
     this.assertSessionUserId(userId);
@@ -267,6 +359,59 @@ export class TradeExecutionService {
     if (trade.ledger_journal_id) {
       return this.toState(trade);
     }
+    const deadlines = {
+      softDeadlineAt: new Date(
+        settlementRule.softDeadlineMs(input.acceptedAtMs),
+      ).toISOString(),
+      hardDeadlineAt: new Date(
+        settlementRule.hardDeadlineMs(input.acceptedAtMs),
+      ).toISOString(),
+    };
+
+    // Money-safety fix (PUTDUK continuation session, Step 7.2): claim the
+    // terminal transition FIRST via this single atomic status-guarded
+    // UPDATE, and only the caller that actually wins the claim (1 row
+    // returned) may post the settlement journal below. The previous
+    // ordering posted the journal unconditionally before this UPDATE ran,
+    // so a concurrent finalizeSafeStop call racing on the same
+    // still-"running" row (e.g. two overlapping polling ticks, or a
+    // client retry-after-timeout racing the original in-flight request)
+    // could both decide a terminal outcome and each post its own journal
+    // (settlement:<tradeId> AND participate_unlock:<tradeId> - different
+    // idempotency keys, so postJournal's own dedupe never catches this) -
+    // double-crediting principal and leaving the locked bucket short.
+    // Claiming atomically first makes that impossible: Postgres serializes
+    // concurrent single-statement UPDATEs against the same row, so at most
+    // one of the racing calls ever sees 1 row affected here.
+    const asset = { ...trade.asset, rematchCount: input.rematchCount };
+    const claimed = await this.db.query<TradeRow>(
+      `UPDATE public.trade_executions
+          SET status = 'success',
+              result_code = 'MATCH_SUCCESS',
+              step_index = 4,
+              progress_pct = 100,
+              log_line = $2,
+              expected_profit_usdt = $3::numeric,
+              settled_profit_usdt = $3::numeric,
+              asset = $4::jsonb,
+              updated_at = now()
+        WHERE id = $1::uuid
+          AND status IN ('running', 'requeue')
+        RETURNING id::text, user_id::text, opportunity_id::text, pricing_version,
+                  status, result_code, step_index, progress_pct::text, log_line,
+                  expected_profit_usdt::text, settled_profit_usdt::text,
+                  ledger_journal_id::text, idempotency_key, asset,
+                  created_at, updated_at`,
+      [trade.id, "MATCH_SUCCESS", input.expectedProfitUsdt, JSON.stringify(asset)],
+    );
+
+    if (claimed.rows.length === 0) {
+      // Lost the race - some other concurrent call already finalized this
+      // trade (to success, or to a different terminal result). Never post
+      // a journal in this branch; return whatever the winner committed.
+      const finalRow = (await this.reloadTrade(trade.id)) ?? trade;
+      return this.toState(finalRow, deadlines);
+    }
 
     const lines: PostingLineInput[] = [
       {
@@ -305,6 +450,10 @@ export class TradeExecutionService {
       );
     }
 
+    // This call already exclusively owns the "success" claim above, so
+    // idempotencyKey here is now belt-and-suspenders (a process crash
+    // between the claim and this post is a separate durability gap -
+    // Step 7.3 - not the concurrency race this fix closes).
     const journal = await this.posting.postJournal({
       idempotencyKey: `settlement:${trade.id}`,
       journalType: "settlement",
@@ -318,49 +467,20 @@ export class TradeExecutionService {
 
     // SettlementCompletedFanout listens to LEDGER_EVENTS.journalPosted — do not emit here
 
-    const asset = {
-      ...trade.asset,
-      rematchCount: input.rematchCount,
-    };
-    // P1-3: status-guarded WHERE — a concurrent execute-tick that already
-    // finalized this trade must not be overwritten (0 rows ⇒ reload+return
-    // the row the OTHER call already committed, never the stale in-memory one).
     const { rows } = await this.db.query<TradeRow>(
       `UPDATE public.trade_executions
-          SET status = 'success',
-              result_code = 'MATCH_SUCCESS',
-              step_index = 4,
-              progress_pct = 100,
-              log_line = $2,
-              expected_profit_usdt = $3::numeric,
-              settled_profit_usdt = $3::numeric,
-              ledger_journal_id = $4::uuid,
-              asset = $5::jsonb,
+          SET ledger_journal_id = $2::uuid,
               updated_at = now()
         WHERE id = $1::uuid
-          AND status IN ('running', 'requeue')
         RETURNING id::text, user_id::text, opportunity_id::text, pricing_version,
                   status, result_code, step_index, progress_pct::text, log_line,
                   expected_profit_usdt::text, settled_profit_usdt::text,
                   ledger_journal_id::text, idempotency_key, asset,
                   created_at, updated_at`,
-      [
-        trade.id,
-        "MATCH_SUCCESS",
-        input.expectedProfitUsdt,
-        journal.id,
-        JSON.stringify(asset),
-      ],
+      [trade.id, journal.id],
     );
-    const finalRow = rows[0] ?? (await this.reloadTrade(trade.id)) ?? trade;
-    return this.toState(finalRow, {
-      softDeadlineAt: new Date(
-        settlementRule.softDeadlineMs(input.acceptedAtMs),
-      ).toISOString(),
-      hardDeadlineAt: new Date(
-        settlementRule.hardDeadlineMs(input.acceptedAtMs),
-      ).toISOString(),
-    });
+    const finalRow = rows[0] ?? claimed.rows[0];
+    return this.toState(finalRow, deadlines);
   }
 
   private async applyRequeue(
@@ -416,36 +536,27 @@ export class TradeExecutionService {
     acceptedAtMs: number,
     capitalUsdt?: string,
   ): Promise<TradeExecutionState> {
+    const deadlines = {
+      softDeadlineAt: new Date(
+        settlementRule.softDeadlineMs(acceptedAtMs),
+      ).toISOString(),
+      hardDeadlineAt: new Date(
+        settlementRule.hardDeadlineMs(acceptedAtMs),
+      ).toISOString(),
+    };
     const capital =
       capitalUsdt ?? (await this.loadCapitalUsdt(trade.id, trade.user_id));
-    if (cmpAmount(capital, "0") > 0 && !trade.ledger_journal_id) {
-      await this.posting.postJournal({
-        idempotencyKey: `participate_unlock:${trade.id}`,
-        journalType: "participate_unlock",
-        referenceType: "trade",
-        referenceId: trade.id,
-        memo: `safe_stop ${resultCode}`,
-        createdBy: trade.user_id,
-        lines: [
-          {
-            account: { userId: trade.user_id, bucket: "locked" },
-            direction: "debit",
-            amountUsdt: capital,
-          },
-          {
-            account: { userId: trade.user_id, bucket: "principal" },
-            direction: "credit",
-            amountUsdt: capital,
-          },
-        ],
-      });
-    }
-
     const status: TradeExecutionState["status"] =
       resultCode === "SYSTEM_FAILED" ? "failed" : "safe_stop";
     const presentation = this.presentationProgress(nowMs, acceptedAtMs);
-    // P1-3: status-guarded WHERE — see finalizeMatchSuccess comment.
-    const { rows } = await this.db.query<TradeRow>(
+
+    // Money-safety fix (PUTDUK continuation session, Step 7.2): claim the
+    // terminal transition FIRST via this atomic status-guarded UPDATE -
+    // see the matching comment in finalizeMatchSuccess for the exact race
+    // this ordering closes (this call and a concurrent finalizeMatchSuccess
+    // both reading the same still-"running" row could otherwise each post
+    // their own journal for the same locked capital).
+    const claimed = await this.db.query<TradeRow>(
       `UPDATE public.trade_executions
           SET status = $2,
               result_code = $3,
@@ -460,23 +571,55 @@ export class TradeExecutionService {
                   expected_profit_usdt::text, settled_profit_usdt::text,
                   ledger_journal_id::text, idempotency_key, asset,
                   created_at, updated_at`,
-      [
-        trade.id,
-        status,
-        resultCode,
-        presentation.stepIndex,
-        presentation.progressPct,
-      ],
+      [trade.id, status, resultCode, presentation.stepIndex, presentation.progressPct],
     );
-    const finalRow = rows[0] ?? (await this.reloadTrade(trade.id)) ?? trade;
-    return this.toState(finalRow, {
-      softDeadlineAt: new Date(
-        settlementRule.softDeadlineMs(acceptedAtMs),
-      ).toISOString(),
-      hardDeadlineAt: new Date(
-        settlementRule.hardDeadlineMs(acceptedAtMs),
-      ).toISOString(),
+
+    if (claimed.rows.length === 0) {
+      // Lost the race - some other concurrent call already finalized this
+      // trade. Never post an unlock journal in this branch.
+      const finalRow = (await this.reloadTrade(trade.id)) ?? trade;
+      return this.toState(finalRow, deadlines);
+    }
+
+    if (cmpAmount(capital, "0") <= 0 || trade.ledger_journal_id) {
+      return this.toState(claimed.rows[0], deadlines);
+    }
+
+    const journal = await this.posting.postJournal({
+      idempotencyKey: `participate_unlock:${trade.id}`,
+      journalType: "participate_unlock",
+      referenceType: "trade",
+      referenceId: trade.id,
+      memo: `safe_stop ${resultCode}`,
+      createdBy: trade.user_id,
+      lines: [
+        {
+          account: { userId: trade.user_id, bucket: "locked" },
+          direction: "debit",
+          amountUsdt: capital,
+        },
+        {
+          account: { userId: trade.user_id, bucket: "principal" },
+          direction: "credit",
+          amountUsdt: capital,
+        },
+      ],
     });
+
+    const { rows } = await this.db.query<TradeRow>(
+      `UPDATE public.trade_executions
+          SET ledger_journal_id = $2::uuid,
+              updated_at = now()
+        WHERE id = $1::uuid
+        RETURNING id::text, user_id::text, opportunity_id::text, pricing_version,
+                  status, result_code, step_index, progress_pct::text, log_line,
+                  expected_profit_usdt::text, settled_profit_usdt::text,
+                  ledger_journal_id::text, idempotency_key, asset,
+                  created_at, updated_at`,
+      [trade.id, journal.id],
+    );
+    const finalRow = rows[0] ?? claimed.rows[0];
+    return this.toState(finalRow, deadlines);
   }
 
   private presentationProgress(
@@ -520,11 +663,62 @@ export class TradeExecutionService {
     ) {
       return payoutFeasible(opportunityId, feasibility);
     }
-    // No report row yet — live §51.4 evaluatePayoutFeasibility (HTTP 0)
-    return evaluatePayoutFeasibility({
-      opportunityId,
-      compareReady,
-    }).payoutFeasible;
+    if (compareReady !== true) {
+      // evaluatePayoutFeasibility's own compareReady===false branch always
+      // returned false too - preserved so a stale-price opportunity still
+      // fails this gate for the same reason it always did.
+      return false;
+    }
+    // Money-safety fix (PUTDUK continuation session, Step 7.4): no
+    // per-opportunity simulation report exists yet - the code used to
+    // fall back to evaluatePayoutFeasibility() from services/simulation-
+    // engine, which (confirmed by reading it) has NO connection to any
+    // real balance at all: with no forceInfeasible/explicit override, it
+    // unconditionally returns payoutFeasible:true. R8 in settlement_rule.
+    // cjs's evaluateRules (ctx.simulationPayoutFeasible !== true ->
+    // BELOW_MIN_PROFIT) is the ONLY gate standing between a match and an
+    // actual profit credit that SYS:OPPORTUNITY_POOL cannot back - with
+    // the stub, that gate was always open. evaluatePayoutFeasibility()
+    // itself is left untouched (it is also used by the admin growth-
+    // simulation stress-test feature via its own forceInfeasible/
+    // explicit-override test hooks, which this fix does not touch) -
+    // this fallback is replaced with a real check instead.
+    return this.checkPayoutReserveFeasible();
+  }
+
+  /**
+   * Real (not simulated) payout-reserve check: SYS:OPPORTUNITY_POOL's
+   * current balance must cover the SUM of expected_profit_usdt across
+   * every currently in-flight (running/requeue) trade, not just this
+   * one. A snapshot compare-only check (no explicit reservation ledger
+   * entry) is intentionally conservative rather than exact: it assumes
+   * every other in-flight trade could ALSO succeed simultaneously, which
+   * is the safe direction to be wrong in for a solvency check, and it is
+   * re-evaluated on every single executeTick call (not just once at
+   * participate time), so a pool that becomes insufficient after this
+   * trade already started running still flips this to false on its very
+   * next tick - before finalizeMatchSuccess ever runs for it - rather
+   * than only being checked once and then trusted forever.
+   */
+  private async checkPayoutReserveFeasible(): Promise<boolean> {
+    const poolRow = await this.db.query<{ balance_usdt: string }>(
+      `SELECT balance_usdt::text
+         FROM public.ledger_accounts
+        WHERE code = $1`,
+      [SYSTEM_ACCOUNT_CODES.OPPORTUNITY_POOL],
+    );
+    const poolBalance = poolRow.rows[0]?.balance_usdt;
+    if (poolBalance == null) {
+      // Missing pool account - fail closed, never treat "unknown" as funded.
+      return false;
+    }
+    const exposureRow = await this.db.query<{ total: string }>(
+      `SELECT COALESCE(sum(expected_profit_usdt), 0)::text AS total
+         FROM public.trade_executions
+        WHERE status IN ('running', 'requeue')`,
+    );
+    const totalInFlightExposure = exposureRow.rows[0]?.total ?? "0";
+    return cmpAmount(poolBalance, totalInFlightExposure) >= 0;
   }
 
   private async resolveRulePolicy(

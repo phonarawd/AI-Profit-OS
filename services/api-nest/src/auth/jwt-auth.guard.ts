@@ -35,6 +35,12 @@ export type SessionUser = {
   userId: string;
   sub: string;
   sessionId: string;
+  /** Refresh-token rotation family id (S1F Section 7) - "log out this
+   * device" / "list sessions" operate on this, not on sessionId. Empty
+   * string for pre-S1F tokens that never had a `fam` claim (still valid,
+   * just without family-scoped session management until the user's next
+   * fresh login/refresh). */
+  familyId: string;
   /** ISO-8601 — decoded straight from the verified token's iat/exp claims */
   issuedAt: string;
   expiresAt: string;
@@ -92,6 +98,7 @@ export class JwtAuthGuard implements CanActivate {
       userId,
       sub: userId,
       sessionId: String(payload.jti ?? ""),
+      familyId: typeof payload.fam === "string" ? payload.fam : "",
       issuedAt: Number.isFinite(iat)
         ? new Date(iat * 1000).toISOString()
         : new Date().toISOString(),

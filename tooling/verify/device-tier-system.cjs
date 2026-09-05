@@ -6,6 +6,7 @@ const { spawnSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
+const { gitBlobSha256 } = require("./lib/git-blob-hash.cjs");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
@@ -31,7 +32,11 @@ const required = [
   "packages/ui/tokens/device-tier-contract.ts",
   "governance/responsive/DEVICE_TIER.md",
   "governance/responsive/large-screen-safety.v1.json",
-  "governance/responsive/home-geometry-lock.v1.json",
+  // D1-S1C (2026-09-05): v1 is SUPERSEDED - see
+  // governance/responsive/HOME-GEOMETRY-LOCK-SUPERSESSION.md. v1 still
+  // exists on disk (its own "rewrite: FORBIDDEN" is honored, untouched) but
+  // is no longer the active Home geometry authority; v2 is.
+  "governance/responsive/home-geometry-lock.v2.json",
 ];
 for (const rel of required) read(rel);
 
@@ -107,12 +112,25 @@ if (safety.homeRetroactiveVisualRedesign !== false) {
 
 let lock;
 try {
-  lock = JSON.parse(read("governance/responsive/home-geometry-lock.v1.json"));
+  lock = JSON.parse(read("governance/responsive/home-geometry-lock.v2.json"));
 } catch (err) {
   fails.push(`home-geometry-lock JSON: ${err.message}`);
   lock = { files: {} };
 }
-const locked = lock.files || {};
+// D1-S1E (2026-09-05): small explicit overlay for entries independently re-verified as
+// CRLF-only working-tree drift (see home-geometry-lock-corrections.v1.json's own
+// founderApproval/evidence fields). home-geometry-lock.v2.json itself stays byte-for-byte
+// untouched — same overlay pattern already established for
+// apps/web/scripts/asset-pipeline/home-lock-corrections.v1.json.
+let corrections = { corrections: {} };
+try {
+  corrections = JSON.parse(
+    read("governance/responsive/home-geometry-lock-corrections.v1.json"),
+  );
+} catch (err) {
+  fails.push(`home-geometry-lock-corrections JSON: ${err.message}`);
+}
+const locked = { ...(lock.files || {}), ...(corrections.corrections || {}) };
 if (Object.keys(locked).length < 10) {
   fails.push("home-geometry-lock too small");
 }
@@ -125,6 +143,26 @@ for (const [rel, meta] of Object.entries(locked)) {
   const actual = sha256(rel);
   if (actual !== meta.sha256) {
     fails.push(`Home geometry changed: ${rel}`);
+  }
+}
+
+// D1-S1E (2026-09-05): lock-hash-vs-committed-git-blob provenance check — same rationale and
+// shape as tooling/verify/asset-production-pipeline.cjs's own provenance block. Comparing only
+// the local disk file (above) cannot catch a lock hash that was itself authored from
+// CRLF-contaminated local bytes, because a contaminated machine's disk read would agree with an
+// equally-contaminated lock value while both silently disagree with what a clean CI checkout
+// actually receives. This block is platform-independent and runs on every invocation.
+for (const rel of Object.keys(locked)) {
+  const blob = gitBlobSha256(root, "HEAD", rel);
+  if (!blob.ok) {
+    fails.push(`Home geometry lock provenance check could not read committed blob for ${rel}: ${blob.error}`);
+    continue;
+  }
+  const expected = locked[rel]?.sha256;
+  if (expected && blob.sha256 !== expected) {
+    fails.push(
+      `Home geometry lock hash disagrees with committed git blob (provenance drift, not a disk-only issue): ${rel} lock=${expected.slice(0, 12)} blob=${blob.sha256.slice(0, 12)}`,
+    );
   }
 }
 

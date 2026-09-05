@@ -1,0 +1,14 @@
+{
+  "schema": "responsive.home-geometry-lock-corrections.v1",
+  "purpose": "Small, explicit overlay of corrected sha256/bytes for entries in the sibling home-geometry-lock.v2.json (which itself declares rewrite:FORBIDDEN and is left byte-for-byte untouched). Same overlay pattern already established by apps/web/scripts/asset-pipeline/home-lock-corrections.v1.json for the analogous spark-dash SVG CRLF drift.",
+  "appliesOverBase": "governance/responsive/home-geometry-lock.v2.json",
+  "founderApproval": "PUTDUK FULL REAL-MONEY PRODUCTION RELEASE directive §3.2 (Home lock CRLF 교정, CONDITIONALLY_APPROVED) — all 8 stated conditions independently re-verified true before this file was written: (1) git blob is LF, (2) existing lock value equals the CRLF working-tree bytes, (3) LF<->CRLF is the only difference (zero token/CSS-meaning diff after normalization), (4) zero rendering-meaning difference, (5) zero meaningful visual difference from the approved baseline, (6) matches _audit-d0-20260904/FOUNDER-GATE-HOME_LOCK_DECISION.md's exact stated minimal fix recipe, (7) the original lock file is not deleted or overwritten (this overlay file only), (8) a new git-blob provenance regression test was added alongside this file (tooling/verify/regression/home-geometry-lock-git-blob-provenance.regression.cjs).",
+  "evidence": "_audit-d0-20260904/FOUNDER-GATE-HOME_LOCK_DECISION.md (D1-S1E addendum, 2026-09-05) + fresh independent re-verification this session (git-blob-hash.cjs based, not shell-redirection based — a PowerShell `>` redirect was empirically shown this session to corrupt raw git blob bytes on this Windows machine, so only Node.js Buffer-based reads were used for any hash claimed here)",
+  "corrections": {
+    "apps/web/app/globals.css": {
+      "sha256": "9c53be322ac1e18f40595406e5d45fd80dfa94f87c68d99f3482e4fe5606790a",
+      "bytes": 242,
+      "note": "Canonical committed git blob (HEAD) value — pure LF, zero CRLF bytes. Previous lock value 2ec7a4ea357aec77b475baaa7b404675fe0d79c2ef16b10f8e0e06aa70103cad/252 was computed from this machine's CRLF-contaminated local working-tree bytes, not from what any clean checkout (CI, fresh clone) actually receives. CRLF->LF normalization of the old disk bytes reproduces this exact sha256/byte-count (verified fresh this session), proving the only difference is line-ending representation — zero character/token/CSS-rule content change, zero rendering difference, zero visual difference from the Founder-approved Home baseline."
+    }
+  }
+}

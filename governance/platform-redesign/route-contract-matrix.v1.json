@@ -3,8 +3,8 @@
   "schema": "governance.platform-redesign.route-contract-matrix.v1",
   "redesignStage": "R0",
   "todoId": "platform-redesign-r0-inventory",
-  "measuredAt": "2026-08-10T17:23:34.672Z",
-  "commitSha": "816696e0c100dc8af4745a0ff86c18a2230397b6",
+  "measuredAt": "2026-09-04T15:44:04.303Z",
+  "commitSha": "d448acb4b9458582e50149837681d3b88f7317f2",
   "pathSeparator": "/",
   "classificationEnum": [
     "defect",
@@ -13,13 +13,13 @@
     "missing_fact"
   ],
   "counts": {
-    "webRoutes": 41,
+    "webRoutes": 50,
     "adminRoutes": 22,
-    "total": 63,
+    "total": 72,
     "byClassification": {
+      "intentional": 35,
       "deferred": 22,
-      "missing_fact": 15,
-      "intentional": 26
+      "missing_fact": 15
     }
   },
   "routes": [
@@ -1816,6 +1816,371 @@
       "ownerPlan": "03-ui",
       "verifyIds": [
         "withdraw-flow-wire"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/auth/magic",
+      "physicalPage": "apps/web/app/auth/magic/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "06-infra",
+      "verifyIds": [],
+      "classification": "intentional",
+      "classificationRef": "cls-d1-6e-auth-magic"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/auth/oauth/[provider]/callback",
+      "physicalPage": "apps/web/app/auth/oauth/[provider]/callback/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "06-infra",
+      "verifyIds": [],
+      "classification": "intentional",
+      "classificationRef": "cls-d1-6e-auth-oauth-provider-callback"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/auth/oauth/kakao",
+      "physicalPage": "apps/web/app/auth/oauth/kakao/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "06-infra",
+      "verifyIds": [],
+      "classification": "intentional",
+      "classificationRef": "cls-d1-6e-auth-oauth-kakao"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/dev/spark-dash-desktop",
+      "physicalPage": "apps/web/app/dev/spark-dash-desktop/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [],
+      "classification": "intentional",
+      "classificationRef": "cls-d1-6e-dev-spark-dash-desktop"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/dev/spark-dash-mobile",
+      "physicalPage": "apps/web/app/dev/spark-dash-mobile/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [],
+      "classification": "intentional",
+      "classificationRef": "cls-d1-6e-dev-spark-dash-mobile"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/dev/spark-dash-profits",
+      "physicalPage": "apps/web/app/dev/spark-dash-profits/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [],
+      "classification": "intentional",
+      "classificationRef": "cls-d1-6e-dev-spark-dash-profits"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/dev/spark-dash-room",
+      "physicalPage": "apps/web/app/dev/spark-dash-room/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [],
+      "classification": "intentional",
+      "classificationRef": "cls-d1-6e-dev-spark-dash-room"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/trades/[id]/settlement",
+      "physicalPage": "apps/web/app/trades/[id]/settlement/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [],
+      "classification": "intentional",
+      "classificationRef": "cls-d1-6e-trades-id-settlement"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/wallet/history/[journalId]",
+      "physicalPage": "apps/web/app/wallet/history/[journalId]/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [],
+      "classification": "intentional",
+      "classificationRef": "cls-d1-6e-wallet-history-journalid"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/auth/signup/classic",
+      "physicalPage": "apps/web/app/auth/signup/classic/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "auth-signup"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "POST /api/v1/auth/signup/classic"
+      ],
+      "ownerPlan": "06-infra",
+      "verifyIds": [
+        "acquisition-release",
+        "auth-flows",
+        "auth-jwt-runtime"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/auth/verify-email",
+      "physicalPage": "apps/web/app/auth/verify-email/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "POST /api/v1/auth/signup/classic/verify"
+      ],
+      "ownerPlan": "06-infra",
+      "verifyIds": [
+        "acquisition-release",
+        "auth-flows",
+        "auth-jwt-runtime"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/auth/find-id",
+      "physicalPage": "apps/web/app/auth/find-id/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "auth-login"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "POST /api/v1/auth/find-id"
+      ],
+      "ownerPlan": "06-infra",
+      "verifyIds": [
+        "acquisition-release",
+        "auth-flows",
+        "auth-jwt-runtime"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/auth/reset-password",
+      "physicalPage": "apps/web/app/auth/reset-password/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "auth-login"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "POST /api/v1/auth/password-reset/request",
+        "POST /api/v1/auth/password-reset/complete"
+      ],
+      "ownerPlan": "06-infra",
+      "verifyIds": [
+        "acquisition-release",
+        "auth-flows",
+        "auth-jwt-runtime"
       ],
       "classification": "deferred"
     }

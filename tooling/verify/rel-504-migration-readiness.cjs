@@ -93,16 +93,31 @@ if (!ready.includes("COMMITTED_UNAPPLIED = " + applied.committedUnapplied.length
 }
 
 // REL-701-DB 실행 전 = Track A 는 committedUnapplied 에 머물러야 한다.
-// REL-701-DB 실행 후(plan YAML COMPLETED + fixture rel701db.status APPLIED) = versions 로 이동해야 하며
-// committedUnapplied 는 0 이어야 한다. 둘 사이 어중간한 상태는 FAIL (apply 상태 은닉 금지).
+// REL-701-DB 실행 후(plan YAML COMPLETED + fixture rel701db.status APPLIED) = REL-701-DB 자신이
+// 책임진 버전들은 반드시 versions 로 이동해야 하며 committedUnapplied 에 남아있으면 안 된다
+// (apply 상태 은닉 금지). 단, committedUnapplied 를 전역으로 "영원히 0" 이라고 가정하지 않는다 —
+// REL-701-DB 완료 이후에도 개발은 계속되고 새 마이그레이션이 committed 될 수 있으며, 그 새
+// 파일들은 REL-701-DB 의 책임 범위가 아니다 (S1F 2026-09-05: 이 정확한 시나리오가 실제로
+// 발생해 이 스크립트의 과도하게 넓은 가정을 드러냈다 — 20260905110000 이 committedUnapplied
+// 에 있다는 사실만으로 "REL-701-DB 가 실행됐는데 committedUnapplied 가 안 비어있다"고 잘못
+// FAIL 하고 있었다). 검사 대상은 REL-701-DB 자신의 appliedVersions 뿐이다.
 const rel701dbDone =
   yamlCompleted("REL-701-DB") && applied.rel701db && applied.rel701db.status === "APPLIED";
 if (yamlCompleted("REL-701-DB") !== Boolean(applied.rel701db && applied.rel701db.status === "APPLIED")) {
   fails.push("REL-701-DB plan status and fixture rel701db block disagree");
 }
 if (rel701dbDone) {
-  if ((applied.committedUnapplied || []).length !== 0) {
-    fails.push("REL-701-DB executed but committedUnapplied is not empty");
+  const rel701dbOwnVersions = new Set(
+    (applied.rel701db && applied.rel701db.appliedVersions) || [],
+  );
+  const stillPendingFromRel701db = (applied.committedUnapplied || []).filter((entry) =>
+    rel701dbOwnVersions.has(entry.version),
+  );
+  if (stillPendingFromRel701db.length !== 0) {
+    fails.push(
+      "REL-701-DB executed but its own version(s) are still committedUnapplied: " +
+        stillPendingFromRel701db.map((e) => e.version).join(", "),
+    );
   }
   if (!ready.includes("REL_701_DB_EXECUTED = 1")) {
     fails.push("readiness doc must record REL_701_DB_EXECUTED = 1 after REL-701-DB");

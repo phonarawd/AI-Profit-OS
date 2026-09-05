@@ -29,6 +29,7 @@ import { KillSwitchModule } from "./kill-switch/kill-switch.module";
 import { AdminOpsModule } from "./admin-ops/admin-ops.module";
 import { MatchControlModule } from "./match-control/match-control.module";
 import { SourcePolicyModule } from "./source-policy/source-policy.module";
+import { UsersAdminModule } from "./users/users-admin.module";
 import { ObsExceptionFilter } from "./observability/obs.exception-filter";
 
 @Module({
@@ -60,6 +61,7 @@ import { ObsExceptionFilter } from "./observability/obs.exception-filter";
     AdminOpsModule,
     MatchControlModule,
     SourcePolicyModule,
+    UsersAdminModule,
   ],
   controllers: [HealthController],
   // Global admin boundary — an admin controller added without @UseGuards is

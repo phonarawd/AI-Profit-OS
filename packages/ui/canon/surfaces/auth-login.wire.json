@@ -8,9 +8,12 @@
     { "id": "headline", "role": "heading", "copyKey": "T.auth.loginHeadline" },
     { "id": "sub", "role": "body", "copyKey": "T.auth.loginSub" },
     { "id": "kakao", "role": "primary", "copyKey": "T.auth.kakaoStart" },
+    { "id": "classicLogin", "role": "secondary", "copyKey": "T.authClassic.classicLoginToggle", "when": "toggle" },
     { "id": "google", "role": "secondary", "copyKey": "T.auth.googleStart" },
     { "id": "passkey", "role": "secondary", "copyKey": "T.auth.passkeyStart" },
     { "id": "email", "role": "tertiary", "copyKey": "T.auth.emailMagic" },
+    { "id": "findId", "role": "tertiary", "copyKey": "T.authClassic.findIdLink", "when": "classic_login_path" },
+    { "id": "resetPassword", "role": "tertiary", "copyKey": "T.authClassic.resetPasswordLink", "when": "classic_login_path" },
     { "id": "legal", "role": "footer", "copyKey": "T.legal.operator.footerLine" }
   ],
   "forbidden": [
@@ -26,5 +29,5 @@
     "capital_cta_earn"
   ],
   "tone": "utility",
-  "notes": "Kakao primary inside /auth/login only · Guest §6.4c.1 F · Infra auth-kakao-oauth-runtime pending → UI disabled guard"
+  "notes": "Kakao primary inside /auth/login only - Guest Section 6.4c.1 F - Infra auth-kakao-oauth-runtime pending -> UI disabled guard - classicLogin/findId/resetPassword added S1F 2026-09-05 (Section 7)"
 }

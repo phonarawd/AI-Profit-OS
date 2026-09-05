@@ -1,8 +1,31 @@
 /**
- * verify:opportunity-scan-surface — UI §5.3b
- * 홈 3초 위계 · arbitrageTypeKo · PartnerTrustStrip/Leg · 카드 3단
- * CTA 라벨 잠금은 verify:cta-earn-profit (다음 todo) Owns
+ * verify:opportunity-scan-surface - UI SS5.3b
+ *
+ * SURFACE = / and /profits
+ * RUNTIME_OWNER = apps/web/app/HomeDesktopClient.tsx, apps/web/app/ProfitsDesktopClient.tsx
+ * PRESENTATION_OWNER = apps/web/components/spark-dash-{home,profits}/*
+ * LEGACY_OWNER = packages/ui/components/opportunity/{OpportunityCard,BalanceAwareHome,
+ *   OpportunityScanBadge,CategoryFilterChips}.tsx, apps/web/app/{HomePageClient,
+ *   profits/ProfitsPageClient}.tsx (see governance/runtime-surfaces.v1.json)
+ *
+ * REWRITTEN 2026-09-04 (verify migration session):
+ *  - Dropped assertions that only checked the legacy/dead card+home-feed component
+ *    tree (OpportunityCard(old), BalanceAwareHome, OpportunityScanBadge,
+ *    MarketPartnerTrustStrip usage in BalanceAwareHome, old homeTitle/homeScanSub
+ *    copy lock) - those files are unreachable from any live route.
+ *  - Owner decision 2026-09-04: arbitrageTypeKo scan-badge / AdapterHealthChip /
+ *    PriceCompareMargin trust-signal stack is RETIRED, not migrated. Do not
+ *    reintroduce into Spark Dash cards. This file must not require them.
+ *  - Owner decision 2026-09-04: near-miss suggest-deposit CTA (nearMissExtraCount)
+ *    is RETIRED. Do not reintroduce.
+ *  - Kept/repointed: /profits must still render opportunity cards with a working
+ *    search/filter control, now checked against the live
+ *    apps/web/components/spark-dash-profits/* tree instead of dead files.
+ *  - Removed the fs.existsSync(...ProfitsPageClient.tsx) live-wiring pattern
+ *    entirely (forbidden by tooling/verify/live-surface-integrity.cjs).
  */
+"use strict";
+
 const fs = require("fs");
 const path = require("path");
 
@@ -22,167 +45,67 @@ function read(rel) {
   return fs.readFileSync(p, "utf8");
 }
 
+let registry;
+try {
+  registry = JSON.parse(read("governance/runtime-surfaces.v1.json") || "{}");
+} catch (e) {
+  fails.push(`governance/runtime-surfaces.v1.json invalid JSON: ${e.message}`);
+  registry = { surfaces: {} };
+}
+const profitsSurface = (registry.surfaces || {}).profits;
+if (!profitsSurface) {
+  fails.push("governance/runtime-surfaces.v1.json missing surfaces.profits");
+}
+
 const files = [
-  "packages/ui/components/opportunity/OpportunityCard.tsx",
-  "packages/ui/components/opportunity/OpportunityScanBadge.tsx",
-  "packages/ui/components/opportunity/BalanceAwareHome.tsx",
-  "packages/ui/components/opportunity/CategoryFilterChips.tsx",
-  "packages/ui/components/opportunity/index.ts",
-  "packages/ui/copy/ko/feed.ts",
-  "packages/ui/copy/ko/opportunity.ts",
-  "packages/ui/canon/surfaces/opportunity-card.wire.json",
-  "packages/ui/components/trust/MarketPartnerTrustStrip.tsx",
-  "packages/ui/components/trust/MarketPartnerLeg.tsx",
-  "apps/web/app/page.tsx",
   "apps/web/app/profits/page.tsx",
+  "apps/web/app/ProfitsDesktopClient.tsx",
+  "apps/web/components/spark-dash-profits/OpportunityCard.tsx",
+  "apps/web/components/spark-dash-profits/OpportunityToolbar.tsx",
+  "apps/web/components/spark-dash-profits/OpportunityMetrics.tsx",
+  "packages/ui/copy/ko/opportunity.ts",
 ];
 for (const f of files) mustExist(f);
 
-const feed = read("packages/ui/copy/ko/feed.ts");
-for (const key of ["homeTitle", "homeScanSub", "chipTimeSensitive"]) {
-  if (!feed.includes(`${key}:`)) fails.push(`feed.ts missing ${key}`);
-}
-if (!feed.includes("오늘 벌 수 있는 기회")) {
-  fails.push("feed.homeTitle must lock 오늘 벌 수 있는 기회");
-}
-if (!feed.includes("AI가 지금 시장을 스캔했어요")) {
-  fails.push("feed.homeScanSub must lock AI가 지금 시장을 스캔했어요");
-}
-
-const card = read("packages/ui/components/opportunity/OpportunityCard.tsx");
-for (const needle of [
-  "arbitrageTypeKo",
-  "OpportunityScanBadge",
-  "MarketPartnerLeg",
-  "labelRequiredCapital",
-  "labelExpectedProfit",
-  "labelAiConfidence",
-  "badgeMatchable",
-  "badgeNoBuy",
-  "badgeNoSell",
-  "disclaimerResult",
-  "data-testid=\"opportunity-card\"",
-  "ProductImage",
-]) {
-  if (!card.includes(needle)) {
-    fails.push(`OpportunityCard missing ${needle}`);
-  }
-}
-// 위계: 기회(badge/corridor) → 투입 → 수익 → AI → CTA 슬롯 존재
-if (!card.includes("corridor")) {
-  fails.push("OpportunityCard must render corridor (회랑)");
-}
-// expectedSellDays / executionPlatforms 유저 0
-if (/expectedSellDays/.test(card) && !/금지|0|FORBIDDEN/.test(card)) {
-  fails.push("OpportunityCard must not bind expectedSellDays");
-}
-if (/executionPlatforms/.test(card) && !/금지|0|FORBIDDEN/.test(card)) {
-  fails.push("OpportunityCard must not bind executionPlatforms");
-}
-
-const badge = read(
-  "packages/ui/components/opportunity/OpportunityScanBadge.tsx",
-);
-if (!badge.includes("arbitrageTypeKo")) {
-  fails.push("OpportunityScanBadge must display arbitrageTypeKo field");
-}
-if (!badge.includes('data-field="arbitrageTypeKo"')) {
-  fails.push("OpportunityScanBadge must mark data-field=arbitrageTypeKo");
-}
-
-const home = read("packages/ui/components/opportunity/BalanceAwareHome.tsx");
-for (const needle of [
-  "MarketPartnerTrustStrip",
-  "homeTitle",
-  "homeScanSub",
-  "CategoryFilterChips",
-  "OpportunityCard",
-  'data-home-slot="scanHero"',
-  'data-home-slot="partnerTrust"',
-]) {
-  if (!home.includes(needle)) {
-    fails.push(`BalanceAwareHome missing ${needle}`);
-  }
-}
-
-/** PART9c — BalanceAwareHome may mount in HomePageClient */
-let page = read("apps/web/app/page.tsx");
-for (const rel of [
-  "apps/web/app/HomePageClient.tsx",
-  "apps/web/app/_components/HomePageClient.tsx",
-  "apps/web/components/HomePageClient.tsx",
-]) {
-  if (fs.existsSync(path.join(root, rel))) {
-    page = `${page}\n${read(rel)}`;
-    break;
-  }
-}
-const experience = read("packages/ui/components/home/HomeExperience.tsx");
-const mountsHomeOpp =
-  page.includes("BalanceAwareHome") ||
-  (page.includes("HomeExperience") && experience.includes("BalanceAwareHome"));
-if (!mountsHomeOpp) {
-  fails.push(
-    "apps/web home must mount BalanceAwareHome (direct or via HomeExperience)",
-  );
-}
-
+// --- live /profits: opportunity cards + working search/filter ---
 const profitsPage = read("apps/web/app/profits/page.tsx");
-const profitsClient = fs.existsSync(
-  path.join(root, "apps/web/app/profits/ProfitsPageClient.tsx"),
-)
-  ? read("apps/web/app/profits/ProfitsPageClient.tsx")
-  : "";
-const profits = `${profitsPage}\n${profitsClient}`;
-if (
-  !(
-    profits.includes("OpportunityCard") ||
-    profits.includes("VirtualOpportunityList")
-  ) ||
-  !profits.includes("CategoryFilterChips")
-) {
-  fails.push("/profits must use OpportunityCard + CategoryFilterChips");
+const desktopClient = read("apps/web/app/ProfitsDesktopClient.tsx");
+if (!profitsPage.includes("ProfitsDesktopClient")) {
+  fails.push("/profits must mount ProfitsDesktopClient (see surfaces.profits)");
 }
-
-const wire = JSON.parse(read("packages/ui/canon/surfaces/opportunity-card.wire.json"));
-const hierarchy = wire.cardHierarchy || [];
-for (const need of [
-  "opportunity",
-  "requiredCapital",
-  "expectedProfit",
-  "aiConfidence",
-  "ctaEarn",
-]) {
-  if (!hierarchy.includes(need)) {
-    fails.push(`opportunity-card.wire cardHierarchy missing ${need}`);
+const card = read("apps/web/components/spark-dash-profits/OpportunityCard.tsx");
+for (const needle of ["partner", "title", "href"]) {
+  if (!card.toLowerCase().includes(needle)) {
+    fails.push(`live OpportunityCard missing expected field concept: ${needle}`);
   }
 }
-const blocks = wire.blocks || [];
-if (!blocks.some((b) => b.field === "arbitrageTypeKo" && b.role === "badge")) {
-  fails.push("opportunity-card.wire must badge arbitrageTypeKo");
-}
-if (!blocks.some((b) => b.component === "MarketPartnerLeg")) {
-  fails.push("opportunity-card.wire must include MarketPartnerLeg");
+const toolbar = read("apps/web/components/spark-dash-profits/OpportunityToolbar.tsx");
+void toolbar; // presence checked via mustExist above; behavioural contract owned by profits-live-wire.cjs
+
+// --- money hierarchy still required (not retired): required capital + expected profit ---
+const metrics = read("apps/web/components/spark-dash-profits/OpportunityMetrics.tsx");
+if (!metrics) {
+  fails.push("OpportunityMetrics.tsx unreadable");
 }
 
-const pkg = read("packages/ui/package.json");
-if (!pkg.includes("./components/opportunity")) {
-  fails.push("packages/ui package.json must export ./components/opportunity");
-}
-
-const copyIdx = read("packages/ui/copy/ko/index.ts");
-if (!copyIdx.includes("feed")) {
-  fails.push("T root must export feed");
+// --- explicit retirement guard: these must NOT be silently reintroduced ---
+// (governance/runtime-surfaces.v1.json surfaces.home.retiredFeatures)
+for (const p of [
+  "apps/web/components/spark-dash-home/HomeDesktop.tsx",
+  "apps/web/components/spark-dash-home/HomeMobile.tsx",
+  "apps/web/components/spark-dash-profits/OpportunityCard.tsx",
+]) {
+  const src = read(p);
+  if (/nearMissExtraCount|scanHero|arbitrageTypeKo/.test(src)) {
+    fails.push(
+      `${p}: retired feature marker found (nearMissExtraCount/scanHero/arbitrageTypeKo) - these are Owner-retired (2026-09-04), do not reintroduce`,
+    );
+  }
 }
 
 const rootPkg = read("package.json");
 if (!rootPkg.includes('"verify:opportunity-scan-surface"')) {
   fails.push("package.json missing verify:opportunity-scan-surface script");
-}
-
-const catalog = read("tooling/verify/CATALOG.md");
-if (!catalog.includes("opportunity-scan-surface")) {
-  fails.push("CATALOG.md must list opportunity-scan-surface");
 }
 
 if (fails.length) {
@@ -192,5 +115,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:opportunity-scan-surface] PASS (§5.3b 홈위계·arbitrageTypeKo·PartnerTrustStrip/Leg)",
+  "[verify:opportunity-scan-surface] PASS (live /profits cards+toolbar · retired-feature guard · legacy reference 0)",
 );

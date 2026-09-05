@@ -4,6 +4,7 @@
  */
 const fs = require("fs");
 const path = require("path");
+const { includesHostToken } = require("./lib/host-token-boundary.cjs");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
@@ -68,13 +69,13 @@ for (const h of wildcardHosts) {
   }
 }
 
-if (!r2Src.includes("r2.cloudflarestorage.com")) {
+if (!includesHostToken(r2Src, "r2.cloudflarestorage.com")) {
   fails.push("R2 service must still construct r2.cloudflarestorage.com URLs");
 }
-if (!pokeSrc.includes("images.pokemontcg.io")) {
+if (!includesHostToken(pokeSrc, "images.pokemontcg.io")) {
   fails.push("trading-card seed must still use images.pokemontcg.io");
 }
-if (!pokeSrc.includes("images.ygoprodeck.com")) {
+if (!includesHostToken(pokeSrc, "images.ygoprodeck.com")) {
   fails.push("trading-card seed must still use images.ygoprodeck.com");
 }
 if (!bagSrc.includes("asset-images.r2.dev") || !watchSrc.includes("asset-images.r2.dev")) {

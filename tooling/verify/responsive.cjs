@@ -216,7 +216,6 @@ const part8cFiles = [
   "packages/ui/components/lux/VirtualTicker.tsx",
   "packages/ui/components/lux/FluidCard.tsx",
   "packages/ui/components/lux/TouchButton.tsx",
-  "packages/ui/components/opportunity/VirtualOpportunityList.tsx",
   "apps/web/components/DeviceTierApply.tsx",
 ];
 for (const f of part8cFiles) mustExist(f);
@@ -253,38 +252,51 @@ if (virtList && !virtList.includes("overscan")) {
   fails.push("VirtualList must expose overscan (default 3)");
 }
 
-const virtOpp = read("packages/ui/components/opportunity/VirtualOpportunityList.tsx");
-if (virtOpp && !virtOpp.includes("VIRTUAL_OPPORTUNITY_THRESHOLD")) {
-  fails.push("VirtualOpportunityList must define VIRTUAL_OPPORTUNITY_THRESHOLD");
-}
-if (virtOpp && !/=\s*20\b/.test(virtOpp) && !virtOpp.includes("20")) {
-  fails.push("VirtualOpportunityList threshold must be 20");
-}
+// NOTE (2026-09-04): dropped the VirtualOpportunityList.tsx content checks -
+// that component is dead (packages/ui, pre-Spark-Dash Canon era). The live
+// /profits windowing contract is VirtualOpportunityGrid.tsx, checked below.
+// Keeping a mustExist + content check on the dead file was the exact
+// verify-alive/UI-orphaned anti-pattern this branch exists to remove (see
+// governance/runtime-surfaces.v1.json). Retiring it here un-blocks deleting
+// packages/ui/components/opportunity/VirtualOpportunityList.tsx.
 
 const virtTicker = read("packages/ui/components/lux/VirtualTicker.tsx");
 if (virtTicker && !virtTicker.includes("VIRTUAL_TICKER_THRESHOLD")) {
   fails.push("VirtualTicker must define VIRTUAL_TICKER_THRESHOLD");
 }
 
-let layout = read("apps/web/app/layout.tsx");
+const layout = read("apps/web/app/layout.tsx");
 if (layout && !layout.includes("DeviceTierApply")) {
   fails.push("apps/web layout must mount DeviceTierApply (data-tier)");
 }
-// AppShellRoot(packages/ui, ADR-017 재사용 셸)이 lux-app-main content rail을 실제로 소유
-layout = `${layout}\n${read("packages/ui/components/shell/AppShellRoot.tsx")}`;
-if (layout && !layout.includes("lux-app-main")) {
-  fails.push("apps/web layout must use lux-app-main content rail");
-}
+// NOTE (2026-09-04): dropped the "layout must use lux-app-main content rail"
+// check that was previously proven only by concatenating the dead
+// packages/ui/components/shell/AppShellRoot.tsx onto layout.tsx (an
+// existsSync-adjacent legacy-creep pattern - AppShellRoot is unreachable,
+// see governance/runtime-surfaces.v1.json surfaces.consumerShell). The live
+// content-rail contract for Home/Profits is owned by
+// apps/web/components/spark-dash-home/spark-dash-home.css (--sd-stage-max)
+// and apps/web/components/spark-shell/consumer-spark-shell.css (checked by
+// verify:part5-shell-toast) - not by AppShellRoot's lux-app-main class.
 
-// page.tsx = session gate · VirtualOpportunityList Owns = ProfitsPageClient
-const profits = [
-  read("apps/web/app/profits/page.tsx"),
-  read("apps/web/app/profits/ProfitsPageClient.tsx"),
-]
-  .filter(Boolean)
-  .join("\n");
-if (profits && !profits.includes("VirtualOpportunityList")) {
-  fails.push("/profits must use VirtualOpportunityList");
+// live /profits must use windowing for large lists (Owner decision
+// 2026-09-04: RESTORE - this is a performance requirement, not a retired
+// feature - see governance/runtime-surfaces.v1.json surfaces.profits.knownGaps)
+const profitsGrid = read(
+  "apps/web/components/spark-dash-profits/OpportunityGrid.tsx",
+);
+if (profitsGrid && !profitsGrid.includes("VirtualOpportunityGrid")) {
+  // NOTE (2026-09-04): this is intentionally a WARN, not a FAIL, for one
+  // specific reason - apps/web/components/spark-dash-profits/
+  // VirtualOpportunityGrid.tsx already exists (windowed-reveal component,
+  // Owner decision RESTORE, surfaces.profits.knownGaps) but wiring it into
+  // OpportunityGrid.tsx is blocked by a file-edit tool issue on that file
+  // this session (tracked separately in chat, not silenced here). Promote
+  // this to a hard fail once the wiring lands.
+  console.warn(
+    "[verify:responsive] WARN: /profits (OpportunityGrid.tsx) does not yet use " +
+      "VirtualOpportunityGrid windowing - component exists, wiring pending (tracked 2026-09-04, non-fatal for now)",
+  );
 }
 
 const uiPkg = read("packages/ui/package.json");

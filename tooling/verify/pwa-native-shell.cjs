@@ -162,11 +162,37 @@ for (const needle of storeNeedles) {
   }
 }
 
-const homeForbidden = [
-  "packages/ui/components/home/HomeExperience.tsx",
-  "packages/ui/components/home/HomeHero.tsx",
-  "apps/web/app/page.tsx",
+// NOTE (2026-09-04): this Home-freeze mutation guard originally watched only
+// the dead Canon Home tree (packages/ui/components/home,
+// apps/web/app/HomePageClient.tsx and friends) - unreachable from the live
+// route (see governance/runtime-surfaces.v1.json surfaces.home). A real
+// change to the Founder-approved-and-frozen live Home
+// (apps/web/app/HomeDesktopClient.tsx, apps/web/components/spark-dash-home/*)
+// would have passed this guard silently. Both trees are now watched: the
+// live one because it is the actual freeze surface
+// (governance/consumer-home-approval/home-approval-freeze.v1.json), the dead
+// one kept as a harmless no-op once those files are removed.
+let registry;
+try {
+  registry = JSON.parse(read("governance/runtime-surfaces.v1.json") || "{}");
+} catch {
+  registry = { surfaces: {} };
+}
+const homeSurface = registry.surfaces?.home || {};
+const liveHomePaths = [
+  homeSurface.entry,
+  homeSurface.client,
+  homeSurface.mapper,
+  ...(homeSurface.presentation || []),
+].filter(Boolean);
+const legacyHomePaths = [
+  "packages/ui/components/home",
+  "apps/web/app/HomePageClient.tsx",
+  "apps/web/app/_components/HomePageClient.tsx",
+  "apps/web/components/HomePageClient.tsx",
 ];
+const homeForbidden = [...liveHomePaths, ...legacyHomePaths];
+const watchPathsArg = homeForbidden.join(" ");
 try {
   const { execSync } = require("child_process");
   const gitEnv = { ...process.env, GIT_PAGER: "cat", PAGER: "cat" };
@@ -176,18 +202,44 @@ try {
     timeout: 20_000,
     env: gitEnv,
   };
+  // --name-status (not --name-only): a legacy path showing status "D"
+  // (deleted) is the *expected end state* once a confirmed-dead file is
+  // removed (2026-09-04 cleanup) - not a Home mutation. Legacy paths are
+  // only a violation if they show up with any other status (still being
+  // edited instead of deleted). Live paths stay strict: any status at all
+  // is a real Home mutation regardless of legacy/live.
   const diff = execSync(
-    "git --no-pager diff --name-only HEAD -- packages/ui/components/home apps/web/app/page.tsx apps/web/app/HomePageClient.tsx apps/web/app/_components/HomePageClient.tsx apps/web/components/HomePageClient.tsx",
+    `git --no-pager diff --name-status HEAD -- ${watchPathsArg}`,
     gitOpts,
   );
   const staged = execSync(
-    "git --no-pager diff --cached --name-only -- packages/ui/components/home apps/web/app/page.tsx apps/web/app/HomePageClient.tsx apps/web/app/_components/HomePageClient.tsx apps/web/components/HomePageClient.tsx",
+    `git --no-pager diff --cached --name-status HEAD -- ${watchPathsArg}`,
     gitOpts,
   );
-  const changed = `${diff}\n${staged}`.replace(/\\/g, "/");
-  for (const rel of homeForbidden) {
-    if (changed.includes(rel)) {
-      fails.push(`Home freeze mutation: ${rel}`);
+  const statusLines = `${diff}\n${staged}`
+    .replace(/\\/g, "/")
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean);
+  const legacySet = new Set(legacyHomePaths);
+  for (const line of statusLines) {
+    const m = line.match(/^([A-Z])\d*\s+(.+)$/);
+    if (!m) continue;
+    const [, status, filePath] = m;
+    const matchedLegacy = [...legacySet].find(
+      (rel) => filePath === rel || filePath.startsWith(rel + "/"),
+    );
+    if (matchedLegacy) {
+      if (status !== "D") {
+        fails.push(`Home freeze mutation (legacy, non-delete): ${filePath}`);
+      }
+      continue;
+    }
+    const matchedLive = liveHomePaths.find(
+      (rel) => filePath === rel || filePath.startsWith(rel + "/"),
+    );
+    if (matchedLive) {
+      fails.push(`Home freeze mutation (live): ${filePath}`);
     }
   }
 } catch {

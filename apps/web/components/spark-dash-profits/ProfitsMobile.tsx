@@ -15,6 +15,17 @@ import { moneyOrDash, splitUsdtParts } from "../spark-dash-home/format";
 import type { ProfitsDesktopModel, ProfitsMediaState, ProfitsOpportunity } from "./types";
 import "./spark-dash-profits-mobile.css";
 
+/**
+ * Windowed reveal for the /profits mobile card list (D1-BLK-009 fix).
+ * Same bounded-initial-render + IntersectionObserver-incremental-growth
+ * technique already used by VirtualOpportunityGrid.tsx for the desktop grid
+ * (see that file's own header comment for the full rationale). Below
+ * threshold, every item renders immediately - zero behaviour change from
+ * before this fix.
+ */
+export const VIRTUAL_PROFITS_MOBILE_THRESHOLD = 20;
+const PROFITS_MOBILE_PAGE_SIZE = 20;
+
 const PROFITS_MOBILE_NAV = [
   { key: "home", label: "홈", href: "/", icon: "home" as const },
   { key: "explore", label: "기회 탐색", href: "/profits", icon: "explore" as const },
@@ -271,6 +282,35 @@ function ProfitsMobileSkeleton() {
 }
 
 export function ProfitsMobile({ model }: { model: ProfitsDesktopModel }) {
+  const windowed = model.items.length > VIRTUAL_PROFITS_MOBILE_THRESHOLD;
+  const [visibleCount, setVisibleCount] = useState(
+    windowed ? PROFITS_MOBILE_PAGE_SIZE : model.items.length,
+  );
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    // Reset window when the underlying feed changes (new data/filter).
+    setVisibleCount(windowed ? PROFITS_MOBILE_PAGE_SIZE : model.items.length);
+  }, [model.items, windowed]);
+
+  useEffect(() => {
+    if (!windowed) return;
+    const sentinel = sentinelRef.current;
+    if (!sentinel || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setVisibleCount((prev) => Math.min(model.items.length, prev + PROFITS_MOBILE_PAGE_SIZE));
+        }
+      },
+      { rootMargin: "600px 0px" },
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [windowed, model.items.length]);
+
+  const visibleItems = windowed ? model.items.slice(0, visibleCount) : model.items;
+
   return (
     <div
       className="sdpm-root"
@@ -279,7 +319,7 @@ export function ProfitsMobile({ model }: { model: ProfitsDesktopModel }) {
       data-sdpm-state={model.viewState}
     >
       <ProfitsMobileHeader />
-      <div className="sdpm-scroll" data-sdpm="scroll">
+      <div className="sdpm-scroll" data-sdpm="scroll" data-virtual={windowed ? "on" : "off"}>
         <div className="sdpm-stack">
           {model.viewState === "LOADING" ? <ProfitsMobileSkeleton /> : null}
           {model.viewState === "ERROR" ? (
@@ -302,9 +342,12 @@ export function ProfitsMobile({ model }: { model: ProfitsDesktopModel }) {
                 <span className="lab">확인 가능한 기회</span>
                 <span className="count">· {model.items.length}개의 기회</span>
               </div>
-              {model.items.map((item) => (
+              {visibleItems.map((item) => (
                 <OpportunityCardMobile key={item.id} item={item} />
               ))}
+              {windowed && visibleCount < model.items.length ? (
+                <div ref={sentinelRef} data-testid="profits-mobile-sentinel" aria-hidden />
+              ) : null}
             </>
           ) : null}
         </div>

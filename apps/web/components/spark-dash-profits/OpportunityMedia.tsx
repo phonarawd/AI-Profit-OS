@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { T } from "@aipo/ui/copy/ko";
 import { SD_ASSETS } from "../spark-dash-home/assets";
 import type { ProfitsMediaState, ProfitsOpportunity } from "./types";
 
@@ -98,6 +99,11 @@ function PhotoSlot({
         onError={() => setState("BROKEN")}
       />
       <span className="sdp-media-floor" />
+      {state === "AVAILABLE" ? (
+        <span className="sdp-media-note" data-testid="opportunity-media-rights-note">
+          {T.execution.imageRightsNote}
+        </span>
+      ) : null}
     </div>
   );
 }

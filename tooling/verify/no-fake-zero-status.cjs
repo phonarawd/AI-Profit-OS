@@ -182,13 +182,17 @@ if (!stubs.includes("no-fake-zero-status.cjs")) {
   fails.push("stubs/run-all.cjs must include no-fake-zero-status.cjs");
 }
 
-const homeClient = read("apps/web/app/HomePageClient.tsx");
+const homeClient = read("apps/web/app/HomeDesktopClient.tsx");
 if (/principalUsdt:\s*"0"/.test(homeClient)) {
-  fails.push("HomePageClient must not invent principalUsdt 0");
+  fails.push("HomeDesktopClient must not invent principalUsdt 0");
 }
-const experience = read("packages/ui/components/home/HomeExperience.tsx");
-if (/if \(!pulse\) return T\.home\.header\.scanIdle/.test(experience)) {
-  fails.push("HomeExperience must not claim scanIdle without DayPulse Fact");
+for (const deadPath of [
+  "apps/web/app/HomePageClient.tsx",
+  "packages/ui/components/home/HomeExperience.tsx",
+]) {
+  if (fs.existsSync(path.join(root, deadPath))) {
+    fails.push(`retired Canon Home file must stay deleted, reappeared: ${deadPath}`);
+  }
 }
 
 if (fails.length) {

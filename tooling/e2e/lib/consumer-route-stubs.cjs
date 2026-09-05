@@ -80,6 +80,18 @@ function opportunityDetailPath(url) {
   return match ? decodeURIComponent(match[1]) : null;
 }
 
+function manyOpportunityItems(count) {
+  const out = [];
+  for (let i = 1; i <= count; i += 1) {
+    out.push({
+      ...TEST_OPPORTUNITY_ITEM,
+      id: `qa-windowed-opp-${String(i).padStart(2, "0")}`,
+      assetLabel: `QA 윈도잉 상품 ${i}`,
+    });
+  }
+  return out;
+}
+
 async function stubOpportunityFeed(page, mode) {
   await page.route("**/api/v1/**", (route) => {
     const url = route.request().url();
@@ -101,6 +113,9 @@ async function stubOpportunityFeed(page, mode) {
       }
       if (mode === "empty") {
         return json(route, 200, opportunityFeedBody([]));
+      }
+      if (mode === "windowed") {
+        return json(route, 200, opportunityFeedBody(manyOpportunityItems(47)));
       }
       return json(route, 200, opportunityFeedBody([TEST_OPPORTUNITY_ITEM]));
     }

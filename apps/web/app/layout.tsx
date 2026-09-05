@@ -7,6 +7,7 @@ import { FontScaleApply } from "../components/FontScaleApply";
 import { ConsumerSparkRoot } from "../components/spark-shell/ConsumerSparkRoot";
 import { PwaRuntime } from "../components/pwa/PwaRuntime";
 import { ObsRuntime } from "../components/observability/ObsRuntime";
+import { SessionRefreshRuntime } from "../components/SessionRefreshRuntime";
 
 const PRETENDARD_CSS =
   "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css";
@@ -62,6 +63,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </ConsumerSparkRoot>
         <PwaRuntime />
         <ObsRuntime />
+        <SessionRefreshRuntime />
       </body>
     </html>
   );

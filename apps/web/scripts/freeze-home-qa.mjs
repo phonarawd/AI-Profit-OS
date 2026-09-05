@@ -46,6 +46,9 @@ async function openPage(browser, url, width, height, selector) {
   await page.goto(url, { waitUntil: "domcontentloaded", timeout: 90000 });
   await page.waitForSelector(selector, { timeout: 30000 });
   await page.addStyleTag({ content: hideChrome });
+  await page.evaluate(() => {
+    document.querySelector("nextjs-portal")?.remove();
+  });
   await page.waitForTimeout(700);
   return { page, errors };
 }

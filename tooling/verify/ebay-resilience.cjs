@@ -16,6 +16,10 @@
 const { spawnSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
+const {
+  hasExactDomainToken,
+  hasExactHostPathToken,
+} = require("./lib/domain-token-scan.cjs");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
@@ -335,8 +339,19 @@ function walk(dir, out) {
   walk(apiNestSrc, allTs);
   const offenders = [];
   for (const file of allTs) {
-    const code = stripComments(fs.readFileSync(file, "utf8"));
-    if (/api\.ebay\.com|ebay\.com\/buy\/browse/i.test(code)) {
+    const code = stripComments(fs.readFileSync(file, "utf8")).toLowerCase();
+    // D1-S1E/PUTDUK-FULL-RELEASE remediation (2026-09-05, CodeQL
+    // js/regex/missing-regexp-anchor residual alert #82, descending from the
+    // already-closed #55): the prior \b-anchored regex was still flagged
+    // because CodeQL classifies these two literals as URL-like and does not
+    // accept any anchor flavor as sufficient. Structural fix: exact-token
+    // comparison via tooling/verify/lib/domain-token-scan.cjs instead of a
+    // regex `.test()` against the whole file's text — see that module's own
+    // doc comment for why this is strictly safer, not just re-anchored.
+    if (
+      hasExactDomainToken(code, "api.ebay.com") ||
+      hasExactHostPathToken(code, "ebay.com/buy/browse")
+    ) {
       offenders.push(path.relative(root, file));
     }
   }

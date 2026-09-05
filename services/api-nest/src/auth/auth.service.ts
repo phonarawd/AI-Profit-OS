@@ -16,22 +16,17 @@ import {
   ForbiddenException,
   Injectable,
   ServiceUnavailableException,
+  UnauthorizedException,
 } from "@nestjs/common";
-import { randomUUID } from "node:crypto";
-import { createRequire } from "node:module";
-import { join } from "node:path";
-import { loadPhase0Env } from "../config/phase0.env";
 import { PostgresService } from "../db/postgres";
 import { NotificationPrefsService } from "../inbox/notification-prefs.service";
 import { UserUxPrefsService } from "../ux-prefs/user-ux-prefs.service";
 import { LedgerProvisionService } from "../ledger/ledger.provision.service";
 import { PracticeGrantService } from "../ledger/practice-grant.service";
 import {
-  ACCESS_TOKEN_TTL_SEC,
   ADMIN_JWT_ISSUER,
   DELETE_ACCOUNT_CONFIRM_PHRASE,
   OAUTH_PROVIDERS,
-  USER_JWT_AUDIENCE,
   USER_JWT_ISSUER,
   type OauthProvider,
   type OnboardingStage,
@@ -58,22 +53,7 @@ import {
   assertPasskeyCredentialUnclaimed,
   rejectPasskeyCredentialInsertRace,
 } from "./passkey-registration.policy";
-
-const req = createRequire(__filename);
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const jwtCore = req(join(__dirname, "..", "..", "jwt.core.cjs")) as {
-  sign: (
-    payload: Record<string, unknown>,
-    secret: string,
-    opts: {
-      issuer: string;
-      audience: string;
-      expiresInSec: number;
-      nowMs?: number;
-      jti?: string;
-    },
-  ) => string;
-};
+import { SessionRotationService } from "./session-rotation.service";
 
 export type AuthSessionView = {
   sessionId: string;
@@ -106,6 +86,7 @@ export class AuthService {
     private readonly magicLink: MagicLinkService,
     private readonly oauthIdentity: OauthIdentityService,
     private readonly webauthn: WebauthnAssertService,
+    private readonly sessions: SessionRotationService,
   ) {}
 
   /**
@@ -370,46 +351,97 @@ export class AuthService {
     }));
   }
 
-  async refresh(sessionUser: SessionUser): Promise<{
+  /**
+   * S1F Section 7 - refresh now works from the opaque refresh-token cookie
+   * alone, WITHOUT requiring a still-valid access token (the old design
+   * required JwtAuthGuard here, which made refresh impossible once the
+   * 15-minute access token had actually expired - the one case refresh
+   * exists for). Reuse/rotation-race detection is handled inside
+   * SessionRotationService.rotate() and surfaces as a thrown
+   * ForbiddenException (controller maps this to a hard logout).
+   */
+  async refreshFromToken(refreshTokenRaw: string): Promise<{
     ok: true;
     issuer: typeof USER_JWT_ISSUER;
     accessToken: string;
+    refreshToken: string;
     session: AuthSessionView;
   }> {
-    // A deleted account's still-valid (short-TTL) access token must not be
-    // able to mint a fresh one — refresh is the one session-authority path
-    // that already round-trips the DB, so this is the minimal enforcement
-    // point (no new blacklist architecture; reuses the existing users.status
-    // tombstone this same wave introduces).
-    await this.assertAccountActive(sessionUser.userId);
-    await this.revokeSession(sessionUser);
-    const minted = await this.mintSession(sessionUser.userId);
+    if (!refreshTokenRaw) {
+      throw new UnauthorizedException("AUTH_REQUIRED");
+    }
+    const minted = await this.sessions.rotate(refreshTokenRaw);
+    if (!minted) {
+      throw new UnauthorizedException("AUTH_REQUIRED");
+    }
+    // A deleted/banned account must not be able to keep refreshing.
+    const active = await this.isAccountActive(minted.userId);
+    if (!active) {
+      await this.sessions.revokeFamily(minted.familyId);
+      throw new ForbiddenException("ACCOUNT_NOT_ACTIVE");
+    }
+    const onboardingStage = await this.loadOnboardingStage(minted.userId);
     return {
       ok: true,
       issuer: USER_JWT_ISSUER,
       accessToken: minted.accessToken,
-      session: minted.session,
+      refreshToken: minted.refreshToken,
+      session: {
+        sessionId: minted.sessionRowId,
+        userId: minted.userId,
+        issuer: USER_JWT_ISSUER,
+        issuedAt: minted.issuedAt,
+        expiresAt: minted.accessExpiresAt,
+        revoked: false,
+        onboardingStage,
+      },
     };
   }
 
-  private async assertAccountActive(userId: string): Promise<void> {
-    if (!this.db.configured()) return;
+  /** "Log out everywhere" - revokes every device/login for this user. */
+  async logoutAll(userId: string): Promise<{ ok: true }> {
+    await this.sessions.revokeAllForUser(userId);
+    return { ok: true };
+  }
+
+  async listSessions(sessionUser: SessionUser) {
+    const families = await this.sessions.listActiveFamilies(
+      sessionUser.userId,
+      sessionUser.familyId,
+    );
+    return { ok: true as const, sessions: families };
+  }
+
+  async revokeSessionFamily(sessionUser: SessionUser, familyId: string): Promise<{ ok: true }> {
+    const revoked = await this.sessions.revokeFamilyForUser(sessionUser.userId, familyId);
+    if (!revoked) throw new BadRequestException("SESSION_NOT_FOUND");
+    return { ok: true };
+  }
+
+  private async isAccountActive(userId: string): Promise<boolean> {
+    if (!this.db.configured()) return true;
     const r = await this.db.query<{ status: string }>(
       `SELECT status FROM public.users WHERE id = $1::uuid`,
       [userId],
     );
-    if (r.rows[0]?.status === "deleted") {
-      throw new ForbiddenException("ACCOUNT_DELETED");
-    }
+    const status = r.rows[0]?.status;
+    return status === "active";
   }
 
   async session(sessionUser: SessionUser): Promise<AuthSessionView> {
     let revoked = false;
-    if (this.db.configured() && sessionUser.sessionId) {
+    if (this.db.configured() && sessionUser.familyId) {
+      // Checked by family_id, not the access token's own jti (S1F Section 7
+      // - the access token's jti is a per-mint nonce with no DB row of its
+      // own under the refresh-rotation model; family_id is the real,
+      // DB-backed unit of revocation). The most recent row in the family
+      // reflects whether logout/reuse-detection has revoked this device.
       const r = await this.db.query<{ revoked: boolean }>(
         `SELECT revoked FROM public.auth_sessions
-          WHERE user_id = $1::uuid AND refresh_jti = $2`,
-        [sessionUser.userId, sessionUser.sessionId],
+          WHERE user_id = $1::uuid AND family_id = $2::uuid
+          ORDER BY issued_at DESC
+          LIMIT 1`,
+        [sessionUser.userId, sessionUser.familyId],
       );
       // No row is not "not revoked" — the session was revoked/purged (delete-
       // account hard-deletes auth_sessions rows) or never existed; either way
@@ -667,81 +699,37 @@ export class AuthService {
     );
   }
 
-  // ── session mint/revoke (real HS256 JWT — see jwt.core.cjs) ──
+  // ── session mint/revoke (S1F Section 7 - delegates to
+  // SessionRotationService for the real opaque-refresh-token rotation
+  // family model; kept here as a thin adapter so every existing caller
+  // (oauth/passkey/magic-link) picks up rotation-capable sessions for
+  // free, with zero change to their own call sites) ──
 
   private async mintSession(userId: string): Promise<{
     accessToken: string;
+    refreshToken: string;
     session: AuthSessionView;
   }> {
-    const env = loadPhase0Env();
-    if (!env.jwtUserSecret) {
-      throw new ServiceUnavailableException(
-        "JWT_USER_SECRET unset — cannot mint session (never fall back to a hardcoded secret)",
-      );
-    }
-    const jti = randomUUID();
-    const issuedAt = new Date();
-    const expiresAt = new Date(issuedAt.getTime() + ACCESS_TOKEN_TTL_SEC * 1000);
-    const accessToken = jwtCore.sign({ sub: userId }, env.jwtUserSecret, {
-      issuer: USER_JWT_ISSUER,
-      audience: USER_JWT_AUDIENCE,
-      expiresInSec: ACCESS_TOKEN_TTL_SEC,
-      jti,
-    });
-
-    if (this.db.configured()) {
-      await this.db.query(
-        `INSERT INTO public.auth_sessions (
-           user_id, issuer, refresh_jti, issued_at, expires_at
-         ) VALUES ($1::uuid, $2, $3, $4, $5)`,
-        [
-          userId,
-          USER_JWT_ISSUER,
-          jti,
-          issuedAt.toISOString(),
-          expiresAt.toISOString(),
-        ],
-      );
-    }
-
+    const minted = await this.sessions.mintNewFamily(userId);
     const onboardingStage = await this.loadOnboardingStage(userId);
     return {
-      accessToken,
+      accessToken: minted.accessToken,
+      refreshToken: minted.refreshToken,
       session: {
-        sessionId: jti,
+        sessionId: minted.sessionRowId,
         userId,
         issuer: USER_JWT_ISSUER,
-        issuedAt: issuedAt.toISOString(),
-        expiresAt: expiresAt.toISOString(),
+        issuedAt: minted.issuedAt,
+        expiresAt: minted.accessExpiresAt,
         revoked: false,
         onboardingStage,
       },
     };
   }
 
-  /**
-   * Access tokens are stateless (HS256, self-contained exp). Revoking here
-   * marks the auth_sessions row for audit/session-list purposes but does not
-   * force-invalidate an already-issued token before its (short, 15min) TTL
-   * elapses — an accepted Phase0 tradeoff; revisit with a refresh-token
-   * rotation + denylist if TTL grows or true instant revocation is required.
-   */
   private async revokeSession(sessionUser: SessionUser): Promise<void> {
-    if (!this.db.configured() || !sessionUser.sessionId) return;
-    await this.db.query(
-      `UPDATE public.auth_sessions SET revoked = true, revoked_at = now()
-        WHERE user_id = $1::uuid AND refresh_jti = $2 AND revoked = false`,
-      [sessionUser.userId, sessionUser.sessionId],
-    );
-  }
-
-  private async revokeAllSessions(userId: string): Promise<void> {
-    if (!this.db.configured()) return;
-    await this.db.query(
-      `UPDATE public.auth_sessions SET revoked = true, revoked_at = now()
-        WHERE user_id = $1::uuid AND revoked = false`,
-      [userId],
-    );
+    if (!sessionUser.familyId) return;
+    await this.sessions.revokeFamily(sessionUser.familyId);
   }
 
   private async loadOnboardingStage(userId: string): Promise<OnboardingStage> {

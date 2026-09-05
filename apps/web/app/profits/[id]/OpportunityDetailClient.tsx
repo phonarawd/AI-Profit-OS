@@ -343,16 +343,35 @@ export function OpportunityDetailClient({
           </Link>
         ) : null}
         {kind === "ready" && joinable ? (
-          <button
-            type="button"
-            className={primaryClass}
-            data-requires-preflight="true"
-            disabled={busy}
-            onClick={() => void openConfirm()}
-          >
-            {CTA_DETAIL}
-            {isMobile ? null : " →"}
-          </button>
+          <>
+            <button
+              type="button"
+              className={primaryClass}
+              data-requires-preflight="true"
+              disabled={busy}
+              onClick={() => void openConfirm()}
+            >
+              {CTA_DETAIL}
+              {isMobile ? null : " →"}
+            </button>
+            <div
+              className={isMobile ? "sdrm-cta-badges" : "sdr-badges"}
+              data-testid="execution-no-buy-sell-badges"
+            >
+              <span className={isMobile ? "sdrm-cta-badge" : "sdr-badge"}>
+                {T.execution.badgeNoBuy}
+              </span>
+              <span className={isMobile ? "sdrm-cta-badge" : "sdr-badge"}>
+                {T.execution.badgeNoSell}
+              </span>
+            </div>
+            <p
+              className={isMobile ? "sdrm-cta-disclaimer" : "sdr-disclaimer"}
+              data-testid="execution-disclaimer-result"
+            >
+              {T.execution.disclaimerResult}
+            </p>
+          </>
         ) : null}
         {kind === "ready" && funding ? (
           <Link className={primaryClass} href="/wallet/deposit">

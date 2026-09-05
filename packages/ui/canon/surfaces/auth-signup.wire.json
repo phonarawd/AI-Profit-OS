@@ -7,6 +7,7 @@
     { "id": "brand", "role": "brand", "copyKey": "T.brand.consumer" },
     { "id": "headline", "role": "heading", "copyKey": "T.auth.signupHeadline" },
     { "id": "kakao", "role": "primary", "copyKey": "T.auth.kakaoStart" },
+    { "id": "classicSignup", "role": "secondary", "copyKey": "T.authClassic.classicSignupStart", "route": "/auth/signup/classic" },
     { "id": "google", "role": "secondary", "copyKey": "T.auth.googleStart" },
     { "id": "passkey", "role": "secondary", "copyKey": "T.auth.passkeyStart" },
     { "id": "emailFields", "role": "form", "copyKey": "T.auth.emailForm", "when": "email_path" },
@@ -26,5 +27,5 @@
   ],
   "stage": "A",
   "tone": "utility",
-  "notes": "Stage A immediate signup · Stage B = auth-complete-profile · Kakao primary · gender0"
+  "notes": "Stage A immediate signup - Stage B = auth-complete-profile - Kakao primary - gender0 - classicSignup added S1F 2026-09-05 (Section 5): visible, findable, not a hidden link"
 }

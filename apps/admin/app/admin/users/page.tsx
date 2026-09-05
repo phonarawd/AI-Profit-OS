@@ -4,7 +4,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { T } from "@aipo/ui/copy/ko";
 import { isUuid } from "../../../lib/admin-truth";
-import { AdminTruth } from "../../../components/AdminTruth";
+import { UsersListPanel } from "./UsersListPanel";
 
 export default function Page() {
   const router = useRouter();
@@ -28,19 +28,7 @@ export default function Page() {
       <p className="mt-2 text-sm text-lux-text-muted">
         회원 번호로 한 명씩 찾아 등급, 이용 상태, 입출금 기록을 확인합니다.
       </p>
-      <section
-        className="mt-6 rounded border border-lux-border p-4"
-        data-metric="user-list"
-        data-truth="unavailable"
-      >
-        <h2 className="text-base font-medium">전체 회원 수</h2>
-        <p className="mt-2">
-          <AdminTruth value={null} testId="admin-users-list" />
-        </p>
-        <p className="mt-1 text-xs text-lux-text-muted">
-          전체 회원 목록 연결이 아직 준비되지 않았습니다. 회원 번호를 알고 있는 회원은 아래에서 찾을 수 있습니다.
-        </p>
-      </section>
+      <UsersListPanel />
 
       <form className="mt-6 space-y-3" onSubmit={onSubmit}>
         <label className="block text-sm" htmlFor="admin-user-jump">

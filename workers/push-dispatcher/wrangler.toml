@@ -10,7 +10,17 @@ PUSH_ENABLED = "true"
 
 [env.production]
 name = "push-dispatcher"
-vars = { SERVICE = "push-dispatcher", PHASE = "0" }
+# D1-BLK-011: wrangler 4.120's `vars` is @nonInheritable per named environment
+# (same root cause as the 6-G Cloudflare Images binding fix in infra/web and
+# infra/ops wrangler.toml) - this block does NOT inherit the top-level
+# [vars] PUSH_ENABLED="true" above. PUSH_ENABLED is listed here explicitly as
+# "false" to make the actual effective production value visible instead of a
+# silent accidental omission; this preserves current behaviour exactly
+# (isPushEnabled(undefined) was already false; isPushEnabled("false") is also
+# false). Flipping this to "true" is a product/Owner decision (it would
+# start sending real push notifications to production users), not an infra
+# fix - do not change without that explicit sign-off.
+vars = { SERVICE = "push-dispatcher", PHASE = "0", PUSH_ENABLED = "false" }
 
 [env.preview]
 name = "push-dispatcher-preview"

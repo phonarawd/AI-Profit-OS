@@ -223,12 +223,14 @@ const RULES = [
   },
   {
     test: (f) =>
-      /^apps\/web\/lib\/opportunity-card-map\.ts$/.test(f) ||
       /^apps\/web\/components\/spark-dash-home\/format\.ts$/.test(f) ||
-      /^packages\/ui\/components\/opportunity\/money-display\.ts$/.test(f) ||
-      /^packages\/ui\/components\/opportunity\/Opportunity(Card|Detail)\.tsx$/.test(
+      /^apps\/web\/components\/spark-dash-home\/Home(Desktop|Mobile)\.tsx$/.test(
         f,
       ) ||
+      /^apps\/web\/components\/spark-dash-profits\/Opportunity(Card|Metrics)\.tsx$/.test(
+        f,
+      ) ||
+      /^packages\/ui\/components\/opportunity\/money-display\.ts$/.test(f) ||
       /^packages\/ui\/components\/trust\/ParticipateProofPanel\.tsx$/.test(f) ||
       /^tooling\/e2e\/lib\/money-unavailable\.cjs$/.test(f) ||
       /^tooling\/e2e\/specs\/money-unavailable\.spec\.cjs$/.test(f) ||
@@ -281,6 +283,18 @@ const RULES = [
       /^services\/api-nest\/src\/config\/nest-provenance\.ts$/.test(f) ||
       /^tooling\/verify\/nest-production-provenance\.cjs$/.test(f),
     scripts: ["nest-production-provenance.cjs", "api-nest-build.cjs"],
+  },
+  {
+    // D1-BLK-004 (2026-09-05): packages/ui had zero standalone typecheck
+    // coverage — any file no app happened to import was never type-checked
+    // by anything. Scoped to packages/ui/** only (not apps/web/**, which is
+    // handled by its own per-app tsc as before) so this does not duplicate
+    // or slow down unrelated apps/web-only slices.
+    test: (f) =>
+      /^packages\/ui\//.test(f) ||
+      /^tooling\/verify\/packages-ui-typecheck\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/packages-ui-typecheck-negative\.fixture\.tsx$/.test(f),
+    scripts: ["packages-ui-typecheck.cjs"],
   },
   {
     test: (f) => /^(packages\/ui\/|apps\/web\/)/.test(f),
@@ -394,11 +408,10 @@ const RULES = [
   {
     test: (f) =>
       /^apps\/web\/app\/page\.tsx$/.test(f) ||
-      /^apps\/web\/app\/HomePageClient\.tsx$/.test(f) ||
-      /^apps\/web\/app\/_components\/HomePageClient\.tsx$/.test(f) ||
-      /^apps\/web\/components\/HomePageClient\.tsx$/.test(f) ||
+      /^apps\/web\/app\/HomeDesktopClient\.tsx$/.test(f) ||
+      /^apps\/web\/components\/spark-dash-home\//.test(f) ||
       /^packages\/sdk\/src\/user-feed\//.test(f) ||
-      /HomePrincipalRail/.test(f) ||
+      /^governance\/runtime-surfaces\.v1\.json$/.test(f) ||
       /home-principal-slots/.test(f) ||
       /^packages\/sdk\/src\/growth\//.test(f) ||
       /^services\/api-nest\/src\/growth\//.test(f),
@@ -784,7 +797,17 @@ const RULES = [
       /^governance\/release-master\/REL-222-ADMIN-OPS\.md$/.test(f) ||
       /^tooling\/verify\/rel-222-admin-ops\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/rel-222-admin-ops\.v1\.json$/.test(f) ||
-      /^supabase\/migrations\/\d+_admin_ops_intents\.sql$/.test(f),
+      /^supabase\/migrations\/\d+_admin_ops_intents\.sql$/.test(f) ||
+      // PUTDUK continuation session, Step 7.3: admin-capabilities.ts drives
+      // this check's "REL-222 must reuse all, not invent <capability>" scan
+      // over AdminOpsAdminController's own block - a change anywhere in
+      // this shared file (even an unrelated controller's entry) can flip
+      // that scan's result, as this task's own TradesAdminController
+      // addition just proved by exposing a real block-boundary bug in the
+      // scan itself. Local T0/T1 had no domain-by-path rule tying the two
+      // together before this, so that class of regression only surfaced
+      // in full CI, not locally.
+      f === "services/api-nest/src/common/admin-capabilities.ts",
     scripts: ["rel-222-admin-ops.cjs"],
   },
   {
@@ -1211,7 +1234,9 @@ const RULES = [
       /packages\/ui\/components\/lux\/(VirtualList|VirtualTicker|FluidCard|TouchButton|LivePayoutTicker)\./.test(
         f,
       ) ||
-      /packages\/ui\/components\/opportunity\/VirtualOpportunityList\./.test(f) ||
+      /apps\/web\/components\/spark-dash-profits\/VirtualOpportunityGrid\./.test(
+        f,
+      ) ||
       /packages\/sdk\/src\/device-tier\.ts/.test(f) ||
       /apps\/web\/components\/DeviceTierApply\./.test(f) ||
       /tooling\/verify\/responsive(\.cjs|\/)/.test(f),
@@ -1342,7 +1367,28 @@ const RULES = [
       "settlement-rule-parity.cjs",
       "participate-http.cjs",
       "execute-rule-loop.cjs",
+      "trades-execution-race.runtime.cjs",
+      "participate-atomicity.runtime.cjs",
+      "trades-reconcile.runtime.cjs",
+      "trades-payout-reserve.runtime.cjs",
     ],
+  },
+  {
+    // PUTDUK continuation session, Step 7.1 - ledger.posting.service.ts is
+    // not matched by the broad money/bucket/ledger regex's own file-name
+    // substring test's neighbor above only via "ledger", which already
+    // triggers pg-module-scan/bucket-invariant; this narrower, precise
+    // rule additionally re-runs the exact lock+trade atomicity regression
+    // whenever the shared posting core or its one current
+    // postJournalInTransaction caller changes, without broadening the
+    // wider money/bucket/deposit/withdraw/referral/mission/benefit regex
+    // (which would re-run this build+compile-heavy check for many
+    // unrelated files that regex already matches).
+    test: (f) =>
+      f === "services/api-nest/src/ledger/ledger.posting.service.ts" ||
+      f === "services/api-nest/src/opportunities/participate.atomicity.selftest.ts" ||
+      f === "tooling/verify/participate-atomicity.runtime.cjs",
+    scripts: ["participate-atomicity.runtime.cjs"],
   },
   {
     test: (f) =>
@@ -1391,7 +1437,12 @@ const RULES = [
   {
     test: (f) =>
       (/^services\/api-nest\//.test(f) && /auth/i.test(f)) ||
-      /packages\/.*jwt/i.test(f),
+      /packages\/.*jwt/i.test(f) ||
+      // S1F Section 6.3/6.4 - Turnstile + distributed rate limiter live
+      // under src/common/ (not src/auth/) but are launch-critical auth
+      // write-endpoint defenses, so they must trigger the same domain
+      // gate as everything else on the signup/login/reset path.
+      /^services\/api-nest\/src\/common\/turnstile\.(service|guard)\.ts$/.test(f),
     scripts: [
       "auth-jwt-runtime.cjs",
       "auth-flows.cjs",
@@ -1399,6 +1450,46 @@ const RULES = [
       "auth-rate-limit.cjs",
       "auth-identity-proof.runtime.cjs",
     ],
+  },
+  {
+    // S1F Section 11 - refresh-token rotation + reuse detection. This is
+    // the highest-value regression suite this session added (see
+    // session-rotation.reuse.runtime.test.ts's own header comment) - it
+    // had zero automated coverage before, despite guarding real
+    // account/session takeover-recovery behavior.
+    test: (f) =>
+      f === "services/api-nest/src/auth/session-rotation.service.ts" ||
+      f === "services/api-nest/src/auth/session-rotation.reuse.selftest.ts",
+    scripts: ["auth-session-rotation-reuse.runtime.cjs"],
+  },
+  {
+    // S1F Section 7 - client-side refresh-and-retry-once fetch wrapper. A
+    // regression here silently reverts users to "logged out every 15
+    // minutes" (see governance/release-master/evidence/
+    // REL-710-714-PLAN-SSOT-UPDATE-HANDOFF.md sibling note for context).
+    test: (f) =>
+      f === "apps/web/lib/session-refresh-fetch.ts" ||
+      f === "apps/web/components/SessionRefreshRuntime.tsx" ||
+      f === "apps/web/app/layout.tsx",
+    scripts: ["auth-session-refresh-fetch.runtime.cjs"],
+  },
+  {
+    // S1F Section 9.1 - admin members directory. The controller filename
+    // already matches the generic "*.admin.controller.ts" -> admin-boundary
+    // rule above, but the service file (users-admin.service.ts) does not
+    // match any suffix pattern on its own - this closes that gap so a
+    // service-only change (e.g. a new SQL filter) still re-runs the real
+    // adversarial RBAC round-trip.
+    test: (f) =>
+      /^services\/api-nest\/src\/users\//.test(f) ||
+      // PUTDUK continuation session, Step 7.3: admin-capabilities.ts is
+      // the deny-by-default classification source of truth for EVERY
+      // admin controller/route - a change here (e.g. adding
+      // TradesAdminController.reconcileTick) had no domain-by-path rule
+      // at all before this, so a real classification mistake here could
+      // land without the adversarial RBAC round-trip test ever re-running.
+      f === "services/api-nest/src/common/admin-capabilities.ts",
+    scripts: ["admin-boundary.cjs"],
   },
   {
     test: (f) =>

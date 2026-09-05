@@ -13,6 +13,10 @@ export {
   type ExecutionSuccessReceiptProps,
 } from "./ExecutionSuccessReceipt";
 export {
+  PriceCompareMargin,
+  type PriceCompareMarginProps,
+} from "./PriceCompareMargin";
+export {
   ExecutionSafeStop,
   type ExecutionSafeStopProps,
   type SafeStopRecommend,

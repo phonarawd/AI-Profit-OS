@@ -24,13 +24,19 @@ function read(rel) {
 const files = [
   "packages/ui/copy/ko/loop.ts",
   "packages/ui/canon/surfaces/preflight-confirm.wire.json",
-  "packages/ui/components/loop/PreCTA.tsx",
-  "packages/ui/components/opportunity/OpportunityConfirm.tsx",
   "services/api-nest/src/loop/preflight.service.ts",
   "services/api-nest/src/opportunities/participate.service.ts",
   "services/api-nest/src/opportunities/opportunities.user.controller.ts",
   "schemas/participate-request.v1.json",
   "schemas/toast-codes.v1.json",
+  // live PreCTA-equivalent (2026-09-04): the pre-Spark-Dash
+  // packages/ui/components/loop/PreCTA.tsx + opportunity/OpportunityConfirm.tsx
+  // are deleted (dead, unreachable). The live "confirm before participate"
+  // step is apps/web/components/spark-dash-room/ParticipateConfirmSheet.tsx,
+  // opened from OpportunityDetailClient.tsx after a real issuePreflight()
+  // call - checked below instead of mustExist on the dead files.
+  "apps/web/components/spark-dash-room/ParticipateConfirmSheet.tsx",
+  "apps/web/app/profits/[id]/OpportunityDetailClient.tsx",
 ];
 for (const f of files) mustExist(f);
 
@@ -54,25 +60,38 @@ if (copy.includes('mayStop:') && /무조건/.test(copy.replace(/forbiddenPhrases
   }
 }
 
-const precta = read("packages/ui/components/loop/PreCTA.tsx");
-for (const needle of [
-  'data-testid="precta"',
-  'data-canon="preflight-confirm"',
-  'data-may-stop="true"',
-  "T.loop.mayStop",
-  'data-skip-forbidden="true"',
-]) {
-  if (precta && !precta.includes(needle)) {
-    fails.push(`PreCTA missing: ${needle}`);
-  }
+// NOTE (2026-09-04): repointed from the dead pre-Spark-Dash
+// packages/ui/components/loop/PreCTA.tsx + opportunity/OpportunityConfirm.tsx
+// (deleted, unreachable) to the live confirm-before-participate surface.
+const sheet = read(
+  "apps/web/components/spark-dash-room/ParticipateConfirmSheet.tsx",
+);
+if (sheet && !sheet.includes("mayStop")) {
+  fails.push("ParticipateConfirmSheet missing mayStop prop/text");
+}
+const detailClient = read(
+  "apps/web/app/profits/[id]/OpportunityDetailClient.tsx",
+);
+if (detailClient && !detailClient.includes("issuePreflight")) {
+  fails.push("OpportunityDetailClient must call issuePreflight before participate");
+}
+if (detailClient && !detailClient.includes('data-requires-preflight="true"')) {
+  fails.push("OpportunityDetailClient CTA must require preflight");
+}
+if (detailClient && !detailClient.includes("ParticipateConfirmSheet")) {
+  fails.push("OpportunityDetailClient must mount ParticipateConfirmSheet");
+}
+if (detailClient && !detailClient.includes("preflightToken")) {
+  fails.push("OpportunityDetailClient must thread preflightToken to participate");
 }
 
-const confirm = read("packages/ui/components/opportunity/OpportunityConfirm.tsx");
-if (confirm && !confirm.includes("PreCTA")) {
-  fails.push("OpportunityConfirm must mount PreCTA");
-}
-if (confirm && !confirm.includes('data-requires-preflight="true"')) {
-  fails.push("OpportunityConfirm CTA must require preflight");
+for (const deadPath of [
+  "packages/ui/components/loop/PreCTA.tsx",
+  "packages/ui/components/opportunity/OpportunityConfirm.tsx",
+]) {
+  if (fs.existsSync(path.join(root, deadPath))) {
+    fails.push(`retired pre-Spark-Dash preflight UI must stay deleted, reappeared: ${deadPath}`);
+  }
 }
 
 const wire = JSON.parse(
