@@ -797,7 +797,17 @@ const RULES = [
       /^governance\/release-master\/REL-222-ADMIN-OPS\.md$/.test(f) ||
       /^tooling\/verify\/rel-222-admin-ops\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/rel-222-admin-ops\.v1\.json$/.test(f) ||
-      /^supabase\/migrations\/\d+_admin_ops_intents\.sql$/.test(f),
+      /^supabase\/migrations\/\d+_admin_ops_intents\.sql$/.test(f) ||
+      // PUTDUK continuation session, Step 7.3: admin-capabilities.ts drives
+      // this check's "REL-222 must reuse all, not invent <capability>" scan
+      // over AdminOpsAdminController's own block - a change anywhere in
+      // this shared file (even an unrelated controller's entry) can flip
+      // that scan's result, as this task's own TradesAdminController
+      // addition just proved by exposing a real block-boundary bug in the
+      // scan itself. Local T0/T1 had no domain-by-path rule tying the two
+      // together before this, so that class of regression only surfaced
+      // in full CI, not locally.
+      f === "services/api-nest/src/common/admin-capabilities.ts",
     scripts: ["rel-222-admin-ops.cjs"],
   },
   {
