@@ -151,3 +151,58 @@ console.log("[verify:rel-202-admin-users] PASS");
 `ADMIN_USERS_LIST_BACKEND` = DONE. `ADMIN_USERS_LIST_FRONTEND` =
 COMPONENT_READY_NOT_WIRED (tool-blocked, not a design or implementation
 gap - the fix is a 3-line, already-fully-specified change above).
+
+## Resolution (2026-09-06, PUTDUK continuation session)
+
+- Reproduced the same Write/StrReplace "malformed hook input" block on
+  this exact file on the first attempt (confirms this is a real, repo-wide
+  tool limitation, not something specific to the previous session or to
+  this one file). Root-caused it empirically instead of guessing: the
+  block triggers specifically when a single tool-call argument combines a
+  literal double-quote character with adjacent multi-byte Korean text in
+  the same short span; Korean text alone (no embedded quotes right next
+  to it) and pure-ASCII payloads of any size both go through cleanly.
+  Verified with isolated round-trip tests before touching any real file.
+- Applied the fix per this task's own instruction (Node fs.readFileSync/
+  writeFileSync, not the same blocked method repeated): wrote a small
+  temp .cjs patch script (pure ASCII source, no Korean literals at all)
+  that locates page.tsx's edit points by ASCII-only anchors (the
+  AdminTruth import line, the data-metric="user-list" attribute, the
+  closing section tag) and splices in the 3-line change described above,
+  so the script itself never needs to contain the Korean text it edits
+  around. Confirmed with git diff --stat (2 insertions / 14 deletions -
+  the import swap plus stub removal, nothing else) and git diff --check
+  (clean) after normalizing line endings back to the file's original
+  LF-only convention - the edit tooling on this Windows session
+  intermittently re-saved files as CRLF regardless of the original
+  convention, so every edit in this session was checked and
+  re-normalized whenever that happened.
+- apps/admin/app/admin/users/page.tsx: now imports and renders
+  UsersListPanel in place of the permanent stub; the AdminTruth import
+  (only used by the removed stub) was dropped to avoid an unused-import
+  error; the UUID-jump form is unchanged.
+- apps/admin/app/admin/users/UsersListPanel.tsx: rewritten (the new file
+  content has no Korean-plus-quote combination either, so it wrote
+  directly) to wire the backend's real search, status filter, signup-
+  method filter, order toggle, and page navigation, with loading, empty,
+  error-plus-retry, and truthful total-count states - all copy sourced
+  from packages/ui/copy/ko/admin.ts (T.admin.usersList.*), no hardcoded
+  Korean strings in the component per korean-ui.mdc.
+- tooling/verify/rel-202-admin-users.cjs: reapplied the structural
+  version prepared in this doc, adapted exactly as this task's own
+  instructions required - split into a page.tsx check (jump form intact,
+  imports and renders UsersListPanel, never hardcodes the permanent
+  unavailable truth again) and a UsersListPanel.tsx check (calls the real
+  endpoint, wires every backend filter param, computes its truth
+  attribute from the live response). Also fixed a false-positive in the
+  backend PII scan: the original needle list flagged the SQL fragment
+  that checks password_hash IS NOT NULL (an existence check used only to
+  classify signup_method, never returning the hash) as if it were a
+  leaked column - narrowed the scan to exclude that one known-safe
+  pattern before checking for an actual SELECTed forbidden column.
+- Verified: node tooling/verify/rel-202-admin-users.cjs PASS,
+  verify:admin-novice-ui PASS, verify:admin-routes PASS, verify:korean-ui
+  PASS, scoped tsc --noEmit -p apps/admin/tsconfig.json clean.
+- ADMIN_USERS_LIST_FRONTEND = DONE (superseding COMPONENT_READY_NOT_WIRED
+  above - kept verbatim as the historical record of what was blocked and
+  why).
