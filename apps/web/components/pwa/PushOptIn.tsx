@@ -6,6 +6,7 @@ import {
   registerPushSubscription,
 } from "@aipo/sdk/push";
 import { pwaCopy } from "./copy";
+import { shouldSuppressPwaChrome } from "./suppress-pwa-chrome";
 
 const DISMISS_KEY = "putduk.push.dismissedAt";
 const COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
@@ -34,6 +35,8 @@ export function PushOptIn() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    if (process.env.NEXT_PUBLIC_PUSH_ENABLED === "false") return;
+    if (shouldSuppressPwaChrome()) return;
     const gate = canRequestPush();
     if (!gate.ok) return;
     if (typeof Notification !== "undefined" && Notification.permission === "granted") {

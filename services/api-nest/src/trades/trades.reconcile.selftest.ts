@@ -33,8 +33,16 @@ class FakeReconcileDb {
     return true;
   }
 
+  lockHeld = false;
+
   async query<T>(sql: string, params: unknown[] = []): Promise<{ rows: T[] }> {
     this.queries.push({ sql, params });
+    if (sql.includes("pg_try_advisory_lock")) {
+      return { rows: [{ locked: !this.lockHeld }] as unknown as T[] };
+    }
+    if (sql.includes("pg_advisory_unlock")) {
+      return { rows: [] as unknown as T[] };
+    }
     if (sql.includes("FROM public.trade_executions") && sql.includes("status IN")) {
       const limit = Number(params[1]);
       return { rows: this.rows.slice(0, limit) as unknown as T[] };
@@ -183,7 +191,7 @@ async function main() {
     db.rows = [];
     const svc = makeService(db);
     await svc.reconcileStuckTrades({ graceSec: 45 });
-    const q = db.queries[0];
+    const q = db.queries.find((item) => item.sql.includes("status IN"));
     const cutoffIso = q?.params?.[0] as string;
     const cutoffMs = Date.parse(cutoffIso);
     const nowMs = Date.parse("2026-09-06T00:10:00.000Z");
@@ -223,6 +231,27 @@ async function main() {
       "limit option bounds how many candidates are processed in one call",
       result.candidates === 3 && result.reconciled === 3,
       `candidates=${result.candidates}`,
+    );
+  }
+
+  {
+    const db = new FakeReconcileDb();
+    db.lockHeld = true;
+    db.rows = [{ id: "trade-lease", user_id: "user-lease" }];
+    const svc = makeService(db);
+    let ticks = 0;
+    stubExecuteTick(svc, async () => {
+      ticks += 1;
+      throw new Error("lease must not call executeTick");
+    });
+    const result = await svc.reconcileStuckTrades();
+    record(
+      "held advisory lock processes 0 trades",
+      result.skipped === "lease_held" &&
+        result.candidates === 0 &&
+        result.reconciled === 0 &&
+        ticks === 0,
+      `skipped=${result.skipped} ticks=${ticks}`,
     );
   }
 

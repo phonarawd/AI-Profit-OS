@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { pwaCopy } from "./copy";
+import { shouldSuppressPwaChrome } from "./suppress-pwa-chrome";
 
 const DISMISS_KEY = "putduk.install.dismissedAt";
 const COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
@@ -55,6 +56,7 @@ export function InstallPrompt() {
   const [ios, setIos] = useState(false);
 
   useEffect(() => {
+    if (shouldSuppressPwaChrome()) return;
     if (isStandalone() || dismissedRecently()) return;
 
     const onPrompt = (event: Event) => {

@@ -113,6 +113,16 @@ if (!install.includes("beforeinstallprompt")) {
 if (!install.includes("display-mode: standalone")) {
   fails.push("InstallPrompt must hide when installed");
 }
+if (!install.includes("shouldSuppressPwaChrome")) {
+  fails.push("InstallPrompt must suppress overlay during onboarding/money flows");
+}
+const push = read("apps/web/components/pwa/PushOptIn.tsx");
+if (!push.includes("shouldSuppressPwaChrome")) {
+  fails.push("PushOptIn must suppress overlay during onboarding/money flows");
+}
+if (!push.includes("NEXT_PUBLIC_PUSH_ENABLED")) {
+  fails.push("PushOptIn must not promise alerts when NEXT_PUBLIC_PUSH_ENABLED=false");
+}
 
 const update = read("apps/web/components/pwa/SwUpdateToast.tsx");
 if (!update.includes("SKIP_WAITING")) {

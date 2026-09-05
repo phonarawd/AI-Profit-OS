@@ -42,6 +42,8 @@ if (copy) {
     "toneMid",
     "toneSenior",
     "startApp",
+    "progressLabel",
+    "partnerCatalogNote",
   ]) {
     if (!copy.includes(`${k}:`)) fails.push(`onboarding.ts missing ${k}`);
   }
@@ -65,6 +67,10 @@ if (flow) {
     "T.landing.ctaStartUtility",
     "T.landing.transitionDisclosure",
     "compareMiniUtility",
+    "onboarding-progress",
+    "headingRef",
+    "DONE_KEY",
+    "partnerCatalogNote",
   ]) {
     if (!flow.includes(need)) fails.push(`OnboardingFlow missing ${need}`);
   }

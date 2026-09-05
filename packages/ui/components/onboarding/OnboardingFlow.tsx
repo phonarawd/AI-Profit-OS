@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { applyFontScale } from "../../tokens/font-scale";
 import { T } from "../../copy/ko";
 import { BrandMark } from "../brand/BrandMark";
@@ -36,7 +36,18 @@ const STEPS: Step[] = [
 ];
 
 const STORAGE_KEY = "peotteok_onboarding_step";
+const DONE_KEY = "peotteok_onboarding_done";
 const TONE_KEY = "peotteok_tone_band";
+const STAGE_COUNT = 4;
+const STAGE_OF: Record<Step, number> = {
+  tone: 1,
+  identity: 1,
+  partner: 2,
+  demo: 2,
+  usdt: 3,
+  action: 4,
+  payout: 4,
+};
 
 /** Skip allowed = USDT only (§6.4) */
 const SKIPPABLE: Step[] = ["usdt"];
@@ -50,20 +61,29 @@ export function OnboardingFlow() {
   const [step, setStep] = useState<Step>("tone");
   const [tone, setTone] = useState<ToneBand>("mid");
   const [demoOpen, setDemoOpen] = useState(false);
+  const headingRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY) as Step | null;
+      const saved = localStorage.getItem(STORAGE_KEY);
       const savedTone = localStorage.getItem(TONE_KEY) as ToneBand | null;
       if (savedTone && ["young", "mid", "senior"].includes(savedTone)) {
         setTone(savedTone);
         if (savedTone === "senior") applyFontScale("lg");
       }
-      if (saved && STEPS.includes(saved)) setStep(saved);
+      if (saved === "done" || localStorage.getItem(DONE_KEY) === "1") {
+        setStep("payout");
+      } else if (saved && STEPS.includes(saved as Step)) {
+        setStep(saved as Step);
+      }
     } catch {
       /* ignore */
     }
   }, []);
+
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, [step]);
 
   function persist(next: Step, nextTone?: ToneBand) {
     setStep(next);
@@ -98,7 +118,8 @@ export function OnboardingFlow() {
 
   function finish() {
     try {
-      localStorage.setItem(STORAGE_KEY, "done");
+      localStorage.setItem(DONE_KEY, "1");
+      localStorage.setItem(STORAGE_KEY, "payout");
     } catch {
       /* ignore */
     }
@@ -106,6 +127,10 @@ export function OnboardingFlow() {
   }
 
   const toneCopy = T.onboarding[tone];
+  const stage = STAGE_OF[step];
+  const progressLabel = T.onboarding.progressLabel
+    .replace("{current}", String(stage))
+    .replace("{total}", String(STAGE_COUNT));
 
   return (
     <main
@@ -114,6 +139,14 @@ export function OnboardingFlow() {
       data-tone-band={tone}
       className="flex flex-1 flex-col gap-6"
     >
+      <p
+        role="status"
+        aria-live="polite"
+        data-testid="onboarding-progress"
+        className="text-center text-xs text-lux-text-muted"
+      >
+        {progressLabel}
+      </p>
       {step === "tone" ? (
         <section data-testid="onboarding-tone" className="space-y-4">
           <BrandMark size="hero" />
@@ -123,7 +156,11 @@ export function OnboardingFlow() {
           >
             {T.landing.transitionDisclosure}
           </p>
-          <h1 className="text-center text-xl font-semibold">
+          <h1
+            ref={headingRef}
+            tabIndex={-1}
+            className="text-center text-xl font-semibold outline-none"
+          >
             {T.onboarding.tonePickTitle}
           </h1>
           <div className="flex flex-col gap-3">
@@ -162,7 +199,11 @@ export function OnboardingFlow() {
           className="space-y-4"
         >
           <BrandMark size="hero" />
-          <h1 className="text-center text-xl font-semibold">
+          <h1
+            ref={headingRef}
+            tabIndex={-1}
+            className="text-center text-xl font-semibold outline-none"
+          >
             {T.onboarding.identityHeadline}
           </h1>
           <p className="text-center text-sm text-lux-text-muted">
@@ -211,9 +252,16 @@ export function OnboardingFlow() {
 
       {step === "partner" ? (
         <section data-testid="onboarding-partner-slide" className="space-y-4">
-          <h1 className="text-center text-xl font-semibold">
+          <h1
+            ref={headingRef}
+            tabIndex={-1}
+            className="text-center text-xl font-semibold outline-none"
+          >
             {T.onboarding.partnerSlideLead}
           </h1>
+          <p className="text-center text-sm text-lux-text-muted">
+            {T.onboarding.partnerCatalogNote}
+          </p>
           <MarketPartnerTrustStrip tier="A" />
           <TouchButton
             variant="primary"
@@ -240,7 +288,11 @@ export function OnboardingFlow() {
           data-canon="onboarding-demo-card"
           className="space-y-4"
         >
-          <h1 className="text-center text-xl font-semibold">
+          <h1
+            ref={headingRef}
+            tabIndex={-1}
+            className="text-center text-xl font-semibold outline-none"
+          >
             {T.onboarding.demoHeadline}
           </h1>
           <p className="text-center text-sm text-lux-text-muted">
@@ -279,7 +331,11 @@ export function OnboardingFlow() {
 
       {step === "usdt" ? (
         <section data-testid="onboarding-usdt" className="space-y-4">
-          <h1 className="text-center text-xl font-semibold">
+          <h1
+            ref={headingRef}
+            tabIndex={-1}
+            className="text-center text-xl font-semibold outline-none"
+          >
             {T.onboarding.usdtHeadline}
           </h1>
           <p className="text-center text-sm text-lux-text-muted">
@@ -332,7 +388,11 @@ export function OnboardingFlow() {
 
       {step === "action" ? (
         <section data-testid="onboarding-action" className="space-y-4">
-          <h1 className="text-center text-xl font-semibold">
+          <h1
+            ref={headingRef}
+            tabIndex={-1}
+            className="text-center text-xl font-semibold outline-none"
+          >
             {T.onboarding.actionHeadline}
           </h1>
           <MotionCTA
@@ -355,7 +415,11 @@ export function OnboardingFlow() {
 
       {step === "payout" ? (
         <section data-testid="onboarding-payout" className="space-y-4">
-          <h1 className="text-center text-xl font-semibold">
+          <h1
+            ref={headingRef}
+            tabIndex={-1}
+            className="text-center text-xl font-semibold outline-none"
+          >
             {T.onboarding.payoutHeadline}
           </h1>
           <p className="text-center text-sm text-lux-text-muted">

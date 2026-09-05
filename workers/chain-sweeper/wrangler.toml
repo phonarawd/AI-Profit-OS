@@ -7,7 +7,9 @@ compatibility_flags = ["nodejs_compat"]
 SERVICE = "chain-sweeper"
 PHASE = "1"
 
-# Phase1 cron — Nest owns Phase0 in-process tick
+# Phase1 cron — Nest owns Phase0 in-process tick.
+# Secrets (named env, not inherited vars): NEST_SWEEP_TICK_URL,
+# NEST_RECONCILE_TICK_URL, INTERNAL_WALLET_TICK_TOKEN.
 [triggers]
 crons = ["*/2 * * * *"]
 

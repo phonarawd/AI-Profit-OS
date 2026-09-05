@@ -79,6 +79,31 @@ if (!routes.includes("reconcile-tick")) {
 if (!mod.includes("TradesAdminController")) {
   fail("TradesModule must register TradesAdminController");
 }
+const internalCtrl = read(
+  "services/api-nest/src/trades/trades.internal.controller.ts",
+);
+if (!internalCtrl.includes("internal/trades/reconcile-tick")) {
+  fail("TradesInternalController must expose internal/trades/reconcile-tick");
+}
+if (!internalCtrl.includes("INTERNAL_WALLET_TICK_TOKEN_UNSET")) {
+  fail("machine reconcile must fail-closed when token unset");
+}
+if (!internalCtrl.includes("INTERNAL_WALLET_TICK_TOKEN_INVALID")) {
+  fail("machine reconcile must 401 on token mismatch");
+}
+if (!mod.includes("TradesInternalController")) {
+  fail("TradesModule must register TradesInternalController");
+}
+const sweeper = read("workers/chain-sweeper/src/index.ts");
+if (!sweeper.includes("NEST_RECONCILE_TICK_URL")) {
+  fail("chain-sweeper scheduled tick must be able to call NEST_RECONCILE_TICK_URL");
+}
+if (!sweeper.includes("x-internal-wallet-token")) {
+  fail("chain-sweeper reconcile forward must send x-internal-wallet-token");
+}
+if (!svc.includes("pg_try_advisory_lock")) {
+  fail("reconcileStuckTrades must take pg_try_advisory_lock before drain");
+}
 if (!/TradesAdminController:\s*\{[^}]*reconcileTick/.test(caps)) {
   fail("admin-capabilities.ts must classify TradesAdminController.reconcileTick (deny-by-default otherwise)");
 }

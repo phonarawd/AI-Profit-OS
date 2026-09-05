@@ -35,6 +35,9 @@ import { SimulationAdminService } from "../simulation/simulation.admin.service";
 import { toRulePolicy } from "../execution-policy/execution-policy.mi";
 import { mergeEffectivePolicy } from "../membership/membership.mi";
 
+/** 두 worker가 같은 stuck page를 동시에 drain하지 않게 하는 session-level lease */
+const RECONCILE_LEASE_KEY = 76090603;
+
 const req = createRequire(__filename);
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const settlementRule = req(
@@ -162,16 +165,11 @@ export class TradeExecutionService {
    * a fabricated success (MATCH_SUCCESS requires the Rule's own match
    * conditions, which the hard-deadline check short-circuits past first).
    *
-   * Exposed via POST /api/v1/admin/trades/reconcile-tick
-   * (TradesAdminController), following the exact same Phase0 "externally-
-   * triggered batch tick" shape ChainSweeperPhase0Service.tick() already
-   * established for the wallet sweeper (wallet/chain-sweeper/tick) - no
-   * NATS/Temporal/@nestjs/schedule needed for Phase0. An operator or an
-   * external periodic caller must still actually call this endpoint on a
-   * schedule (the same still-open scheduling-infrastructure gap the
-   * pre-existing chain-sweeper tick has) - this method's job is only to
-   * guarantee a real, correct finalization path exists once called,
-   * closing the "zero code path at all" gap this fix targets.
+   * Exposed via POST /api/v1/admin/trades/reconcile-tick (Admin JWT)
+   * and POST /api/v1/internal/trades/reconcile-tick (machine token).
+   * chain-sweeper cron forwards the internal route. Unauthorized → 0건.
+   * Concurrent ticks share pg_try_advisory_lock so two workers do not
+   * double-drain the same page.
    */
   async reconcileStuckTrades(opts?: {
     limit?: number;
@@ -179,6 +177,7 @@ export class TradeExecutionService {
   }): Promise<{
     candidates: number;
     reconciled: number;
+    skipped?: "lease_held";
     results: Array<{
       tradeId: string;
       userId: string;
@@ -186,6 +185,14 @@ export class TradeExecutionService {
       resultCode?: TradeExecutionState["resultCode"];
     }>;
   }> {
+    const lease = await this.db.query<{ locked: boolean }>(
+      "SELECT pg_try_advisory_lock($1) AS locked",
+      [RECONCILE_LEASE_KEY],
+    );
+    if (lease.rows[0]?.locked !== true) {
+      return { candidates: 0, reconciled: 0, skipped: "lease_held", results: [] };
+    }
+    try {
     const limit = Math.min(100, Math.max(1, opts?.limit ?? 25));
     const graceSec = Math.max(0, opts?.graceSec ?? 30);
     const cutoffMs =
@@ -230,6 +237,9 @@ export class TradeExecutionService {
       reconciled: results.filter((r) => !stillStuck.has(r.status)).length,
       results,
     };
+    } finally {
+      await this.db.query("SELECT pg_advisory_unlock($1)", [RECONCILE_LEASE_KEY]);
+    }
   }
 
   async get(userId: string, tradeId: string): Promise<TradeExecutionState> {

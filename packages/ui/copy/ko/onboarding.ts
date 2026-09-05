@@ -6,6 +6,9 @@ export const onboarding = {
   next: "다음",
   skip: "건너뛰기",
   startApp: "시작하기",
+  progressLabel: "{current}/{total} 단계",
+  partnerCatalogNote:
+    "지금 보이는 이름은 시세 참고 출처예요. 지금 연결에 쓰인다는 뜻은 아니에요.",
   identityHeadline: "✨ 글로벌 시세·가격을 비교해 보여 드려요",
   demoHeadline: "👆 연습으로 한 번 눌러 보세요",
   demoHint: "연습 카드 한 장을 눌러 흐름을 느껴 보세요",

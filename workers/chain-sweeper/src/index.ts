@@ -19,6 +19,8 @@ export interface Env {
   SERVICE: string;
   PHASE: string;
   NEST_SWEEP_TICK_URL?: string;
+  NEST_RECONCILE_TICK_URL?: string;
+  INTERNAL_WALLET_TICK_TOKEN?: string;
   WATCHER_INGEST_TOKEN?: string;
   /** Injected for health / dry tests — decimal TRX */
   TREASURY_TRX_BALANCE?: string;
@@ -50,6 +52,11 @@ export default {
       return Response.json(result);
     }
 
+    if (url.pathname === "/reconcile" && request.method === "POST") {
+      const result = await runReconcile(env);
+      return Response.json(result);
+    }
+
     return Response.json(
       {
         ok: true,
@@ -64,6 +71,7 @@ export default {
 
   async scheduled(_event: unknown, env: Env): Promise<void> {
     await runTick(env);
+    await runReconcile(env);
   },
 };
 
@@ -131,5 +139,31 @@ async function runTick(env: Env) {
     guard,
     eligibility,
     sweepCalls,
+  };
+}
+
+async function runReconcile(env: Env) {
+  const nestUrl = env.NEST_RECONCILE_TICK_URL;
+  if (!nestUrl) {
+    return { ok: true, forwarded: false, processed: 0, reason: "url_unset" };
+  }
+  const token = env.INTERNAL_WALLET_TICK_TOKEN || env.WATCHER_INGEST_TOKEN;
+  if (!token) {
+    return { ok: false, forwarded: false, processed: 0, reason: "token_unset" };
+  }
+  const res = await fetch(nestUrl, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "x-internal-wallet-token": token,
+    },
+    body: JSON.stringify({ source: "chain-sweeper-reconcile" }),
+  });
+  const body = (await res.json().catch(() => ({}))) as Record<string, unknown>;
+  return {
+    ok: res.ok,
+    forwarded: true,
+    processed: Number(body.reconciled ?? 0) || 0,
+    nest: body,
   };
 }

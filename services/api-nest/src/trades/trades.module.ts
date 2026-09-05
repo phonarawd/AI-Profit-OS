@@ -7,6 +7,7 @@ import { SimulationModule } from "../simulation/simulation.module";
 import { TradeExecutionService } from "./trades.execution.service";
 import { TradesUserController } from "./trades.user.controller";
 import { TradesAdminController } from "./trades.admin.controller";
+import { TradesInternalController } from "./trades.internal.controller";
 
 /**
  * Engine §0.9 E-R5 — trade execute-tick · settlement_rule.cjs wiring
@@ -21,7 +22,11 @@ import { TradesAdminController } from "./trades.admin.controller";
     SimulationModule,
     AdminAuditModule,
   ],
-  controllers: [TradesUserController, TradesAdminController],
+  controllers: [
+    TradesUserController,
+    TradesAdminController,
+    TradesInternalController,
+  ],
   providers: [TradeExecutionService],
   exports: [TradeExecutionService],
 })

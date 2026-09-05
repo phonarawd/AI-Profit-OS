@@ -201,7 +201,14 @@ export function TradeExecuteClient({ tradeId }: { tradeId: string }) {
         <Link href="/">홈</Link>
       </p>
       <h1 className={styles.title}>{TITLE}</h1>
-      <p className={styles.lead}>{meaningCopy(state)}</p>
+      <p
+        className={styles.lead}
+        role="status"
+        aria-live="polite"
+        data-testid="matching-wait-status"
+      >
+        {meaningCopy(state)}
+      </p>
       {label ? <p className={styles.note}>{label}</p> : null}
       {kind === "MatchingInProgress" || kind === "MatchingRetrying" ? (
         <div className={styles.motion} aria-hidden>
@@ -219,7 +226,9 @@ export function TradeExecuteClient({ tradeId }: { tradeId: string }) {
               </div>
             </dl>
           ) : null}
-          <p className={styles.note}>아직 확정된 수익이 아니에요. 결과가 나올 때까지 기다려 주세요.</p>
+          <p className={styles.note} data-testid="matching-indeterminate">
+            얼마나 남았는지는 지금 알 수 없어요. 아직 확정된 수익이 아니에요.
+          </p>
         </>
       ) : null}
       {settled ? (
