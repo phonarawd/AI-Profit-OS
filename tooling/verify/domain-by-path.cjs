@@ -1421,6 +1421,17 @@ const RULES = [
     ],
   },
   {
+    // S1F Section 7 - client-side refresh-and-retry-once fetch wrapper. A
+    // regression here silently reverts users to "logged out every 15
+    // minutes" (see governance/release-master/evidence/
+    // REL-710-714-PLAN-SSOT-UPDATE-HANDOFF.md sibling note for context).
+    test: (f) =>
+      f === "apps/web/lib/session-refresh-fetch.ts" ||
+      f === "apps/web/components/SessionRefreshRuntime.tsx" ||
+      f === "apps/web/app/layout.tsx",
+    scripts: ["auth-session-refresh-fetch.runtime.cjs"],
+  },
+  {
     // S1F Section 9.1 - admin members directory. The controller filename
     // already matches the generic "*.admin.controller.ts" -> admin-boundary
     // rule above, but the service file (users-admin.service.ts) does not
