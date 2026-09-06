@@ -84,13 +84,21 @@ export function InstallPrompt() {
       if (shouldSuppressPwaChrome(pathname)) return;
       if (!isInstallOverlayAllowed(pathname)) return;
       if (isStandalone() || dismissedRecently()) return;
-      setIos(isIosSafari());
-      setVisible(true);
+      const iosNow = isIosSafari();
+      setIos(iosNow);
+      if (iosNow) setVisible(true);
     }, FIRST_SHOW_MS);
     return () => window.clearTimeout(timer);
   }, [allowed, pathname]);
 
+  useEffect(() => {
+    if (!allowed || !deferred || isStandalone() || dismissedRecently()) return;
+    if (shouldSuppressPwaChrome(pathname)) return;
+    setVisible(true);
+  }, [allowed, deferred, pathname]);
+
   if (!visible || !allowed || isStandalone()) return null;
+  if (!ios && !deferred) return null;
 
   const hide = () => {
     markDismissed();

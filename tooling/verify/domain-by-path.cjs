@@ -404,8 +404,11 @@ const RULES = [
       /^apps\/web\/app\/pwa-shell\.css$/.test(f) ||
       /^apps\/web\/app\/layout\.tsx$/.test(f) ||
       /^apps\/web\/components\/pwa\//.test(f) ||
-      /^tooling\/verify\/pwa-native-shell\.cjs$/.test(f),
-    scripts: ["pwa-native-shell.cjs"],
+      /^tooling\/verify\/pwa-native-shell\.cjs$/.test(f) ||
+      /^tooling\/verify\/s3-35-pwa\.cjs$/.test(f) ||
+      /^governance\/pwa\/s3-35-connection-matrix\.v1\.json$/.test(f) ||
+      /^apps\/web\/public\/offline\.html$/.test(f),
+    scripts: ["pwa-native-shell.cjs", "s3-35-pwa.cjs"],
   },
   {
     test: (f) =>

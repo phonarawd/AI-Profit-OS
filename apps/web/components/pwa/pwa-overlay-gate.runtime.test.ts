@@ -71,6 +71,10 @@ test("non-true server PUSH_ENABLED hides push overlay", () => {
   );
 });
 
+test("install overlay stays allowed on non-suppress paths", () => {
+  assert.equal(isInstallOverlayAllowed("/"), true);
+});
+
 test("NEXT_PUBLIC_PUSH_ENABLED false is extra hide", () => {
   assert.equal(clientPushHintDisabled({ NEXT_PUBLIC_PUSH_ENABLED: "false" }), true);
   assert.equal(clientPushHintDisabled({ NEXT_PUBLIC_PUSH_ENABLED: "true" }), false);

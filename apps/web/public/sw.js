@@ -1,34 +1,53 @@
-/* REL-014 native shell + REL-020 push/badge.
- * @serwist/next webpack 플러그인은 OpenNext asset pipeline과 맞추지 않는다.
- * REL-022 범위 0 · native store listing 0 (POST-017).
- */
+/* REL-014 native shell + REL-020 push/badge + S3/3.5 cache safety. */
+/* PUTDUK-owned cache only. Foreign app caches are not deleted. */
+const PUTDUK_CACHE_PREFIX = "putduk-";
 const SHELL_CACHE = "putduk-shell-v1";
-const SHELL_URLS = [
-  "/manifest.webmanifest",
+const REQUIRED_SHELL_URLS = ["/offline.html", "/manifest.webmanifest"];
+const OPTIONAL_SHELL_URLS = [
   "/icons/icon-192.png",
   "/icons/icon-512.png",
   "/icons/maskable-512.png",
   "/icons/apple-touch-180.png",
 ];
+const SHELL_URLS = REQUIRED_SHELL_URLS.concat(OPTIONAL_SHELL_URLS);
+
+function isPutdukCache(key) {
+  return String(key || "").startsWith(PUTDUK_CACHE_PREFIX);
+}
+
+function isSensitivePath(pathname) {
+  const p = String(pathname || "");
+  if (p.startsWith("/api/")) return true;
+  if (p.startsWith("/auth") || p.startsWith("/admin") || p.startsWith("/ops")) return true;
+  if (p.startsWith("/wallet") || p.startsWith("/onboarding")) return true;
+  if (p.startsWith("/trades") || p.startsWith("/profits")) return true;
+  if (p.startsWith("/me/")) return true;
+  return false;
+}
+
+function cacheAddAllSafe(cache, urls) {
+  return Promise.all(urls.map((url) => cache.add(url).catch(() => undefined)));
+}
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(SHELL_CACHE).then((cache) => cache.addAll(SHELL_URLS)),
+    caches.open(SHELL_CACHE).then((cache) =>
+      cacheAddAllSafe(cache, REQUIRED_SHELL_URLS).then(() =>
+        cacheAddAllSafe(cache, OPTIONAL_SHELL_URLS),
+      ),
+    ),
   );
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches
-      .keys()
-      .then((keys) =>
-        Promise.all(
-          keys
-            .filter((key) => key !== SHELL_CACHE)
-            .map((key) => caches.delete(key)),
-        ),
-      )
-      .then(() => self.clients.claim()),
+    caches.keys().then((keys) =>
+      Promise.all(
+        keys
+          .filter((key) => isPutdukCache(key) && key !== SHELL_CACHE)
+          .map((key) => caches.delete(key)),
+      ),
+    ).then(() => self.clients.claim()),
   );
 });
 
@@ -61,36 +80,37 @@ function cacheFirst(request) {
   });
 }
 
+function brandedOffline() {
+  return caches.match("/offline.html").then((hit) => {
+    if (hit) return hit;
+    return new Response("<!doctype html><html lang=\"ko\"><meta charset=\"utf-8\"><title>퍼떡</title><p>연결이 끊겼어요. 다시 시도해 주세요.</p><p>충전·출금은 연결 후에 할 수 있어요.</p><button onclick=\"location.reload()\">다시 시도</button></html>", {
+      status: 503,
+      headers: { "Content-Type": "text/html; charset=utf-8" },
+    });
+  });
+}
+
 self.addEventListener("fetch", (event) => {
   const request = event.request;
   if (request.method !== "GET") return;
-
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
-
-  // 머니/원장 API는 캐시·오프라인 큐 금지. 네트워크만.
   if (url.pathname.startsWith("/api/")) return;
-
   if (
     url.pathname.startsWith("/icons/") ||
     url.pathname === "/manifest.webmanifest" ||
-    url.pathname === "/favicon.ico"
+    url.pathname === "/favicon.ico" ||
+    url.pathname === "/offline.html"
   ) {
     event.respondWith(cacheFirst(request));
     return;
   }
-
   if (request.mode === "navigate") {
     event.respondWith(
-      fetch(request).catch(() =>
-        caches.match(request).then((hit) => {
-          if (hit) return hit;
-          return new Response("연결이 끊겼어요. 다시 시도해 주세요", {
-            status: 503,
-            headers: { "Content-Type": "text/plain; charset=utf-8" },
-          });
-        }),
-      ),
+      fetch(request).catch(() => {
+        if (isSensitivePath(url.pathname)) return brandedOffline();
+        return brandedOffline();
+      }),
     );
   }
 });
@@ -115,7 +135,7 @@ self.addEventListener("push", (event) => {
   } catch {
     payload = { bodyKo: event.data ? event.data.text() : "" };
   }
-  const title = String(payload.titleKo || "퍼뜩");
+  const title = String(payload.titleKo || "퍼떡");
   const body = String(payload.bodyKo || "새 소식이 있어요");
   const href = String(payload.href || "/");
   const badgeCount = payload.badgeCount;
