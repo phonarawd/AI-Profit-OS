@@ -12,10 +12,10 @@ APPLY_MIGRATION = 0
 APPLY_LOG = 0
 APPLY_OWNER = REL-701-DB
 PROJECT_REF = mgsytcetsiecllmhcyox
-LOCAL_MIGRATION_FILES = 63
+LOCAL_MIGRATION_FILES = 64
 REMOTE_APPLIED_SNAPSHOT = 55
 REMOTE_RAW_APPLIED = 56
-COMMITTED_UNAPPLIED = 8
+COMMITTED_UNAPPLIED = 9
 TRACK_A_FILE_RESTORE = 3
 REL_408_BASELINE = 1
 REL_502_ISSUED = 0
@@ -96,3 +96,5 @@ Remote snapshot/raw counts unchanged.
 ## 2026-09-06 S5 count
 
 `65ab999b` added+applied `20260906170000` on production. Local 62 -> 63. REMOTE_APPLIED_SNAPSHOT 54 -> 55. REMOTE_RAW_APPLIED 55 -> 56. COMMITTED_UNAPPLIED stays 8 (the S3/S4 files). This REL still PRODUCTION_DB_APPLY = 0.
+
+**2026-09-06 product onboarding (parallel, unapplied):** `20260906233000_product_onboarding_progress.sql` additive table. Local 63 → 64. `COMMITTED_UNAPPLIED` 8 → 9. Production apply 0. Do not apply to `mgsytcetsiecllmhcyox` from this commit.
