@@ -1,16 +1,22 @@
 {
   "schema": "s5-dedicated-staging.v1",
-  "status": "INFRA_WIRED",
+  "status": "LIVE_PARTIAL",
   "previewIsNotJ0": true,
   "rel600Unchanged": true,
   "productionDeploy": 0,
   "j0": "NOT_RUN",
   "accessLive": false,
-  "shaAlignedLive": false,
+  "shaAlignedLive": true,
   "hosts": {
     "web": "ai-profit-web-dedicated.ebay-adapter.workers.dev",
     "ops": "ai-profit-ops-dedicated.ebay-adapter.workers.dev"
   },
   "stagingApi": "https://ai-profit-os-staging.onrender.com",
-  "note": "Static infra only. Live deploy + Access app + J0 are later S5 steps on the freeze HEAD after this commit."
+  "deployedSha": "3814d0fdc7a1087cfce9e589a3ac7dcdf418fa0b",
+  "dedicatedDeployRun": "34047496727",
+  "previewDeployRun": "34047490120",
+  "renderStagingDeploy": "dep-daepsept0dsc73b9bajg",
+  "accessBlocker": "CLOUDFLARE_API_TOKEN authenticates Workers deploy but Access Apps API returns Authentication error. STAGING_ACCESS_ALLOWED_EMAILS is empty so deny-everyone is required even after Access is created.",
+  "note": "Dedicated+preview+Render staging redeployed after T2 green 3814d0fd. Access still BLOCKED_EXTERNAL. J0 NOT_RUN. Production deploy 0.",
+  "t2GateRun": "34047203970"
 }

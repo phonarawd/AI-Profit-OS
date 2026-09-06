@@ -93,6 +93,25 @@ function policyFor(emails) {
     process.exit(1);
   }
 
+  const audValue = Array.isArray(aud) ? aud[0] : aud;
+  process.env.CF_ACCESS_TEAM_DOMAIN = teamOrigin;
+  process.env.CF_ACCESS_AUD = audValue;
+
+  if (process.env.WRITE_DEDICATED_ACCESS_SECRETS === "1") {
+    const script = "ai-profit-ops-dedicated";
+    await cf("PUT", `/accounts/${ACCOUNT_ID}/workers/scripts/${script}/secrets`, {
+      name: "CF_ACCESS_TEAM_DOMAIN",
+      text: teamOrigin,
+      type: "secret_text",
+    });
+    await cf("PUT", `/accounts/${ACCOUNT_ID}/workers/scripts/${script}/secrets`, {
+      name: "CF_ACCESS_AUD",
+      text: audValue,
+      type: "secret_text",
+    });
+    console.log("wrangler_secrets=1");
+  }
+
   console.log("[cf-access-dedicated] PASS");
   console.log("app=" + (existing ? "updated" : "created"));
   console.log("host=" + HOST);
@@ -100,10 +119,18 @@ function policyFor(emails) {
   console.log("aud_set=1");
   console.log("email_rules=" + emails.length);
   console.log("TEAM_DOMAIN=" + teamOrigin);
-  // AUD는 표준출력에 쓰지 않는다. 호출자가 env로 넘긴 경우만 재사용.
-  process.env.CF_ACCESS_TEAM_DOMAIN = teamOrigin;
-  process.env.CF_ACCESS_AUD = Array.isArray(aud) ? aud[0] : aud;
+  // AUD는 표준출력에 쓰지 않는다.
 })().catch((err) => {
-  console.error("[cf-access-dedicated] FAIL: " + (err && err.message ? err.message : err));
-  process.exit(1);
+  const msg = String(err && err.message ? err.message : err);
+  const blocked =
+    /authentication error/i.test(msg) ||
+    /unauthorized/i.test(msg) ||
+    /permission/i.test(msg);
+  console.error(
+    "[cf-access-dedicated] " +
+      (blocked ? "BLOCKED_EXTERNAL" : "FAIL") +
+      ": " +
+      msg,
+  );
+  process.exit(blocked ? 2 : 1);
 });
