@@ -3,9 +3,9 @@
   "schema": "governance.platform-redesign.baseline.v1",
   "redesignStage": "R0",
   "todoId": "platform-redesign-r0-inventory",
-  "measuredAt": "2026-09-05T14:24:05.376Z",
+  "measuredAt": "2026-09-06T05:22:00.000Z",
   "pathSeparator": "/",
-  "commitSha": "d448acb4b9458582e50149837681d3b88f7317f2",
+  "commitSha": "930e0c23073c18576cad21bc5f6ac21221cc0340",
   "dirtyPaths": [
     "_tmp_add_matrix_rows.cjs",
     "_tmp_build_drift_inventory.cjs",
@@ -28,7 +28,7 @@
     "canonManifestSurfaces": 33,
     "wiresNotInManifest": 5,
     "nestImports": 28,
-    "localMigrations": 55,
+    "localMigrations": 56,
     "remoteMigrations": 54,
     "brandAssets": 31,
     "publicBrandAssets": 24,
@@ -997,7 +997,8 @@
       "supabase/migrations/20260901224000_withdraw_stepup_token_single_use.sql",
       "supabase/migrations/20260902032000_production_schema_parity.sql",
       "supabase/migrations/20260902155632_withdraw_broadcast_tron.sql",
-      "supabase/migrations/20260905110000_classic_signup_sessions_and_admin.sql"
+      "supabase/migrations/20260905110000_classic_signup_sessions_and_admin.sql",
+      "supabase/migrations/20260906060000_payout_reservation_and_execution_confirm.sql"
     ],
     "localVersions": [
       "20260808205842",
@@ -1054,7 +1055,8 @@
       "20260901224000",
       "20260902032000",
       "20260902155632",
-      "20260905110000"
+      "20260905110000",
+      "20260906060000"
     ],
     "remoteFixturePath": "tooling/verify/fixtures/migrations-applied.v1.json",
     "remoteVersions": [

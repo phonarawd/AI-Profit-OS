@@ -4,7 +4,7 @@
 const { test, expect } = require("@playwright/test");
 const { assertQaIsolation } = require("../lib/qa-env-isolation-guard.cjs");
 const { ensureLocalWebRuntime } = require("../lib/local-web-runtime.cjs");
-const { blockingViolations } = require("../lib/axe-scan.cjs");
+const { blockingViolations, scanPageAxe } = require("../lib/axe-scan.cjs");
 
 test.describe.configure({ timeout: 180000 });
 

@@ -4,7 +4,7 @@
   "redesignStage": "R0",
   "todoId": "platform-redesign-r0-inventory",
   "measuredAt": "2026-09-04T15:44:04.303Z",
-  "commitSha": "d448acb4b9458582e50149837681d3b88f7317f2",
+  "commitSha": "930e0c23073c18576cad21bc5f6ac21221cc0340",
   "pathSeparator": "/",
   "classificationEnum": [
     "defect",
