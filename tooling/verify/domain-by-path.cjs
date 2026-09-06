@@ -610,7 +610,10 @@ const RULES = [
   {
     test: (f) =>
       /^services\/api-nest\/src\/wallet\/withdraw-treasury-solvency/.test(f) ||
-      /^tooling\/verify\/withdraw-treasury-solvency\.cjs$/.test(f),
+      /^services\/api-nest\/src\/wallet\/withdraw-coverage/.test(f) ||
+      /^services\/api-nest\/src\/wallet\/withdraw-intent\.service\.ts$/.test(f) ||
+      /^tooling\/verify\/withdraw-treasury-solvency\.cjs$/.test(f) ||
+      /^tooling\/verify\/a4-withdraw-reserve-race\.cjs$/.test(f),
     scripts: ["withdraw-treasury-solvency.cjs"],
   },
   {

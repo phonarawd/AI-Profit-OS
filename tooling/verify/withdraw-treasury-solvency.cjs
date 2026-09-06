@@ -66,6 +66,72 @@ if (!intent.includes("broadcast") || !intent.includes("fail-closed")) {
 if (!intent.includes("assertCanBroadcast") || !intent.includes("evaluateBroadcastReadiness")) {
   fail("withdraw-intent must call assertCanBroadcast before any real send");
 }
+
+const coverage = read("services/api-nest/src/wallet/withdraw-coverage.ts");
+if (!coverage.includes("lockedUsdt") || !coverage.includes("pendingRefundUsdt")) {
+  fail("§1.4 coverage must include locked and pending_refund");
+}
+if (!coverage.includes("computeUnreservedUserLiabilities")) {
+  fail("§1.4 must compute UNRESERVED_USER_LIABILITIES");
+}
+if (
+  !coverage.includes("computeTreasuryUnreservedAvailable") ||
+  !coverage.includes("computeWithdrawalTreasuryAvailable")
+) {
+  fail("legacy WITHDRAWAL_TREASURY_AVAILABLE alias required");
+}
+if (!intent.includes("withTransaction") || !intent.includes("pg_advisory_xact_lock")) {
+  fail("withdraw create must reserve inside one TX with xact lock");
+}
+if (!intent.includes("evaluateWithdrawReservation")) {
+  fail("withdraw create must evaluate §1.4 coverage before insert");
+}
+
+function unreservedLiabilities(input) {
+  const pending = parseAmount(input.pendingRefundUsdt || "0");
+  const other = parseAmount(input.otherReturnableUsdt || "0");
+  const gross =
+    parseAmount(input.principalUsdt) +
+    parseAmount(input.profitUsdt) +
+    parseAmount(input.lockedUsdt) +
+    pending +
+    other;
+  return gross - parseAmount(input.reservedWithdrawalUsdt);
+}
+
+const lockedLiab = unreservedLiabilities({
+  principalUsdt: "0",
+  profitUsdt: "0",
+  lockedUsdt: "100",
+  reservedWithdrawalUsdt: "0",
+});
+if (lockedLiab !== parseAmount("100")) {
+  fail("locked 100 must remain in UNRESERVED_USER_LIABILITIES");
+}
+const omitted = unreservedLiabilities({
+  principalUsdt: "0",
+  profitUsdt: "0",
+  lockedUsdt: "0",
+  reservedWithdrawalUsdt: "0",
+});
+if (omitted === lockedLiab) {
+  fail("omitting locked must not equal the locked-100 liability");
+}
+
+function availableAfter(reserved, request, spendable) {
+  return parseAmount(spendable) - parseAmount(reserved) - parseAmount(request);
+}
+if (availableAfter("0", "60", "100") <= 0n) {
+  fail("first 60 vs 100 must have remaining treasury");
+}
+if (availableAfter("60", "60", "100") >= 0n) {
+  fail("second 60 vs 100 must be insufficient");
+}
+
+const raceSrc = read("tooling/verify/a4-withdraw-reserve-race.cjs");
+if (!raceSrc.includes("pooler") || !raceSrc.includes("must not run on production")) {
+  fail("a4 race must refuse production Supabase");
+}
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
 const domain = read("tooling/verify/domain-by-path.cjs");
