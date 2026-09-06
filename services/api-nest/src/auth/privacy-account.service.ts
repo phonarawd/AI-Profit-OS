@@ -65,6 +65,7 @@ const PURGE_TABLES: readonly [table: string, column: string][] = [
   ["push_subscriptions", "user_id"],
   ["user_profiles", "user_id"],
   ["user_ux_prefs", "user_id"],
+  ["product_onboarding", "user_id"],
   // referral spam-counter (pure usage state, zero financial value)
   ["referral_share_daily", "user_id"],
   // auth/security material — meaningless once the account is gone
