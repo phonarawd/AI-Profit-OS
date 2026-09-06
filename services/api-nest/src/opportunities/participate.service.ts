@@ -12,6 +12,7 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  Optional,
   ServiceUnavailableException,
   UnauthorizedException,
 } from "@nestjs/common";
@@ -42,6 +43,10 @@ import {
   membershipDefaults,
   mergeEffectivePolicy,
 } from "../membership/membership.mi";
+import {
+  MatchingPolicyService,
+  opportunityRowToCandidate,
+} from "../matching-policy/matching-policy.service";
 import { OPPORTUNITY_EVENTS } from "./opportunities.events";
 
 const req = createRequire(__filename);
@@ -143,6 +148,7 @@ export class ParticipateService {
     private readonly bus: InProcessEventBus,
     private readonly preflight: PreflightService,
     @Inject(CLOCK) private readonly clock: Clock,
+    @Optional() private readonly matchingPolicy?: MatchingPolicyService,
   ) {}
 
   async participate(
@@ -181,6 +187,32 @@ export class ParticipateService {
 
     const hidden = await this.isHiddenForUser(userId, pathOpportunityId);
     if (hidden) throw new NotFoundException("opportunity not found");
+    if (!this.matchingPolicy) {
+      throw new ServiceUnavailableException("MATCHING_POLICY_UNAVAILABLE");
+    }
+    let matchingSnapshot: {
+      policyId: string;
+      policyVersion: number;
+      source: string;
+      requiredCapitalUsdt: string;
+    };
+    try {
+      const decision = await this.matchingPolicy.assertParticipable(
+        userId,
+        opportunityRowToCandidate(opp),
+      );
+      matchingSnapshot = {
+        policyId: decision.policyId,
+        policyVersion: decision.policyVersion,
+        source: decision.source,
+        requiredCapitalUsdt: opp.required_capital_usdt,
+      };
+    } catch (err) {
+      if (err instanceof Error && err.message === "OPPORTUNITY_UNAVAILABLE_FOR_ACCOUNT") {
+        throw new NotFoundException("opportunity not found");
+      }
+      throw err;
+    }
 
     const expectedProfitUsdt = await this.resolveExpectedProfit(
       userId,
@@ -357,6 +389,7 @@ export class ParticipateService {
           category: opp.category,
           fxSnapshotId: opp.fx_snapshot_id,
         },
+        matchingSnapshot,
       });
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : String(e);
@@ -721,6 +754,12 @@ export class ParticipateService {
       category: string;
       fxSnapshotId: string;
     };
+    matchingSnapshot?: {
+      policyId: string;
+      policyVersion: number;
+      source: string;
+      requiredCapitalUsdt: string;
+    };
   }): Promise<ParticipateResult> {
     // Money-safety fix (PUTDUK continuation session, Step 7.1): the
     // participate_lock journal (principal -> locked, posted below via
@@ -794,6 +833,7 @@ export class ParticipateService {
             category: input.asset.category,
             priceSoftAccept: input.priceSoftAccept,
             lockJournalId: lockJournal.id,
+            matchingPolicySnapshot: input.matchingSnapshot ?? null,
           }),
         ],
       );
@@ -812,11 +852,19 @@ export class ParticipateService {
       });
       await client.query(
         `UPDATE public.trade_executions
-            SET asset = COALESCE(asset, '{}'::jsonb) || $2::jsonb
+            SET asset = COALESCE(asset, '{}'::jsonb) || $2::jsonb,
+                matching_policy_id = $3,
+                matching_policy_version = $4,
+                matching_policy_source = $5,
+                required_capital_usdt_snapshot = $6
           WHERE id = $1::uuid`,
         [
           tradeId,
           JSON.stringify({ participateProof: proof, proofHash: proof.proofHash }),
+          input.matchingSnapshot?.policyId ?? null,
+          input.matchingSnapshot?.policyVersion ?? null,
+          input.matchingSnapshot?.source ?? null,
+          input.matchingSnapshot?.requiredCapitalUsdt ?? null,
         ],
       );
 

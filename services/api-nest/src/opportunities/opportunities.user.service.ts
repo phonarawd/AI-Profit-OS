@@ -18,6 +18,10 @@ import { KillSwitchService } from "../kill-switch/kill-switch.service";
 import { ExecutionPolicyAdminService } from "../execution-policy/execution-policy.admin.service";
 import { LedgerBucketsService } from "../ledger/ledger.buckets.service";
 import { PostgresService } from "../db/postgres";
+import {
+  MatchingPolicyService,
+  opportunityRowToCandidate,
+} from "../matching-policy/matching-policy.service";
 import { buildBalanceAwareFeedWithOverrides } from "./balance-aware-feed";
 import {
   assetIconForCategory,
@@ -117,6 +121,7 @@ export class OpportunitiesUserService {
     private readonly buckets: LedgerBucketsService,
     private readonly executionPolicy: ExecutionPolicyAdminService,
     private readonly killSwitch: KillSwitchService,
+    private readonly matchingPolicy: MatchingPolicyService,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
@@ -155,7 +160,13 @@ export class OpportunitiesUserService {
     const principalUsdt = await this.readPrincipalUsdt(userId);
     const { policy } = await this.executionPolicy.get();
     const allRows = await this.loadFeedCandidateRows();
-    const rows = allRows.filter((r) => this.isRowFresh(r.stale_at));
+    const freshRows = allRows.filter((r) => this.isRowFresh(r.stale_at));
+    const rows = await this.matchingPolicy.filterForUser(
+      userId,
+      freshRows,
+      (row) => opportunityRowToCandidate(row),
+      { platformHardStop: false },
+    );
     const overridesByOpportunityId = await this.loadOverridesMap(userId);
 
     const feed = buildBalanceAwareFeedWithOverrides({
@@ -206,6 +217,18 @@ export class OpportunitiesUserService {
     // like a hidden override, rather than silently showing stale money data.
     if (!this.isRowFresh(row.stale_at)) {
       throw new NotFoundException("opportunity not found");
+    }
+    const policyDecision = await this.matchingPolicy.evaluateForUser(
+      userId,
+      opportunityRowToCandidate(row),
+    );
+    if (!policyDecision.visible) {
+      throw new NotFoundException({
+        code: "OPPORTUNITY_UNAVAILABLE_FOR_ACCOUNT",
+        toastCode: "OPPORTUNITY_UNAVAILABLE_FOR_ACCOUNT",
+        message: "현재 계정에서 이용할 수 없는 상품입니다.",
+        statusCode: 404,
+      });
     }
 
     const overridesByOpportunityId = await this.loadOverridesMap(userId, [

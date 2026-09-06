@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { MatchingPolicyModule } from "../matching-policy/matching-policy.module";
 import { ExecutionPolicyModule } from "../execution-policy/execution-policy.module";
 import { LedgerModule } from "../ledger/ledger.module";
 import { EventsModule } from "../events/events.module";
@@ -23,6 +24,7 @@ import { UserOpportunityOverrideAdminService } from "./user-opportunity-override
 @Module({
   imports: [
     EventsModule,
+    MatchingPolicyModule,
     LedgerModule,
     ExecutionPolicyModule,
     RiskModule,

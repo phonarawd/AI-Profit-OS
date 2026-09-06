@@ -221,6 +221,18 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     submit: write("all"),
     decide: write("all"),
   },
+  MatchingPolicyAdminController: {
+    getEffective: read("userMatchPolicy"),
+    preview: read("userMatchPolicy"),
+    putVersion: write("userMatchPolicy"),
+    pause: write("userMatchPolicy"),
+    resume: write("userMatchPolicy"),
+    assign: write("userOpportunityOverride"),
+    exclude: write("userOpportunityOverride"),
+    bulkDryRun: write("userMatchPolicy"),
+    bulkApply: write("userMatchPolicy"),
+    listAudit: read("userMatchPolicy"),
+  },
 });
 
 export function requiredCapabilityFor(

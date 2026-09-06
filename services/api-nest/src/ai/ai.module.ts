@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { MatchingPolicyModule } from "../matching-policy/matching-policy.module";
 import { ComplianceModule } from "../compliance/compliance.module";
 import { EventsModule } from "../events/events.module";
 import { LedgerModule } from "../ledger/ledger.module";
@@ -29,6 +30,7 @@ import { UserTwinService } from "./user-twin.service";
 @Module({
   imports: [
     EventsModule,
+    MatchingPolicyModule,
     LedgerModule,
     WalletModule,
     ComplianceModule,

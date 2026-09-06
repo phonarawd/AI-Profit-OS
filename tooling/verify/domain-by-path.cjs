@@ -207,6 +207,16 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^services\/api-nest\/src\/matching-policy\//.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/(opportunities\.user\.service|participate\.service)\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/ai\/coach\.orchestrator\.ts$/.test(f) ||
+      /^supabase\/migrations\/20260906130000_user_matching_policy_b7\.sql$/.test(f) ||
+      /^tooling\/verify\/admin-user-matching-b7\.cjs$/.test(f) ||
+      /^apps\/admin\/app\/admin\/users\/\[id\]\/page\.tsx$/.test(f),
+    scripts: ["admin-user-matching-b7.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/ai\/coach\.controller\.ts$/.test(f) ||
       /^tooling\/verify\/coach-sse-error-canonical\.cjs$/.test(f) ||
       /^governance\/recovery\/ghas-coach-xss-through-exception\.v1\.json$/.test(

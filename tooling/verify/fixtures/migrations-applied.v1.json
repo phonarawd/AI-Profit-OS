@@ -145,6 +145,12 @@
       "name": "admin_identity_sessions",
       "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
       "reason": "S3 B0 Admin identity: credentials/TOTP/sessions/approvals. Additive only. Production apply is blocked until S5 staging + CURRENT_RELEASE_PRODUCTION_DB_READY. Do not apply to mgsytcetsiecllmhcyox from this commit."
+    },
+    {
+      "version": "20260906130000",
+      "name": "user_matching_policy_b7",
+      "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
+      "reason": "S3 B7 versioned visibility policy. Additive. Does not change opportunity money columns. Production apply after S5 staging."
     }
   ]
 }

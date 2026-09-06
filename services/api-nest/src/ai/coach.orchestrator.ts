@@ -30,6 +30,7 @@ import {
 } from "./ai.engine";
 import { AI_EVENTS } from "./ai.events";
 import { ConversationStateService } from "./conversation-state.service";
+import { MatchingPolicyService } from "../matching-policy/matching-policy.service";
 import { FactToolService } from "./fact-tool.service";
 import { LlmAdapterService } from "./llm.adapter.service";
 import { MemoryService } from "./memory.service";
@@ -64,7 +65,15 @@ export class CoachOrchestrator {
     private readonly logs: AiLogsAdminService,
     private readonly bus: InProcessEventBus,
     private readonly convState: ConversationStateService,
+    private readonly matchingPolicy: MatchingPolicyService,
   ) {}
+
+  private async factsForUser<T extends { source?: string; payload?: Record<string, unknown> }>(
+    userId: string,
+    facts: T[],
+  ): Promise<T[]> {
+    return this.matchingPolicy.applyToFactCards(userId, facts);
+  }
 
   async chips(userId: string) {
     const twin = userId ? await this.twin.get(userId) : null;
@@ -216,7 +225,7 @@ export class CoachOrchestrator {
         query: text,
         executionId,
       });
-      factsUsed = loaded.facts;
+      factsUsed = await this.factsForUser(userId, loaded.facts);
       toolsCalled = loaded.toolsCalled;
       convState = await this.persistResultRefsFromFacts(convState, factsUsed);
 
@@ -329,7 +338,7 @@ export class CoachOrchestrator {
         ["getBalance", "getBuckets", "getOpportunity"],
         { query: text },
       );
-      factsUsed = loaded.facts;
+      factsUsed = await this.factsForUser(userId, loaded.facts);
       toolsCalled = loaded.toolsCalled;
       convState = await this.persistResultRefsFromFacts(convState, factsUsed);
       answerText = loaded.stale

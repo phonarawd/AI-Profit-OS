@@ -15,6 +15,7 @@ import { InboxModule } from "./inbox/inbox.module";
 import { UserUxPrefsModule } from "./ux-prefs/user-ux-prefs.module";
 import { PushModule } from "./push/push.module";
 import { LoopModule } from "./loop/loop.module";
+import { MatchingPolicyModule } from "./matching-policy/matching-policy.module";
 import { OpportunitiesModule } from "./opportunities/opportunities.module";
 import { MissionModule } from "./missions/mission.module";
 import { ReferralModule } from "./referral/referral.module";
@@ -46,6 +47,7 @@ import { ObsExceptionFilter } from "./observability/obs.exception-filter";
     RiskModule,
     ReferralModule,
     MissionModule,
+    MatchingPolicyModule,
     OpportunitiesModule,
     TradesModule,
     ExecutionPolicyModule,
