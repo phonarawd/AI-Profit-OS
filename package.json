@@ -199,6 +199,7 @@
     "verify:usdt-ingest-machine-auth": "node tooling/verify/usdt-ingest-machine-auth.cjs",
     "verify:adapter-ingest-fail-closed": "node tooling/verify/adapter-ingest-fail-closed.cjs",
     "verify:adapter-ingest-fail-closed-runtime": "node tooling/verify/adapter-ingest-fail-closed.runtime.cjs",
+    "verify:adapter-worker-machine-auth": "node tooling/verify/adapter-worker-machine-auth.cjs",
     "verify:usdt-withdraw-closure": "node tooling/verify/usdt-withdraw-closure.cjs",
     "verify:krw-withdraw-closure": "node tooling/verify/krw-withdraw-closure.cjs",
     "verify:transaction-history-closure": "node tooling/verify/transaction-history-closure.cjs",

@@ -106,7 +106,12 @@ jobs:
       - name: REL-402 dependency audit
         env:
           AIPO_AUDIT: "1"
+          npm_config_fetch_retries: "5"
+          npm_config_fetch_timeout: "120000"
+          npm_config_fetch_retry_maxtimeout: "120000"
         run: pnpm verify:rel-402-dependency-audit
+      - name: Adapter worker machine auth
+        run: pnpm verify:adapter-worker-machine-auth
       - name: REL-404 lighthouse budget
         run: pnpm verify:rel-404-lighthouse-budget
       - name: REL-405 RBAC audit foundation

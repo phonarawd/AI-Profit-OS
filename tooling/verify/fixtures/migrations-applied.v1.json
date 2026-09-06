@@ -129,6 +129,12 @@
   ],
   "committedUnapplied": [
     {
+      "version": "20260904060000",
+      "name": "krw_deposit_bank_snapshot",
+      "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
+      "reason": "S4 unique: immutable bank snapshot on krw_deposit_requests. Additive ADD COLUMN IF NOT EXISTS. Does not rewrite deposit_config. Production apply after S5 staging. Do not apply to mgsytcetsiecllmhcyox from this commit."
+    },
+    {
       "version": "20260905110000",
       "name": "classic_signup_sessions_and_admin",
       "status": "AWAITING_FOUNDER_APPROVAL",

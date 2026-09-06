@@ -50,6 +50,9 @@ type RequestRow = {
   decided_at: Date | null;
   decided_by_admin_id: string | null;
   created_at: Date;
+  bank_name: string | null;
+  account_number: string | null;
+  account_holder: string | null;
 };
 
 @Injectable()
@@ -86,7 +89,7 @@ export class KrwDepositService {
     }
 
     await this.killSwitch.assertPath("deposit");
-    await this.depositConfig.requirePersisted();
+    const cfg = await this.depositConfig.requirePersisted();
     await this.expireStale();
 
     const existing = await this.db.query<RequestRow>(
@@ -113,9 +116,11 @@ export class KrwDepositService {
           `INSERT INTO public.krw_deposit_requests (
              user_id, requested_amount_krw, payable_amount_krw,
              unique_suffix_krw, deposit_code, depositor_name,
-             status, expires_at, idempotency_key
+             status, expires_at, idempotency_key,
+             bank_name, account_number, account_holder
            ) VALUES (
-             $1::uuid, $2, $3, $4, $5, $6, 'pending', $7, $8
+             $1::uuid, $2, $3, $4, $5, $6, 'pending', $7, $8,
+             $9, $10, $11
            )
            RETURNING ${this.columns()}`,
           [
@@ -127,6 +132,9 @@ export class KrwDepositService {
             name,
             expiresAt.toISOString(),
             input.idempotencyKey,
+            cfg.krw.bankName,
+            cfg.krw.accountNumber,
+            cfg.krw.accountHolder,
           ],
         );
         const row = ins.rows[0];
@@ -479,7 +487,8 @@ export class KrwDepositService {
     return `id::text, user_id::text, requested_amount_krw, payable_amount_krw,
             unique_suffix_krw, deposit_code, depositor_name, status,
             expires_at, admin_note, ledger_journal_id::text, idempotency_key,
-            decided_at, decided_by_admin_id::text, created_at`;
+            decided_at, decided_by_admin_id::text, created_at,
+            bank_name, account_number, account_holder`;
   }
 
   private toV1(row: RequestRow, ledgerEntryId?: string): KrwDepositRequestV1 {
@@ -499,6 +508,9 @@ export class KrwDepositService {
       createdAt: row.created_at.toISOString(),
       decidedAt: row.decided_at ? row.decided_at.toISOString() : undefined,
       decidedByAdminId: row.decided_by_admin_id ?? undefined,
+      bankName: row.bank_name ?? undefined,
+      accountNumber: row.account_number ?? undefined,
+      accountHolder: row.account_holder ?? undefined,
     };
   }
 }

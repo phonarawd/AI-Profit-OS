@@ -409,12 +409,17 @@ if (fails.length === 0) {
     try {
       fs.copyFileSync(
         path.join(root, "workers/ebay-adapter/src/retry-policy.cjs"),
-        path.join(distSelftest, "retry-policy.cjs"),
+        path.join(distSelftest, "ebay-adapter", "src", "retry-policy.cjs"),
       );
     } catch (e) {
       fails.push(`could not stage retry-policy.cjs into dist-selftest: ${e.message}`);
     }
-    const selftestJs = path.join(distSelftest, "fault-injection.selftest.js");
+    const selftestJs = path.join(
+      distSelftest,
+      "ebay-adapter",
+      "src",
+      "fault-injection.selftest.js",
+    );
     if (fails.length === 0) {
       if (!fs.existsSync(selftestJs)) {
         fails.push(`missing compiled selftest: ${selftestJs}`);

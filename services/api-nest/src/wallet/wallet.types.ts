@@ -86,6 +86,10 @@ export type KrwDepositRequestV1 = {
   createdAt: string;
   decidedAt?: string;
   decidedByAdminId?: string;
+  /** 요청 생성 시점 통장 스냅샷. 이후 admin deposit-config를 다시 읽지 않는다. */
+  bankName?: string;
+  accountNumber?: string;
+  accountHolder?: string;
 };
 
 export type KrwDepositDecideResult = {

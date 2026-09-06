@@ -1599,6 +1599,9 @@ const RULES = [
       /^tooling\/verify\/withdraw-stepup-security/.test(f) ||
       /^tooling\/verify\/usdt-ingest-machine-auth/.test(f) ||
       /^tooling\/verify\/adapter-ingest-fail-closed/.test(f) ||
+      /^tooling\/verify\/adapter-worker-machine-auth/.test(f) ||
+      /^workers\/_shared\/adapter-machine-auth\.ts$/.test(f) ||
+      /^workers\/(ebay|amazon|yahoo-jp|pokemontcg|ygoprodeck|coingecko|frankfurter)-adapter\/src\/index\.ts$/.test(f) ||
       /^services\/api-nest\/src\/adapters\/adapters\.ingest\.controller\.ts$/.test(f) ||
       /^tooling\/verify\/tron-hd-derivation-fail-closed/.test(f) ||
       /^services\/api-nest\/src\/wallet\/chain-sweeper/.test(f) ||
@@ -1613,6 +1616,7 @@ const RULES = [
       "withdraw-stepup-security.cjs",
       "usdt-ingest-machine-auth.cjs",
       "adapter-ingest-fail-closed.cjs",
+      "adapter-worker-machine-auth.cjs",
       "tron-hd-derivation-fail-closed.runtime.cjs",
       "withdraw-fee-ledger.cjs",
       "min-holding-scope.cjs",

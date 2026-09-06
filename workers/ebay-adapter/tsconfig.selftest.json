@@ -10,7 +10,7 @@
     "moduleResolution": "Node10",
     "lib": ["ES2022", "DOM"],
     "outDir": "dist-selftest",
-    "rootDir": "src",
+    "rootDir": "..",
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
@@ -18,5 +18,5 @@
     "noEmit": false,
     "declaration": false
   },
-  "include": ["src/**/*.ts", "src/**/*.cts"]
+  "include": ["src/**/*.ts", "src/**/*.cts", "../_shared/adapter-machine-auth.ts"]
 }

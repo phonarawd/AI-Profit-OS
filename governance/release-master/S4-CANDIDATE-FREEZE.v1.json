@@ -1,0 +1,37 @@
+{
+  "schema": "s4-candidate-freeze.v1",
+  "status": "FROZEN_ON_THIS_COMMIT",
+  "integrationBranch": "chore/d1-zero-known-defect-20260904",
+  "pr": 221,
+  "prState": "OPEN_DRAFT_DO_NOT_MERGE",
+  "hgL1": "UNIQUE_INTEGRATED_AND_FROZEN",
+  "method": [
+    "L0.1 read-only survey of all local+remote tips",
+    "ancestor + git cherry patch-id + tip-content compare",
+    "UNIQUE_AND_REQUIRED only; no wholesale lineage merge",
+    "wrangler --no-bundle preserved as cherry-pick 81f8f47e"
+  ],
+  "integrated": [
+    "fix/cf-wrangler-no-bundle-20260904 (cherry-pick)",
+    "fix/krw-deposit-bank-snapshot (port; additive unapplied migration)",
+    "chatgpt/adapter-worker-machine-auth tip (port)",
+    "chatgpt/fix-ebay-ingest-harness tip (ephemeral token)",
+    "chatgpt/fix-ebay-worker-auth-selftest tip",
+    "chatgpt FX health ingestAuthConfigured fields"
+  ],
+  "isolatedNotMerged": [
+    {
+      "ref": "feat/tron-hd-kms-founder-setup-20260904",
+      "class": "CONFLICT_REQUIRES_REVIEW",
+      "decision": "ISOLATE_DO_NOT_MERGE",
+      "why": "Founder post-RC PR · secrets BLOCKED · current S1/S2 withdraw fail-closed wins"
+    }
+  ],
+  "doNot": [
+    "sneak feature commits after this SHA",
+    "merge to main before S6 J/K",
+    "issue REL-502 on this work-branch SHA",
+    "delete surveyed branches before production rollback window ends"
+  ],
+  "next": "S5 dedicated staging + Access on this exact SHA"
+}
