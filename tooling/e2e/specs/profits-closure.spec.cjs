@@ -305,7 +305,10 @@ test("mobile list windows above 20 items, then reveals every item via scroll wit
     // contended. Move the real scrollport so IntersectionObserver still
     // sees a new bottom; keep the 47-card uniqueness assert below.
     await scroller.evaluate((el) => {
+      const sent = el.querySelector("[data-testid='profits-mobile-sentinel']");
+      if (sent) sent.scrollIntoView({ block: "end", inline: "nearest" });
       el.scrollTop += Math.max(el.clientHeight, 600);
+      el.dispatchEvent(new Event("scroll"));
     });
     try {
       await expect(page.locator("[data-sdpm='card']")).not.toHaveCount(before, {
@@ -314,10 +317,14 @@ test("mobile list windows above 20 items, then reveals every item via scroll wit
     } catch {
       await scroller.evaluate((el) => {
         el.scrollTop = 0;
+        el.dispatchEvent(new Event("scroll"));
       });
       await page.waitForTimeout(120);
       await scroller.evaluate((el) => {
+        const sent = el.querySelector("[data-testid='profits-mobile-sentinel']");
+        if (sent) sent.scrollIntoView({ block: "end", inline: "nearest" });
         el.scrollTop = el.scrollHeight;
+        el.dispatchEvent(new Event("scroll"));
       });
       await page.waitForTimeout(400);
     }

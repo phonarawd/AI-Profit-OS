@@ -313,15 +313,27 @@ export function ProfitsMobile({ model }: { model: ProfitsDesktopModel }) {
       },
       { root, rootMargin: "600px 0px" },
     );
-    const onScroll = () => {
+    const nearBottom = () => {
+      const sent = sentinelRef.current;
+      if (!sent) return false;
+      if (root.scrollTop + root.clientHeight + 600 >= root.scrollHeight) {
+        return true;
+      }
       const rootBox = root.getBoundingClientRect();
-      const sentBox = sentinel.getBoundingClientRect();
-      if (sentBox.top <= rootBox.bottom + 600) grow();
+      const sentBox = sent.getBoundingClientRect();
+      return sentBox.top <= rootBox.bottom + 600;
+    };
+    const onScroll = () => {
+      if (nearBottom()) grow();
     };
     observer.observe(sentinel);
     root.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
+    const settle = requestAnimationFrame(() => {
+      requestAnimationFrame(onScroll);
+    });
     return () => {
+      cancelAnimationFrame(settle);
       observer.disconnect();
       root.removeEventListener("scroll", onScroll);
     };
