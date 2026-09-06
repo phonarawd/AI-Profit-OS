@@ -6,17 +6,19 @@
   "productionDeploy": 0,
   "j0": "NOT_RUN",
   "accessLive": false,
-  "shaAlignedLive": true,
+  "shaAlignedLive": false,
+  "shaAlignedDedicatedWorkers": true,
   "hosts": {
     "web": "ai-profit-web-dedicated.ebay-adapter.workers.dev",
     "ops": "ai-profit-ops-dedicated.ebay-adapter.workers.dev"
   },
   "stagingApi": "https://ai-profit-os-staging.onrender.com",
-  "deployedSha": "3814d0fdc7a1087cfce9e589a3ac7dcdf418fa0b",
-  "dedicatedDeployRun": "34047496727",
+  "deployedSha": "a23d2fa6629a31426934c3ace42c3f50e3c46a92",
+  "dedicatedDeployRun": "34055189466",
   "previewDeployRun": "34047490120",
-  "renderStagingDeploy": "dep-daepsept0dsc73b9bajg",
+  "renderStagingDeploy": "dep-daes0hdbedkc73eg8gs0",
+  "renderLiveConfirmed": false,
   "accessBlocker": "CLOUDFLARE_API_TOKEN authenticates Workers deploy but Access Apps API returns Authentication error. STAGING_ACCESS_ALLOWED_EMAILS is empty so deny-everyone is required even after Access is created.",
-  "note": "Dedicated+preview+Render staging redeployed after T2 green 3814d0fd. Access still BLOCKED_EXTERNAL. J0 NOT_RUN. Production deploy 0.",
-  "t2GateRun": "34047203970"
+  "note": "Dedicated web/ops redeployed after T2 green a23d2fa6. Origin smoke PASS. Render staging deploy triggered, live confirm 0 this session. Access still BLOCKED_EXTERNAL. J0 NOT_RUN. Production deploy 0. REL-600 preview untouched.",
+  "t2GateRun": "34054846617"
 }
