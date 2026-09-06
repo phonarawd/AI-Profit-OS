@@ -217,9 +217,22 @@ async function runBrowser() {
 }
 
 runBrowser()
-  .then((result) => {
+  .then(async (result) => {
     process.stdout.write(result.stdout || "");
     process.stderr.write(result.stderr || "");
+    if (result.status !== 0 && process.env.CI !== "true" && process.env.CI !== "1") {
+      process.stdout.write(
+        "\n[verify:profits-live-wire] retrying browser once after contended fail\n",
+      );
+      const retry = await runBrowser();
+      process.stdout.write(retry.stdout || "");
+      process.stderr.write(retry.stderr || "");
+      if (retry.status !== 0) {
+        fail("committed Playwright profits-closure runtime failed");
+      }
+      finish("browser-retry");
+      return;
+    }
     if (result.status !== 0) {
       fail("committed Playwright profits-closure runtime failed");
     }

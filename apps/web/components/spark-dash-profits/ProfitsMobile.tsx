@@ -301,40 +301,53 @@ export function ProfitsMobile({ model }: { model: ProfitsDesktopModel }) {
 
   useEffect(() => {
     if (!windowed || model.viewState !== "READY") return;
-    const sentinel = sentinelRef.current;
     const root = scrollRef.current;
-    if (!sentinel || !root || typeof IntersectionObserver === "undefined") return;
+    if (!root || typeof IntersectionObserver === "undefined") return;
+    let cancelled = false;
+    let observer = null;
+    let pollId = 0;
+    let rafId = 0;
     const grow = () => {
       setVisibleCount((prev) => Math.min(model.items.length, prev + PROFITS_MOBILE_PAGE_SIZE));
     };
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) grow();
-      },
-      { root, rootMargin: "600px 0px" },
-    );
-    const nearBottom = () => {
+    const shouldGrow = () => {
       const sent = sentinelRef.current;
       if (!sent) return false;
       if (root.scrollTop + root.clientHeight + 600 >= root.scrollHeight) {
         return true;
       }
-      const rootBox = root.getBoundingClientRect();
       const sentBox = sent.getBoundingClientRect();
-      return sentBox.top <= rootBox.bottom + 600;
+      const viewBottom =
+        (typeof window !== "undefined" ? window.innerHeight : 0) + 600;
+      return sentBox.top <= viewBottom;
     };
     const onScroll = () => {
-      if (nearBottom()) grow();
+      if (shouldGrow()) grow();
     };
-    observer.observe(sentinel);
-    root.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    const settle = requestAnimationFrame(() => {
-      requestAnimationFrame(onScroll);
-    });
+    const attach = () => {
+      if (cancelled) return;
+      const sentinel = sentinelRef.current;
+      if (!sentinel) {
+        rafId = requestAnimationFrame(attach);
+        return;
+      }
+      observer = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) grow();
+        },
+        { rootMargin: "600px 0px" },
+      );
+      observer.observe(sentinel);
+      root.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+      pollId = window.setInterval(onScroll, 200);
+    };
+    attach();
     return () => {
-      cancelAnimationFrame(settle);
-      observer.disconnect();
+      cancelled = true;
+      cancelAnimationFrame(rafId);
+      if (pollId) window.clearInterval(pollId);
+      observer?.disconnect();
       root.removeEventListener("scroll", onScroll);
     };
   }, [windowed, model.viewState, model.items.length, visibleCount]);

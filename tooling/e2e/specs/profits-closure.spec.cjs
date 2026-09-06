@@ -302,31 +302,46 @@ test("mobile list windows above 20 items, then reveals every item via scroll wit
     if (remaining === 0) break;
     const before = await page.locator("[data-sdpm='card']").count();
     // Wheel events miss this inner overflow box when the machine is
-    // contended. Move the real scrollport so IntersectionObserver still
-    // sees a new bottom; keep the 47-card uniqueness assert below.
-    await scroller.evaluate((el) => {
-      const sent = el.querySelector("[data-testid='profits-mobile-sentinel']");
-      if (sent) sent.scrollIntoView({ block: "end", inline: "nearest" });
-      el.scrollTop += Math.max(el.clientHeight, 600);
-      el.dispatchEvent(new Event("scroll"));
-    });
+    // contended. Playwright scrollIntoViewIfNeeded survives Next refresh
+    // better than a raw scrollTop assignment on a stale handle.
+    try {
+      const sent = page.getByTestId("profits-mobile-sentinel");
+      if ((await sent.count()) > 0) {
+        await sent.scrollIntoViewIfNeeded();
+      }
+      await scroller.evaluate((el) => {
+        el.scrollTop += Math.max(el.clientHeight, 600);
+        el.dispatchEvent(new Event("scroll"));
+      });
+    } catch {
+      if (page.isClosed()) throw new Error("profits mobile windowing: page closed");
+      await openProfits(page, "windowed", 390, 693);
+      continue;
+    }
     try {
       await expect(page.locator("[data-sdpm='card']")).not.toHaveCount(before, {
         timeout: 2000,
       });
     } catch {
-      await scroller.evaluate((el) => {
-        el.scrollTop = 0;
-        el.dispatchEvent(new Event("scroll"));
-      });
-      await page.waitForTimeout(120);
-      await scroller.evaluate((el) => {
-        const sent = el.querySelector("[data-testid='profits-mobile-sentinel']");
-        if (sent) sent.scrollIntoView({ block: "end", inline: "nearest" });
-        el.scrollTop = el.scrollHeight;
-        el.dispatchEvent(new Event("scroll"));
-      });
-      await page.waitForTimeout(400);
+      try {
+        await scroller.evaluate((el) => {
+          el.scrollTop = 0;
+          el.dispatchEvent(new Event("scroll"));
+        });
+        await page.waitForTimeout(120);
+        const sent = page.getByTestId("profits-mobile-sentinel");
+        if ((await sent.count()) > 0) {
+          await sent.scrollIntoViewIfNeeded();
+        }
+        await scroller.evaluate((el) => {
+          el.scrollTop = el.scrollHeight;
+          el.dispatchEvent(new Event("scroll"));
+        });
+        await page.waitForTimeout(400);
+      } catch {
+        if (page.isClosed()) throw new Error("profits mobile windowing: page closed");
+        await openProfits(page, "windowed", 390, 693);
+      }
     }
   }
 
