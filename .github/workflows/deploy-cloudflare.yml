@@ -13,6 +13,7 @@ on:
         type: choice
         options:
           - preview
+          - dedicated
           - production
       surface:
         description: "What to deploy"
@@ -149,7 +150,7 @@ jobs:
             --worker-set "${{ inputs.worker_set }}"
 
       - name: Deploy workers
-        if: inputs.target != 'production' && (inputs.surface == 'workers' || inputs.surface == 'all')
+        if: inputs.target != 'production' && inputs.target != 'dedicated' && (inputs.surface == 'workers' || inputs.surface == 'all')
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -177,7 +178,9 @@ jobs:
         if: inputs.surface == 'web' || inputs.surface == 'ops' || inputs.surface == 'all'
         run: |
           SLOT="production"
-          if [ "${{ inputs.target }}" != "production" ]; then
+          if [ "${{ inputs.target }}" = "dedicated" ]; then
+            SLOT="dedicated"
+          elif [ "${{ inputs.target }}" != "production" ]; then
             SLOT="staging"
           fi
           case "${{ inputs.surface }}" in
