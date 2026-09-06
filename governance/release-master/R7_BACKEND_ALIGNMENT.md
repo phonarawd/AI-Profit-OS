@@ -55,7 +55,7 @@ missing snapshot/amount → null. KRW 0 위조 0. client `Number()*rate` 0.
 | auth_permission | Nest `JwtAuthGuard` | `supabase.auth` 0 in api-nest | ALIGNED | REL-405 |
 | rls | REL-408 80/80 ON | `SECURITY_BASELINE.md` | ALIGNED | REL-408 |
 | indexes | applied migration `CREATE INDEX` | file-only indexes 0 | ALIGNED (REL-701-DB 2026-09-04 · unapplied 0) | REL-408 / REL-701-DB |
-| migration_head | local `20260906170000` | remote applied `20260906170000` | PENDING (`65ab999b` applied only `20260906170000` via single-file apply. REL-701-DB batch stays applied. committedUnapplied still has 8 older files `20260904060000` … `20260906160000`. Future apply must use `--include-all` because those pre-head versions were skipped.) | REL-701-DB / S1F / PUTDUK / S5 |
+| migration_head | local `20260906233000` | remote applied `20260906170000` | PENDING (`65ab999b` applied only `20260906170000` via single-file apply. REL-701-DB batch stays applied. committedUnapplied now has 9 files `20260904060000` … `20260906160000` plus `20260906233000`. Future apply must use `--include-all` because those pre-head versions were skipped and the new local head is also unapplied.) | REL-701-DB / S1F / PUTDUK / S5 |
 | p0_p3_engine | REL-502 `FINAL_ACCEPTANCE` | DEFECTS_P0/P1 = 0 | STALE_PENDING_REBASE (D1-S1E: services/api-nest/clock.core.cjs drift, NOT_ISSUED) | REL-502 |
 | p0_p3_admin | REL-409 R6 cert | KNOWN_P0~P3 = 0 | ALIGNED | REL-409 |
 | ui_truth_home_money | home-money-read contract | Engine todayPossible 0 · fake zero 0 | ALIGNED | money / UI |
