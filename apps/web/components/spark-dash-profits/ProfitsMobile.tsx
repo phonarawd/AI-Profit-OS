@@ -287,6 +287,7 @@ export function ProfitsMobile({ model }: { model: ProfitsDesktopModel }) {
     windowed ? PROFITS_MOBILE_PAGE_SIZE : model.items.length,
   );
   const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     // Reset window when the underlying feed changes (new data/filter).
@@ -294,20 +295,21 @@ export function ProfitsMobile({ model }: { model: ProfitsDesktopModel }) {
   }, [model.items, windowed]);
 
   useEffect(() => {
-    if (!windowed) return;
+    if (!windowed || model.viewState !== "READY") return;
     const sentinel = sentinelRef.current;
-    if (!sentinel || typeof IntersectionObserver === "undefined") return;
+    const root = scrollRef.current;
+    if (!sentinel || !root || typeof IntersectionObserver === "undefined") return;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries.some((e) => e.isIntersecting)) {
           setVisibleCount((prev) => Math.min(model.items.length, prev + PROFITS_MOBILE_PAGE_SIZE));
         }
       },
-      { rootMargin: "600px 0px" },
+      { root, rootMargin: "600px 0px" },
     );
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [windowed, model.items.length]);
+  }, [windowed, model.viewState, model.items.length, visibleCount]);
 
   const visibleItems = windowed ? model.items.slice(0, visibleCount) : model.items;
 
@@ -319,7 +321,12 @@ export function ProfitsMobile({ model }: { model: ProfitsDesktopModel }) {
       data-sdpm-state={model.viewState}
     >
       <ProfitsMobileHeader />
-      <div className="sdpm-scroll" data-sdpm="scroll" data-virtual={windowed ? "on" : "off"}>
+      <div
+        ref={scrollRef}
+        className="sdpm-scroll"
+        data-sdpm="scroll"
+        data-virtual={windowed ? "on" : "off"}
+      >
         <div className="sdpm-stack">
           {model.viewState === "LOADING" ? <ProfitsMobileSkeleton /> : null}
           {model.viewState === "ERROR" ? (

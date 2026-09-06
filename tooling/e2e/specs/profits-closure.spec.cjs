@@ -296,15 +296,31 @@ test("mobile list windows above 20 items, then reveals every item via scroll wit
   // scrollport, exactly like the desktop grid's page-level wheel scroll
   // above but scoped to the mobile app-shell's inner scroller.
   const scroller = page.locator("[data-sdpm='scroll']");
-  await scroller.hover();
-  for (let i = 0; i < 60; i += 1) {
+  await expect(scroller).toBeVisible();
+  for (let i = 0; i < 80; i += 1) {
     const remaining = await page.getByTestId("profits-mobile-sentinel").count();
     if (remaining === 0) break;
-    // Same generous-wait rationale as the desktop loop above - a contended
-    // low-core dev machine needs real wall-clock time per scroll step, not
-    // a tight race against a fast-machine frame budget.
-    await page.mouse.wheel(0, 2400);
-    await page.waitForTimeout(400);
+    const before = await page.locator("[data-sdpm='card']").count();
+    // Wheel events miss this inner overflow box when the machine is
+    // contended. Move the real scrollport so IntersectionObserver still
+    // sees a new bottom; keep the 47-card uniqueness assert below.
+    await scroller.evaluate((el) => {
+      el.scrollTop += Math.max(el.clientHeight, 600);
+    });
+    try {
+      await expect(page.locator("[data-sdpm='card']")).not.toHaveCount(before, {
+        timeout: 2000,
+      });
+    } catch {
+      await scroller.evaluate((el) => {
+        el.scrollTop = 0;
+      });
+      await page.waitForTimeout(120);
+      await scroller.evaluate((el) => {
+        el.scrollTop = el.scrollHeight;
+      });
+      await page.waitForTimeout(400);
+    }
   }
 
   await expect(page.locator("[data-sdpm='card']")).toHaveCount(TOTAL, {
