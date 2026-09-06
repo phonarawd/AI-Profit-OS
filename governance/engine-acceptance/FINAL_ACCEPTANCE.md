@@ -27,15 +27,15 @@ NEXT = ENGINE_ACCEPTANCE_REBASE_V1
 BASELINE_ID = ea-baseline-0d8825e8f333-5ac0f4291966
 PREDECESSOR_BASELINE_ID = ea-baseline-74683b6e39a7-590263f0f273
 REBASE_ID = pending
-LIVE_AGGREGATE = 3a647a15f4f9e6dbb251026abd7b73551ff3fd57a9d77059cc4926e2389a5b06
+LIVE_AGGREGATE = eeb91db84b40c7000f22a21723d506feaa36aff58183afbe97c20813184bcd66
 BASELINE_AGGREGATE = 5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9
-PATH_COUNT_LIVE = 518
+PATH_COUNT_LIVE = 552
 PATH_COUNT_BASELINE = 491
-CHANGED_PATHS = 51
-ADDED_PATHS = 27
-MUTATED_PATHS = 24
+CHANGED_PATHS = 110
+ADDED_PATHS = 61
+MUTATED_PATHS = 49
 MISSING_PATHS = 0
-EXIT_GATE = D1-S1F (2026-09-05) plus PUTDUK continuation through 5th recert (2026-09-06, HEAD 3cc29ee0) · protected-scope still drifting without ENGINE_ACCEPTANCE_REBASE_V1 ACK (27 added · 24 mutated · 51 changed) · ISSUED forbidden until formal rebase + current-epoch QA0-QA9
+EXIT_GATE = D1-S1F (2026-09-05) plus PUTDUK continuation through 6th recert (2026-09-06, HEAD d36a4bd5) · protected-scope still drifting without ENGINE_ACCEPTANCE_REBASE_V1 ACK (61 added · 49 mutated · 110 changed) · ISSUED forbidden until formal rebase + current-epoch QA0-QA9
 ```
 
 ## 판정 (D1-S1E 정정, 2026-09-05, append 성격의 사실 정정)
@@ -300,3 +300,15 @@ live protected aggregate `3a647a15f4f9e6dbb251026abd7b73551ff3fd57a9d77059cc4926
 
 은폐 금지 · STATUS = NOT_ISSUED (불변) · CERT_ISSUED = 0 (불변) · PROTECTED_SCOPE_DRIFT = 1 (불변).
 이 세션은 ACK를 대리 작성하지 않았고, QA0-QA9를 로컬에서 가짜로 재실행하지 않았으며, 숫자를 발급 조건에 맞춰 역산하지 않았다.
+
+## 판정 (PUTDUK continuation session 6차 정정, 2026-09-06, append 성격의 사실 정정)
+
+같은 출시 연속 세션이 S3 3.0~3.7 코드 슬라이스(Admin 신원, B7 유저 상품 정책, 사용자 Auth, 상품, 퍼뜩 history, PWA, health migration head, RC 병합 계약)를 닫으며 protected-scope root를 다시 변경했다 (HEAD `d36a4bd5`).
+
+이 정정은 STATUS를 조작하지 않고 LIVE_AGGREGATE/PATH_COUNT_LIVE/CHANGED_PATHS/ADDED_PATHS/MUTATED_PATHS만 현재 HEAD 실측값으로 갱신한다. STATUS/CERT_ISSUED/PROTECTED_SCOPE_DRIFT/REBASE_REQUIRED는 변경하지 않는다(계속 drift=true).
+
+live protected aggregate `eeb91db84b40c7000f22a21723d506feaa36aff58183afbe97c20813184bcd66`는 baseline aggregate `5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9`와 다르다 (추가 61 · 변경 49 · 누락 0, 총 110 경로). 재계산은 `compareProtectedScope()` 실측이며 hash를 손으로 만들지 않았다.
+
+은폐 금지 · STATUS = NOT_ISSUED (불변) · CERT_ISSUED = 0 (불변) · PROTECTED_SCOPE_DRIFT = 1 (불변).
+이 세션은 ACK를 대리 작성하지 않았고, QA0-QA9를 로컬에서 가짜로 재실행하지 않았으며, 숫자를 발급 조건에 맞춰 역산하지 않았다.
+
