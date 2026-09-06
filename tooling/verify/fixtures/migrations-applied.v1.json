@@ -157,6 +157,12 @@
       "name": "s3_32_consent_versions",
       "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
       "reason": "S3/3.2 consent document versions and optional avatar_url. Additive ADD COLUMN. Production apply after S5 staging. Do not apply to mgsytcetsiecllmhcyox from this commit."
+    },
+    {
+      "version": "20260906150000",
+      "name": "s3_33_product_pipeline",
+      "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
+      "reason": "S3/3.3 listings unique + identity_review_queue. Additive. Does not change money columns. Production apply after S5 staging. Do not apply to mgsytcetsiecllmhcyox from this commit."
     }
   ]
 }

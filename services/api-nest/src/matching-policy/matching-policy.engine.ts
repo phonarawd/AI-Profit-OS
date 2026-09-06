@@ -166,6 +166,44 @@ function parseUsdt(raw: string): bigint {
   return neg ? -n : n;
 }
 
+export function isConfirmedAssetId(assetId: string | null | undefined): boolean {
+  const id = String(assetId ?? "").trim();
+  return id.length > 0 && !id.startsWith("query:");
+}
+
+export function listingIdentityKey(input: {
+  assetId: string;
+  marketId: string;
+  externalItemId: string | null | undefined;
+}): string {
+  return [String(input.assetId), String(input.marketId), String(input.externalItemId ?? "")].join(
+    "\u001f",
+  );
+}
+
+export function identityReviewKey(item: {
+  adapterId?: unknown;
+  externalItemId?: unknown;
+  listingId?: unknown;
+}): string {
+  return [
+    String(item.adapterId ?? "ebay"),
+    String(item.externalItemId ?? ""),
+    String(item.listingId ?? ""),
+  ].join("\u001f");
+}
+
+export function clientAmountEqualsRequired(
+  clientAmount: string,
+  requiredCapitalUsdt: string,
+): boolean {
+  try {
+    return cmpUsdt(clientAmount, requiredCapitalUsdt) === 0;
+  } catch {
+    return false;
+  }
+}
+
 export function cmpUsdt(a: string, b: string): number {
   const d = parseUsdt(a) - parseUsdt(b);
   if (d < 0n) return -1;

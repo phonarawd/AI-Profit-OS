@@ -3,17 +3,32 @@
  */
 
 import { Injectable } from "@nestjs/common";
+import { createRequire } from "node:module";
+import { join } from "node:path";
 import type { QueryResultRow } from "pg";
 import { PostgresService } from "../db/postgres";
 import {
   evaluateMatchingPolicy,
   filterVisibleOpportunities,
+  isConfirmedAssetId,
   platformDefaultLayer,
   type MatchingDecision,
   type MatchingPolicyLayer,
   type MatchingUserContext,
   type OpportunityCandidate,
 } from "./matching-policy.engine";
+
+const req = createRequire(__filename);
+const settlementRule = req(
+  join(__dirname, "..", "..", "..", "engine-rust", "settlement_rule.cjs"),
+) as {
+  isPriceFresh: (ctx: {
+    nowMs: number;
+    staleAtMs: number;
+    priceStaleMaxSec?: number;
+  }) => boolean;
+  DEFAULT_PRICE_STALE_MAX_SEC: number;
+};
 
 export type PolicyQuerier = {
   query<T extends QueryResultRow = QueryResultRow>(
@@ -323,9 +338,10 @@ export class MatchingPolicyService {
         status: string;
         pricing: Record<string, unknown> | null;
         expected_profit_usdt: string;
+        stale_at: Date | null;
       }>(
         `SELECT id::text, required_capital_usdt::text, category, asset_id::text,
-                status, pricing, expected_profit_usdt::text
+                status, pricing, expected_profit_usdt::text, stale_at
            FROM public.opportunities
           WHERE id = ANY($1::uuid[])`,
         [ids],
@@ -358,10 +374,21 @@ export function opportunityRowToCandidate(row: {
   asset_id?: string | null;
   status: string;
   pricing?: Record<string, unknown> | null;
+  stale_at?: Date | string | null;
+  nowMs?: number;
 }): OpportunityCandidate {
   const pricing = row.pricing || {};
   const amount = String(row.required_capital_usdt ?? "");
   const amountValid = /^-?[0-9]+(\.[0-9]+)?$/.test(amount) && amount !== "0";
+  const staleAt = row.stale_at;
+  const expired =
+    staleAt != null
+      ? !settlementRule.isPriceFresh({
+          nowMs: row.nowMs ?? Date.now(),
+          staleAtMs: new Date(staleAt).getTime(),
+          priceStaleMaxSec: settlementRule.DEFAULT_PRICE_STALE_MAX_SEC,
+        })
+      : false;
   return {
     id: row.id,
     requiredCapitalUsdt: amount,
@@ -375,8 +402,8 @@ export function opportunityRowToCandidate(row: {
     currency: pricing.currency != null ? String(pricing.currency) : null,
     status: row.status,
     published: row.status === "available",
-    expired: false,
-    identityConfirmed: Boolean(row.asset_id),
+    expired,
+    identityConfirmed: isConfirmedAssetId(row.asset_id),
     amountValid,
   };
 }

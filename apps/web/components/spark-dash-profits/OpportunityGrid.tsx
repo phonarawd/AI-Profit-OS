@@ -69,7 +69,14 @@ export function OpportunityGrid({
   if (viewState === "EMPTY") {
     return (
       <FeedMessage kind="empty">
-        <p>지금 확인할 수 있는 기회가 아직 없어요.</p>
+        <p>지금 이용할 수 있는 상품이 없습니다</p>
+        <button
+          type="button"
+          className="sdp-empty-link"
+          onClick={() => window.location.reload()}
+        >
+          다시 확인
+        </button>
       </FeedMessage>
     );
   }

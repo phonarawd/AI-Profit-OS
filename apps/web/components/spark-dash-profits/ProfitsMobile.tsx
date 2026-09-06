@@ -258,12 +258,17 @@ function ProfitsMobileEmpty() {
   return (
     <div className="sdpm-empty" data-sdpm="empty">
       <img className="sdpm-empty-icon" src={SD_ASSETS.mobileNavExplore} alt="" width={40} height={40} />
-      <p className="sdpm-empty-title">지금 확인할 수 있는 기회가 없어요</p>
+      <p className="sdpm-empty-title">지금 이용할 수 있는 상품이 없습니다</p>
       <p className="sdpm-empty-body">
-        새로운 기회가 생기면
-        <br />
-        여기에서 바로 확인할 수 있어요
+        이용 가능한 다른 상품을 확인해 주세요
       </p>
+      <button
+        type="button"
+        className="sdpm-empty-retry"
+        onClick={() => window.location.reload()}
+      >
+        다시 확인
+      </button>
     </div>
   );
 }

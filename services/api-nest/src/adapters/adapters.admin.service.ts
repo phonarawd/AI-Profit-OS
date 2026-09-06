@@ -25,6 +25,8 @@ import {
   worstTint,
 } from "./adapters.mi";
 import { InProcessEventBus } from "../events/in-process.bus";
+import { PostgresService } from "../db/postgres";
+import { identityReviewKey } from "../matching-policy/matching-policy.engine";
 import { CatalogRuntimeSeedService } from "../opportunities/catalog-runtime-seed.service";
 import { FxSnapshotService } from "../opportunities/fx-snapshot.service";
 import { ADAPTER_EVENTS } from "./adapters.events";
@@ -101,6 +103,7 @@ export class AdaptersAdminService {
   constructor(
     private readonly bus: InProcessEventBus,
     private readonly providerHealth: ProviderHealthService,
+    private readonly db: PostgresService,
     @Optional()
     @Inject(forwardRef(() => CatalogRuntimeSeedService))
     private readonly catalogSeed?: CatalogRuntimeSeedService,
@@ -264,15 +267,26 @@ export class AdaptersAdminService {
   /**
    * §0.10 Admin/Ops surface — unmatched ebay identity review queue.
    */
-  identityReviewQueue(): {
+  async identityReviewQueue(): Promise<{
     items: IdentityReviewQueueItem[];
     count: number;
     silentDrop: false;
-  } {
+    durable: boolean;
+  }> {
+    const durable = await this.loadIdentityReviewFromDb();
+    if (durable) {
+      return {
+        items: durable,
+        count: durable.length,
+        silentDrop: false,
+        durable: true,
+      };
+    }
     return {
       items: [...this.identityReview],
       count: this.identityReview.length,
       silentDrop: false,
+      durable: false,
     };
   }
 
@@ -372,7 +386,7 @@ export class AdaptersAdminService {
         now: observedAt,
       });
       assertNoQueryAssetIds(resolved.matched);
-      this.enqueueIdentityReview(resolved.unmatched);
+      await this.enqueueIdentityReview(resolved.unmatched);
       identityMatched = resolved.matched.length;
       identityUnmatchedQueued = resolved.unmatched.length;
       listingsForPersist = resolved.matched;
@@ -540,16 +554,15 @@ export class AdaptersAdminService {
     });
   }
 
-  private enqueueIdentityReview(items: IdentityReviewQueueItem[]): void {
+  private async enqueueIdentityReview(
+    items: IdentityReviewQueueItem[],
+  ): Promise<void> {
     for (const item of items) {
-      const key = String(
-        item.externalItemId ?? item.listingId ?? item.id ?? "",
-      );
-      if (key) {
-        this.identityReview = this.identityReview.filter((x) => {
-          const xk = String(x.externalItemId ?? x.listingId ?? x.id ?? "");
-          return xk !== key;
-        });
+      const key = identityReviewKey(item);
+      if (key.replace(/\u001f/g, "")) {
+        this.identityReview = this.identityReview.filter(
+          (x) => identityReviewKey(x) !== key,
+        );
       }
       this.identityReview.unshift({
         ...item,
@@ -558,6 +571,91 @@ export class AdaptersAdminService {
     }
     if (this.identityReview.length > MAX_IDENTITY_REVIEW) {
       this.identityReview = this.identityReview.slice(0, MAX_IDENTITY_REVIEW);
+    }
+    await this.persistIdentityReview(items);
+  }
+
+  private async persistIdentityReview(
+    items: IdentityReviewQueueItem[],
+  ): Promise<void> {
+    if (!this.db.configured() || items.length === 0) return;
+    for (const item of items) {
+      const key = identityReviewKey(item);
+      try {
+        await this.db.query(
+          `INSERT INTO public.identity_review_queue (
+             identity_key, adapter_id, external_item_id, listing_id,
+             title, search_query, reason, evidence, queued_at
+           ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8::jsonb, now())
+           ON CONFLICT (identity_key) DO UPDATE SET
+             title = EXCLUDED.title,
+             search_query = EXCLUDED.search_query,
+             reason = EXCLUDED.reason,
+             evidence = EXCLUDED.evidence,
+             queued_at = now()`,
+          [
+            key,
+            String(item.adapterId ?? "ebay"),
+            item.externalItemId != null ? String(item.externalItemId) : null,
+            item.listingId != null ? String(item.listingId) : null,
+            item.title != null ? String(item.title) : null,
+            item.searchQuery != null ? String(item.searchQuery) : null,
+            item.reason != null ? String(item.reason) : "unmatched",
+            JSON.stringify(item.evidence ?? item),
+          ],
+        );
+      } catch (err) {
+        const code =
+          err && typeof err === "object" && "code" in err
+            ? String((err as { code?: unknown }).code ?? "")
+            : "";
+        if (code === "42P01") return;
+        throw err;
+      }
+    }
+  }
+
+  private async loadIdentityReviewFromDb(): Promise<
+    IdentityReviewQueueItem[] | null
+  > {
+    if (!this.db.configured()) return null;
+    try {
+      const { rows } = await this.db.query<{
+        identity_key: string;
+        adapter_id: string;
+        external_item_id: string | null;
+        listing_id: string | null;
+        title: string | null;
+        search_query: string | null;
+        reason: string;
+        evidence: Record<string, unknown> | null;
+        queued_at: Date;
+      }>(
+        `SELECT identity_key, adapter_id, external_item_id, listing_id,
+                title, search_query, reason, evidence, queued_at
+           FROM public.identity_review_queue
+          ORDER BY queued_at DESC
+          LIMIT $1`,
+        [MAX_IDENTITY_REVIEW],
+      );
+      return rows.map((row) => ({
+        id: `unmatched_${row.external_item_id || row.listing_id || row.identity_key}`,
+        adapterId: row.adapter_id,
+        externalItemId: row.external_item_id,
+        listingId: row.listing_id,
+        title: row.title,
+        searchQuery: row.search_query,
+        reason: row.reason,
+        evidence: row.evidence || {},
+        queuedAt: new Date(row.queued_at).toISOString(),
+      }));
+    } catch (err) {
+      const code =
+        err && typeof err === "object" && "code" in err
+          ? String((err as { code?: unknown }).code ?? "")
+          : "";
+      if (code === "42P01") return null;
+      throw err;
     }
   }
 

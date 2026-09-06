@@ -300,8 +300,9 @@ export class OpportunitiesUserService {
           AND arbitrage_type = ANY($1::text[])
           AND NULLIF(BTRIM(arbitrage_type_ko), '') IS NOT NULL
           AND NULLIF(BTRIM(asset_image_url), '') IS NOT NULL
-        ORDER BY updated_at DESC
-        LIMIT 200`,
+          AND NULLIF(BTRIM(asset_id), '') IS NOT NULL
+          AND asset_id NOT LIKE 'query:%'
+        ORDER BY updated_at DESC`,
       [[...V1_FEED_ARBITRAGE_TYPES]],
     );
     return rows.filter((r) => isV1FeedArbitrageType(r.arbitrage_type));

@@ -2,8 +2,12 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   assertManualAssignDoesNotMutateMoney,
+  clientAmountEqualsRequired,
   evaluateMatchingPolicy,
   filterVisibleOpportunities,
+  identityReviewKey,
+  isConfirmedAssetId,
+  listingIdentityKey,
   planBulkApply,
   platformDefaultLayer,
   previewPolicyChange,
@@ -328,6 +332,70 @@ test("preview counts added and removed ids", () => {
   assert.ok(preview.beforeCount >= 1);
   assert.ok(preview.removedIds.includes("o-10"));
   assert.ok(preview.addedIds.includes("o-100"));
+});
+
+test("query placeholder is not a confirmed identity", () => {
+  assert.equal(isConfirmedAssetId("w_rolex_sub_126610ln"), true);
+  assert.equal(isConfirmedAssetId("query:Rolex"), false);
+  assert.equal(isConfirmedAssetId(""), false);
+  const ghost = opp("q-1", "10", { identityConfirmed: isConfirmedAssetId("query:x") });
+  const d = evaluateMatchingPolicy({
+    candidate: ghost,
+    layers: [policyA],
+    ctx: ctx(),
+  });
+  assert.equal(d.visible, false);
+  assert.equal(d.reasonCode, "platform_default_reject");
+});
+
+test("expired candidate is not visible", () => {
+  const d = evaluateMatchingPolicy({
+    candidate: opp("old", "10", { expired: true }),
+    layers: [policyA],
+    ctx: ctx(),
+  });
+  assert.equal(d.visible, false);
+  assert.equal(d.reasonCode, "platform_default_reject");
+});
+
+test("client amount must equal requiredCapitalUsdt", () => {
+  assert.equal(clientAmountEqualsRequired("10.00", "10"), true);
+  assert.equal(clientAmountEqualsRequired("11", "10"), false);
+  assert.equal(clientAmountEqualsRequired("nope", "10"), false);
+});
+
+test("listing identity key is unique per asset market item", () => {
+  const a = listingIdentityKey({
+    assetId: "w_1",
+    marketId: "ebay_us",
+    externalItemId: "itm-1",
+  });
+  const again = listingIdentityKey({
+    assetId: "w_1",
+    marketId: "ebay_us",
+    externalItemId: "itm-1",
+  });
+  const other = listingIdentityKey({
+    assetId: "w_1",
+    marketId: "ebay_us",
+    externalItemId: "itm-2",
+  });
+  assert.equal(a, again);
+  assert.notEqual(a, other);
+});
+
+test("identity review key dedupes the same unmatched listing", () => {
+  const first = identityReviewKey({
+    adapterId: "ebay",
+    externalItemId: "ext-1",
+    listingId: "lst-1",
+  });
+  const replay = identityReviewKey({
+    adapterId: "ebay",
+    externalItemId: "ext-1",
+    listingId: "lst-1",
+  });
+  assert.equal(first, replay);
 });
 
 test("missing policy is platform default only, not unlimited leak", () => {

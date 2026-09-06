@@ -213,7 +213,24 @@ const RULES = [
       /^supabase\/migrations\/20260906130000_user_matching_policy_b7\.sql$/.test(f) ||
       /^tooling\/verify\/admin-user-matching-b7\.cjs$/.test(f) ||
       /^apps\/admin\/app\/admin\/users\/\[id\]\/page\.tsx$/.test(f),
-    scripts: ["admin-user-matching-b7.cjs"],
+    scripts: ["admin-user-matching-b7.cjs", "s3-33-products.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/products\//.test(f) ||
+      /^tooling\/verify\/s3-33-products\.cjs$/.test(f) ||
+      /^supabase\/migrations\/20260906150000_s3_33_product_pipeline\.sql$/.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/(opportunities\.user\.service|catalog-runtime-seed\.service|opportunity-reprice\.service)\.ts$/.test(
+        f,
+      ) ||
+      /^services\/api-nest\/src\/ai\/fact-tool\.service\.ts$/.test(f) ||
+      /^apps\/web\/components\/spark-dash-profits\//.test(f) ||
+      /^apps\/web\/app\/profits\/\[id\]\//.test(f),
+    scripts: [
+      "s3-33-products.cjs",
+      "admin-user-matching-b7.cjs",
+      "ebay-identity-ingest.cjs",
+    ],
   },
   {
     test: (f) =>
@@ -1471,6 +1488,7 @@ const RULES = [
       "catalog-runtime-seed.cjs",
       "ebay-resilience.cjs",
       "price-denomination-contract.cjs",
+      "s3-33-products.cjs",
     ],
   },
   {
