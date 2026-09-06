@@ -328,6 +328,7 @@
     "verify:s3-34-peotteok": "node tooling/verify/s3-34-peotteok.cjs",
     "verify:s3-35-pwa": "node tooling/verify/s3-35-pwa.cjs",
     "verify:s3-36-observability": "node tooling/verify/s3-36-observability.cjs",
+    "verify:s3-37-merge-rules": "node tooling/verify/s3-37-merge-rules.cjs",
     "admin:provision": "node tooling/admin-auth/provision-admin.cjs",
     "verify:coach-sse-error-canonical": "node tooling/verify/coach-sse-error-canonical.cjs",
     "verify:release-manifest-identity-lock": "node tooling/verify/release-manifest-identity-lock.cjs",

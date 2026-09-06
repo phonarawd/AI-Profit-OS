@@ -1356,6 +1356,13 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/github\//.test(f) ||
+      /^tooling\/github\//.test(f) ||
+      /^tooling\/verify\/s3-37-merge-rules\.cjs$/.test(f),
+    scripts: ["s3-37-merge-rules.cjs"],
+  },
+  {
+    test: (f) =>
       /^governance\/legacy-plan-migration\//.test(f) ||
       /^tooling\/legacy-plan-stamp\.cjs$/.test(f) ||
       /^tooling\/verify\/legacy-plan-migration\.cjs$/.test(f) ||

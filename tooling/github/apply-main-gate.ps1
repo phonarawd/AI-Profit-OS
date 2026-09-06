@@ -1,5 +1,7 @@
-# ADR-016 — apply/update main ruleset (gate / verify-gate required)
-# Repo must be public (or GitHub Pro if private).
+# ADR-016 — apply/update daily main ruleset (gate / verify-gate required)
+# S3/3.7: this script is daily T2 only. Live ruleset apply = NOT_RUN in this slice.
+# RC/production required checks live in rc-production-merge.required-checks.v1.json.
+# Do not treat verify-gate alone as RC mergeable. Do not purchase a paid plan here.
 # Usage: pwsh tooling/github/apply-main-gate.ps1
 
 $ErrorActionPreference = "Stop"
