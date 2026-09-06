@@ -172,7 +172,7 @@ const RULES = [
     test: (f) =>
       /^tooling\/release\/production-release-decision\.cjs$/.test(f) ||
       /^tooling\/verify\/production-release-decision\.cjs$/.test(f),
-    scripts: ["production-release-decision.cjs"],
+    scripts: ["production-release-decision.cjs", "s3-36-observability.cjs"],
   },
   {
     test: (f) =>
@@ -324,7 +324,7 @@ const RULES = [
       /^services\/api-nest\/src\/health\.public\.runtime\.test\.ts$/.test(f) ||
       /^services\/api-nest\/src\/config\/nest-provenance\.ts$/.test(f) ||
       /^tooling\/verify\/nest-production-provenance\.cjs$/.test(f),
-    scripts: ["nest-production-provenance.cjs", "api-nest-build.cjs"],
+    scripts: ["nest-production-provenance.cjs", "api-nest-build.cjs", "s3-36-observability.cjs"],
   },
   {
     // D1-BLK-004 (2026-09-05): packages/ui had zero standalone typecheck
@@ -1350,8 +1350,9 @@ const RULES = [
       /^packages\/observability\//.test(f) ||
       /^services\/api-nest\/src\/observability\//.test(f) ||
       /^apps\/web\/components\/observability\//.test(f) ||
-      /^tooling\/verify\/observability\.cjs$/.test(f),
-    scripts: ["observability.cjs"],
+      /^tooling\/verify\/observability\.cjs$/.test(f) ||
+      /^tooling\/verify\/s3-36-observability\.cjs$/.test(f),
+    scripts: ["observability.cjs", "s3-36-observability.cjs"],
   },
   {
     test: (f) =>

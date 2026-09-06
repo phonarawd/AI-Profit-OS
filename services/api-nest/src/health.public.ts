@@ -4,20 +4,46 @@
 
 export type PublicHealthWarning = { code: string };
 
+export type PublicHealthEnvironment =
+  | "production"
+  | "staging"
+  | "development"
+  | "test";
+
 export type PublicHealthBody = {
   ok: true;
   service: "api-nest";
   phase: 0;
   gitSha: string | null;
   gitShaSource: string | null;
+  environment: PublicHealthEnvironment;
+  migrationHead: string | null;
   db: { configured: boolean; ok: boolean };
   redis: { configured: boolean; ok: boolean };
   warnings: PublicHealthWarning[];
 };
 
+/** NODE_ENV 원문을 호스트/시크릿 없이 네 값만 공개한다. */
+export function sanitizeEnvironment(raw: unknown): PublicHealthEnvironment {
+  const value = String(raw ?? "").trim().toLowerCase();
+  if (value === "production" || value === "staging" || value === "test") {
+    return value;
+  }
+  return "development";
+}
+
+/** supabase_migrations.version 만 허용. SQL/호스트는 버린다. */
+export function sanitizeMigrationHead(raw: unknown): string | null {
+  const value = String(raw ?? "").trim();
+  if (!/^[0-9]{8,14}(_[a-z0-9_]+)?$/.test(value)) return null;
+  return value.slice(0, 80);
+}
+
 export function publicHealthBody(input: {
   gitSha: string | null;
   gitShaSource: string | null;
+  environment?: unknown;
+  migrationHead?: unknown;
   dbConfigured: boolean;
   dbOk: boolean;
   redisConfigured: boolean;
@@ -30,6 +56,8 @@ export function publicHealthBody(input: {
     phase: 0,
     gitSha: input.gitSha,
     gitShaSource: input.gitShaSource,
+    environment: sanitizeEnvironment(input.environment),
+    migrationHead: sanitizeMigrationHead(input.migrationHead),
     db: {
       configured: input.dbConfigured,
       ok: input.dbOk,

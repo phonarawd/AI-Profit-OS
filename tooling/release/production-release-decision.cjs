@@ -99,6 +99,13 @@ function evaluateProductionReleaseDecision(input) {
   } else {
     if (!sameSha(security.exact_head_sha, candidateSha)) blockers.push("security_sha_mismatch");
     if (security.codeql_workflow !== "success") blockers.push("codeql_not_success");
+    // workflow green is not CODEQL_UNTRIAGED=0 — live open-alert count is its own field.
+    if (
+      !Number.isInteger(security.codeql_open_untriaged) ||
+      security.codeql_open_untriaged !== 0
+    ) {
+      blockers.push("codeql_open_untriaged");
+    }
     for (const [field, code] of [
       ["unresolved_p0", "security_p0_open"],
       ["unresolved_p1", "security_p1_open"],
