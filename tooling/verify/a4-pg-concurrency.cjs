@@ -408,9 +408,9 @@ async function runRealPg(url) {
       fail("journal debit must equal credit");
     }
     const multi = await a.query(
-      `SELECT trade_id, COUNT(*)::int AS n FROM ${SCHEMA}.trades
+      `SELECT id, COUNT(*)::int AS n FROM ${SCHEMA}.trades
         WHERE status IN ('success','failed','safe_stop')
-        GROUP BY trade_id HAVING COUNT(*) > 1`,
+        GROUP BY id HAVING COUNT(*) > 1`,
     );
     if (multi.rows.length) {
       fail("one terminal row per trade");
