@@ -29,6 +29,7 @@ const required = [
   "schemas/push-payload.v1.json",
   "supabase/migrations/20260821090000_push_subscriptions_and_control.sql",
   "services/api-nest/src/push/push.user.controller.ts",
+  "services/api-nest/src/push/push.public.controller.ts",
   "services/api-nest/src/push/push-kill.admin.controller.ts",
   "services/api-nest/src/push/push-emit.service.ts",
   "services/api-nest/src/push/push-kill.service.ts",
@@ -61,6 +62,14 @@ if (!sw.includes("setAppBadge") && !sw.includes("applyBadge")) {
 }
 if (/PublicKeyCredential|webauthn/i.test(sw)) {
   fails.push("REL-020 must not mix WebAuthn (REL-022)");
+}
+
+const pub = read("services/api-nest/src/push/push.public.controller.ts");
+if (!pub.includes("getEnabled") || !pub.includes("PUSH_PUBLIC_ROUTES")) {
+  fails.push("public enabled probe must call PushKillService.getEnabled");
+}
+if (pub.includes("JwtAuthGuard")) {
+  fails.push("public enabled probe must not use JwtAuthGuard");
 }
 
 const user = read("services/api-nest/src/push/push.user.controller.ts");
@@ -159,6 +168,19 @@ const selftest = spawnSync(
 );
 if (selftest.status !== 0 || !String(selftest.stdout || "").includes("SELFTEST PASS")) {
   fails.push("generate-vapid --selftest failed");
+}
+
+const sdkEnabled = spawnSync(
+  process.execPath,
+  [
+    "--test",
+    "--experimental-strip-types",
+    path.join(root, "packages/sdk/src/push/subscribe.runtime.test.ts"),
+  ],
+  { cwd: root, encoding: "utf8" },
+);
+if (sdkEnabled.status !== 0) {
+  fails.push("fetchServerPushEnabled runtime tests failed");
 }
 
 const pkg = read("package.json");

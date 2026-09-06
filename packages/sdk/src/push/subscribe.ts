@@ -46,6 +46,27 @@ export function urlBase64ToUint8Array(base64: string): Uint8Array {
   return out;
 }
 
+/**
+ * 서버 PUSH_ENABLED / kill 권위. 실패·비true는 팝업 금지.
+ */
+export async function fetchServerPushEnabled(
+  opts: PushSubscribeOpts = {},
+): Promise<boolean> {
+  try {
+    const res = await fetch(apiUrl(opts.apiBase ?? "", "/api/v1/push/enabled"), {
+      method: "GET",
+      credentials: "include",
+      cache: "no-store",
+      signal: opts.signal,
+    });
+    if (!res.ok) return false;
+    const json = (await res.json()) as { pushEnabled?: unknown };
+    return json.pushEnabled === true;
+  } catch {
+    return false;
+  }
+}
+
 export async function fetchVapidPublicKey(
   opts: PushSubscribeOpts = {},
 ): Promise<string | null> {

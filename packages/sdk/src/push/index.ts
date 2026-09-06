@@ -1,5 +1,6 @@
 export {
   canRequestPush,
+  fetchServerPushEnabled,
   fetchVapidPublicKey,
   isIosDevice,
   isStandaloneDisplay,

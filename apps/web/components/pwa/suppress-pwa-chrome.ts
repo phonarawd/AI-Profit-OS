@@ -13,3 +13,25 @@ export function shouldSuppressPwaChrome(pathname?: string): boolean {
   if (/^\/profits\/[^/]+/.test(p)) return true;
   return false;
 }
+
+export function clientPushHintDisabled(
+  env: { NEXT_PUBLIC_PUSH_ENABLED?: string } | undefined,
+): boolean {
+  return env?.NEXT_PUBLIC_PUSH_ENABLED === "false";
+}
+
+/** setVisible 직전·렌더 시점 모두 이 함수를 본다. 서버 비true는 fail-closed. */
+export function isPushOverlayAllowed(input: {
+  pathname: string;
+  serverPushEnabled: boolean | null;
+  clientHintDisabled: boolean;
+}): boolean {
+  if (input.clientHintDisabled) return false;
+  if (input.serverPushEnabled !== true) return false;
+  if (shouldSuppressPwaChrome(input.pathname)) return false;
+  return true;
+}
+
+export function isInstallOverlayAllowed(pathname: string): boolean {
+  return !shouldSuppressPwaChrome(pathname);
+}

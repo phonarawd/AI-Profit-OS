@@ -36,6 +36,7 @@ const SKIP_REFRESH_RETRY_PATH_PREFIXES: readonly string[] = [
   "/api/v1/auth/oauth",
   "/api/v1/auth/passkey",
   "/api/v1/auth/email",
+  "/api/v1/push/enabled",
 ];
 
 function extractPathname(input: RequestInfo | URL): string | null {

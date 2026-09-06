@@ -7,11 +7,12 @@ import { PushEmitService } from "./push-emit.service";
 import { PushKillAdminController } from "./push-kill.admin.controller";
 import { PushKillService } from "./push-kill.service";
 import { PushSubscriptionService } from "./push-subscription.service";
+import { PushPublicController } from "./push.public.controller";
 import { PushUserController } from "./push.user.controller";
 
 @Module({
   imports: [EventsModule, InboxModule, KillSwitchModule],
-  controllers: [PushUserController, PushKillAdminController],
+  controllers: [PushPublicController, PushUserController, PushKillAdminController],
   providers: [
     PushKillService,
     PushSubscriptionService,

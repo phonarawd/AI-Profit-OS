@@ -51,6 +51,7 @@ test("shouldAttemptRefreshRetry skip list", () => {
     false,
   );
   assert.equal(shouldAttemptRefreshRetry("/api/v1/auth/oauth/kakao/start"), false);
+  assert.equal(shouldAttemptRefreshRetry("/api/v1/push/enabled"), false);
 });
 
 test("shouldAttemptRefreshRetry session paths included", () => {

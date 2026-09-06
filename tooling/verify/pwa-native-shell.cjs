@@ -113,15 +113,49 @@ if (!install.includes("beforeinstallprompt")) {
 if (!install.includes("display-mode: standalone")) {
   fails.push("InstallPrompt must hide when installed");
 }
-if (!install.includes("shouldSuppressPwaChrome")) {
+if (!install.includes("shouldSuppressPwaChrome") || !install.includes("isInstallOverlayAllowed")) {
   fails.push("InstallPrompt must suppress overlay during onboarding/money flows");
 }
+if (!install.includes("usePathname")) {
+  fails.push("InstallPrompt must re-evaluate suppress on path change");
+}
 const push = read("apps/web/components/pwa/PushOptIn.tsx");
-if (!push.includes("shouldSuppressPwaChrome")) {
+if (!push.includes("shouldSuppressPwaChrome") || !push.includes("isPushOverlayAllowed")) {
   fails.push("PushOptIn must suppress overlay during onboarding/money flows");
 }
 if (!push.includes("NEXT_PUBLIC_PUSH_ENABLED")) {
   fails.push("PushOptIn must not promise alerts when NEXT_PUBLIC_PUSH_ENABLED=false");
+}
+if (!push.includes("fetchServerPushEnabled") || !push.includes("usePathname")) {
+  fails.push("PushOptIn must consult server PUSH_ENABLED and re-evaluate on path change");
+}
+
+const publicCtl = read("services/api-nest/src/push/push.public.controller.ts");
+if (!publicCtl.includes("getEnabled") || !publicCtl.includes("PUSH_PUBLIC_ROUTES")) {
+  fails.push("public GET /api/v1/push/enabled must expose PushKillService.getEnabled");
+}
+if (publicCtl.includes("JwtAuthGuard")) {
+  fails.push("push enabled probe must stay public (no JwtAuthGuard)");
+}
+const sdkPush = read("packages/sdk/src/push/subscribe.ts");
+if (!sdkPush.includes("/api/v1/push/enabled") || !sdkPush.includes("fetchServerPushEnabled")) {
+  fails.push("sdk must fetch /api/v1/push/enabled and fail-closed");
+}
+
+const { spawnSync } = require("child_process");
+const overlayTest = spawnSync(
+  process.execPath,
+  [
+    "--test",
+    "--experimental-strip-types",
+    "apps/web/components/pwa/pwa-overlay-gate.runtime.test.ts",
+  ],
+  { cwd: root, encoding: "utf8", timeout: 30_000 },
+);
+process.stdout.write(overlayTest.stdout || "");
+process.stderr.write(overlayTest.stderr || "");
+if (overlayTest.status !== 0) {
+  fails.push("pwa-overlay-gate runtime tests failed");
 }
 
 const update = read("apps/web/components/pwa/SwUpdateToast.tsx");

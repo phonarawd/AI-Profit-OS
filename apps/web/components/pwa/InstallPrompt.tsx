@@ -1,8 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { pwaCopy } from "./copy";
-import { shouldSuppressPwaChrome } from "./suppress-pwa-chrome";
+import {
+  isInstallOverlayAllowed,
+  shouldSuppressPwaChrome,
+} from "./suppress-pwa-chrome";
 
 const DISMISS_KEY = "putduk.install.dismissedAt";
 const COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
@@ -49,35 +53,44 @@ function markDismissed() {
 }
 
 export function InstallPrompt() {
+  const pathname = usePathname() || "";
   const [visible, setVisible] = useState(false);
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(
     null,
   );
   const [ios, setIos] = useState(false);
+  const allowed = isInstallOverlayAllowed(pathname);
 
   useEffect(() => {
-    if (shouldSuppressPwaChrome()) return;
-    if (isStandalone() || dismissedRecently()) return;
+    if (isStandalone()) return;
 
     const onPrompt = (event: Event) => {
       event.preventDefault();
       setDeferred(event as BeforeInstallPromptEvent);
     };
     window.addEventListener("beforeinstallprompt", onPrompt);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", onPrompt);
+    };
+  }, []);
 
+  useEffect(() => {
+    if (!allowed) {
+      setVisible(false);
+      return;
+    }
+    if (isStandalone() || dismissedRecently()) return;
     const timer = window.setTimeout(() => {
+      if (shouldSuppressPwaChrome(pathname)) return;
+      if (!isInstallOverlayAllowed(pathname)) return;
       if (isStandalone() || dismissedRecently()) return;
       setIos(isIosSafari());
       setVisible(true);
     }, FIRST_SHOW_MS);
+    return () => window.clearTimeout(timer);
+  }, [allowed, pathname]);
 
-    return () => {
-      window.removeEventListener("beforeinstallprompt", onPrompt);
-      window.clearTimeout(timer);
-    };
-  }, []);
-
-  if (!visible || isStandalone()) return null;
+  if (!visible || !allowed || isStandalone()) return null;
 
   const hide = () => {
     markDismissed();
