@@ -38,7 +38,7 @@ const envLib = read("tooling/deploy/lib/env.cjs");
 const dedicatedDeploy = read("tooling/deploy/cf-deploy-dedicated.cjs");
 const dedicatedWorkflow = read(".github/workflows/deploy-dedicated.yml");
 const stagingWorkflow = read(".github/workflows/deploy-staging.yml");
-const proxy = read("apps/admin/proxy.ts");
+const proxy = read("apps/admin/middleware.ts");
 const jwtLib = read("apps/admin/lib/cf-access-jwt.ts");
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
@@ -150,8 +150,11 @@ if (stagingWorkflow.includes("cf-pages-web.cjs dedicated")) {
   fails.push("REL-600 deploy-staging must not retarget dedicated");
 }
 
-if (!proxy.includes("decideCfAccess") || !proxy.includes("export async function proxy")) {
-  fails.push("admin proxy.ts must export Next 16 proxy and call decideCfAccess");
+if (!proxy.includes("decideCfAccess") || !proxy.includes("export async function middleware")) {
+  fails.push("admin middleware.ts must export Edge middleware and call decideCfAccess");
+}
+if (fs.existsSync(path.join(root, "apps/admin/proxy.ts"))) {
+  fails.push("admin proxy.ts forbidden: OpenNext Cloudflare rejects Node proxy runtime");
 }
 if (!jwtLib.includes("cf-access-jwt-assertion") || !jwtLib.includes("CF_ACCESS_ENFORCE")) {
   fails.push("cf-access-jwt must verify Access JWT only when enforced");

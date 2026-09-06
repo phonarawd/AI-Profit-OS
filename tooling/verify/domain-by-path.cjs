@@ -1007,7 +1007,7 @@ const RULES = [
       /^tooling\/deploy\/lib\/(env|non-prod-api-host(\.runtime\.test)?)\.cjs$/.test(f) ||
       /^tooling\/verify\/(rel-600-staging|s5-dedicated-staging)\.cjs$/.test(f) ||
       /^governance\/release-master\/S5-DEDICATED-STAGING\.v1\.json$/.test(f) ||
-      /^apps\/admin\/(proxy\.ts|lib\/cf-access-jwt\.ts)$/.test(f) ||
+      /^apps\/admin\/(middleware\.ts|proxy\.ts|lib\/cf-access-jwt\.ts)$/.test(f) ||
       /^infra\/(web|ops)\/wrangler\.toml$/.test(f) ||
       /^\.github\/workflows\/deploy-dedicated\.yml$/.test(f) ||
       /^tooling\/deploy\/lib\/non-prod-api-host(\.runtime\.test)?\.cjs$/.test(f) ||
