@@ -25,6 +25,10 @@ if (!sha || !/^[0-9a-f]{40}$/i.test(sha)) {
   console.error("[render-staging-sha] FAIL: commit SHA required");
   process.exit(1);
 }
+if (sha.toLowerCase() === "7c6a2b0abe259847b7b1d7939ce7e1d98e6f654f") {
+  console.error("[render-staging-sha] FAIL: 7c6a2b0a is not a candidate SHA");
+  process.exit(1);
+}
 if (serviceId === PRODUCTION_SERVICE) {
   console.error("[render-staging-sha] FAIL: production service forbidden");
   process.exit(1);

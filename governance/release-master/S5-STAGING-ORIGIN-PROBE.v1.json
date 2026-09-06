@@ -1,0 +1,109 @@
+{
+  "schema": "s5-staging-origin-probe.v1",
+  "recordedAt": "2026-09-06T20:07:24.537Z",
+  "productionDeploy": 0,
+  "j0": "NOT_RUN",
+  "j1": "NOT_RUN",
+  "j2": "NOT_RUN",
+  "j3": "NOT_RUN",
+  "note": "HTTP origin probe only. Not auth E2E. Not J0. Dedicated web 200 is not Access/J0. Login 503 TURNSTILE_UNAVAILABLE is fail-closed, not J1 PASS.",
+  "stagingApi": {
+    "gitSha": "a23d2fa6629a31426934c3ace42c3f50e3c46a92",
+    "environment": "staging",
+    "migrationHead": "20260906233000",
+    "dbOk": true,
+    "redisOk": true
+  },
+  "turnstileConfigured": false,
+  "accessEdgeOnDedicatedOps": false,
+  "probes": [
+    {
+      "id": "staging-api-health",
+      "status": 200,
+      "locationHost": null,
+      "accessRedirect": false,
+      "xOpenNext": false,
+      "ms": 1749,
+      "ok": true,
+      "gitSha": "a23d2fa6629a31426934c3ace42c3f50e3c46a92",
+      "environment": "staging",
+      "migrationHead": "20260906233000",
+      "dbOk": true,
+      "redisOk": true
+    },
+    {
+      "id": "dedicated-web-home",
+      "status": 200,
+      "locationHost": null,
+      "accessRedirect": false,
+      "xOpenNext": true,
+      "ms": 1366,
+      "ok": true
+    },
+    {
+      "id": "dedicated-web-login",
+      "status": 200,
+      "locationHost": null,
+      "accessRedirect": false,
+      "xOpenNext": true,
+      "ms": 295,
+      "ok": true
+    },
+    {
+      "id": "dedicated-web-signup",
+      "status": 200,
+      "locationHost": null,
+      "accessRedirect": false,
+      "xOpenNext": true,
+      "ms": 201,
+      "ok": true
+    },
+    {
+      "id": "dedicated-web-onboarding",
+      "status": 200,
+      "locationHost": null,
+      "accessRedirect": false,
+      "xOpenNext": true,
+      "ms": 239,
+      "ok": true
+    },
+    {
+      "id": "dedicated-web-complete-profile",
+      "status": 200,
+      "locationHost": null,
+      "accessRedirect": false,
+      "xOpenNext": true,
+      "ms": 260,
+      "ok": true
+    },
+    {
+      "id": "dedicated-ops-admin",
+      "status": 503,
+      "locationHost": null,
+      "accessRedirect": false,
+      "xOpenNext": false,
+      "ms": 922,
+      "ok": true,
+      "reachedHtml": false
+    },
+    {
+      "id": "staging-auth-login-unauth",
+      "status": 503,
+      "locationHost": null,
+      "accessRedirect": false,
+      "xOpenNext": false,
+      "ms": 250,
+      "ok": true,
+      "turnstileUnavailable": true
+    },
+    {
+      "id": "staging-onboarding-unauth",
+      "status": 401,
+      "locationHost": null,
+      "accessRedirect": false,
+      "xOpenNext": false,
+      "ms": 299,
+      "ok": true
+    }
+  ]
+}

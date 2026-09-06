@@ -32,6 +32,10 @@ function readJson(rel) {
 
 const manifest = readJson("infra/domain.manifest.json");
 const evidence = readJson("governance/release-master/S5-DEDICATED-STAGING.v1.json");
+const stagingMig = readJson("governance/release-master/S5-STAGING-MIGRATIONS.v1.json");
+const originProbe = readJson("governance/release-master/S5-STAGING-ORIGIN-PROBE.v1.json");
+const appliedFx = readJson("tooling/verify/fixtures/migrations-applied.v1.json");
+const applicator = read("tooling/dev/apply-staging-unapplied.cjs");
 const webToml = read("infra/web/wrangler.toml");
 const opsToml = read("infra/ops/wrangler.toml");
 const envLib = read("tooling/deploy/lib/env.cjs");
@@ -169,6 +173,51 @@ if (evidence.j0 === "PASS") {
 if (evidence.previewIsNotJ0 !== true) {
   fails.push("S5 evidence must keep previewIsNotJ0");
 }
+if (evidence.productionDeploy !== 0) {
+  fails.push("S5 productionDeploy must stay 0");
+}
+if (evidence.renderLiveConfirmed !== true) {
+  fails.push("S5 renderLiveConfirmed must be true after MCP live confirm");
+}
+if (stagingMig.productionApply !== 0 || stagingMig.j0 === "PASS") {
+  fails.push("staging migration evidence must keep productionApply=0 and j0 NOT_RUN");
+}
+if (!Array.isArray(stagingMig.applied) || stagingMig.applied.length !== 9) {
+  fails.push("staging migration evidence must list the 9 applied versions");
+}
+if (stagingMig.matchProfitExpense !== true || stagingMig.productOnboardingTable !== true) {
+  fails.push("staging must record MATCH_PROFIT_EXPENSE and product_onboarding");
+}
+const pending = (appliedFx.committedUnapplied || []).map((row) =>
+  typeof row === "string" ? row : row.version,
+);
+for (const version of stagingMig.applied || []) {
+  if (!pending.includes(version)) {
+    fails.push("production fixture must keep committedUnapplied " + version);
+  }
+}
+if (!applicator.includes("srv-dabph32fngtc73esj8rg") || !applicator.includes("refused: production service id")) {
+  fails.push("apply-staging-unapplied must pin staging service and refuse production");
+}
+const stagingSha = read("tooling/deploy/render-staging-sha.cjs");
+if (!stagingSha.includes("7c6a2b0abe259847b7b1d7939ce7e1d98e6f654f") || !stagingSha.includes("not a candidate SHA")) {
+  fails.push("render-staging-sha must refuse 7c6a2b0a");
+}
+if (originProbe.j0 === "PASS" || originProbe.j1 === "PASS" || originProbe.j2 === "PASS" || originProbe.j3 === "PASS") {
+  fails.push("origin probe must not declare J PASS");
+}
+if (!originProbe.stagingApi || originProbe.stagingApi.migrationHead !== "20260906233000") {
+  fails.push("origin probe must record staging migrationHead 20260906233000");
+}
+if (!originProbe.stagingApi || originProbe.stagingApi.dbOk !== true) {
+  fails.push("origin probe must record staging dbOk");
+}
+if (originProbe.turnstileConfigured !== false) {
+  fails.push("origin probe must record turnstileConfigured=false until a real key exists");
+}
+if (originProbe.accessEdgeOnDedicatedOps === true && evidence.j0 !== "NOT_RUN") {
+  fails.push("Access edge probe is not J0");
+}
 if (freeze.prState !== "OPEN_DRAFT_DO_NOT_MERGE") {
   fails.push("S4 freeze must remain DO NOT MERGE");
 }
@@ -187,6 +236,9 @@ if (!gate.includes("verify:s5-dedicated-staging")) {
 }
 if (!domain.includes("s5-dedicated-staging.cjs")) {
   fails.push("domain-by-path must trigger s5-dedicated-staging");
+}
+if (!pkg.includes("verify:hard-gate-live") || !catalog.includes("hard-gate-live") || !gate.includes("verify:hard-gate-live")) {
+  fails.push("hard-gate-live must be wired next to S5");
 }
 
 if (fails.length) {

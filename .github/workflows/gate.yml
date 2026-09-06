@@ -152,6 +152,8 @@ jobs:
         run: pnpm verify:rel-600-staging
       - name: S5 dedicated staging lock
         run: pnpm verify:s5-dedicated-staging
+      - name: Hard gate live recount
+        run: pnpm verify:hard-gate-live
       - name: REL-601 staging regression
         run: pnpm verify:rel-601-staging-regression
       - name: REL-602 staging rollback

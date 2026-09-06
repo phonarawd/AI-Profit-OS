@@ -93,6 +93,7 @@
     "verify:rel-507-production-e2e": "node tooling/verify/rel-507-production-e2e.cjs",
     "verify:rel-600-staging": "node tooling/verify/rel-600-staging.cjs",
     "verify:s5-dedicated-staging": "node tooling/verify/s5-dedicated-staging.cjs",
+    "verify:hard-gate-live": "node tooling/verify/hard-gate-live.cjs",
     "verify:staging-topology-readiness": "node tooling/verify/staging-topology-readiness.cjs",
     "verify:staging-db-hardening": "node tooling/verify/staging-db-hardening.cjs",
     "verify:rel-601-staging-regression": "node tooling/verify/rel-601-staging-regression.cjs",
