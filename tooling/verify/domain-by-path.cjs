@@ -190,11 +190,20 @@ const RULES = [
       /^services\/api-nest\/src\/common\/admin-rbac\.lookup/.test(f) ||
       /^services\/api-nest\/src\/common\/admin-session\.revoke\.ts$/.test(f) ||
       /^services\/api-nest\/src\/common\/admin\.guard\.ts$/.test(f) ||
-      /^apps\/admin\/components\/AdminSessionBar\.tsx$/.test(f) ||
+      /^services\/api-nest\/src\/common\/admin-(identity|totp|auth|session\.store)/.test(f) ||
+      /^services\/api-nest\/src\/admin-identity\//.test(f) ||
+      /^apps\/admin\/components\/Admin(SessionBar|LoginForm)\.tsx$/.test(f) ||
+      /^apps\/admin\/app\/admin\/login\//.test(f) ||
+      /^apps\/admin\/lib\/admin-login\.ts$/.test(f) ||
       /^tooling\/verify\/admin-csrf-double-submit\.cjs$/.test(f) ||
       /^tooling\/verify\/admin-code-exchange-isolation\.cjs$/.test(f) ||
+      /^tooling\/verify\/admin-identity-b0\.cjs$/.test(f) ||
       /^governance\/recovery\/csrf-double-submit-judgment\.v1\.json$/.test(f),
-    scripts: ["admin-csrf-double-submit.cjs", "admin-code-exchange-isolation.cjs"],
+    scripts: [
+      "admin-csrf-double-submit.cjs",
+      "admin-code-exchange-isolation.cjs",
+      "admin-identity-b0.cjs",
+    ],
   },
   {
     test: (f) =>

@@ -216,6 +216,11 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
   TradesAdminController: {
     reconcileTick: write("circuit"),
   },
+  AdminApprovalsController: {
+    list: read("audit"),
+    submit: write("all"),
+    decide: write("all"),
+  },
 });
 
 export function requiredCapabilityFor(

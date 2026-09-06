@@ -60,6 +60,9 @@ function extractAccountHint(body) {
   if (typeof body.account === "string" && body.account.trim()) {
     return body.account.trim();
   }
+  if (typeof body.identifier === "string" && body.identifier.trim()) {
+    return body.identifier.trim();
+  }
   return "-";
 }
 

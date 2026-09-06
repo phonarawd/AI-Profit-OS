@@ -238,13 +238,32 @@ test("same admin JWT cannot be exchanged twice on this process", () => {
   if (!second.ok) assert.equal(second.code, "ADMIN_AUTH_INVALID");
 });
 
-test("in-memory revoke disappears after process map reset", () => {
+test("process map reset is not session authority when the durable store has revoked", async () => {
+  const { createMemoryAdminIdentityStore, registerAdminIdentityStore, clearAdminIdentityStore } =
+    await import("./admin-session.store.ts");
+  const store = createMemoryAdminIdentityStore();
+  registerAdminIdentityStore(store);
+  await store.insertSession({
+    id: "00000000-0000-4000-8000-000000000001",
+    adminId: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+    familyId: "00000000-0000-4000-8000-000000000002",
+    accessJti: "jti-durable-revoke",
+    refreshHash: "hash",
+    kind: "password_mfa",
+    aal: "aal2",
+    issuedAt: new Date().toISOString(),
+    expiresAt: new Date(Date.now() + 60_000).toISOString(),
+    lastSeenAt: new Date().toISOString(),
+    idleDeadline: new Date(Date.now() + 60_000).toISOString(),
+    stepUpAt: new Date().toISOString(),
+    revokedAt: null,
+    rotatedAt: null,
+  });
+  await store.revokeByJti("jti-durable-revoke", new Date().toISOString());
   resetAdminSessionMapsForTest();
-  const token = sessionToken("restart-gap");
-  revokeAdminAccessToken(token, Date.now() + 60_000);
-  assert.equal(isAdminAccessTokenRevoked(token), true);
-  resetAdminSessionMapsForTest();
-  assert.equal(isAdminAccessTokenRevoked(token), false);
+  const resolved = await store.resolveByJti("jti-durable-revoke");
+  assert.equal(resolved.kind, "revoked");
+  clearAdminIdentityStore();
 });
 
 test("inactive admin_rbac row denies a valid signed identity", async () => {

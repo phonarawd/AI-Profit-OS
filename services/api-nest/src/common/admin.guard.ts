@@ -40,6 +40,12 @@ import {
 } from "./admin-session.cookies";
 import { isAdminAccessTokenRevoked } from "./admin-session.revoke";
 import { resolveAdminRbac } from "./admin-rbac.lookup";
+import { getAdminIdentityStore, resolveAdminSession } from "./admin-session.store";
+import {
+  capabilityNeedsStepUp,
+  sessionKindAllowsWrite,
+  stepUpIsFresh,
+} from "./admin-identity.policy";
 
 const requireCjs = createRequire(__filename);
 const auditCore = requireCjs(
@@ -165,7 +171,32 @@ export class AdminGuard implements CanActivate {
       );
     }
 
+    const session = await resolveAdminSession({
+      tokenId: principal.tokenId,
+      adminId: principal.adminId,
+    });
+    if (session.kind === "unwired" || session.kind === "unavailable") {
+      throw new UnauthorizedException("ADMIN_SESSION_UNAVAILABLE");
+    }
+    if (
+      session.kind === "missing" ||
+      session.kind === "revoked" ||
+      session.kind === "idle" ||
+      session.kind === "expired"
+    ) {
+      throw new UnauthorizedException("ADMIN_AUTH_INVALID");
+    }
+    principal = {
+      ...principal,
+      sessionKind: session.session.kind,
+      sessionId: session.session.id,
+      stepUpAt: session.session.stepUpAt,
+    };
+
     const rbac = await resolveAdminRbac(principal.adminId);
+    if (rbac.kind === "unavailable") {
+      throw new UnauthorizedException("ADMIN_SESSION_UNAVAILABLE");
+    }
     if (rbac.kind === "missing" || rbac.kind === "inactive") {
       await noteDenied({
         actorKey: principal.adminId,
@@ -222,7 +253,44 @@ export class AdminGuard implements CanActivate {
       throw new ForbiddenException("ADMIN_CAPABILITY_DENIED");
     }
 
+    if (
+      required.level === "write" &&
+      principal.sessionKind &&
+      !sessionKindAllowsWrite(principal.sessionKind)
+    ) {
+      await noteDenied({
+        actorKey: principal.adminId,
+        actorId: principal.adminId,
+        role: principal.role,
+        action,
+        targetType: "admin_route",
+        targetId: action,
+        reason: "ADMIN_CODE_EXCHANGE_READ_ONLY",
+      });
+      throw new ForbiddenException("ADMIN_CODE_EXCHANGE_READ_ONLY");
+    }
+
+    if (
+      capabilityNeedsStepUp(required.capability, required.level) &&
+      !stepUpIsFresh(principal.stepUpAt ?? null)
+    ) {
+      await noteDenied({
+        actorKey: principal.adminId,
+        actorId: principal.adminId,
+        role: principal.role,
+        action,
+        targetType: "admin_route",
+        targetId: action,
+        reason: "ADMIN_STEPUP_REQUIRED",
+      });
+      throw new ForbiddenException("ADMIN_STEPUP_REQUIRED");
+    }
+
     request.admin = principal;
+    const store = getAdminIdentityStore();
+    if (store) {
+      void store.touchSession(session.session.id).catch(() => undefined);
+    }
     return true;
   }
 }

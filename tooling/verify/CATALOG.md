@@ -70,6 +70,7 @@
 | api-runtime-qa-canonical | `verify:api-runtime-qa-canonical` | T0 path | live (HTTP decision-only, canonical evidence persist) |
 | production-release-decision | `verify:production-release-decision` | T0 path | live (acceptance is necessary-not-sufficient, current NO_GO) |
 | admin-csrf-double-submit | `verify:admin-csrf-double-submit` | T0 path | live (session HttpOnly, CSRF readable, dismiss 0) |
+| admin-identity-b0 | `verify:admin-identity-b0` | T0 path | live (S3 B0 admin identity) |
 | coach-sse-error-canonical | `verify:coach-sse-error-canonical` | T0 path | live (SSE error is constant coach_error; raw exception 0) |
 | release-manifest-identity-lock | `verify:release-manifest-identity-lock` | T0 path | live (manifest identity + deploy invariants fail closed) |
 | production-deploy-path-lock | `verify:production-deploy-path-lock` | T0 path | live (low-level prod helpers gated, acceptance required, rebuild/bundle forbidden) |
@@ -153,6 +154,7 @@
 | `tooling/verify/api-runtime-qa-canonical.cjs` | api-runtime-qa-canonical |
 | `tooling/release/production-release-decision.cjs` · `tooling/verify/production-release-decision.cjs` | production-release-decision |
 | `tooling/verify/admin-csrf-double-submit.cjs` | admin-csrf-double-submit |
+| `tooling/verify/admin-identity-b0.cjs` | admin-identity-b0 |
 | `tooling/verify/coach-sse-error-canonical.cjs` | coach-sse-error-canonical |
 | `tooling/verify/release-manifest-identity-lock.cjs` | release-manifest-identity-lock |
 | `tooling/verify/production-deploy-path-lock.cjs` · `tooling/deploy/lib/accepted-artifact-authority.cjs` | production-deploy-path-lock |

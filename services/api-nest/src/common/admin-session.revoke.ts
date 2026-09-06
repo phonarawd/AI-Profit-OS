@@ -1,5 +1,6 @@
 /**
  * Admin 세션 로그아웃 무효화. 토큰 원문은 저장하지 않는다.
+ * 프로세스 Map 은 캐시. durable 권위는 admin-session.store 다.
  */
 
 import { createHash } from "node:crypto";
@@ -7,7 +8,7 @@ import { createHash } from "node:crypto";
 const revoked = new Map<string, number>();
 const exchanged = new Map<string, number>();
 
-function hashToken(token: string): string {
+export function hashToken(token: string): string {
   return createHash("sha256").update(token).digest("hex");
 }
 

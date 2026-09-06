@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { APP_FILTER, APP_GUARD } from "@nestjs/core";
 import { AdminGuard } from "./common/admin.guard";
 import { CommonModule } from "./common/common.module";
+import { AdminIdentityModule } from "./common/admin-identity.module";
 import { AuthModule } from "./auth/auth.module";
 import { ComplianceModule } from "./compliance/compliance.module";
 import { EventsModule } from "./events/events.module";
@@ -36,6 +37,7 @@ import { ObsExceptionFilter } from "./observability/obs.exception-filter";
   imports: [
     CommonModule,
     EventsModule,
+    AdminIdentityModule,
     LedgerModule,
     WalletModule,
     GrowthModule,

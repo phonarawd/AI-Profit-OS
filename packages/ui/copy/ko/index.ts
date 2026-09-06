@@ -1,4 +1,5 @@
 import { admin } from "./admin";
+import { adminLogin } from "./admin-login";
 import { auth } from "./auth";
 import { authClassic } from "./auth-classic";
 import { benefits } from "./benefits";
@@ -44,7 +45,15 @@ import { wallet } from "./wallet";
 
 /** 유저·어드민 화면 카피 SSOT 루트 (`T.*`) */
 export const T = {
-  admin,
+  admin: {
+    ...admin,
+    login: adminLogin,
+    session: {
+      ...admin.session,
+      login: adminLogin.title,
+      loginHint: adminLogin.description,
+    },
+  },
   auth,
   authClassic,
   benefits,

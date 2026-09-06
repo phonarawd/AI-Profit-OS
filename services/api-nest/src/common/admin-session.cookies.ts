@@ -47,16 +47,26 @@ function cookieBase() {
   };
 }
 
+export const ADMIN_REFRESH_COOKIE_NAME = "aipo_admin_refresh" as const;
+
 export function attachAdminSessionCookies(
   res: CookieResponse,
   accessToken: string,
   csrf = mintAdminCsrfToken(accessToken),
+  refreshToken?: string,
 ): void {
   const base = cookieBase();
   res.cookie(ADMIN_SESSION_COOKIE_NAME, accessToken, {
     ...base,
     httpOnly: true,
   });
+  if (refreshToken) {
+    res.cookie(ADMIN_REFRESH_COOKIE_NAME, refreshToken, {
+      ...base,
+      httpOnly: true,
+      maxAge: 12 * 60 * 60 * 1000,
+    });
+  }
   // 더블서브밋 동기화 토큰 — 세션 비밀이 아니다. HttpOnly로 바꾸면 JS가 헤더를 못 채운다.
   res.cookie(ADMIN_CSRF_COOKIE_NAME, csrf, {
     ...base,
@@ -67,4 +77,5 @@ export function attachAdminSessionCookies(
 export function clearAdminSessionCookies(res: CookieResponse): void {
   res.clearCookie(ADMIN_SESSION_COOKIE_NAME, { path: "/" });
   res.clearCookie(ADMIN_CSRF_COOKIE_NAME, { path: "/" });
+  res.clearCookie(ADMIN_REFRESH_COOKIE_NAME, { path: "/" });
 }

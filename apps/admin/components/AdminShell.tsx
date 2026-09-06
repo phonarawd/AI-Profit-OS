@@ -162,7 +162,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-        <AdminSessionBar />
+        {pathname === "/admin/login" ? null : <AdminSessionBar />}
         <div id="admin-content" className="admin-content" tabIndex={-1}>
           {children}
         </div>

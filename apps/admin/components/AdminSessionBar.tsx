@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { T } from "@aipo/ui/copy/ko";
+import Link from "next/link";
 import {
   connectAdminSession,
   disconnectAdminSession,
@@ -78,6 +79,11 @@ export function AdminSessionBar() {
         >
           {connected ? T.admin.session.change : T.admin.session.open}
         </button>
+        ) : null}
+        {!connected ? (
+          <Link href="/admin/login" className="admin-session-toggle">
+            {T.admin.session.login}
+          </Link>
         ) : null}
         {connected ? (
           <button

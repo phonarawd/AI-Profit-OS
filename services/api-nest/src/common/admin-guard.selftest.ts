@@ -31,6 +31,10 @@ import {
 } from "../auth/auth.constants";
 import { JwtAuthGuard, type SessionUser } from "../auth/jwt-auth.guard";
 import { AdminGuard, type RequestWithAdmin } from "./admin.guard";
+import {
+  clearAdminSessionLookup,
+  registerAdminSessionLookup,
+} from "./admin-session.store";
 import { WithdrawCredentialsAdminController } from "../wallet/withdraw-credentials.admin.controller";
 import { WithdrawCredentialsAdminService } from "../wallet/withdraw-credentials.admin.service";
 
@@ -217,6 +221,30 @@ async function main(): Promise<void> {
   const userKey = "JWT_" + "USER_SECRET";
   process.env[adminKey] = SELFTEST_ADMIN_SECRET;
   process.env[userKey] = SELFTEST_USER_SECRET;
+
+  registerAdminSessionLookup(async ({ tokenId, adminId }) => {
+    if (!tokenId || !adminId) return { kind: "missing" };
+    const now = Date.now();
+    return {
+      kind: "active",
+      session: {
+        id: "00000000-0000-4000-8000-000000000099",
+        adminId,
+        familyId: "00000000-0000-4000-8000-000000000098",
+        accessJti: tokenId,
+        refreshHash: "selftest",
+        kind: "password_mfa",
+        aal: "aal2",
+        issuedAt: new Date(now).toISOString(),
+        expiresAt: new Date(now + 3_600_000).toISOString(),
+        lastSeenAt: new Date(now).toISOString(),
+        idleDeadline: new Date(now + 3_600_000).toISOString(),
+        stepUpAt: new Date(now).toISOString(),
+        revokedAt: null,
+        rotatedAt: null,
+      },
+    };
+  });
 
   const app = await NestFactory.create<NestExpressApplication>(
     AdminSelfTestModule,
@@ -452,6 +480,7 @@ async function main(): Promise<void> {
       `status=${noSecret.status}`,
     );
   } finally {
+    clearAdminSessionLookup();
     await app.close();
   }
 

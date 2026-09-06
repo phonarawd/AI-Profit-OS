@@ -74,8 +74,8 @@ for (const dir of adminApp) {
   };
   walk(abs);
 }
-if (passwordLogin) {
-  fail("do not invent a product admin password login in this isolation slice");
+if (!passwordLogin) {
+  fail("S3 login page must use identifier + secret field and not only a connection code");
 }
 
 const manifest = read("infra/domain.manifest.json");
@@ -93,5 +93,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:admin-code-exchange-isolation] PASS (exchange default OFF · one-time consume · rbac lookup · no invented password login)",
+  "[verify:admin-code-exchange-isolation] PASS (exchange default OFF · one-time consume · rbac lookup · login is separate)",
 );

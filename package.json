@@ -320,6 +320,8 @@
     "verify:production-release-decision": "node tooling/verify/production-release-decision.cjs",
     "verify:admin-csrf-double-submit": "node tooling/verify/admin-csrf-double-submit.cjs",
     "verify:admin-code-exchange-isolation": "node tooling/verify/admin-code-exchange-isolation.cjs",
+    "verify:admin-identity-b0": "node tooling/verify/admin-identity-b0.cjs",
+    "admin:provision": "node tooling/admin-auth/provision-admin.cjs",
     "verify:coach-sse-error-canonical": "node tooling/verify/coach-sse-error-canonical.cjs",
     "verify:release-manifest-identity-lock": "node tooling/verify/release-manifest-identity-lock.cjs",
     "verify:production-deploy-path-lock": "node tooling/verify/production-deploy-path-lock.cjs",
