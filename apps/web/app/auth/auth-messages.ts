@@ -25,6 +25,12 @@ export function authUserMessage(err: unknown): string {
     if (err.code === "USERNAME_RESERVED") return "다른 아이디를 입력해 주세요.";
     if (err.code === "USERNAME_TAKEN") return "이미 사용 중인 아이디예요.";
     if (err.code === "EMAIL_TAKEN") return "이미 가입된 이메일이에요.";
+    if (err.code === "CONSENT_VERSION_STALE") {
+      return "약관이 바뀌었어요. 다시 확인해 주세요.";
+    }
+    if (err.code === "OAUTH_EMAIL_IN_USE") {
+      return "이미 다른 방법으로 가입된 메일이에요. 로그인 후 연결해 주세요.";
+    }
     if (err.code === "PASSWORD_TOO_SHORT" || err.code === "PASSWORD_TOO_LONG" || err.code === "PASSWORD_INVALID_LENGTH") {
       return "비밀번호는 15자 이상 128자 이하로 입력해 주세요.";
     }

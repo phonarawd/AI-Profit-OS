@@ -54,12 +54,12 @@ export function LoginRuntime() {
     }
   }
 
-  async function onMagic(email: string) {
+  async function onMagic(email: string, turnstileToken?: string) {
     setError(null);
     setNote(null);
     setBusy(true);
     try {
-      await requestMagicLink(email, { apiBase: "" });
+      await requestMagicLink(email, { apiBase: "", turnstileToken });
       setNote("메일함을 확인해 주세요.");
     } catch (caught) {
       setError(authUserMessage(caught));
@@ -68,12 +68,19 @@ export function LoginRuntime() {
     }
   }
 
-  async function onClassic(identifier: string, password: string) {
+  async function onClassic(
+    identifier: string,
+    password: string,
+    turnstileToken?: string,
+  ) {
     setError(null);
     setNote(null);
     setBusy(true);
     try {
-      const session = await loginClassic(identifier, password, { apiBase: "" });
+      const session = await loginClassic(identifier, password, {
+        apiBase: "",
+        turnstileToken,
+      });
       router.replace(continuePathAfterAuth(session.onboardingStage));
     } catch (caught) {
       setError(authUserMessage(caught));

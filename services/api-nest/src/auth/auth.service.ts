@@ -13,6 +13,7 @@
 
 import {
   BadRequestException,
+  ConflictException,
   ForbiddenException,
   Injectable,
   ServiceUnavailableException,
@@ -240,6 +241,10 @@ export class AuthService {
         referralCode:
           typeof body.referralCode === "string" ? body.referralCode : undefined,
         oauth: { provider, providerSubject: proven.providerSubject, email: proven.email },
+      });
+      await this.seedOauthProfileOnce(userId, {
+        nickname: proven.nickname,
+        profileImageUrl: proven.profileImageUrl,
       });
     }
     const { accessToken, session } = await this.mintSession(userId);
@@ -517,7 +522,27 @@ export class AuthService {
       return { userId: existing.rows[0].user_id, isNew: false };
     }
 
-    const userId = await this.insertBareUser();
+    if (email) {
+      const emailHit = await this.db.query<{ id: string }>(
+        `SELECT id::text FROM public.users
+          WHERE email_canonical = lower($1) OR lower(email) = lower($1)
+          LIMIT 1`,
+        [email],
+      );
+      if (emailHit.rows[0]) {
+        throw new ConflictException("OAUTH_EMAIL_IN_USE");
+      }
+    }
+
+    let userId: string;
+    try {
+      userId = email
+        ? (await this.insertUserWithEmail(email)).userId
+        : await this.insertBareUser();
+    } catch (e) {
+      if (isUniqueViolation(e)) throw new ConflictException("OAUTH_EMAIL_IN_USE");
+      throw e;
+    }
     try {
       await this.db.query(
         `INSERT INTO public.auth_oauth_identities (
@@ -679,6 +704,44 @@ export class AuthService {
       }
     }
     throw new ServiceUnavailableException("referral code mint failed");
+  }
+
+  /** 최초 가입에만 닉네임·이미지를 넣는다. 재로그인은 덮어쓰지 않는다. */
+  private async seedOauthProfileOnce(
+    userId: string,
+    seed: { nickname?: string; profileImageUrl?: string },
+  ): Promise<void> {
+    const name = (seed.nickname ?? "").trim();
+    const avatar = (seed.profileImageUrl ?? "").trim();
+    if (name.length >= 2 && name.length <= 40) {
+      await this.db.query(
+        `UPDATE public.user_profiles
+            SET display_name = $2
+          WHERE user_id = $1::uuid AND display_name IS NULL`,
+        [userId, name],
+      );
+    }
+    if (avatar && /^https:\/\//i.test(avatar) && avatar.length <= 2000) {
+      try {
+        await this.db.query(
+          `UPDATE public.user_profiles
+              SET avatar_url = $2
+            WHERE user_id = $1::uuid AND avatar_url IS NULL`,
+          [userId, avatar],
+        );
+      } catch (e) {
+        if (
+          !(
+            typeof e === "object" &&
+            e !== null &&
+            "code" in e &&
+            String((e as { code?: unknown }).code) === "42703"
+          )
+        ) {
+          throw e;
+        }
+      }
+    }
   }
 
   private async upsertStageAProfile(

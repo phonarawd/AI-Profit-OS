@@ -151,6 +151,12 @@
       "name": "user_matching_policy_b7",
       "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
       "reason": "S3 B7 versioned visibility policy. Additive. Does not change opportunity money columns. Production apply after S5 staging."
+    },
+    {
+      "version": "20260906140000",
+      "name": "s3_32_consent_versions",
+      "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
+      "reason": "S3/3.2 consent document versions and optional avatar_url. Additive ADD COLUMN. Production apply after S5 staging. Do not apply to mgsytcetsiecllmhcyox from this commit."
     }
   ]
 }

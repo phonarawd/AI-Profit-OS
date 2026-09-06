@@ -28,6 +28,8 @@ function mockFetchEntry(
 (globalThis as unknown as { window: unknown }).window = {
   location: { origin: "http://localhost:3000" },
   fetch: mockFetchEntry,
+  setTimeout: globalThis.setTimeout.bind(globalThis),
+  clearTimeout: globalThis.clearTimeout.bind(globalThis),
 };
 
 installSessionRefreshFetch();
@@ -273,4 +275,38 @@ test("a Request object with a body survives the post-refresh retry", async () =>
     JSON.stringify({ amountUsdt: "10.00" }),
     JSON.stringify({ amountUsdt: "10.00" }),
   ]);
+});
+
+test("without Web Locks, BroadcastChannel leader refreshes once", async () => {
+  const originalNavigatorDescriptor = Object.getOwnPropertyDescriptor(
+    globalThis,
+    "navigator",
+  );
+  Object.defineProperty(globalThis, "navigator", {
+    value: {},
+    configurable: true,
+  });
+  try {
+    let refreshCalls = 0;
+    let walletCalls = 0;
+    currentImpl = async (input) => {
+      const url = requestUrl(input);
+      if (url.includes("/api/v1/auth/refresh")) {
+        refreshCalls += 1;
+        return new Response(JSON.stringify({ ok: true }), { status: 200 });
+      }
+      walletCalls += 1;
+      if (walletCalls === 1) return new Response(null, { status: 401 });
+      return new Response(JSON.stringify({ items: [] }), { status: 200 });
+    };
+    const res = await windowFetch()("/api/v1/wallet/buckets");
+    assert.equal(res.status, 200);
+    assert.equal(refreshCalls, 1);
+  } finally {
+    if (originalNavigatorDescriptor) {
+      Object.defineProperty(globalThis, "navigator", originalNavigatorDescriptor);
+    } else {
+      delete (globalThis as unknown as { navigator?: unknown }).navigator;
+    }
+  }
 });

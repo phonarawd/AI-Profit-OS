@@ -113,6 +113,8 @@ function readClassicSignupInput(body: Record<string, unknown>): ClassicSignupInp
     privacyAcceptedAt: str("privacyAcceptedAt"),
     marketingConsent: body.marketingConsent === true,
     referralCode: body.referralCode ? str("referralCode") : undefined,
+    termsVersion: body.termsVersion ? str("termsVersion") : undefined,
+    privacyVersion: body.privacyVersion ? str("privacyVersion") : undefined,
   };
 }
 

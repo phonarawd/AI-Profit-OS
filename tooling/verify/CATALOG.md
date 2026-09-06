@@ -71,6 +71,8 @@
 | production-release-decision | `verify:production-release-decision` | T0 path | live (acceptance is necessary-not-sufficient, current NO_GO) |
 | admin-csrf-double-submit | `verify:admin-csrf-double-submit` | T0 path | live (session HttpOnly, CSRF readable, dismiss 0) |
 | admin-identity-b0 | `verify:admin-identity-b0` | T0 path | live (S3 B0 admin identity) |
+| admin-s3-31-full | `verify:admin-s3-31-full` | T0 path | live (S3/3.1 B1-B6 · LIVE_E2E=NOT_RUN) |
+| s3-32-user-auth | `verify:s3-32-user-auth` | T0 path | live (S3/3.2 C1-C3 code · LIVE_E2E=NOT_RUN) |
 | coach-sse-error-canonical | `verify:coach-sse-error-canonical` | T0 path | live (SSE error is constant coach_error; raw exception 0) |
 | release-manifest-identity-lock | `verify:release-manifest-identity-lock` | T0 path | live (manifest identity + deploy invariants fail closed) |
 | production-deploy-path-lock | `verify:production-deploy-path-lock` | T0 path | live (low-level prod helpers gated, acceptance required, rebuild/bundle forbidden) |
@@ -155,6 +157,8 @@
 | `tooling/release/production-release-decision.cjs` · `tooling/verify/production-release-decision.cjs` | production-release-decision |
 | `tooling/verify/admin-csrf-double-submit.cjs` | admin-csrf-double-submit |
 | `tooling/verify/admin-identity-b0.cjs` | admin-identity-b0 |
+| `governance/admin/s3-31-connection-matrix.v1.json` · `tooling/verify/admin-s3-31-full.cjs` | admin-s3-31-full |
+| `governance/auth/**` · `packages/ui/components/auth/**` · `apps/web/app/auth/**` · `tooling/verify/s3-32-user-auth.cjs` | s3-32-user-auth |
 | `tooling/verify/coach-sse-error-canonical.cjs` | coach-sse-error-canonical |
 | `tooling/verify/release-manifest-identity-lock.cjs` | release-manifest-identity-lock |
 | `tooling/verify/production-deploy-path-lock.cjs` · `tooling/deploy/lib/accepted-artifact-authority.cjs` | production-deploy-path-lock |
@@ -178,7 +182,7 @@
 | money api-nest | pg-module-scan · bucket-invariant |
 | `schemas/home-money-read.v1.json` · `wallet/home-money-read*` · `packages/sdk/src/home-money-read/**` | home-money-read-contract |
 | engine-rust · trade/opportunity api | match-success-rule · settlement-rule-parity · participate-http · execute-rule-loop · a3-same-poolclient-lock |
-| auth/jwt | auth-jwt-runtime · auth-flows · auth-session-cookie · auth-rate-limit |
+| auth/jwt | auth-jwt-runtime · auth-flows · auth-session-cookie · auth-rate-limit · s3-32-user-auth |
 | `api-nest` wallet · kyc.controller | wallet-kyc-session-auth |
 
 ## Domain gates (T1 `stubs/run-all` · 구현되면 hard)

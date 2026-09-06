@@ -10,6 +10,12 @@ import {
 import { T } from "@aipo/ui/copy/ko";
 import { BrandMark } from "@aipo/ui/components/brand/BrandMark";
 import { TouchButton } from "@aipo/ui/components/lux/TouchButton";
+import {
+  CURRENT_PRIVACY_VERSION,
+  CURRENT_TERMS_VERSION,
+  TurnstileField,
+  isTurnstileReady,
+} from "@aipo/ui/components/auth";
 import { authUserMessage, toPhoneE164 } from "../../auth-messages";
 
 export function ClassicSignupRuntime() {
@@ -28,6 +34,8 @@ export function ClassicSignupRuntime() {
   const [terms, setTerms] = useState(false);
   const [privacy, setPrivacy] = useState(false);
   const [marketing, setMarketing] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileReady = isTurnstileReady();
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -38,6 +46,10 @@ export function ClassicSignupRuntime() {
     }
     if (password !== passwordConfirm) {
       setError(T.authClassic.passwordMismatch);
+      return;
+    }
+    if (!turnstileReady || !turnstileToken) {
+      setError(T.authClassic.turnstileNeeded);
       return;
     }
     setBusy(true);
@@ -54,6 +66,9 @@ export function ClassicSignupRuntime() {
         termsAcceptedAt: now,
         privacyAcceptedAt: now,
         marketingConsent: marketing,
+        turnstileToken,
+        termsVersion: CURRENT_TERMS_VERSION,
+        privacyVersion: CURRENT_PRIVACY_VERSION,
       };
       await signupClassicRequest(input, { apiBase: "" });
       setDone(true);
@@ -212,6 +227,7 @@ export function ClassicSignupRuntime() {
           <span>{T.auth.marketingOptional}</span>
         </label>
 
+        <TurnstileField action="signup" onToken={setTurnstileToken} />
         {error ? (
           <p role="alert" aria-live="assertive" className="text-sm text-lux-text">
             {error}
@@ -222,7 +238,7 @@ export function ClassicSignupRuntime() {
           type="submit"
           variant="primary"
           className="w-full"
-          disabled={busy}
+          disabled={busy || !turnstileReady || !turnstileToken}
           data-testid="classic-signup-submit"
         >
           {busy ? T.auth.sending : T.authClassic.classicSignupSubmit}

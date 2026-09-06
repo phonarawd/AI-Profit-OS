@@ -323,6 +323,7 @@
     "verify:admin-identity-b0": "node tooling/verify/admin-identity-b0.cjs",
     "verify:admin-user-matching-b7": "node tooling/verify/admin-user-matching-b7.cjs",
     "verify:admin-s3-31-full": "node tooling/verify/admin-s3-31-full.cjs",
+    "verify:s3-32-user-auth": "node tooling/verify/s3-32-user-auth.cjs",
     "admin:provision": "node tooling/admin-auth/provision-admin.cjs",
     "verify:coach-sse-error-canonical": "node tooling/verify/coach-sse-error-canonical.cjs",
     "verify:release-manifest-identity-lock": "node tooling/verify/release-manifest-identity-lock.cjs",

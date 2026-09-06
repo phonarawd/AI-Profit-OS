@@ -713,6 +713,14 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/auth\//.test(f) ||
+      /^tooling\/verify\/s3-32-user-auth\.cjs$/.test(f) ||
+      /^packages\/ui\/components\/auth\//.test(f) ||
+      /^apps\/web\/app\/auth\//.test(f),
+    scripts: ["s3-32-user-auth.cjs"],
+  },
+  {
+    test: (f) =>
       /^tooling\/verify\/rel-2\d{2}-admin-/.test(f) ||
       /^tooling\/verify\/admin-novice-ui\.cjs$/.test(f) ||
       /^tooling\/verify\/admin-entry-e2e\.cjs$/.test(f) ||
@@ -1494,13 +1502,16 @@ const RULES = [
       // under src/common/ (not src/auth/) but are launch-critical auth
       // write-endpoint defenses, so they must trigger the same domain
       // gate as everything else on the signup/login/reset path.
-      /^services\/api-nest\/src\/common\/turnstile\.(service|guard)\.ts$/.test(f),
+      /^services\/api-nest\/src\/common\/turnstile\.(service|guard)\.ts$/.test(f) ||
+      /^services\/api-nest\/turnstile\.policy\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/common\/turnstile\.selftest\.cjs$/.test(f),
     scripts: [
       "auth-jwt-runtime.cjs",
       "auth-flows.cjs",
       "auth-session-cookie.cjs",
       "auth-rate-limit.cjs",
       "auth-identity-proof.runtime.cjs",
+      "s3-32-user-auth.cjs",
     ],
   },
   {

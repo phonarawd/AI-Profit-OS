@@ -94,7 +94,7 @@ export function SignupRuntime() {
           marketingConsent: input.marketingConsent,
           referralCode: input.referralCode,
         },
-        { apiBase: "" },
+        { apiBase: "", turnstileToken: input.turnstileToken },
       );
       setNote("메일함을 확인해 주세요.");
     } catch (caught) {

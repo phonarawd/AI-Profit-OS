@@ -1,46 +1,160 @@
 /**
- * Cloudflare Turnstile server-side verification (Section 6.3).
- * https://developers.cloudflare.com/turnstile/
- *
- * Hard rule: this module NEVER auto-passes just because a secret is
- * missing - that direction (missing secret => allow) is exactly what
- * this task forbids. There is deliberately no "if (!secret) return
- * {success:true}" anywhere below.
- *
- * Test/CI usage needs zero special-casing in this file: Cloudflare
- * publishes its own well-known dummy sitekey/secret pair (see
- * developers.cloudflare.com/turnstile/troubleshooting/testing/) that
- * ALWAYS succeeds against the REAL siteverify endpoint. Playwright/CI
- * simply sets TURNSTILE_SECRET_KEY to that documented dummy value in its
- * own env; this service still makes a real network call to Cloudflare and
- * gets a real (deterministic) success response back - it never needs to
- * know it is talking to a test key, and no dummy value is hardcoded here.
+ * Cloudflare Turnstile 서버 검증.
+ * 비밀키가 없다고 통과시키지 않는다.
+ * 성공 응답이라도 hostname / action / 시각 / 재사용을 다시 본다.
  */
 
+import { createRequire } from "node:module";
+import { join } from "node:path";
 import { Injectable, Logger } from "@nestjs/common";
 import { loadPhase0Env } from "../config/phase0.env";
 
-const SITEVERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+export const SITEVERIFY_URL =
+  "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 const SITEVERIFY_TIMEOUT_MS = 5000;
+
+export type TurnstileAction =
+  | "signup"
+  | "login"
+  | "find-id"
+  | "password-reset"
+  | "email-resend"
+  | "magic-link"
+  | "admin-login";
 
 export type TurnstileVerifyResult =
   | { ok: true }
   | {
       ok: false;
-      reason: "NOT_CONFIGURED" | "TOKEN_MISSING" | "VERIFY_FAILED" | "VERIFY_UNAVAILABLE";
+      reason:
+        | "NOT_CONFIGURED"
+        | "TOKEN_MISSING"
+        | "VERIFY_FAILED"
+        | "VERIFY_UNAVAILABLE"
+        | "HOSTNAME_MISMATCH"
+        | "ACTION_MISMATCH"
+        | "CHALLENGE_EXPIRED"
+        | "TOKEN_REPLAY";
       errorCodes?: string[];
     };
 
-type SiteverifyResponse = {
+export type SiteverifyResponse = {
   success?: unknown;
   "error-codes"?: unknown;
   hostname?: unknown;
   action?: unknown;
+  challenge_ts?: unknown;
 };
+
+export type TurnstileHttp = {
+  siteverify(body: URLSearchParams, signal: AbortSignal): Promise<{
+    ok: boolean;
+    status: number;
+    json: SiteverifyResponse;
+  }>;
+};
+
+export type TurnstileReplayStore = {
+  consume(tokenHash: string, ttlMs: number): Promise<boolean>;
+};
+
+const req = createRequire(__filename);
+const policy = req(join(__dirname, "..", "..", "turnstile.policy.cjs")) as {
+  REPLAY_TTL_MS: number;
+  TURNSTILE_PRODUCTION_HOSTS: readonly string[];
+  TURNSTILE_DEV_HOSTS: readonly string[];
+  hashTurnstileToken: (token: string) => string;
+  allowedTurnstileHostnames: (nodeEnv: string) => ReadonlySet<string>;
+  hostnameAllowed: (hostname: string, nodeEnv: string) => boolean;
+  challengeFresh: (
+    challengeTs: string,
+    nowMs: number,
+    maxAgeMs?: number,
+  ) => boolean;
+  memoryReplayStore: () => TurnstileReplayStore;
+  resetTurnstileReplayForTests: () => void;
+  evaluateSiteverify: (
+    json: SiteverifyResponse,
+    opts: { nodeEnv: string; expectedAction?: string; nowMs: number },
+  ) => TurnstileVerifyResult;
+};
+
+export const TURNSTILE_PRODUCTION_HOSTS = policy.TURNSTILE_PRODUCTION_HOSTS;
+export const TURNSTILE_DEV_HOSTS = policy.TURNSTILE_DEV_HOSTS;
+export const hashTurnstileToken = policy.hashTurnstileToken;
+export const allowedTurnstileHostnames = policy.allowedTurnstileHostnames;
+export const hostnameAllowed = policy.hostnameAllowed;
+export const challengeFresh = policy.challengeFresh;
+export const memoryReplayStore = policy.memoryReplayStore;
+export const resetTurnstileReplayForTests = policy.resetTurnstileReplayForTests;
+
+export function defaultTurnstileHttp(): TurnstileHttp {
+  return {
+    async siteverify(body, signal) {
+      const res = await fetch(SITEVERIFY_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body,
+        signal,
+      });
+      const json = (await res.json()) as SiteverifyResponse;
+      return { ok: res.ok, status: res.status, json };
+    },
+  };
+}
+
+let redisReplay: TurnstileReplayStore | null = null;
+
+function redisReplayStore(url: string): TurnstileReplayStore {
+  if (redisReplay) return redisReplay;
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const Redis = require("ioredis");
+  const client = new Redis(url, {
+    maxRetriesPerRequest: 1,
+    enableReadyCheck: true,
+    lazyConnect: true,
+    connectTimeout: 3000,
+  });
+  redisReplay = {
+    async consume(tokenHash: string, ttlMs: number) {
+      if (client.status === "wait" || client.status === "end") {
+        await client.connect();
+      }
+      const key = "aipo:turnstile-replay:" + tokenHash;
+      const set = await client.set(key, "1", "PX", ttlMs, "NX");
+      return set === "OK";
+    },
+  };
+  return redisReplay;
+}
 
 @Injectable()
 export class TurnstileService {
   private readonly log = new Logger(TurnstileService.name);
+  private http: TurnstileHttp = defaultTurnstileHttp();
+  private nowMs: () => number = Date.now;
+  private replay: TurnstileReplayStore = memoryReplayStore();
+  private replayOverride = false;
+
+  /** 테스트 전용 — Nest 생성자에 넣지 않는다. */
+  useTestHarness(h: {
+    http?: TurnstileHttp;
+    nowMs?: () => number;
+    replay?: TurnstileReplayStore;
+  }): void {
+    if (h.http) this.http = h.http;
+    if (h.nowMs) this.nowMs = h.nowMs;
+    if (h.replay) {
+      this.replay = h.replay;
+      this.replayOverride = true;
+    }
+  }
+
+  private replayStore(redisUrl: string | null): TurnstileReplayStore {
+    if (this.replayOverride) return this.replay;
+    if (redisUrl) return redisReplayStore(redisUrl);
+    return this.replay;
+  }
 
   configured(): boolean {
     return Boolean(loadPhase0Env().turnstileSecretKey);
@@ -48,7 +162,7 @@ export class TurnstileService {
 
   async verify(
     token: unknown,
-    opts: { remoteIp?: string } = {},
+    opts: { remoteIp?: string; expectedAction?: TurnstileAction } = {},
   ): Promise<TurnstileVerifyResult> {
     const env = loadPhase0Env();
     const secret = env.turnstileSecretKey;
@@ -68,32 +182,44 @@ export class TurnstileService {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), SITEVERIFY_TIMEOUT_MS);
       try {
-        const res = await fetch(SITEVERIFY_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body,
-          signal: controller.signal,
-        });
+        const res = await this.http.siteverify(body, controller.signal);
         if (!res.ok) {
           throw new Error("turnstile_http_" + res.status);
         }
-        json = (await res.json()) as SiteverifyResponse;
+        json = res.json;
       } finally {
         clearTimeout(timer);
       }
     } catch (err) {
       this.log.error(
-        "Turnstile siteverify unreachable: " + (err instanceof Error ? err.message : "unknown"),
+        "Turnstile siteverify unreachable: " +
+          (err instanceof Error ? err.message : "unknown"),
       );
       return { ok: false, reason: "VERIFY_UNAVAILABLE" };
     }
 
-    if (json.success === true) {
-      return { ok: true };
+    const judged = policy.evaluateSiteverify(json, {
+      nodeEnv: env.nodeEnv,
+      expectedAction: opts.expectedAction,
+      nowMs: this.nowMs(),
+    });
+    if (!judged.ok) return judged;
+
+    const tokenHash = hashTurnstileToken(tokenStr);
+    try {
+      const replayOk = await this.replayStore(env.redisUrl).consume(
+        tokenHash,
+        policy.REPLAY_TTL_MS,
+      );
+      if (!replayOk) return { ok: false, reason: "TOKEN_REPLAY" };
+    } catch (err) {
+      this.log.error(
+        "Turnstile replay store unavailable: " +
+          (err instanceof Error ? err.message : "unknown"),
+      );
+      return { ok: false, reason: "VERIFY_UNAVAILABLE" };
     }
-    const errorCodes = Array.isArray(json["error-codes"])
-      ? (json["error-codes"] as unknown[]).map(String)
-      : [];
-    return { ok: false, reason: "VERIFY_FAILED", errorCodes };
+
+    return { ok: true };
   }
 }

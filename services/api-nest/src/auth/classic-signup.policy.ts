@@ -20,6 +20,8 @@
  * do not re-declare these bounds elsewhere.
  */
 
+import { isValidEmail } from "./identity-proof.email";
+
 export const USERNAME_MIN_LEN = 4;
 export const USERNAME_MAX_LEN = 20;
 /** First char must be a lowercase letter; remaining chars a-z 0-9 _. */
@@ -116,7 +118,8 @@ export type ClassicSignupFieldError =
   | "BIRTH_DATE_INVALID"
   | "BIRTH_DATE_TOO_YOUNG"
   | "TERMS_REQUIRED"
-  | "EMAIL_INVALID";
+  | "EMAIL_INVALID"
+  | "CONSENT_VERSION_STALE";
 
 export function usernameCanonical(raw: string): string {
   return typeof raw === "string" ? raw.trim().toLowerCase() : "";
@@ -159,6 +162,8 @@ export type ClassicSignupInput = {
   marketingConsent?: boolean;
   referralCode?: string;
   turnstileToken?: string;
+  termsVersion?: string;
+  privacyVersion?: string;
 };
 
 function isAgeAtLeast(birthDateIso: string, minYears: number, now = new Date()): boolean {
@@ -197,5 +202,6 @@ export function validateClassicSignupFields(
     return "BIRTH_DATE_TOO_YOUNG";
   }
   if (!input.termsAcceptedAt || !input.privacyAcceptedAt) return "TERMS_REQUIRED";
+  if (!isValidEmail(input.email)) return "EMAIL_INVALID";
   return null;
 }

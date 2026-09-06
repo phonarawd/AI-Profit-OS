@@ -5,6 +5,7 @@ import { findId } from "@aipo/sdk/auth";
 import { T } from "@aipo/ui/copy/ko";
 import { BrandMark } from "@aipo/ui/components/brand/BrandMark";
 import { TouchButton } from "@aipo/ui/components/lux/TouchButton";
+import { TurnstileField, isTurnstileReady } from "@aipo/ui/components/auth";
 import { authUserMessage } from "../auth-messages";
 
 export function FindIdRuntime() {
@@ -12,13 +13,19 @@ export function FindIdRuntime() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileReady = isTurnstileReady();
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
+    if (!turnstileReady || !turnstileToken) {
+      setError(T.authClassic.turnstileNeeded);
+      return;
+    }
     setBusy(true);
     try {
-      await findId(email.trim(), { apiBase: "" });
+      await findId(email.trim(), { apiBase: "", turnstileToken });
       setDone(true);
     } catch (caught) {
       setError(authUserMessage(caught));
@@ -50,12 +57,13 @@ export function FindIdRuntime() {
               data-testid="find-id-email"
             />
           </label>
+          <TurnstileField action="find-id" onToken={setTurnstileToken} />
           {error ? (
             <p role="alert" className="text-sm text-lux-text">
               {error}
             </p>
           ) : null}
-          <TouchButton type="submit" variant="primary" className="w-full" disabled={busy} data-testid="find-id-submit">
+          <TouchButton type="submit" variant="primary" className="w-full" disabled={busy || !turnstileReady || !turnstileToken} data-testid="find-id-submit">
             {busy ? T.auth.sending : T.authClassic.findIdSubmit}
           </TouchButton>
         </form>

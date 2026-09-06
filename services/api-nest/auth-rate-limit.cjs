@@ -103,6 +103,7 @@ const UNAVAILABLE_MESSAGE_KO = "지금은 처리할 수 없어요. 잠시 후 �
  * attack surface - these fail CLOSED on a Redis outage. */
 const SENSITIVE_ROUTE_SUFFIXES = Object.freeze([
   "/auth/signup",
+  "/auth/signup/classic",
   "/auth/login",
   "/auth/password-reset/request",
   "/auth/password-reset/complete",

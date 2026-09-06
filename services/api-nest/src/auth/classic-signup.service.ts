@@ -36,6 +36,7 @@ import {
 } from "./classic-signup.policy";
 import { AuthService } from "./auth.service";
 import { SessionRotationService, type MintedSession } from "./session-rotation.service";
+import { readConsentVersions } from "./consent-versions";
 
 const EMAIL_VERIFY_TTL_MS = 30 * 60 * 1000;
 
@@ -79,11 +80,17 @@ export class ClassicSignupService {
     if (fieldError) throw new BadRequestException(fieldError);
     this.assertDb();
 
+    const consent = readConsentVersions(input);
+    if (consent === "CONSENT_VERSION_STALE") {
+      throw new BadRequestException("CONSENT_VERSION_STALE");
+    }
+
     const pwnedResult = await this.pwned.check(input.password);
     if (pwnedResult.pwned) {
       throw new BadRequestException("PASSWORD_PWNED");
     }
 
+    const passwordHash = await hashPassword(input.password);
     const usernameC = usernameCanonical(input.username);
     const emailC = emailCanonical(input.email);
 
@@ -95,9 +102,13 @@ export class ClassicSignupService {
       [usernameC, emailC],
     );
     if (existing.rows[0]?.hit === "username") throw new ConflictException("USERNAME_TAKEN");
-    if (existing.rows[0]?.hit === "email") throw new ConflictException("EMAIL_TAKEN");
-
-    const passwordHash = await hashPassword(input.password);
+    if (existing.rows[0]?.hit === "email") {
+      // 이메일 존재 여부를 API 응답으로 드러내지 않는다.
+      await this.resend
+        .sendAccountExistsNotice({ to: input.email.trim() })
+        .catch(() => undefined);
+      return { ok: true, status: "verification_email_sent" };
+    }
     const token = randomProofSecret();
     const tokenHash = hashProofSecret(token);
     const expiresAtMs = Date.now() + EMAIL_VERIFY_TTL_MS;
@@ -141,6 +152,7 @@ export class ClassicSignupService {
         expiresAtMs,
       ],
     );
+    await this.persistConsentVersions("pending_registrations", "token_hash", tokenHash, consent);
 
     const url = `${consumerOrigin()}/auth/verify-email?token=${token}`;
     const sent = await this.resend.sendSignupVerification({ to: input.email.trim(), url });
@@ -241,6 +253,8 @@ export class ClassicSignupService {
       );
     }
 
+    await this.copyConsentVersionsFromPending(tokenHash, userId);
+
     await this.authService.provisionLedgerBucketsForUser(userId);
     const minted = await this.sessions.mintNewFamily(userId);
     return { ok: true, ...minted };
@@ -297,4 +311,50 @@ export class ClassicSignupService {
     }
     return { ok: true };
   }
+
+  /** 마이그레이션 전이면 컬럼 없음(42703). 검증은 이미 끝난 뒤라 가입을 막지 않는다. */
+  private async persistConsentVersions(
+    table: "pending_registrations",
+    keyCol: "token_hash",
+    key: string,
+    consent: { termsVersion: string; privacyVersion: string },
+  ): Promise<void> {
+    try {
+      await this.db.query(
+        `UPDATE public.${table}
+            SET terms_version = $2, privacy_version = $3
+          WHERE ${keyCol} = $1`,
+        [key, consent.termsVersion, consent.privacyVersion],
+      );
+    } catch (e) {
+      if (!isUndefinedColumn(e)) throw e;
+    }
+  }
+
+  private async copyConsentVersionsFromPending(
+    tokenHash: string,
+    userId: string,
+  ): Promise<void> {
+    try {
+      await this.db.query(
+        `UPDATE public.user_profiles AS p
+            SET terms_version = r.terms_version,
+                privacy_version = r.privacy_version
+           FROM public.pending_registrations AS r
+          WHERE p.user_id = $1::uuid AND r.token_hash = $2`,
+        [userId, tokenHash],
+      );
+    } catch (e) {
+      if (!isUndefinedColumn(e)) throw e;
+    }
+  }
+}
+
+function isUndefinedColumn(e: unknown): boolean {
+  return (
+    typeof e === "object" &&
+    e !== null &&
+    "code" in e &&
+    String((e as { code?: unknown }).code) === "42703"
+  );
 }

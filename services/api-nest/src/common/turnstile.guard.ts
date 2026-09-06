@@ -1,13 +1,5 @@
 /**
- * Per-route Turnstile guard (Section 6.3). Applied explicitly via
- * @UseGuards(TurnstileGuard) on the specific public write endpoints that
- * need a bot check (classic signup, password login, password-reset
- * request, find-id, magic-link request, email-verify resend) - never
- * controller-wide, since low-risk routes (session read, logout, refresh)
- * do not need it.
- *
- * Reads the token from `body.turnstileToken`. Never treats a missing
- * TurnstileService configuration as a pass (see TurnstileService itself).
+ * 공개 쓰기 경로에만 붙인다. 설정이 없으면 통과가 아니라 막는다.
  */
 
 import {
@@ -17,13 +9,30 @@ import {
   Injectable,
   ServiceUnavailableException,
 } from "@nestjs/common";
-import { TurnstileService } from "./turnstile.service";
+import {
+  TurnstileService,
+  type TurnstileAction,
+} from "./turnstile.service";
 
 type RequestWithTurnstile = {
   body?: { turnstileToken?: unknown };
   ip?: string;
   socket?: { remoteAddress?: string };
+  path?: string;
+  url?: string;
 };
+
+export function turnstileActionFromPath(path: string): TurnstileAction | undefined {
+  const p = String(path || "");
+  if (p.includes("signup/classic") || p.endsWith("/signup")) return "signup";
+  if (p.endsWith("/login") || p.includes("/auth/login")) return "login";
+  if (p.includes("find-id")) return "find-id";
+  if (p.includes("password-reset")) return "password-reset";
+  if (p.includes("email/resend")) return "email-resend";
+  if (p.includes("magic-link")) return "magic-link";
+  if (p.includes("admin") && p.includes("login")) return "admin-login";
+  return undefined;
+}
 
 @Injectable()
 export class TurnstileGuard implements CanActivate {
@@ -37,11 +46,16 @@ export class TurnstileGuard implements CanActivate {
         : typeof request.socket?.remoteAddress === "string"
           ? request.socket.remoteAddress
           : undefined;
+    const path = String(request.path || request.url || "");
     const result = await this.turnstile.verify(request.body?.turnstileToken, {
       remoteIp,
+      expectedAction: turnstileActionFromPath(path),
     });
     if (result.ok) return true;
-    if (result.reason === "VERIFY_UNAVAILABLE" || result.reason === "NOT_CONFIGURED") {
+    if (
+      result.reason === "VERIFY_UNAVAILABLE" ||
+      result.reason === "NOT_CONFIGURED"
+    ) {
       throw new ServiceUnavailableException("TURNSTILE_UNAVAILABLE");
     }
     throw new BadRequestException("TURNSTILE_FAILED");

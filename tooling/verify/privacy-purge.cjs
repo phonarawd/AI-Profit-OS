@@ -200,6 +200,7 @@ const RETAIN_DOCUMENTED = new Set([
   "user_membership_audit",
   "user_opportunity_override_audit",
   "user_match_policy_override_audit",
+  "matching_policy_audit",
 ]);
 const USER_FK_COLUMN_NAMES = new Set([
   "user_id",

@@ -53,6 +53,8 @@ const PURGE_TABLES: readonly [table: string, column: string][] = [
   // per-user override/business-config/risk-state — only meaningful for an active account
   ["user_opportunity_overrides", "user_id"],
   ["user_match_policy_overrides", "user_id"],
+  ["matching_policy_group_members", "user_id"],
+  ["matching_policy_assignments", "user_id"],
   ["user_membership", "user_id"],
   ["user_risk_state", "user_id"],
   // marketing attribution / profile / notification / ux preference state
@@ -96,8 +98,9 @@ const ANONYMIZE_TABLES: readonly string[] = [
  * user_deposit_addresses (financial/AML transaction trail),
  * withdraw_credentials_audit, risk_signals, risk_signal_actions,
  * user_membership_audit, user_opportunity_override_audit,
- * user_match_policy_override_audit (admin-action audit trail — proves what an
- * admin did, independent of whether the user's account still exists),
+ * user_match_policy_override_audit, matching_policy_audit
+ * (admin-action audit trail — proves what an admin did, independent of
+ * whether the user's account still exists),
  * referral_payout_queue (financial payout ledger),
  * referral_edges (retained — see REFERRAL_EDGES_RETAINED_REASON),
  * support_tickets (retained, de-referenced from purged trade_executions below).
@@ -168,6 +171,12 @@ export class PrivacyAccountService {
         );
         purged[table] = r.rowCount ?? 0;
       }
+      const versionDel = await client.query(
+        `DELETE FROM public.matching_policy_versions
+          WHERE scope = 'user' AND subject_id = $1::uuid`,
+        [userId],
+      );
+      purged.matching_policy_versions = versionDel.rowCount ?? 0;
 
       const anonymized: Record<string, number> = {};
       for (const table of ANONYMIZE_TABLES) {

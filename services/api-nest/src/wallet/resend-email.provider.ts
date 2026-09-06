@@ -196,6 +196,21 @@ export class ResendEmailProvider {
     });
   }
 
+  /** 이미 가입된 메일로 다시 가입을 시도한 경우. API 응답은 신규와 같다. */
+  async sendAccountExistsNotice(input: { to: string }): Promise<ResendSendResult> {
+    const env = loadPhase0Env();
+    const host = (env.appHost || "app.hiptk.app").replace(/\/$/, "");
+    const loginUrl = /^https?:\/\//i.test(host)
+      ? `${host}/auth/login`
+      : `https://${host}/auth/login`;
+    return this.sendSimpleLink({
+      to: input.to,
+      url: loginUrl,
+      subject: "퍼뜩 가입 안내",
+      bodyHtml: `<p>이 이메일로 이미 가입되어 있어요. 로그인하거나 비밀번호 찾기를 이용해 주세요.</p><p><a href="${loginUrl}">로그인</a></p>`,
+    });
+  }
+
   async sendPasswordReset(input: { to: string; url: string }): Promise<ResendSendResult> {
     return this.sendSimpleLink({
       to: input.to,

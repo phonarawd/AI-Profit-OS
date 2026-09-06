@@ -7,6 +7,7 @@ import { T } from "@aipo/ui/copy/ko";
 import { BrandMark } from "@aipo/ui/components/brand/BrandMark";
 import { TouchButton } from "@aipo/ui/components/lux/TouchButton";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
+import { TurnstileField, isTurnstileReady } from "@aipo/ui/components/auth";
 import { authUserMessage } from "../auth-messages";
 
 function RequestForm() {
@@ -14,13 +15,19 @@ function RequestForm() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileReady = isTurnstileReady();
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
+    if (!turnstileReady || !turnstileToken) {
+      setError(T.authClassic.turnstileNeeded);
+      return;
+    }
     setBusy(true);
     try {
-      await requestPasswordReset(email.trim(), { apiBase: "" });
+      await requestPasswordReset(email.trim(), { apiBase: "", turnstileToken });
       setDone(true);
     } catch (caught) {
       setError(authUserMessage(caught));
@@ -52,6 +59,7 @@ function RequestForm() {
           data-testid="reset-password-request-email"
         />
       </label>
+      <TurnstileField action="password-reset" onToken={setTurnstileToken} />
       {error ? (
         <p role="alert" className="text-sm text-lux-text">
           {error}
@@ -61,7 +69,7 @@ function RequestForm() {
         type="submit"
         variant="primary"
         className="w-full"
-        disabled={busy}
+        disabled={busy || !turnstileReady || !turnstileToken}
         data-testid="reset-password-request-submit"
       >
         {busy ? T.auth.sending : T.authClassic.resetPasswordRequestSubmit}

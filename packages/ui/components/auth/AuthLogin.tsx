@@ -5,6 +5,8 @@ import { T } from "../../copy/ko";
 import { BrandMark } from "../brand/BrandMark";
 import { TouchButton } from "../lux/TouchButton";
 import { isKakaoOAuthReady, kakaoStartHref } from "./kakao-ready";
+import { TurnstileField } from "./TurnstileField";
+import { isTurnstileReady } from "./turnstile-ready";
 import {
   isWebAuthnSupported,
   tryPasskeyAuthenticate,
@@ -15,8 +17,12 @@ export type AuthLoginProps = {
   error?: string | null;
   note?: string | null;
   onKakao?: () => void | Promise<void>;
-  onMagic?: (email: string) => void | Promise<void>;
-  onClassic?: (identifier: string, password: string) => void | Promise<void>;
+  onMagic?: (email: string, turnstileToken?: string) => void | Promise<void>;
+  onClassic?: (
+    identifier: string,
+    password: string,
+    turnstileToken?: string,
+  ) => void | Promise<void>;
 };
 
 /**
@@ -40,6 +46,9 @@ export function AuthLogin({
   const [email, setEmail] = useState("");
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
+  const [classicToken, setClassicToken] = useState("");
+  const [magicToken, setMagicToken] = useState("");
+  const turnstileReady = isTurnstileReady();
 
   useEffect(() => {
     const supported = isWebAuthnSupported();
@@ -59,13 +68,15 @@ export function AuthLogin({
   function submitMagic(e: React.FormEvent) {
     e.preventDefault();
     if (busy) return;
-    if (onMagic) void onMagic(email);
+    if (!turnstileReady || !magicToken) return;
+    if (onMagic) void onMagic(email, magicToken);
   }
 
   function submitClassic(e: React.FormEvent) {
     e.preventDefault();
     if (busy) return;
-    if (onClassic) void onClassic(identifier, password);
+    if (!turnstileReady || !classicToken) return;
+    if (onClassic) void onClassic(identifier, password, classicToken);
   }
 
   return (
@@ -199,12 +210,13 @@ export function AuthLogin({
               data-testid="auth-classic-login-password"
             />
           </label>
+          <TurnstileField action="login" onToken={setClassicToken} />
           <TouchButton
             type="submit"
             variant="secondary"
             className="w-full"
             data-testid="auth-classic-login-submit"
-            disabled={busy}
+            disabled={busy || !turnstileReady || !classicToken}
           >
             {busy ? T.auth.connecting : T.authClassic.classicLoginSubmit}
           </TouchButton>
@@ -238,12 +250,13 @@ export function AuthLogin({
               className="touch-target rounded-lux-md border border-lux-border bg-lux-surface px-3 text-lux-text"
             />
           </label>
+          <TurnstileField action="magic-link" onToken={setMagicToken} />
           <TouchButton
             type="submit"
             variant="secondary"
             className="w-full"
             data-testid="auth-email-submit"
-            disabled={busy}
+            disabled={busy || !turnstileReady || !magicToken}
           >
             {busy ? T.auth.sending : T.auth.emailMagic}
           </TouchButton>

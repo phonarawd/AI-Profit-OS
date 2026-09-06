@@ -340,7 +340,7 @@ export async function patchAuthProfile(
 
 export async function requestMagicLink(
   email: string,
-  opts: AuthRequestOpts = {},
+  opts: AuthRequestOpts & { turnstileToken?: string } = {},
 ): Promise<{ ok: true }> {
   const trimmed = email.trim();
   if (!trimmed || !isValidEmail(trimmed)) {
@@ -358,7 +358,10 @@ export async function requestMagicLink(
         credentials: "include",
         cache: "no-store",
         signal: opts.signal,
-        body: JSON.stringify({ email: trimmed }),
+        body: JSON.stringify({
+          email: trimmed,
+          turnstileToken: opts.turnstileToken,
+        }),
       },
     );
   } catch (err) {

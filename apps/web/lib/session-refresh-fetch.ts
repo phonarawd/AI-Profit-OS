@@ -94,17 +94,76 @@ function getLockManager(): LockManagerLike | null {
 
 async function doRefreshRequest(originalFetch: typeof fetch): Promise<boolean> {
   try {
-    const res = await originalFetch(REFRESH_PATH, {
-      method: "POST",
-      credentials: "include",
-      cache: "no-store",
-      headers: { "Content-Type": "application/json" },
-      body: "{}",
-    });
-    return res.ok;
+    const ac = new AbortController();
+    const timer = setTimeout(() => ac.abort(), 8000);
+    try {
+      const res = await originalFetch(REFRESH_PATH, {
+        method: "POST",
+        credentials: "include",
+        cache: "no-store",
+        headers: { "Content-Type": "application/json" },
+        body: "{}",
+        signal: ac.signal,
+      });
+      return res.ok;
+    } finally {
+      clearTimeout(timer);
+    }
   } catch {
     return false;
   }
+}
+
+const REFRESH_CHANNEL = "putduk-session-refresh-v1";
+
+function refreshViaBroadcast(originalFetch: typeof fetch): Promise<boolean> {
+  if (typeof BroadcastChannel === "undefined") {
+    return doRefreshRequest(originalFetch);
+  }
+  const bc = new BroadcastChannel(REFRESH_CHANNEL);
+  const myId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  let otherClaim: string | null = null;
+  const waiters: Array<(ok: boolean) => void> = [];
+  const onMsg = (ev: MessageEvent) => {
+    const d = ev.data as { type?: string; tabId?: string; ok?: boolean };
+    if (d?.type === "claim" && typeof d.tabId === "string" && d.tabId !== myId) {
+      if (!otherClaim || d.tabId < otherClaim) otherClaim = d.tabId;
+    }
+    if (d?.type === "done") {
+      for (const w of waiters) w(Boolean(d.ok));
+      waiters.length = 0;
+    }
+  };
+  bc.addEventListener("message", onMsg);
+  bc.postMessage({ type: "claim", tabId: myId });
+  return new Promise<boolean>((resolve) => {
+    window.setTimeout(() => {
+      void (async () => {
+        try {
+          const iAmLeader = !otherClaim || myId < otherClaim;
+          if (!iAmLeader) {
+            const ok = await new Promise<boolean>((waitResolve) => {
+              const t = window.setTimeout(() => {
+                void doRefreshRequest(originalFetch).then(waitResolve);
+              }, 4000);
+              waiters.push((doneOk) => {
+                window.clearTimeout(t);
+                waitResolve(doneOk);
+              });
+            });
+            resolve(ok);
+            return;
+          }
+          const ok = await doRefreshRequest(originalFetch);
+          bc.postMessage({ type: "done", ok });
+          resolve(ok);
+        } finally {
+          bc.removeEventListener("message", onMsg);
+          bc.close();
+        }
+      })();
+    }, 40);
+  });
 }
 
 function refreshOnce(originalFetch: typeof fetch): Promise<boolean> {
@@ -113,7 +172,7 @@ function refreshOnce(originalFetch: typeof fetch): Promise<boolean> {
     sharedRefreshPromise = (
       locks
         ? locks.request(REFRESH_LOCK_NAME, () => doRefreshRequest(originalFetch))
-        : doRefreshRequest(originalFetch)
+        : refreshViaBroadcast(originalFetch)
     ).finally(() => {
       sharedRefreshPromise = null;
     });

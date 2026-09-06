@@ -92,6 +92,8 @@ export type ClassicSignupInput = {
   marketingConsent?: boolean;
   referralCode?: string;
   turnstileToken?: string;
+  termsVersion?: string;
+  privacyVersion?: string;
 };
 
 export async function signupClassicRequest(
@@ -140,7 +142,7 @@ export type MagicLinkConsent = {
 export async function requestMagicLinkWithConsent(
   email: string,
   consent: MagicLinkConsent,
-  opts: AuthRequestOpts = {},
+  opts: AuthRequestOpts & { turnstileToken?: string } = {},
 ): Promise<{ ok: true }> {
   return postJson(
     "/api/v1/auth/magic-link/request",
@@ -150,6 +152,7 @@ export async function requestMagicLinkWithConsent(
       privacyAcceptedAt: consent.privacyAcceptedAt,
       marketingConsent: consent.marketingConsent === true,
       referralCode: consent.referralCode,
+      turnstileToken: opts.turnstileToken,
     },
     opts,
   );
