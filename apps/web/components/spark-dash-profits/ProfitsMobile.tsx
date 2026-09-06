@@ -299,16 +299,27 @@ export function ProfitsMobile({ model }: { model: ProfitsDesktopModel }) {
     const sentinel = sentinelRef.current;
     const root = scrollRef.current;
     if (!sentinel || !root || typeof IntersectionObserver === "undefined") return;
+    const grow = () => {
+      setVisibleCount((prev) => Math.min(model.items.length, prev + PROFITS_MOBILE_PAGE_SIZE));
+    };
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          setVisibleCount((prev) => Math.min(model.items.length, prev + PROFITS_MOBILE_PAGE_SIZE));
-        }
+        if (entries.some((e) => e.isIntersecting)) grow();
       },
       { root, rootMargin: "600px 0px" },
     );
+    const onScroll = () => {
+      const rootBox = root.getBoundingClientRect();
+      const sentBox = sentinel.getBoundingClientRect();
+      if (sentBox.top <= rootBox.bottom + 600) grow();
+    };
     observer.observe(sentinel);
-    return () => observer.disconnect();
+    root.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => {
+      observer.disconnect();
+      root.removeEventListener("scroll", onScroll);
+    };
   }, [windowed, model.viewState, model.items.length, visibleCount]);
 
   const visibleItems = windowed ? model.items.slice(0, visibleCount) : model.items;
