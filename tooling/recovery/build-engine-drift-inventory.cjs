@@ -223,6 +223,9 @@ function classify(rel) {
     };
   }
   if (
+    p.includes("/auth/") ||
+    p.includes("auth-rate-limit") ||
+    p.includes("turnstile") ||
     p.includes("identity-proof") ||
     p.includes("magic-link") ||
     p.includes("oauth-identity") ||
@@ -247,8 +250,17 @@ function classify(rel) {
     p.includes("admin-session") ||
     p.includes("admin-token") ||
     p.includes("admin.guard") ||
+    p.includes("admin-guard") ||
     p.includes("admin-csrf") ||
     p.includes("admin-capabilities") ||
+    p.includes("admin-identity") ||
+    p.includes("admin-auth") ||
+    p.includes("admin-code-exchange") ||
+    p.includes("admin-totp") ||
+    p.includes("admin-rbac") ||
+    p.includes("users-admin") ||
+    p.includes("users.admin") ||
+    p.includes("approvals.admin") ||
     p.includes("bearer-header") ||
     p.includes("admin-audit")
   ) {
@@ -331,7 +343,7 @@ function classify(rel) {
       required_rerun: ["QA6", "QA7", "QA9"],
     };
   }
-  if (p.includes("adapters.ingest")) {
+  if (p.includes("adapters.ingest") || p.includes("adapters.admin")) {
     return {
       category: "ADAPTER_INGEST",
       reason: "Ingest controller wiring. Marketplace truth, not wallet mutation.",
@@ -339,6 +351,56 @@ function classify(rel) {
       schema_impact: false,
       prompt_impact: false,
       required_rerun: ["QA5", "QA8"],
+    };
+  }
+  if (p.includes("matching-policy")) {
+    return {
+      category: "MATCH_POLICY",
+      reason: "Admin matching-policy surface. Not a ledger writer; rebase still required.",
+      security_impact: "MEDIUM",
+      schema_impact: false,
+      prompt_impact: false,
+      required_rerun: ["QA2", "QA8"],
+    };
+  }
+  if (p.includes("/push/")) {
+    return {
+      category: "PUSH",
+      reason: "Web Push subscription surface. No money authority.",
+      security_impact: "LOW",
+      schema_impact: false,
+      prompt_impact: false,
+      required_rerun: ["QA2"],
+    };
+  }
+  if (p.includes("/trades/") || p.includes("authoritative-success")) {
+    return {
+      category: "TRADES_EXECUTION",
+      reason: "Trade execution/reconcile/payout-reserve path. Money truth must be re-proven.",
+      security_impact: "HIGH",
+      schema_impact: false,
+      prompt_impact: false,
+      required_rerun: ["QA3", "QA4", "QA5", "QA8"],
+    };
+  }
+  if (p.includes("participate")) {
+    return {
+      category: "PARTICIPATE",
+      reason: "Participate lock/atomicity path. Money truth must be re-proven.",
+      security_impact: "HIGH",
+      schema_impact: false,
+      prompt_impact: false,
+      required_rerun: ["QA3", "QA4", "QA8"],
+    };
+  }
+  if (p.includes("clock.core")) {
+    return {
+      category: "DOMAIN_CLOCK",
+      reason: "Domain clock seam. Auth/kill-switch time must stay real; no fake ACK.",
+      security_impact: "HIGH",
+      schema_impact: false,
+      prompt_impact: false,
+      required_rerun: ["QA1", "QA8"],
     };
   }
   if (
@@ -349,6 +411,12 @@ function classify(rel) {
     p.includes("wallet.routes") ||
     p.includes("wallet.types") ||
     p.includes("wallet.events") ||
+    p.includes("opportunities.module") ||
+    p.includes("opportunities.user") ||
+    p.includes("events.module") ||
+    p.includes("postgres.ts") ||
+    p.includes("phase0.env") ||
+    p.includes("/main.ts") ||
     p.includes("nest-provenance") ||
     p.includes("tsconfig.json") ||
     p.includes("admin-audit.core.cjs")
