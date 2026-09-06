@@ -1003,7 +1003,13 @@ const RULES = [
     test: (f) =>
       /^governance\/release-master\/REL-600-STAGING\.md$/.test(f) ||
       /^infra\/domain\.manifest\.json$/.test(f) ||
-      /^tooling\/deploy\/cf-(pages-web|pages-ops|deploy-staging|origin-smoke|preflight)\.cjs$/.test(f) ||
+      /^tooling\/deploy\/cf-(pages-web|pages-ops|deploy-staging|deploy-dedicated|origin-smoke|preflight|access-dedicated)\.cjs$/.test(f) ||
+      /^tooling\/deploy\/lib\/(env|non-prod-api-host(\.runtime\.test)?)\.cjs$/.test(f) ||
+      /^tooling\/verify\/(rel-600-staging|s5-dedicated-staging)\.cjs$/.test(f) ||
+      /^governance\/release-master\/S5-DEDICATED-STAGING\.v1\.json$/.test(f) ||
+      /^apps\/admin\/(proxy\.ts|lib\/cf-access-jwt\.ts)$/.test(f) ||
+      /^infra\/(web|ops)\/wrangler\.toml$/.test(f) ||
+      /^\.github\/workflows\/deploy-dedicated\.yml$/.test(f) ||
       /^tooling\/deploy\/lib\/non-prod-api-host(\.runtime\.test)?\.cjs$/.test(f) ||
       /^tooling\/verify\/rel-600-staging\.cjs$/.test(f) ||
       /^tooling\/verify\/staging-topology-readiness\.cjs$/.test(f) ||
@@ -1012,7 +1018,7 @@ const RULES = [
       /^\.github\/workflows\/deploy-cloudflare\.yml$/.test(f) ||
       /^tooling\/verify\/fixtures\/rel-600-staging\.v1\.json$/.test(f) ||
       /^\.github\/workflows\/deploy-staging\.yml$/.test(f),
-    scripts: ["rel-600-staging.cjs", "staging-topology-readiness.cjs"],
+    scripts: ["rel-600-staging.cjs", "staging-topology-readiness.cjs", "s5-dedicated-staging.cjs"],
   },
   {
     test: (f) =>

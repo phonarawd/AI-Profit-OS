@@ -55,6 +55,31 @@
         "workersDev": "ai-profit-ops-preview.ebay-adapter.workers.dev"
       },
       "note": "REL-600 staging origin = wrangler [env.preview]. production workersDev/custom domain 불변. production workflow_dispatch 오용 금지. preview API = STAGING_API_HOST only · forbiddenHosts(API 포함) 금지 · production API_HOST 상속 금지."
+    },
+    "dedicated": {
+      "wranglerEnv": "dedicated",
+      "deploy": "pnpm cf:deploy:dedicated",
+      "j0Host": true,
+      "previewIsNotJ0": true,
+      "forbiddenHosts": [
+        "app.hiptk.app",
+        "ops.hiptk.app",
+        "api.hiptk.app",
+        "hiptk.app",
+        "go.hiptk.app",
+        "ai-profit-os.onrender.com",
+        "ai-profit-web-preview.ebay-adapter.workers.dev",
+        "ai-profit-ops-preview.ebay-adapter.workers.dev"
+      ],
+      "web": {
+        "worker": "ai-profit-web-dedicated",
+        "workersDev": "ai-profit-web-dedicated.ebay-adapter.workers.dev"
+      },
+      "ops": {
+        "worker": "ai-profit-ops-dedicated",
+        "workersDev": "ai-profit-ops-dedicated.ebay-adapter.workers.dev"
+      },
+      "note": "S5 J0 host. REL-600 preview 불변. production hosts 불변. ops only CF_ACCESS_ENFORCE=1. preview URL을 J0 PASS로 쓰지 않음."
     }
   },
   "pages": {

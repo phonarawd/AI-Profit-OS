@@ -86,3 +86,19 @@ binding = "IMAGES"
 [env.production.vars]
 APP_NAME = "퍼뜩"
 PLATFORM_NAME = "AI Profit OS"
+
+# S5 전용 staging (J0 아님 · REL-600 preview 불변). images/vars/assets는 @nonInheritable.
+[env.dedicated]
+name = "ai-profit-web-dedicated"
+workers_dev = true
+
+[env.dedicated.assets]
+directory = "../../apps/web/.open-next/assets"
+binding = "ASSETS"
+
+[env.dedicated.images]
+binding = "IMAGES"
+
+[env.dedicated.vars]
+APP_NAME = "퍼뜩"
+PLATFORM_NAME = "AI Profit OS"

@@ -33,5 +33,5 @@
     "issue REL-502 on this work-branch SHA",
     "delete surveyed branches before production rollback window ends"
   ],
-  "next": "S5 dedicated staging + Access on this exact SHA"
+  "next": "S5 infra wired; deploy+Access+J0 on the freeze HEAD after the S5 infra commit"
 }

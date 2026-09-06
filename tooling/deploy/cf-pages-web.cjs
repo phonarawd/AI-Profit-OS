@@ -3,6 +3,7 @@
  * Deploy user PWA to CF Workers (OpenNext).
  * Filename cf-pages-web is legacy; actual path is Workers deploy.
  * staging/preview = env preview (ai-profit-web-preview, REL-600)
+ * dedicated = env dedicated (ai-profit-web-dedicated, S5 · J0 아님)
  * production = env production (ai-profit-web)
  */
 const { spawnSync } = require("child_process");
@@ -43,7 +44,8 @@ mustExist("apps/web/package.json", "apps/web");
 const appDir = path.join(root, "apps/web");
 const configPath = path.join(root, "infra/web/wrangler.toml");
 const envFlag = resolveWranglerEnv(target);
-const smokeSlot = envFlag === "production" ? "production" : "staging";
+const smokeSlot =
+  envFlag === "production" ? "production" : envFlag === "dedicated" ? "dedicated" : "staging";
 
 function spawnEnv() {
   const env = { ...process.env };

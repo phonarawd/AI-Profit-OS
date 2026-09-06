@@ -259,6 +259,7 @@ const SURFACES = Object.freeze([
     requiredVars: {
       preview: ["APP_NAME", "PLATFORM_NAME"],
       production: ["APP_NAME", "PLATFORM_NAME"],
+      dedicated: ["APP_NAME", "PLATFORM_NAME"],
     },
   },
   {
@@ -268,11 +269,28 @@ const SURFACES = Object.freeze([
     requiredVars: {
       preview: ["APP_NAME", "ROBOTS"],
       production: ["APP_NAME", "ROBOTS"],
+      dedicated: ["APP_NAME", "ROBOTS"],
     },
   },
 ]);
 
 const ENVIRONMENTS = Object.freeze(["preview", "production"]);
+
+function extraNamedEnvironments(sections) {
+  const extras = [];
+  for (const key of sections.keys()) {
+    const m = /^env\.([A-Za-z0-9_-]+)(?:\.|$)/.exec(key);
+    if (!m) continue;
+    const name = m[1];
+    if (ENVIRONMENTS.includes(name)) continue;
+    if (!extras.includes(name)) extras.push(name);
+  }
+  return extras;
+}
+
+function environmentsFor(sections) {
+  return ENVIRONMENTS.concat(extraNamedEnvironments(sections));
+}
 
 /**
  * Evaluate one surface's wrangler.toml + next.config text (already read,
@@ -290,12 +308,16 @@ function evaluateSurface(surfaceDef, wranglerText, nextConfigText, readFileForLo
 
   const sections = parseTomlSections(wranglerText);
 
-  for (const env of ENVIRONMENTS) {
+  for (const env of environmentsFor(sections)) {
     if (!sections.has(`env.${env}`)) {
       fails.push(
         `${surfaceDef.label}/${env}: [env.${env}] section itself is missing from ${surfaceDef.wranglerPath}`,
       );
-      perEnv[env] = { imagesOk: false, varsOk: false, varsMissing: surfaceDef.requiredVars[env] || [] };
+      perEnv[env] = {
+        imagesOk: false,
+        varsOk: false,
+        varsMissing: surfaceDef.requiredVars[env] || surfaceDef.requiredVars.preview || [],
+      };
       continue;
     }
 
@@ -316,7 +338,9 @@ function evaluateSurface(surfaceDef, wranglerText, nextConfigText, readFileForLo
       }
     }
 
-    const varsResult = checkVarsForEnv(sections, env, surfaceDef.requiredVars[env] || []);
+    const requiredKeys =
+      surfaceDef.requiredVars[env] || surfaceDef.requiredVars.preview || [];
+    const varsResult = checkVarsForEnv(sections, env, requiredKeys);
     if (!varsResult.ok) {
       fails.push(`${surfaceDef.label}/${env}: ${varsResult.reason}`);
     }

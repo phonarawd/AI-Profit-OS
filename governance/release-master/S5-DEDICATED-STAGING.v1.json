@@ -1,0 +1,16 @@
+{
+  "schema": "s5-dedicated-staging.v1",
+  "status": "INFRA_WIRED",
+  "previewIsNotJ0": true,
+  "rel600Unchanged": true,
+  "productionDeploy": 0,
+  "j0": "NOT_RUN",
+  "accessLive": false,
+  "shaAlignedLive": false,
+  "hosts": {
+    "web": "ai-profit-web-dedicated.ebay-adapter.workers.dev",
+    "ops": "ai-profit-ops-dedicated.ebay-adapter.workers.dev"
+  },
+  "stagingApi": "https://ai-profit-os-staging.onrender.com",
+  "note": "Static infra only. Live deploy + Access app + J0 are later S5 steps on the freeze HEAD after this commit."
+}

@@ -85,6 +85,7 @@
 | rel-506-r8-infra-core | `verify:rel-506-r8-infra-core` | T0 path + CI | live (REL-506 · R8 Core · pages deploy 0 · Ads excluded · rum/tag deferred) |
 | rel-507-production-e2e | `verify:rel-507-production-e2e` | T0 path + CI | live (REL-507 · production-loop · isolation · invented success 0) |
 | rel-600-staging | `verify:rel-600-staging` | T0 path + CI | live (REL-600 staging preview workers) |
+| s5-dedicated-staging | `verify:s5-dedicated-staging` | T0 path + CI | live (S5 dedicated host lock, J0 NOT_RUN) |
 | rel-601-staging-regression | `verify:rel-601-staging-regression` | T0 path + CI | live (REL-601 Surface Matrix staging preview · Home redesign 0 · local full 0) |
 | rel-602-staging-rollback | `verify:rel-602-staging-rollback` | T0 path + CI | live (REL-602 real preview rollback + read-only regression + forward deploy · production/DB/money 0) |
 | rel-603-age-usability-spotcheck | `verify:rel-603-age-usability-spotcheck` | T0 path + CI | live (REL-603 automated 9 cohort x 4 staging Playwright · human 0 · production/money 0) |
@@ -176,6 +177,7 @@
 | `governance/release-master/R8_INFRA_CORE.md` · `governance/release-master/r8-cache-inventory.v1.json` · `tooling/verify/rel-506-r8-infra-core.cjs` | rel-506-r8-infra-core |
 | `tooling/e2e/specs/production-loop.spec.cjs` · `tooling/e2e/lib/production-loop.cjs` · `tooling/verify/rel-507-production-e2e.cjs` | rel-507-production-e2e |
 | `governance/release-master/REL-600-STAGING.md` · staging origin · `tooling/verify/rel-600-staging.cjs` | rel-600-staging |
+| `governance/release-master/S5-DEDICATED-STAGING.v1.json` · dedicated wrangler · admin proxy · `tooling/verify/s5-dedicated-staging.cjs` | s5-dedicated-staging |
 | `governance/release-master/REL-601-STAGING-REGRESSION.md` · Surface Matrix · `tooling/verify/rel-601-staging-regression.cjs` | rel-601-staging-regression |
 | `governance/release-master/REL-602-STAGING-ROLLBACK.md` · `tooling/deploy/cf-rollback-staging.cjs` · `tooling/verify/rel-602-staging-rollback.cjs` | rel-602-staging-rollback |
 | `governance/release-master/AGE_SPOTCHECK.md` · `tooling/e2e/specs/rel-603-age-usability-spotcheck.spec.cjs` · `tooling/verify/rel-603-age-usability-spotcheck.cjs` | rel-603-age-usability-spotcheck |

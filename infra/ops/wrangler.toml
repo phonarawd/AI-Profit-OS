@@ -70,3 +70,21 @@ binding = "IMAGES"
 [env.production.vars]
 APP_NAME = "AI Profit OS Ops"
 ROBOTS = "noindex, nofollow"
+
+# S5 전용 staging Admin (J0 host). preview/production Access enforce 0.
+# CF_ACCESS_TEAM_DOMAIN · CF_ACCESS_AUD 는 wrangler secret (커밋 금지).
+[env.dedicated]
+name = "ai-profit-ops-dedicated"
+workers_dev = true
+
+[env.dedicated.assets]
+directory = "../../apps/admin/.open-next/assets"
+binding = "ASSETS"
+
+[env.dedicated.images]
+binding = "IMAGES"
+
+[env.dedicated.vars]
+APP_NAME = "AI Profit OS Ops"
+ROBOTS = "noindex, nofollow"
+CF_ACCESS_ENFORCE = "1"
