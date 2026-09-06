@@ -27,15 +27,15 @@ NEXT = ENGINE_ACCEPTANCE_REBASE_V1
 BASELINE_ID = ea-baseline-0d8825e8f333-5ac0f4291966
 PREDECESSOR_BASELINE_ID = ea-baseline-74683b6e39a7-590263f0f273
 REBASE_ID = pending
-LIVE_AGGREGATE = 1204bbe5a7dae38ef4e604a3efab4943c70855200daf49c491d12f7180ccecb5
+LIVE_AGGREGATE = 3a647a15f4f9e6dbb251026abd7b73551ff3fd57a9d77059cc4926e2389a5b06
 BASELINE_AGGREGATE = 5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9
-PATH_COUNT_LIVE = 514
+PATH_COUNT_LIVE = 518
 PATH_COUNT_BASELINE = 491
-CHANGED_PATHS = 44
-ADDED_PATHS = 23
-MUTATED_PATHS = 21
+CHANGED_PATHS = 51
+ADDED_PATHS = 27
+MUTATED_PATHS = 24
 MISSING_PATHS = 0
-EXIT_GATE = D1-S1F (2026-09-05) · S1F Founder 프로덕션 출시 지시서에 따른 classic-signup/session-rotation/turnstile/rate-limit/admin-users 신설(commit f2812062) + frontend(440fc2ed) + CodeQL clock.core.cjs 구조적 재작성(commit 7f9baf0a) + verify wiring(eb4737f8) + client refresh retry(d6023f16) + reuse-detection tests(0a9bf4ea) + PUTDUK continuation session(2026-09-06)의 settlement/safe-stop claim-before-post race 수정(commit f29a8e06) + participate lock/trade 단일 트랜잭션화(commit 876d93cd) + durable server-side reconcile-tick(commit c05cf24c) + 실 payout-reserve 게이트(commit 30f25ea3)가 REBASE 없이 protected-scope 를 추가 변경(23 added · 21 mutated) · ENGINE_ACCEPTANCE_REBASE_V1 ACK 후 current-epoch QA0-QA9 재실행 전까지 ISSUED 금지
+EXIT_GATE = D1-S1F (2026-09-05) plus PUTDUK continuation through 5th recert (2026-09-06, HEAD 3cc29ee0) · protected-scope still drifting without ENGINE_ACCEPTANCE_REBASE_V1 ACK (27 added · 24 mutated · 51 changed) · ISSUED forbidden until formal rebase + current-epoch QA0-QA9
 ```
 
 ## 판정 (D1-S1E 정정, 2026-09-05, append 성격의 사실 정정)
@@ -284,3 +284,19 @@ Step 7(원금/정산/환불 하드게이트)의 코드 리뷰 결과 발견한 �
 은폐 금지 · STATUS = NOT_ISSUED (불변) · CERT_ISSUED = 0 (불변) · PROTECTED_SCOPE_DRIFT = 1 (불변).
 이 세션은 ACK를 대리 작성하지 않았고, QA0-QA9를 로컬에서 가짜로 재실행하지 않았으며, 숫자를
 발급 조건에 맞춰 역산하지 않았다.
+## 판정 (PUTDUK continuation session 5차 정정, 2026-09-06, append 성격의 사실 정정)
+
+같은 출시 연속 세션이 Founder 가상 장부 수익 계약, 머신 reconcile-tick, 출금 treasury fail-closed 을 코드로 맞추며 `services/api-nest` / `supabase/migrations` protected-scope 를 7경로 더 변경했다 (HEAD `3cc29ee0`; 코드 커밋 `c92a9d44` · `50c1f4e4` · `ece05304`).
+
+- `services/api-nest/src/ledger/payout-reservation.service.ts` (ADDED) — MATCH_SUCCESS 수익을 온체인 풀이 아니라 `SYS:MATCH_PROFIT_EXPENSE`에서 지급. 풀 잔액으로 매칭을 막지 않음.
+- `services/api-nest/src/ledger/ledger.types.ts` / `ledger.module.ts` (MUTATED) — 비용계정 종류와 모듈 등록.
+- `supabase/migrations/20260906060000_payout_reservation_and_execution_confirm.sql` (ADDED) — `SYS:MATCH_PROFIT_EXPENSE` INSERT ON CONFLICT DO NOTHING. 예약 테이블 없음. production apply는 committedUnapplied.
+- `services/api-nest/src/trades/trades.internal.controller.ts` (ADDED) — 머신 토큰 `internal/trades/reconcile-tick`.
+- `services/api-nest/src/wallet/withdraw-treasury-solvency.ts` (ADDED) / `withdraw-intent.service.ts` (MUTATED) — 관측된 treasury 없으면 broadcast 거부. 실 signer/hot wallet 없음.
+
+이 정정은 STATUS를 조작하지 않고 LIVE_AGGREGATE/PATH_COUNT_LIVE/CHANGED_PATHS/ADDED_PATHS/MUTATED_PATHS만 현재 HEAD 실측값으로 갱신한다. STATUS/CERT_ISSUED/PROTECTED_SCOPE_DRIFT/REBASE_REQUIRED는 변경하지 않는다(계속 drift=true).
+
+live protected aggregate `3a647a15f4f9e6dbb251026abd7b73551ff3fd57a9d77059cc4926e2389a5b06`는 baseline aggregate `5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9`와 다르다 (추가 27 · 변경 24 · 누락 0, 총 51 경로). 재계산은 `compareProtectedScope()` 실측이며 hash를 손으로 만들지 않았다.
+
+은폐 금지 · STATUS = NOT_ISSUED (불변) · CERT_ISSUED = 0 (불변) · PROTECTED_SCOPE_DRIFT = 1 (불변).
+이 세션은 ACK를 대리 작성하지 않았고, QA0-QA9를 로컬에서 가짜로 재실행하지 않았으며, 숫자를 발급 조건에 맞춰 역산하지 않았다.
