@@ -13,6 +13,7 @@ import { ExecutionPolicyModule } from "./execution-policy/execution-policy.modul
 import { MembershipModule } from "./membership/membership.module";
 import { InboxModule } from "./inbox/inbox.module";
 import { UserUxPrefsModule } from "./ux-prefs/user-ux-prefs.module";
+import { ProductOnboardingModule } from "./product-onboarding/product-onboarding.module";
 import { PushModule } from "./push/push.module";
 import { LoopModule } from "./loop/loop.module";
 import { MatchingPolicyModule } from "./matching-policy/matching-policy.module";
@@ -54,6 +55,7 @@ import { ObsExceptionFilter } from "./observability/obs.exception-filter";
     MembershipModule,
     InboxModule,
     UserUxPrefsModule,
+    ProductOnboardingModule,
     PushModule,
     LoopModule,
     AdaptersModule,

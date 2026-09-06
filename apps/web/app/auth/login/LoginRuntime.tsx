@@ -1,13 +1,13 @@
 "use client";
 
 import {
-  continuePathAfterAuth,
   fetchAuthSession,
   isKakaoOAuthReady,
   loginClassic,
   requestMagicLink,
   startKakaoOAuth,
 } from "@aipo/sdk/auth";
+import { continueAfterAuth } from "@aipo/sdk/product-onboarding";
 import { AuthLogin } from "@aipo/ui/components/auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -22,9 +22,14 @@ export function LoginRuntime() {
   useEffect(() => {
     const ac = new AbortController();
     void fetchAuthSession({ apiBase: "", signal: ac.signal })
-      .then((session) => {
+      .then(async (session) => {
         if (!session) return;
-        router.replace(continuePathAfterAuth(session.onboardingStage));
+        const next = await continueAfterAuth(session.onboardingStage, {
+          apiBase: "",
+          signal: ac.signal,
+        });
+        if (ac.signal.aborted) return;
+        router.replace(next);
       })
       .catch(() => {
         /* 게스트 유지 */
@@ -81,7 +86,9 @@ export function LoginRuntime() {
         apiBase: "",
         turnstileToken,
       });
-      router.replace(continuePathAfterAuth(session.onboardingStage));
+      router.replace(
+        await continueAfterAuth(session.onboardingStage, { apiBase: "" }),
+      );
     } catch (caught) {
       setError(authUserMessage(caught));
     } finally {

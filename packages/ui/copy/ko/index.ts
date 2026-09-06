@@ -25,6 +25,7 @@ import { margin } from "./margin";
 import { membership } from "./membership";
 import { objections } from "./objections";
 import { onboarding } from "./onboarding";
+import { productOnboarding } from "./product-onboarding";
 import { operator } from "./operator";
 import { opportunity } from "./opportunity";
 import { peotteok } from "./peotteok";
@@ -74,6 +75,7 @@ export const T = {
   membership,
   objections,
   onboarding,
+  productOnboarding,
   operator,
   opportunity,
   peotteok,
@@ -117,6 +119,7 @@ export {
   membership,
   objections,
   onboarding,
+  productOnboarding,
   operator,
   opportunity,
   peotteok,

@@ -1,0 +1,30 @@
+{
+  "id": "product-onboarding",
+  "route": "/onboarding",
+  "state": "product_education",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": { "copyKey": "T.productOnboarding.next", "action": "next_step" },
+  "blocks": [
+    { "id": "progress", "role": "status", "copyKey": "T.productOnboarding.progressLabel" },
+    { "id": "a11y", "role": "controls", "copyKey": "T.productOnboarding.largeType" },
+    { "id": "visual", "role": "lesson_visual" },
+    { "id": "copy", "role": "heading", "copyKey": "T.productOnboarding.search.title" },
+    { "id": "money", "role": "server_money", "copyKey": "T.productOnboarding.requiredLabel" },
+    { "id": "cta", "role": "primary_cta", "copyKey": "T.productOnboarding.next" }
+  ],
+  "forbidden": [
+    "gender_branch",
+    "photo_pixel_match",
+    "non_brand_logo",
+    "fake_fomo",
+    "fake_countdown",
+    "money_count_up",
+    "client_money_recalc",
+    "visual_fixture_as_live",
+    "guest_chrome_auth_split",
+    "pwa_overlay",
+    "deposit_funnel_cta",
+    "cta_earn_profit"
+  ],
+  "note": "로그인 후 제품 교육 7단계. GuestChrome 재사용 금지. 금액은 서버 lesson 문자열만 표시."
+}

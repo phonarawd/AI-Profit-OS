@@ -55,7 +55,7 @@ describe("acquisition release — guest / auth / error / resume", () => {
     const session = await fetchAuthSession({ apiBase: "" });
     assert.ok(session);
     assert.equal(session.userId, "u1");
-    assert.equal(continuePathAfterAuth(session.onboardingStage), "/");
+    assert.equal(continuePathAfterAuth(session.onboardingStage), "/onboarding");
   });
 
   it("resumes B_incomplete to complete-profile", async () => {
@@ -154,7 +154,7 @@ describe("acquisition release — guest / auth / error / resume", () => {
       { apiBase: "" },
     );
     assert.equal(session.userId, "u1");
-    assert.equal(continuePathAfterAuth(session.onboardingStage), "/");
+    assert.equal(continuePathAfterAuth(session.onboardingStage), "/onboarding");
   });
 
   it("keeps signup validation as a server error, not a fake session", async () => {

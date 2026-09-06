@@ -3,7 +3,6 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  continuePathAfterAuth,
   signupClassicRequest,
   type ClassicSignupInput,
 } from "@aipo/sdk/auth";

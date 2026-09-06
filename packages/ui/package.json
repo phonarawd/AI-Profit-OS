@@ -54,6 +54,7 @@
     "./copy/ko/peotteok": "./copy/ko/peotteok.ts",
     "./copy/ko/auth": "./copy/ko/auth.ts",
     "./copy/ko/onboarding": "./copy/ko/onboarding.ts",
+    "./copy/ko/product-onboarding": "./copy/ko/product-onboarding.ts",
     "./copy/ko/landing": "./copy/ko/landing.ts",
     "./copy/ko/guide": "./copy/ko/guide.ts",
     "./copy/ko/user": "./copy/ko/user.ts",

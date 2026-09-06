@@ -67,6 +67,12 @@
       "wire": "surfaces/onboarding-demo-card.wire.json"
     },
     {
+      "id": "product-onboarding",
+      "route": "/onboarding",
+      "state": "product_education",
+      "wire": "surfaces/product-onboarding.wire.json"
+    },
+    {
       "id": "auth-login",
       "route": "/auth/login",
       "wire": "surfaces/auth-login.wire.json"

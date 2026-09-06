@@ -1,9 +1,7 @@
 "use client";
 
-import {
-  continuePathAfterAuth,
-  verifyMagicLink,
-} from "@aipo/sdk/auth";
+import { verifyMagicLink } from "@aipo/sdk/auth";
+import { continueAfterAuth } from "@aipo/sdk/product-onboarding";
 import { GuestChrome } from "../../components/GuestChrome";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -27,7 +25,9 @@ export function MagicRuntime() {
     void verifyMagicLink(token, {}, { apiBase: "" })
       .then((session) => {
         if (cancelled) return;
-        router.replace(continuePathAfterAuth(session.onboardingStage));
+        router.replace(
+          await continueAfterAuth(session.onboardingStage, { apiBase: "" }),
+        );
       })
       .catch((err: unknown) => {
         if (!cancelled) setNote(authUserMessage(err));

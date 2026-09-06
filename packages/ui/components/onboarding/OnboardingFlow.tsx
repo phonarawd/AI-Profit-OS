@@ -1,448 +1,297 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { applyFontScale } from "../../tokens/font-scale";
 import { T } from "../../copy/ko";
-import { BrandMark } from "../brand/BrandMark";
-import { MotionCTA } from "../lux/MotionCTA";
-import { TouchButton } from "../lux/TouchButton";
-import { DemoWalletBanner } from "../wallet/DemoWalletBanner";
-import { MarketPartnerTrustStrip } from "../trust/MarketPartnerTrustStrip";
-import { BuyingPowerMeter } from "./BuyingPowerMeter";
-import { MarketDiffDemo } from "./MarketDiffDemo";
-import { MatchConfidenceCard } from "./MatchConfidenceCard";
-import { OpportunityDemoCard } from "./OpportunityDemoCard";
-import "./onboarding-motion.css";
+import { applyFontScale } from "../../tokens/font-scale";
+import { OnboardingShell } from "./OnboardingShell";
+import {
+  bindProductOnboarding,
+  finishProductOnboarding,
+  persistProductOnboarding,
+  type ProductOnboardingView,
+} from "./product/bind-client";
+import { FALLBACK_LESSON, type OnboardingLesson } from "./product/lesson-types";
+import {
+  CapitalReadinessScene,
+  DecisionPracticeCard,
+  IdentityMatchScene,
+  MarketSearchScene,
+  MoneyWaterfallScene,
+  SettlementTimeline,
+  VerificationScene,
+} from "./product/scenes";
+import "./product-onboarding-motion.css";
 
 export type ToneBand = "young" | "mid" | "senior";
 
-type Step =
-  | "tone"
-  | "identity"
-  | "partner"
-  | "demo"
-  | "usdt"
-  | "action"
-  | "payout";
+const TOTAL = 7;
+const CACHE_KEY = "peotteok_product_onboarding_v1";
 
-const STEPS: Step[] = [
-  "tone",
-  "identity",
-  "partner",
-  "demo",
-  "usdt",
-  "action",
-  "payout",
-];
+function useReducedMotion() {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReduced(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+  return reduced;
+}
 
-const STORAGE_KEY = "peotteok_onboarding_step";
-const DONE_KEY = "peotteok_onboarding_done";
-const TONE_KEY = "peotteok_tone_band";
-const STAGE_COUNT = 4;
-const STAGE_OF: Record<Step, number> = {
-  tone: 1,
-  identity: 1,
-  partner: 2,
-  demo: 2,
-  usdt: 3,
-  action: 4,
-  payout: 4,
-};
+function stepCopy(step: number, easy: boolean) {
+  const C = T.productOnboarding;
+  const block =
+    step === 1
+      ? C.search
+      : step === 2
+        ? C.match
+        : step === 3
+          ? C.calc
+          : step === 4
+            ? C.verify
+            : step === 5
+              ? C.capital
+              : step === 6
+                ? C.decision
+                : C.settle;
+  return {
+    title: block.title,
+    body: easy && "easyBody" in block ? block.easyBody : block.body,
+  };
+}
 
-/** Skip allowed = USDT only (§6.4) */
-const SKIPPABLE: Step[] = ["usdt"];
+function readCache(): { step: number; largeType: boolean; easyExplain: boolean } | null {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const o = JSON.parse(raw) as {
+      step?: unknown;
+      largeType?: unknown;
+      easyExplain?: unknown;
+    };
+    if (typeof o.step !== "number" || o.step < 1 || o.step > 7) return null;
+    return {
+      step: o.step,
+      largeType: o.largeType === true,
+      easyExplain: o.easyExplain === true,
+    };
+  } catch {
+    return null;
+  }
+}
 
-/**
- * §6.4 experiential onboarding — identity · partner strip · demo · practice
- * Canon: onboarding-identity · onboarding-demo-card
- * v7.22.55 Guest utility — capital CTA 0 · USDT/테더 카드 마운트 0
- */
+function writeCache(step: number, largeType: boolean, easyExplain: boolean) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ step, largeType, easyExplain }));
+  } catch {
+    /* ignore */
+  }
+}
+
 export function OnboardingFlow() {
-  const [step, setStep] = useState<Step>("tone");
-  const [tone, setTone] = useState<ToneBand>("mid");
-  const [demoOpen, setDemoOpen] = useState(false);
+  const reduced = useReducedMotion();
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const [step, setStep] = useState(1);
+  const [largeType, setLargeType] = useState(false);
+  const [easyExplain, setEasyExplain] = useState(false);
+  const [lesson, setLesson] = useState<OnboardingLesson | null>(FALLBACK_LESSON);
+  const [confirm, setConfirm] = useState(false);
+  const [pressed, setPressed] = useState(false);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      const savedTone = localStorage.getItem(TONE_KEY) as ToneBand | null;
-      if (savedTone && ["young", "mid", "senior"].includes(savedTone)) {
-        setTone(savedTone);
-        if (savedTone === "senior") applyFontScale("lg");
-      }
-      if (saved === "done" || localStorage.getItem(DONE_KEY) === "1") {
-        setStep("payout");
-      } else if (saved && STEPS.includes(saved as Step)) {
-        setStep(saved as Step);
-      }
-    } catch {
-      /* ignore */
+    const cached = readCache();
+    if (cached) {
+      setStep(cached.step);
+      setLargeType(cached.largeType);
+      setEasyExplain(cached.easyExplain);
+      if (cached.largeType) applyFontScale("lg");
     }
+    let cancelled = false;
+    void bindProductOnboarding({
+      onUnauthorized: () => {
+        if (!cancelled) window.location.href = "/auth/login?next=/onboarding";
+      },
+      onView: (view) => {
+        if (!cancelled) applyView(view);
+      },
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
+
+  function applyView(view: ProductOnboardingView) {
+    if (view.completedAt) {
+      window.location.href = "/";
+      return;
+    }
+    setLesson(view.lesson);
+    setStep(view.currentStep);
+    setLargeType(view.preferences.largeType);
+    setEasyExplain(view.preferences.easyExplain);
+    applyFontScale(view.preferences.largeType ? "lg" : "md");
+    writeCache(view.currentStep, view.preferences.largeType, view.preferences.easyExplain);
+  }
 
   useEffect(() => {
     headingRef.current?.focus();
   }, [step]);
 
-  function persist(next: Step, nextTone?: ToneBand) {
-    setStep(next);
-    try {
-      localStorage.setItem(STORAGE_KEY, next);
-      if (nextTone) localStorage.setItem(TONE_KEY, nextTone);
-    } catch {
-      /* ignore */
-    }
+  function persist(nextStep: number, prefs?: { largeType: boolean; easyExplain: boolean }) {
+    const nextPrefs = prefs ?? { largeType, easyExplain };
+    setStep(nextStep);
+    writeCache(nextStep, nextPrefs.largeType, nextPrefs.easyExplain);
+    void persistProductOnboarding({
+      currentStep: nextStep,
+      preferences: nextPrefs,
+    });
   }
 
-  function pickTone(band: ToneBand) {
-    setTone(band);
-    if (band === "senior") applyFontScale("lg");
-    else applyFontScale("md");
-    persist("identity", band);
+  function toggleLarge() {
+    const next = !largeType;
+    setLargeType(next);
+    applyFontScale(next ? "lg" : "md");
+    persist(step, { largeType: next, easyExplain });
+  }
+
+  function toggleEasy() {
+    const next = !easyExplain;
+    setEasyExplain(next);
+    persist(step, { largeType, easyExplain: next });
   }
 
   function goNext() {
-    const i = STEPS.indexOf(step);
-    if (i < STEPS.length - 1) persist(STEPS[i + 1]!);
+    if (step === 6 && !confirm) {
+      setPressed(true);
+      window.setTimeout(() => setPressed(false), 160);
+      setConfirm(true);
+      return;
+    }
+    if (step < TOTAL) persist(step + 1);
   }
 
   function goBack() {
-    const i = STEPS.indexOf(step);
-    if (i > 0) persist(STEPS[i - 1]!);
+    setConfirm(false);
+    if (step > 1) persist(step - 1);
   }
 
-  function skipIfAllowed() {
-    if (SKIPPABLE.includes(step)) goNext();
-  }
-
-  function finish() {
-    try {
-      localStorage.setItem(DONE_KEY, "1");
-      localStorage.setItem(STORAGE_KEY, "payout");
-    } catch {
-      /* ignore */
-    }
+  async function finish() {
+    await finishProductOnboarding();
+    writeCache(7, largeType, easyExplain);
     window.location.href = "/";
   }
 
-  const toneCopy = T.onboarding[tone];
-  const stage = STAGE_OF[step];
-  const progressLabel = T.onboarding.progressLabel
-    .replace("{current}", String(stage))
-    .replace("{total}", String(STAGE_COUNT));
+  const copy = stepCopy(step, easyExplain);
+  const data = lesson;
 
   return (
-    <main
-      data-testid="onboarding-flow"
-      data-step={step}
-      data-tone-band={tone}
-      className="flex flex-1 flex-col gap-6"
-    >
-      <p
-        role="status"
-        aria-live="polite"
-        data-testid="onboarding-progress"
-        className="text-center text-xs text-lux-text-muted"
+    <main data-testid="onboarding-flow" data-step={step}>
+      <OnboardingShell
+        step={step}
+        total={TOTAL}
+        largeType={largeType}
+        easyExplain={easyExplain}
+        onToggleLargeType={toggleLarge}
+        onToggleEasy={toggleEasy}
+        brand={T.brand.consumer}
+        actions={
+          <>
+            {step < 7 ? (
+              <button
+                type="button"
+                className="po-cta"
+                data-testid="onboarding-next"
+                onClick={goNext}
+              >
+                {step === 6 ? T.productOnboarding.practiceCta : T.productOnboarding.next}
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="po-cta"
+                data-testid="onboarding-start"
+                onClick={() => void finish()}
+              >
+                {T.productOnboarding.startApp}
+              </button>
+            )}
+            {step > 1 ? (
+              <button
+                type="button"
+                className="po-ghost"
+                data-testid="onboarding-back"
+                onClick={goBack}
+              >
+                {T.productOnboarding.back}
+              </button>
+            ) : null}
+            {step === 6 ? (
+              <button
+                type="button"
+                className="po-ghost"
+                data-testid="onboarding-later"
+                onClick={() => {
+                  window.location.href = "/";
+                }}
+              >
+                {T.productOnboarding.later}
+              </button>
+            ) : null}
+          </>
+        }
       >
-        {progressLabel}
-      </p>
-      {step === "tone" ? (
-        <section data-testid="onboarding-tone" className="space-y-4">
-          <BrandMark size="hero" />
-          <p
-            className="text-center text-xs text-lux-text-muted"
-            data-testid="onboarding-transition-disclosure"
-          >
-            {T.landing.transitionDisclosure}
-          </p>
-          <h1
-            ref={headingRef}
-            tabIndex={-1}
-            className="text-center text-xl font-semibold outline-none"
-          >
-            {T.onboarding.tonePickTitle}
-          </h1>
-          <div className="flex flex-col gap-3">
-            <TouchButton
-              variant="primary"
-              className="w-full"
-              data-testid="tone-young"
-              onClick={() => pickTone("young")}
+        <div className="po-layout">
+          <section className="po-visual" aria-hidden={!data}>
+            {data && step === 1 ? <MarketSearchScene lesson={data} reduced={reduced} /> : null}
+            {data && step === 2 ? <IdentityMatchScene lesson={data} reduced={reduced} /> : null}
+            {data && step === 3 ? <MoneyWaterfallScene lesson={data} reduced={reduced} /> : null}
+            {data && step === 4 ? <VerificationScene lesson={data} reduced={reduced} /> : null}
+            {data && step === 5 ? <CapitalReadinessScene lesson={data} reduced={reduced} /> : null}
+            {data && step === 6 ? (
+              <DecisionPracticeCard lesson={data} pressed={pressed} />
+            ) : null}
+            {data && step === 7 ? <SettlementTimeline lesson={data} /> : null}
+          </section>
+          <section className="po-copy">
+            <p className="po-badge">{T.productOnboarding.virtualBadge}</p>
+            <h1 ref={headingRef} tabIndex={-1}>
+              {copy.title}
+            </h1>
+            <p>{copy.body}</p>
+            {step === 6 || step === 7 ? (
+              <p data-testid="onboarding-objection-slide">
+                {T.objections.onboardingSlide}
+              </p>
+            ) : null}
+            {step === 7 ? <p>{T.productOnboarding.closing}</p> : null}
+          </section>
+        </div>
+      </OnboardingShell>
+      {confirm ? (
+        <div className="po-sheet" role="dialog" aria-modal="true">
+          <div className="po-sheet-card">
+            <p>{T.productOnboarding.confirmPractice}</p>
+            <button
+              type="button"
+              className="po-cta"
+              data-testid="po-confirm-yes"
+              onClick={() => {
+                setConfirm(false);
+                persist(7);
+              }}
             >
-              {T.onboarding.toneYoung}
-            </TouchButton>
-            <TouchButton
-              variant="secondary"
-              className="w-full"
-              data-testid="tone-mid"
-              onClick={() => pickTone("mid")}
+              {T.productOnboarding.confirmYes}
+            </button>
+            <button
+              type="button"
+              className="po-ghost"
+              onClick={() => setConfirm(false)}
             >
-              {T.onboarding.toneMid}
-            </TouchButton>
-            <TouchButton
-              variant="secondary"
-              className="w-full"
-              data-testid="tone-senior"
-              onClick={() => pickTone("senior")}
-            >
-              {T.onboarding.toneSenior}
-            </TouchButton>
+              {T.productOnboarding.back}
+            </button>
           </div>
-        </section>
-      ) : null}
-
-      {step === "identity" ? (
-        <section
-          data-testid="onboarding-identity"
-          data-canon="onboarding-identity"
-          className="space-y-4"
-        >
-          <BrandMark size="hero" />
-          <h1
-            ref={headingRef}
-            tabIndex={-1}
-            className="text-center text-xl font-semibold outline-none"
-          >
-            {T.onboarding.identityHeadline}
-          </h1>
-          <p className="text-center text-sm text-lux-text-muted">
-            {toneCopy.identityBody}
-          </p>
-          <MarketDiffDemo />
-          <div
-            data-testid="compare-mini"
-            className="rounded-lux-md border border-lux-border bg-lux-surface px-4 py-3 text-center text-sm"
-          >
-            {T.margin.compareMiniUtility}
-          </div>
-          <p className="text-center text-xs text-lux-text-muted">
-            {T.landing.utilityDisclaimer}
-          </p>
-          <p className="text-center text-sm">{toneCopy.tip}</p>
-          <p
-            className="text-center text-sm font-medium text-lux-text"
-            data-testid="onboarding-objection-slide"
-          >
-            {T.objections.onboardingSlide}
-          </p>
-          {"nextConfirm" in toneCopy && toneCopy.nextConfirm ? (
-            <p className="text-center text-xs text-lux-text-muted">
-              {toneCopy.nextConfirm}
-            </p>
-          ) : null}
-          <TouchButton
-            variant="primary"
-            className="w-full"
-            data-testid="onboarding-next"
-            onClick={goNext}
-          >
-            {T.onboarding.next}
-          </TouchButton>
-          <TouchButton
-            variant="ghost"
-            className="w-full"
-            data-testid="onboarding-back"
-            onClick={goBack}
-          >
-            {T.onboarding.back}
-          </TouchButton>
-        </section>
-      ) : null}
-
-      {step === "partner" ? (
-        <section data-testid="onboarding-partner-slide" className="space-y-4">
-          <h1
-            ref={headingRef}
-            tabIndex={-1}
-            className="text-center text-xl font-semibold outline-none"
-          >
-            {T.onboarding.partnerSlideLead}
-          </h1>
-          <p className="text-center text-sm text-lux-text-muted">
-            {T.onboarding.partnerCatalogNote}
-          </p>
-          <MarketPartnerTrustStrip tier="A" />
-          <TouchButton
-            variant="primary"
-            className="w-full"
-            data-testid="onboarding-next"
-            onClick={goNext}
-          >
-            {T.onboarding.next}
-          </TouchButton>
-          <TouchButton
-            variant="ghost"
-            className="w-full"
-            data-testid="onboarding-back"
-            onClick={goBack}
-          >
-            {T.onboarding.back}
-          </TouchButton>
-        </section>
-      ) : null}
-
-      {step === "demo" ? (
-        <section
-          data-testid="onboarding-demo"
-          data-canon="onboarding-demo-card"
-          className="space-y-4"
-        >
-          <h1
-            ref={headingRef}
-            tabIndex={-1}
-            className="text-center text-xl font-semibold outline-none"
-          >
-            {T.onboarding.demoHeadline}
-          </h1>
-          <p className="text-center text-sm text-lux-text-muted">
-            {T.onboarding.demoHint}
-          </p>
-          <p className="text-center text-xs text-lux-text-muted">
-            {T.onboarding.demoPriceExample}
-          </p>
-          {/* Guest utility — amount/USDT ticker 0 · practice_only */}
-          <DemoWalletBanner visible />
-          <MatchConfidenceCard />
-          <BuyingPowerMeter />
-          <OpportunityDemoCard
-            open={demoOpen}
-            onOpen={() => setDemoOpen(true)}
-          />
-          <TouchButton
-            variant="primary"
-            className="w-full"
-            data-testid="onboarding-next"
-            disabled={!demoOpen}
-            onClick={goNext}
-          >
-            {T.onboarding.next}
-          </TouchButton>
-          <TouchButton
-            variant="ghost"
-            className="w-full"
-            data-testid="onboarding-back"
-            onClick={goBack}
-          >
-            {T.onboarding.back}
-          </TouchButton>
-        </section>
-      ) : null}
-
-      {step === "usdt" ? (
-        <section data-testid="onboarding-usdt" className="space-y-4">
-          <h1
-            ref={headingRef}
-            tabIndex={-1}
-            className="text-center text-xl font-semibold outline-none"
-          >
-            {T.onboarding.usdtHeadline}
-          </h1>
-          <p className="text-center text-sm text-lux-text-muted">
-            {T.onboarding.usdtBody}
-          </p>
-          <p
-            className="text-center text-sm text-lux-text"
-            data-testid="onboarding-objection-slide"
-          >
-            {T.objections.onboardingSlide}
-          </p>
-          <a
-            href="/me/guide/usdt"
-            className="block text-center text-sm text-lux-principal underline-offset-2 hover:underline"
-          >
-            {T.onboarding.usdtWhyLink}
-          </a>
-          <a
-            href="/me/guide/get-usdt"
-            className="block text-center text-sm text-lux-text-muted underline-offset-2 hover:underline"
-          >
-            {T.onboarding.usdtNoTether}
-          </a>
-          <TouchButton
-            variant="primary"
-            className="w-full"
-            data-testid="onboarding-next"
-            onClick={goNext}
-          >
-            {T.onboarding.next}
-          </TouchButton>
-          <TouchButton
-            variant="ghost"
-            className="w-full"
-            data-testid="onboarding-skip"
-            onClick={skipIfAllowed}
-          >
-            {T.onboarding.skip}
-          </TouchButton>
-          <TouchButton
-            variant="ghost"
-            className="w-full"
-            data-testid="onboarding-back"
-            onClick={goBack}
-          >
-            {T.onboarding.back}
-          </TouchButton>
-        </section>
-      ) : null}
-
-      {step === "action" ? (
-        <section data-testid="onboarding-action" className="space-y-4">
-          <h1
-            ref={headingRef}
-            tabIndex={-1}
-            className="text-center text-xl font-semibold outline-none"
-          >
-            {T.onboarding.actionHeadline}
-          </h1>
-          <MotionCTA
-            className="w-full"
-            data-testid="onboarding-cta-utility"
-            onClick={goNext}
-          >
-            {T.landing.ctaStartUtility}
-          </MotionCTA>
-          <TouchButton
-            variant="ghost"
-            className="w-full"
-            data-testid="onboarding-back"
-            onClick={goBack}
-          >
-            {T.onboarding.back}
-          </TouchButton>
-        </section>
-      ) : null}
-
-      {step === "payout" ? (
-        <section data-testid="onboarding-payout" className="space-y-4">
-          <h1
-            ref={headingRef}
-            tabIndex={-1}
-            className="text-center text-xl font-semibold outline-none"
-          >
-            {T.onboarding.payoutHeadline}
-          </h1>
-          <p className="text-center text-sm text-lux-text-muted">
-            {T.onboarding.payoutBody}
-          </p>
-          {/* Guest utility — amount/USDT ticker 0 (§6.4c.1 F) */}
-          <DemoWalletBanner visible />
-          <TouchButton
-            variant="primary"
-            className="w-full"
-            data-testid="onboarding-start"
-            onClick={finish}
-          >
-            {T.onboarding.startApp}
-          </TouchButton>
-          <a
-            href="/"
-            className="block text-center text-sm text-lux-principal underline-offset-2 hover:underline"
-            data-testid="onboarding-continue-real"
-          >
-            {T.onboarding.continueReal}
-          </a>
-        </section>
+        </div>
       ) : null}
     </main>
   );

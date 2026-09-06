@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { continuePathAfterAuth, signupClassicActivate } from "@aipo/sdk/auth";
+import { signupClassicActivate } from "@aipo/sdk/auth";
+import { continueAfterAuth } from "@aipo/sdk/product-onboarding";
 import { GuestChrome } from "../../components/GuestChrome";
 import { authUserMessage } from "../auth-messages";
 
@@ -20,7 +21,9 @@ export function VerifyEmailRuntime() {
     void signupClassicActivate(token, { apiBase: "" })
       .then((session) => {
         if (cancelled) return;
-        router.replace(continuePathAfterAuth(session.onboardingStage));
+        router.replace(
+          await continueAfterAuth(session.onboardingStage, { apiBase: "" }),
+        );
       })
       .catch((err: unknown) => {
         if (!cancelled) setNote(authUserMessage(err));

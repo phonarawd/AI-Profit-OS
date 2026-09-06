@@ -1,12 +1,12 @@
 "use client";
 
 import {
-  continuePathAfterAuth,
   fetchAuthSession,
   isKakaoOAuthReady,
   requestMagicLinkWithConsent,
   startKakaoOAuth,
 } from "@aipo/sdk/auth";
+import { continueAfterAuth } from "@aipo/sdk/product-onboarding";
 import {
   AuthSignup,
   type AuthSignupRuntimeInput,
@@ -24,9 +24,14 @@ export function SignupRuntime() {
   useEffect(() => {
     const ac = new AbortController();
     void fetchAuthSession({ apiBase: "", signal: ac.signal })
-      .then((session) => {
+      .then(async (session) => {
         if (!session) return;
-        router.replace(continuePathAfterAuth(session.onboardingStage));
+        const next = await continueAfterAuth(session.onboardingStage, {
+          apiBase: "",
+          signal: ac.signal,
+        });
+        if (ac.signal.aborted) return;
+        router.replace(next);
       })
       .catch(() => {
         /* 게스트 유지 */

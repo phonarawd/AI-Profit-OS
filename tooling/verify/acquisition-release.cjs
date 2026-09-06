@@ -72,7 +72,6 @@ for (const rel of [
   "apps/web/app/auth/login/page.tsx",
   "apps/web/app/auth/signup/page.tsx",
   "apps/web/app/auth/complete-profile/page.tsx",
-  "apps/web/app/onboarding/page.tsx",
 ]) {
   const src = read(rel);
   if (!src.includes("GuestChrome")) fail(`${rel} must keep GuestChrome`);
@@ -100,6 +99,9 @@ if (!profile.includes("patchAuthProfile")) {
 const onboarding = read("apps/web/app/onboarding/page.tsx");
 if (!onboarding.includes("OnboardingFlow")) {
   fail("onboarding page must keep OnboardingFlow");
+}
+if (onboarding.includes("GuestChrome")) {
+  fail("product onboarding must not reuse GuestChrome");
 }
 
 const sdkPkg = readJson("packages/sdk/package.json");

@@ -171,7 +171,7 @@ export function normalizeAuthSession(raw: unknown): AuthSession {
 }
 
 export function continuePathAfterAuth(stage: AuthOnboardingStage): string {
-  return stage === "B_complete" ? "/" : "/auth/complete-profile";
+  return stage === "B_complete" ? "/onboarding" : "/auth/complete-profile";
 }
 
 export function assertNoForbiddenProfileFields(

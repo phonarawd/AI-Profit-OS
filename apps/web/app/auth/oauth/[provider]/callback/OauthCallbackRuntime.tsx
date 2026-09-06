@@ -1,9 +1,7 @@
 "use client";
 
-import {
-  continuePathAfterAuth,
-  finishOauth,
-} from "@aipo/sdk/auth";
+import { finishOauth } from "@aipo/sdk/auth";
+import { continueAfterAuth } from "@aipo/sdk/product-onboarding";
 import { GuestChrome } from "../../../../components/GuestChrome";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -59,7 +57,9 @@ export function OauthCallbackRuntime({ provider }: { provider: string }) {
         } catch {
           /* ignore */
         }
-        router.replace(continuePathAfterAuth(session.onboardingStage));
+        router.replace(
+          await continueAfterAuth(session.onboardingStage, { apiBase: "" }),
+        );
       })
       .catch((err: unknown) => {
         if (!cancelled) setNote(authUserMessage(err));
