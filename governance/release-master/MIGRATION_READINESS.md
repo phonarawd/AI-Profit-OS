@@ -12,10 +12,10 @@ APPLY_MIGRATION = 0
 APPLY_LOG = 0
 APPLY_OWNER = REL-701-DB
 PROJECT_REF = mgsytcetsiecllmhcyox
-LOCAL_MIGRATION_FILES = 61
+LOCAL_MIGRATION_FILES = 62
 REMOTE_APPLIED_SNAPSHOT = 54
 REMOTE_RAW_APPLIED = 55
-COMMITTED_UNAPPLIED = 7
+COMMITTED_UNAPPLIED = 8
 TRACK_A_FILE_RESTORE = 3
 REL_408_BASELINE = 1
 REL_502_ISSUED = 0
@@ -49,6 +49,10 @@ Production apply 0. 원격 카운트 불변.
 **2026-09-06 S3 continuation:** Admin identity / B7 / consent / product unique / peotteok history
 migrations landed in-repo (`20260906120000` … `20260906160000`). Local 56 → 61.
 `COMMITTED_UNAPPLIED` 2 → 7. Production apply 0. Remote snapshot/raw counts unchanged.
+
+**2026-09-06 S4:** `20260904060000_krw_deposit_bank_snapshot.sql` UNIQUE port. Local 61 → 62.
+`COMMITTED_UNAPPLIED` 7 → 8. Additive ADD COLUMN IF NOT EXISTS. Production apply 0.
+Remote snapshot/raw counts unchanged.
 
 ## 2026-09-04 REL-701-DB EXECUTED (Founder-authorized · owner REL-701-DB · not this REL)
 
