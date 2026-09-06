@@ -122,6 +122,23 @@ export class PostgresService implements OnModuleDestroy {
     return pool.query<T>(text, params);
   }
 
+  /**
+   * 같은 물리 연결에서 lock/query/unlock을 묶을 때 사용한다.
+   * `query()`=`pool.query()`는 호출마다 다른 세션이 될 수 있어
+   * session advisory lock을 깨뜨린다. BEGIN은 열지 않는다 —
+   * 긴 drain 동안 트랜잭션을 붙잡지 않기 위함이다.
+   */
+  async withClient<T>(fn: (client: PoolClient) => Promise<T>): Promise<T> {
+    const pool = this.ensurePool();
+    if (!pool) throw new Error("DATABASE_URL unset");
+    const client = await pool.connect();
+    try {
+      return await fn(client);
+    } finally {
+      client.release();
+    }
+  }
+
   /** Serializable money TX helper — caller must set app.ledger_posting inside when mutating balances. */
   async withTransaction<T>(fn: (client: PoolClient) => Promise<T>): Promise<T> {
     const pool = this.ensurePool();

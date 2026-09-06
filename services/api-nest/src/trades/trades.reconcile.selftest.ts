@@ -23,11 +23,12 @@ import { TradeExecutionService } from "./trades.execution.service";
 import type { PostgresService } from "../db/postgres";
 import type { TradeExecutionState } from "./trades.execution.service";
 
-type CapturedQuery = { sql: string; params: unknown[] };
+type CapturedQuery = { sql: string; params: unknown[]; clientId: number | null };
 
 class FakeReconcileDb {
   rows: Array<{ id: string; user_id: string }> = [];
   queries: CapturedQuery[] = [];
+  clientSeq = 0;
 
   configured(): boolean {
     return true;
@@ -36,7 +37,26 @@ class FakeReconcileDb {
   lockHeld = false;
 
   async query<T>(sql: string, params: unknown[] = []): Promise<{ rows: T[] }> {
-    this.queries.push({ sql, params });
+    return this.execQuery(sql, params, null);
+  }
+
+  async withClient<T>(
+    fn: (client: { query: FakeReconcileDb["query"] }) => Promise<T>,
+  ): Promise<T> {
+    const clientId = ++this.clientSeq;
+    const client = {
+      query: <R,>(sql: string, params: unknown[] = []) =>
+        this.execQuery<R>(sql, params, clientId),
+    };
+    return fn(client);
+  }
+
+  private async execQuery<T>(
+    sql: string,
+    params: unknown[] = [],
+    clientId: number | null,
+  ): Promise<{ rows: T[] }> {
+    this.queries.push({ sql, params, clientId });
     if (sql.includes("pg_try_advisory_lock")) {
       return { rows: [{ locked: !this.lockHeld }] as unknown as T[] };
     }
@@ -252,6 +272,39 @@ async function main() {
         result.reconciled === 0 &&
         ticks === 0,
       `skipped=${result.skipped} ticks=${ticks}`,
+    );
+  }
+
+  {
+    const db = new FakeReconcileDb();
+    db.rows = [{ id: "trade-same-client", user_id: "user-same-client" }];
+    const svc = makeService(db);
+    stubExecuteTick(svc, async (_userId, tradeId) => ({
+      tradeId,
+      opportunityId: "opp-1",
+      pricingVersion: 1,
+      status: "safe_stop",
+      resultCode: "MATCH_TIMEOUT",
+      stepIndex: 4,
+      progressPct: 100,
+      expectedProfitUsdt: "5.00",
+      softDeadlineAt: new Date().toISOString(),
+      hardDeadlineAt: new Date().toISOString(),
+      transport: "polling",
+      asset: { id: "a", label: "l" },
+    }));
+    await svc.reconcileStuckTrades();
+    const lockQ = db.queries.find((item) => item.sql.includes("pg_try_advisory_lock"));
+    const selectQ = db.queries.find((item) => item.sql.includes("status IN"));
+    const unlockQ = db.queries.find((item) => item.sql.includes("pg_advisory_unlock"));
+    const poolQueryUsed = db.queries.some((item) => item.clientId == null);
+    record(
+      "lock, candidate SELECT, and unlock share one withClient session",
+      lockQ?.clientId === 1 &&
+        selectQ?.clientId === 1 &&
+        unlockQ?.clientId === 1 &&
+        !poolQueryUsed,
+      `lock=${lockQ?.clientId} select=${selectQ?.clientId} unlock=${unlockQ?.clientId} poolQuery=${poolQueryUsed}`,
     );
   }
 

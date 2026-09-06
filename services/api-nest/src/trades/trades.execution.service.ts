@@ -170,6 +170,13 @@ export class TradeExecutionService {
    * chain-sweeper cron forwards the internal route. Unauthorized → 0건.
    * Concurrent ticks share pg_try_advisory_lock so two workers do not
    * double-drain the same page.
+   *
+   * Session lock (not xact): drain calls executeTick many times. An open
+   * transaction across that work would pin a TX for seconds and mix the
+   * lease with money TXs. xact lock auto-releases on commit, which is
+   * safer for short critical sections, but the wrong shape here.
+   * `this.db.query()` is forbidden for lock/select/unlock — pool.query()
+   * can use a different backend session, so unlock is a no-op.
    */
   async reconcileStuckTrades(opts?: {
     limit?: number;
@@ -185,61 +192,63 @@ export class TradeExecutionService {
       resultCode?: TradeExecutionState["resultCode"];
     }>;
   }> {
-    const lease = await this.db.query<{ locked: boolean }>(
-      "SELECT pg_try_advisory_lock($1) AS locked",
-      [RECONCILE_LEASE_KEY],
-    );
-    if (lease.rows[0]?.locked !== true) {
-      return { candidates: 0, reconciled: 0, skipped: "lease_held", results: [] };
-    }
-    try {
-    const limit = Math.min(100, Math.max(1, opts?.limit ?? 25));
-    const graceSec = Math.max(0, opts?.graceSec ?? 30);
-    const cutoffMs =
-      this.clock.nowMs() - (settlementRule.HARD_SEC + graceSec) * 1000;
-
-    const { rows } = await this.db.query<{ id: string; user_id: string }>(
-      `SELECT id::text, user_id::text
-         FROM public.trade_executions
-        WHERE status IN ('running', 'requeue')
-          AND created_at <= $1
-        ORDER BY created_at ASC
-        LIMIT $2`,
-      [new Date(cutoffMs).toISOString(), limit],
-    );
-
-    const results: Array<{
-      tradeId: string;
-      userId: string;
-      status: TradeExecutionState["status"];
-      resultCode?: TradeExecutionState["resultCode"];
-    }> = [];
-    for (const row of rows) {
-      try {
-        const state = await this.executeTick(row.user_id, row.id);
-        results.push({
-          tradeId: row.id,
-          userId: row.user_id,
-          status: state.status,
-          resultCode: state.resultCode,
-        });
-      } catch (err) {
-        this.log.error(
-          `reconcileStuckTrades: executeTick failed tradeId=${row.id} userId=${row.user_id}: ${String(err)}`,
-        );
-        results.push({ tradeId: row.id, userId: row.user_id, status: "running" });
+    return this.db.withClient(async (client) => {
+      const lease = await client.query<{ locked: boolean }>(
+        "SELECT pg_try_advisory_lock($1) AS locked",
+        [RECONCILE_LEASE_KEY],
+      );
+      if (lease.rows[0]?.locked !== true) {
+        return { candidates: 0, reconciled: 0, skipped: "lease_held", results: [] };
       }
-    }
+      try {
+        const limit = Math.min(100, Math.max(1, opts?.limit ?? 25));
+        const graceSec = Math.max(0, opts?.graceSec ?? 30);
+        const cutoffMs =
+          this.clock.nowMs() - (settlementRule.HARD_SEC + graceSec) * 1000;
 
-    const stillStuck = new Set(["running", "requeue"]);
-    return {
-      candidates: rows.length,
-      reconciled: results.filter((r) => !stillStuck.has(r.status)).length,
-      results,
-    };
-    } finally {
-      await this.db.query("SELECT pg_advisory_unlock($1)", [RECONCILE_LEASE_KEY]);
-    }
+        const { rows } = await client.query<{ id: string; user_id: string }>(
+          `SELECT id::text, user_id::text
+             FROM public.trade_executions
+            WHERE status IN ('running', 'requeue')
+              AND created_at <= $1
+            ORDER BY created_at ASC
+            LIMIT $2`,
+          [new Date(cutoffMs).toISOString(), limit],
+        );
+
+        const results: Array<{
+          tradeId: string;
+          userId: string;
+          status: TradeExecutionState["status"];
+          resultCode?: TradeExecutionState["resultCode"];
+        }> = [];
+        for (const row of rows) {
+          try {
+            const state = await this.executeTick(row.user_id, row.id);
+            results.push({
+              tradeId: row.id,
+              userId: row.user_id,
+              status: state.status,
+              resultCode: state.resultCode,
+            });
+          } catch (err) {
+            this.log.error(
+              `reconcileStuckTrades: executeTick failed tradeId=${row.id} userId=${row.user_id}: ${String(err)}`,
+            );
+            results.push({ tradeId: row.id, userId: row.user_id, status: "running" });
+          }
+        }
+
+        const stillStuck = new Set(["running", "requeue"]);
+        return {
+          candidates: rows.length,
+          reconciled: results.filter((r) => !stillStuck.has(r.status)).length,
+          results,
+        };
+      } finally {
+        await client.query("SELECT pg_advisory_unlock($1)", [RECONCILE_LEASE_KEY]);
+      }
+    });
   }
 
   async get(userId: string, tradeId: string): Promise<TradeExecutionState> {

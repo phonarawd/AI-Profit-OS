@@ -175,7 +175,7 @@
 | `apps/web/app/wallet/deposit/**` · `me/kyc` · `me/support` · `KycFlow` | stub-page-actions · usdt-deposit-closure · krw-deposit-closure |
 | money api-nest | pg-module-scan · bucket-invariant |
 | `schemas/home-money-read.v1.json` · `wallet/home-money-read*` · `packages/sdk/src/home-money-read/**` | home-money-read-contract |
-| engine-rust · trade/opportunity api | match-success-rule · settlement-rule-parity · participate-http · execute-rule-loop |
+| engine-rust · trade/opportunity api | match-success-rule · settlement-rule-parity · participate-http · execute-rule-loop · a3-same-poolclient-lock |
 | auth/jwt | auth-jwt-runtime · auth-flows · auth-session-cookie · auth-rate-limit |
 | `api-nest` wallet · kyc.controller | wallet-kyc-session-auth |
 

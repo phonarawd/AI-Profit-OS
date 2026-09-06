@@ -104,6 +104,31 @@ if (!sweeper.includes("x-internal-wallet-token")) {
 if (!svc.includes("pg_try_advisory_lock")) {
   fail("reconcileStuckTrades must take pg_try_advisory_lock before drain");
 }
+if (!svc.includes("withClient")) {
+  fail("reconcileStuckTrades must hold the lease on PostgresService.withClient");
+}
+const reconcileFn = svc.match(
+  /async reconcileStuckTrades\([\s\S]*?\n  async get\(/,
+);
+if (!reconcileFn) {
+  fail("could not isolate reconcileStuckTrades for same-PoolClient scan");
+} else {
+  const body = reconcileFn[0];
+  if (body.includes("this.db.query")) {
+    fail(
+      "reconcileStuckTrades must not call this.db.query() for lock/select/unlock (pool.query uses another session)",
+    );
+  }
+  if (!/withClient\(\s*async\s*\(\s*client\s*\)/.test(body)) {
+    fail("reconcileStuckTrades must use withClient(async (client) => ...)");
+  }
+  if (!body.includes("client.query") || !body.includes("pg_advisory_unlock")) {
+    fail("lock and unlock must run on the same client.query");
+  }
+}
+if (!testSrc.includes("share one withClient session")) {
+  fail("reconcile selftest must prove lock/select/unlock share one client");
+}
 if (!/TradesAdminController:\s*\{[^}]*reconcileTick/.test(caps)) {
   fail("admin-capabilities.ts must classify TradesAdminController.reconcileTick (deny-by-default otherwise)");
 }
