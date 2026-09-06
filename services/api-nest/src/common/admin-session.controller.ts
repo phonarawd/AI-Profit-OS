@@ -5,6 +5,7 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   Post,
   Req,
@@ -23,9 +24,15 @@ import {
   requestHasQueryBearer,
 } from "./admin-session.cookies";
 import {
+  consumeAdminCodeExchange,
   isAdminAccessTokenRevoked,
+  isAdminCodeExchangeConsumed,
   revokeAdminAccessToken,
 } from "./admin-session.revoke";
+import {
+  isAdminCodeExchangeEnabled,
+  planAdminCodeExchange,
+} from "./admin-code-exchange";
 
 type CookieRequest = {
   cookies?: Record<string, string | undefined>;
@@ -55,9 +62,19 @@ export class AdminSessionController {
       throw new UnauthorizedException("ADMIN_AUTH_INVALID");
     }
     const token = String(body?.token ?? body?.accessToken ?? "").trim();
-    if (!token) throw new UnauthorizedException("ADMIN_AUTH_REQUIRED");
-    if (isAdminAccessTokenRevoked(token)) {
-      throw new UnauthorizedException("ADMIN_AUTH_INVALID");
+    const plan = planAdminCodeExchange({
+      enabled: isAdminCodeExchangeEnabled(),
+      token,
+      revoked:
+        Boolean(token) &&
+        (isAdminAccessTokenRevoked(token) ||
+          isAdminCodeExchangeConsumed(token)),
+    });
+    if (!plan.ok) {
+      if (plan.code === "ADMIN_CODE_EXCHANGE_DISABLED") {
+        throw new ForbiddenException("ADMIN_CODE_EXCHANGE_DISABLED");
+      }
+      throw new UnauthorizedException(plan.code);
     }
     let principal;
     try {
@@ -67,6 +84,7 @@ export class AdminSessionController {
         err instanceof AdminTokenError ? err.code : "ADMIN_AUTH_INVALID",
       );
     }
+    consumeAdminCodeExchange(token, Date.parse(principal.expiresAt));
     attachAdminSessionCookies(res, token);
     return {
       connected: true,

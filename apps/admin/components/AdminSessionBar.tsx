@@ -10,6 +10,8 @@ import { useAdminConnected } from "../lib/use-admin-session";
 
 export function AdminSessionBar() {
   const connected = useAdminConnected();
+  const exchangeEnabled =
+    process.env.NEXT_PUBLIC_ADMIN_CODE_EXCHANGE_ENABLED === "true";
   const [draft, setDraft] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const [note, setNote] = useState<string | null>(null);
@@ -58,9 +60,12 @@ export function AdminSessionBar() {
           <span>
             {connected
               ? T.admin.session.connectedHint
-              : T.admin.session.disconnectedHint}
+              : exchangeEnabled
+                ? T.admin.session.disconnectedHint
+                : "연결 코드로 입장하지 않습니다."}
           </span>
         </div>
+        {exchangeEnabled ? (
         <button
           type="button"
           className="admin-session-toggle"
@@ -73,6 +78,7 @@ export function AdminSessionBar() {
         >
           {connected ? T.admin.session.change : T.admin.session.open}
         </button>
+        ) : null}
         {connected ? (
           <button
             type="button"
@@ -84,7 +90,13 @@ export function AdminSessionBar() {
         ) : null}
       </div>
 
-      {formOpen ? (
+      {!exchangeEnabled && !connected ? (
+        <p className="admin-session-note" role="status">
+          관리자 로그인은 아직 열리지 않았습니다.
+        </p>
+      ) : null}
+
+      {exchangeEnabled && formOpen ? (
         <form
           id="admin-connection-form"
           className="admin-session-form"

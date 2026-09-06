@@ -5,6 +5,7 @@
 import { createHash } from "node:crypto";
 
 const revoked = new Map<string, number>();
+const exchanged = new Map<string, number>();
 
 function hashToken(token: string): string {
   return createHash("sha256").update(token).digest("hex");
@@ -23,4 +24,24 @@ export function isAdminAccessTokenRevoked(token: string): boolean {
     return false;
   }
   return true;
+}
+
+export function consumeAdminCodeExchange(token: string, expiresAtMs: number): void {
+  exchanged.set(hashToken(token), expiresAtMs);
+}
+
+export function isAdminCodeExchangeConsumed(token: string): boolean {
+  const key = hashToken(token);
+  const exp = exchanged.get(key);
+  if (exp == null) return false;
+  if (Date.now() >= exp) {
+    exchanged.delete(key);
+    return false;
+  }
+  return true;
+}
+
+export function resetAdminSessionMapsForTest(): void {
+  revoked.clear();
+  exchanged.clear();
 }

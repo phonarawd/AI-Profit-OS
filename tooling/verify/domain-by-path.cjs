@@ -185,10 +185,16 @@ const RULES = [
   },
   {
     test: (f) =>
-      /^services\/api-nest\/src\/common\/admin-session\.(cookies|csrf|runtime\.test)\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/common\/admin-session\.(cookies|csrf|runtime\.test|controller)\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/common\/admin-code-exchange\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/common\/admin-rbac\.lookup/.test(f) ||
+      /^services\/api-nest\/src\/common\/admin-session\.revoke\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/common\/admin\.guard\.ts$/.test(f) ||
+      /^apps\/admin\/components\/AdminSessionBar\.tsx$/.test(f) ||
       /^tooling\/verify\/admin-csrf-double-submit\.cjs$/.test(f) ||
+      /^tooling\/verify\/admin-code-exchange-isolation\.cjs$/.test(f) ||
       /^governance\/recovery\/csrf-double-submit-judgment\.v1\.json$/.test(f),
-    scripts: ["admin-csrf-double-submit.cjs"],
+    scripts: ["admin-csrf-double-submit.cjs", "admin-code-exchange-isolation.cjs"],
   },
   {
     test: (f) =>

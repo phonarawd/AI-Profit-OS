@@ -39,6 +39,7 @@ import {
   requestHasQueryBearer,
 } from "./admin-session.cookies";
 import { isAdminAccessTokenRevoked } from "./admin-session.revoke";
+import { resolveAdminRbac } from "./admin-rbac.lookup";
 
 const requireCjs = createRequire(__filename);
 const auditCore = requireCjs(
@@ -164,8 +165,24 @@ export class AdminGuard implements CanActivate {
       );
     }
 
-    // Role authority is the token claim; the *permissions* always come from the
-    // server-side matrix. An unknown role can never resolve to a capability.
+    const rbac = await resolveAdminRbac(principal.adminId);
+    if (rbac.kind === "missing" || rbac.kind === "inactive") {
+      await noteDenied({
+        actorKey: principal.adminId,
+        actorId: principal.adminId,
+        role: principal.role,
+        action,
+        targetType: "admin_route",
+        targetId: action,
+        reason: "ADMIN_RBAC_INACTIVE",
+      });
+      throw new ForbiddenException("ADMIN_RBAC_INACTIVE");
+    }
+    if (rbac.kind === "active") {
+      principal = { ...principal, role: rbac.role };
+    }
+
+    // 권한은 DB role(있을 때) + 서버 capability 표. JWT role만으로 결정하지 않는다.
     if (!isKnownAdminRole(principal.role)) {
       await noteDenied({
         actorKey: principal.adminId,

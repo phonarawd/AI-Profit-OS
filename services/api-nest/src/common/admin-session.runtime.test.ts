@@ -13,9 +13,21 @@ import {
   verifyAdminCsrfToken,
 } from "./admin-session.csrf.ts";
 import {
+  consumeAdminCodeExchange,
   isAdminAccessTokenRevoked,
+  isAdminCodeExchangeConsumed,
+  resetAdminSessionMapsForTest,
   revokeAdminAccessToken,
 } from "./admin-session.revoke.ts";
+import {
+  isAdminCodeExchangeEnabled,
+  planAdminCodeExchange,
+} from "./admin-code-exchange.ts";
+import {
+  clearAdminRbacLookup,
+  registerAdminRbacLookup,
+  resolveAdminRbac,
+} from "./admin-rbac.lookup.ts";
 
 function sessionToken(label: string): string {
   return `${label}.${"s".repeat(64)}`;
@@ -192,4 +204,71 @@ test("signed double-submit CSRF cookie stays readable but is session-bound", () 
     },
     headers: { "x-admin-csrf": csrf },
   });
+});
+
+test("connection-code exchange is off by default", () => {
+  assert.equal(isAdminCodeExchangeEnabled({}), false);
+  assert.equal(isAdminCodeExchangeEnabled({ AIPO_ADMIN_CODE_EXCHANGE_ENABLED: "true" }), true);
+  const disabled = planAdminCodeExchange({
+    enabled: false,
+    token: "jwt",
+    revoked: false,
+  });
+  assert.equal(disabled.ok, false);
+  if (!disabled.ok) assert.equal(disabled.code, "ADMIN_CODE_EXCHANGE_DISABLED");
+});
+
+test("same admin JWT cannot be exchanged twice on this process", () => {
+  resetAdminSessionMapsForTest();
+  const token = sessionToken("exchange-once");
+  const first = planAdminCodeExchange({
+    enabled: true,
+    token,
+    revoked: isAdminCodeExchangeConsumed(token),
+  });
+  assert.equal(first.ok, true);
+  consumeAdminCodeExchange(token, Date.now() + 60_000);
+  const second = planAdminCodeExchange({
+    enabled: true,
+    token,
+    revoked:
+      isAdminAccessTokenRevoked(token) || isAdminCodeExchangeConsumed(token),
+  });
+  assert.equal(second.ok, false);
+  if (!second.ok) assert.equal(second.code, "ADMIN_AUTH_INVALID");
+});
+
+test("in-memory revoke disappears after process map reset", () => {
+  resetAdminSessionMapsForTest();
+  const token = sessionToken("restart-gap");
+  revokeAdminAccessToken(token, Date.now() + 60_000);
+  assert.equal(isAdminAccessTokenRevoked(token), true);
+  resetAdminSessionMapsForTest();
+  assert.equal(isAdminAccessTokenRevoked(token), false);
+});
+
+test("inactive admin_rbac row denies a valid signed identity", async () => {
+  registerAdminRbacLookup(async () => ({
+    status: "row",
+    row: { role: "super", active: false },
+  }));
+  const inactive = await resolveAdminRbac("aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa");
+  assert.equal(inactive.kind, "inactive");
+  registerAdminRbacLookup(async () => ({ status: "empty" }));
+  const missing = await resolveAdminRbac("aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa");
+  assert.equal(missing.kind, "missing");
+  clearAdminRbacLookup();
+  const unwired = await resolveAdminRbac("aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa");
+  assert.equal(unwired.kind, "unwired");
+});
+
+test("active admin_rbac role replaces the token role", async () => {
+  registerAdminRbacLookup(async () => ({
+    status: "row",
+    row: { role: "cs", active: true },
+  }));
+  const active = await resolveAdminRbac("aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa");
+  assert.equal(active.kind, "active");
+  if (active.kind === "active") assert.equal(active.role, "cs");
+  clearAdminRbacLookup();
 });
