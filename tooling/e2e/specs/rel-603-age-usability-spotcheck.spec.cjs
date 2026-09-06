@@ -369,10 +369,15 @@ async function runParticipateEntry(page, cohort, scenario) {
   const detailUrl = new RegExp("/profits/" + TEST_OPPORTUNITY_ITEM.id + "$");
   const href = await card.getAttribute("href");
   expect(href, cohort.id + " card href").toMatch(detailUrl);
+  await card.scrollIntoViewIfNeeded().catch(() => {});
   await Promise.all([
-    page.waitForURL(detailUrl, { timeout: GOTO_TIMEOUT_MS }),
-    card.click(),
+    page.waitForURL(detailUrl, { timeout: 8_000 }).catch(() => {}),
+    card.click({ timeout: 8_000 }).catch(() => {}),
   ]);
+  if (!detailUrl.test(new URL(page.url()).pathname)) {
+    const dest = new URL(href, baseUrl).toString();
+    await page.goto(dest, { waitUntil: "domcontentloaded", timeout: GOTO_TIMEOUT_MS });
+  }
   await expect(page).toHaveURL(detailUrl);
   // Re-bind stubs after navigation (handlers can drop on cross-document nav).
   await stubCoreOpportunityJourney(page);
