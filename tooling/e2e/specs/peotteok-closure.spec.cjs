@@ -108,11 +108,6 @@ test("peotteok a11y has no new critical/serious axe violations", async ({
   page,
 }) => {
   await openPeotteok(page, "ready");
-  await page.addScriptTag({ path: require.resolve("axe-core") });
-  const results = await page.evaluate(async () => {
-    return window.axe.run(document, {
-      runOnly: { type: "tag", values: ["wcag2a", "wcag2aa"] },
-    });
-  });
+  const results = await scanPageAxe(page);
   expect(blockingViolations(results), JSON.stringify(blockingViolations(results).map((v) => v.id))).toEqual([]);
 });
