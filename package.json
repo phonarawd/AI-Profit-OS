@@ -191,6 +191,8 @@
     "verify:withdraw-flow-wire": "node tooling/verify/withdraw-flow-wire.cjs",
     "verify:withdraw-treasury-solvency": "node tooling/verify/withdraw-treasury-solvency.cjs",
     "verify:a4-withdraw-reserve-race": "node tooling/verify/a4-withdraw-reserve-race.cjs",
+    "verify:a4-pg-concurrency": "node tooling/verify/a4-pg-concurrency.cjs",
+    "verify:a5-authoritative-success": "node tooling/verify/a5-authoritative-success.cjs",
     "verify:seo-schema": "node tooling/verify/seo-schema.cjs",
     "verify:withdraw-stepup-security": "node tooling/verify/withdraw-stepup-security.cjs",
     "verify:withdraw-stepup-security-runtime": "node tooling/verify/withdraw-stepup-security.runtime.cjs",

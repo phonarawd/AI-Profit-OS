@@ -77,6 +77,12 @@ jobs:
           AIPO_A4_RESERVE_DATABASE_URL: postgresql://postgres@127.0.0.1:5432/postgres
           PGPASSWORD: postgres
         run: node tooling/verify/a4-withdraw-reserve-race.cjs
+      - name: A4 12+1 concurrency on real PostgreSQL
+        env:
+          AIPO_A4_DATABASE_URL: postgresql://postgres@127.0.0.1:5432/postgres
+          AIPO_A4_RESERVE_DATABASE_URL: postgresql://postgres@127.0.0.1:5432/postgres
+          PGPASSWORD: postgres
+        run: node tooling/verify/a4-pg-concurrency.cjs
 
   verify-gate:
     runs-on: ubuntu-latest

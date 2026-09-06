@@ -3,6 +3,7 @@
  * 토큰 없거나 불일치 → 401 · reconcile 0건.
  */
 import {
+  Body,
   Controller,
   Headers,
   Post,
@@ -13,6 +14,7 @@ import { TradeExecutionService } from "./trades.execution.service";
 
 export const TRADE_INTERNAL_ROUTES = {
   reconcileTick: "internal/trades/reconcile-tick",
+  executionConfirm: "internal/trades/execution-confirm",
 } as const;
 
 @Controller()
@@ -25,6 +27,20 @@ export class TradesInternalController {
   ) {
     this.assertMachineAuth(headerToken);
     return this.execution.reconcileStuckTrades();
+  }
+
+  @Post(TRADE_INTERNAL_ROUTES.executionConfirm)
+  executionConfirm(
+    @Headers("x-internal-wallet-token") headerToken: string | undefined,
+    @Body() body: Record<string, unknown>,
+  ) {
+    this.assertMachineAuth(headerToken);
+    const eventId = String(body?.eventId ?? "").trim();
+    const tradeId = String(body?.tradeId ?? "").trim();
+    if (!eventId || !tradeId) {
+      throw new UnauthorizedException("AUTHORITATIVE_SUCCESS_INGEST_INVALID");
+    }
+    return this.execution.ingestAuthoritativeEvent({ eventId, tradeId });
   }
 
   private assertMachineAuth(headerToken: string | undefined): void {

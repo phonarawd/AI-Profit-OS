@@ -138,7 +138,7 @@
       "version": "20260906060000",
       "name": "payout_reservation_and_execution_confirm",
       "status": "AWAITING_PRODUCTION_APPLY",
-      "reason": "Adds SYS:MATCH_PROFIT_EXPENSE (debit-normal ops_pool) so match profit is an in-app ledger credit. Not applied to production. Real USDT/KRW still leaves only at withdraw broadcast."
+      "reason": "Adds SYS:MATCH_PROFIT_EXPENSE and trade_execution_confirmations. Match profit stays in-app. compareReady cannot pay until an event is consumed. Not applied to production."
     }
   ]
 }

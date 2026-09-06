@@ -1394,6 +1394,7 @@ const RULES = [
       "participate-atomicity.runtime.cjs",
       "trades-reconcile.runtime.cjs",
       "trades-payout-reserve.runtime.cjs",
+      "a5-authoritative-success.cjs",
     ],
   },
   {

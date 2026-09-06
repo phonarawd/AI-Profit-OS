@@ -34,6 +34,12 @@ import { payoutFeasible } from "../simulation/simulation.engine";
 import { SimulationAdminService } from "../simulation/simulation.admin.service";
 import { toRulePolicy } from "../execution-policy/execution-policy.mi";
 import { mergeEffectivePolicy } from "../membership/membership.mi";
+import {
+  CONSUME_CONFIRMATION_SQL,
+  INGEST_CONFIRMATION_SQL,
+  PEEK_OPEN_CONFIRMATION_SQL,
+  planAuthoritativePayout,
+} from "./authoritative-success";
 
 /** 두 worker가 같은 stuck page를 동시에 drain하지 않게 하는 session-level lease */
 const RECONCILE_LEASE_KEY = 76090603;
@@ -142,6 +148,27 @@ export class TradeExecutionService {
     @Inject(CLOCK) private readonly clock: Clock,
     private readonly reservations: PayoutReservationService,
   ) {}
+
+  async peekAuthoritativeEvent(tradeId: string): Promise<boolean> {
+    if (!this.db.configured()) return false;
+    try {
+      const r = await this.db.query<{ event_id: string }>(
+        PEEK_OPEN_CONFIRMATION_SQL,
+        [tradeId],
+      );
+      return Boolean(r.rows[0]?.event_id);
+    } catch {
+      return false;
+    }
+  }
+
+  async ingestAuthoritativeEvent(input: {
+    eventId: string;
+    tradeId: string;
+  }): Promise<{ ingested: true; eventId: string }> {
+    await this.db.query(INGEST_CONFIRMATION_SQL, [input.eventId, input.tradeId]);
+    return { ingested: true, eventId: input.eventId };
+  }
 
   /**
    * Money-safety fix (PUTDUK continuation session, Step 7.3): executeTick
@@ -347,6 +374,24 @@ export class TradeExecutionService {
     >;
 
     if (resultCode === "MATCH_SUCCESS") {
+      const payout = planAuthoritativePayout({
+        ruleCode: resultCode,
+        hasOpenAuthoritativeEvent: await this.peekAuthoritativeEvent(trade.id),
+        nowMs,
+        hardDeadlineMs: settlementRule.hardDeadlineMs(acceptedAtMs),
+      });
+      if (payout.action === "wait") {
+        return this.toState(trade);
+      }
+      if (payout.action === "timeout") {
+        return this.finalizeSafeStop(
+          trade,
+          "MATCH_TIMEOUT",
+          nowMs,
+          acceptedAtMs,
+          capital,
+        );
+      }
       return this.finalizeMatchSuccess(trade, {
         nowMs,
         acceptedAtMs,
@@ -411,6 +456,14 @@ export class TradeExecutionService {
       }
       if (TERMINAL_STATUSES.has(current.status)) {
         return { kind: "orphan" as const, row: current };
+      }
+
+      const consumed = await client.query<{ event_id: string }>(
+        CONSUME_CONFIRMATION_SQL,
+        [trade.id],
+      );
+      if (consumed.rows.length === 0) {
+        return { kind: "lost" as const };
       }
 
       const claimed = await client.query<TradeRow>(
