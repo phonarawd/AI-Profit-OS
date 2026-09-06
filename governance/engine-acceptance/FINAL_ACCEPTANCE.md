@@ -27,15 +27,15 @@ NEXT = ENGINE_ACCEPTANCE_REBASE_V1
 BASELINE_ID = ea-baseline-0d8825e8f333-5ac0f4291966
 PREDECESSOR_BASELINE_ID = ea-baseline-74683b6e39a7-590263f0f273
 REBASE_ID = pending
-LIVE_AGGREGATE = 4b5d596a6652e146f57c5e75920f5153345bacbe3e203be6ab33f49cf4c35643
+LIVE_AGGREGATE = f89407cacfc1b391a78487ef4608869752d7fa141e22912f11974923b54fc4e3
 BASELINE_AGGREGATE = 5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9
-PATH_COUNT_LIVE = 553
+PATH_COUNT_LIVE = 554
 PATH_COUNT_BASELINE = 491
-CHANGED_PATHS = 113
-ADDED_PATHS = 62
+CHANGED_PATHS = 114
+ADDED_PATHS = 63
 MUTATED_PATHS = 51
 MISSING_PATHS = 0
-EXIT_GATE = D1-S1F (2026-09-05) plus PUTDUK continuation through 7th recert (2026-09-06, S4 HEAD 4262162d) · protected-scope still drifting without ENGINE_ACCEPTANCE_REBASE_V1 ACK (62 added · 51 mutated · 113 changed) · ISSUED forbidden until formal rebase + current-epoch QA0-QA9
+EXIT_GATE = D1-S1F (2026-09-05) plus PUTDUK continuation through 8th recert (2026-09-06, HEAD cea53e7a after 65ab999b) · protected-scope still drifting without ENGINE_ACCEPTANCE_REBASE_V1 ACK (63 added · 51 mutated · 114 changed) · ISSUED forbidden until formal rebase + current-epoch QA0-QA9
 ```
 
 ## 판정 (D1-S1E 정정, 2026-09-05, append 성격의 사실 정정)
@@ -326,4 +326,10 @@ live protected aggregate `4b5d596a6652e146f57c5e75920f5153345bacbe3e203be6ab33f4
 
 은폐 금지 · STATUS = NOT_ISSUED (불변) · CERT_ISSUED = 0 (불변) · PROTECTED_SCOPE_DRIFT = 1 (불변).
 이 세션은 ACK를 대리 작성하지 않았고, QA0-QA9를 로컬에서 가짜로 재실행하지 않았으며, 숫자를 발급 조건에 맞춰 역산하지 않았다.
+
+## 8th recert (2026-09-06)
+
+Commit `65ab999b` added `supabase/migrations/20260906170000_push_control_subscriptions_rls.sql` (ADDED). S5 infra `cea53e7a` did not touch protected-scope roots. STATUS stays NOT_ISSUED. CERT_ISSUED stays 0.
+
+live protected aggregate `f89407cacfc1b391a78487ef4608869752d7fa141e22912f11974923b54fc4e3` differs from baseline (added 63 · mutated 51 · missing 0 · changed 114). Values from `compareProtectedScope()`. No issue. No fake QA.
 

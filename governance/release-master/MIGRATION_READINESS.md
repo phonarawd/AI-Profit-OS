@@ -12,9 +12,9 @@ APPLY_MIGRATION = 0
 APPLY_LOG = 0
 APPLY_OWNER = REL-701-DB
 PROJECT_REF = mgsytcetsiecllmhcyox
-LOCAL_MIGRATION_FILES = 62
-REMOTE_APPLIED_SNAPSHOT = 54
-REMOTE_RAW_APPLIED = 55
+LOCAL_MIGRATION_FILES = 63
+REMOTE_APPLIED_SNAPSHOT = 55
+REMOTE_RAW_APPLIED = 56
 COMMITTED_UNAPPLIED = 8
 TRACK_A_FILE_RESTORE = 3
 REL_408_BASELINE = 1
@@ -92,3 +92,7 @@ Remote snapshot/raw counts unchanged.
 ## EXIT_GATE
 
 이 REL(REL-504) 자체 산출물에 production DB apply 실행이 있으면 FAIL — REL-701-DB 실행 기록(위 절)은 owner REL-701-DB 의 것이며 REL-504 의 apply 가 아니다. Remote history와 repo migration source가 다시 불일치하면 READY를 release 근거로 사용하지 않는다.
+
+## 2026-09-06 S5 count
+
+`65ab999b` added+applied `20260906170000` on production. Local 62 -> 63. REMOTE_APPLIED_SNAPSHOT 54 -> 55. REMOTE_RAW_APPLIED 55 -> 56. COMMITTED_UNAPPLIED stays 8 (the S3/S4 files). This REL still PRODUCTION_DB_APPLY = 0.
