@@ -23,11 +23,13 @@ export function MagicRuntime() {
     // to read/send anything from sessionStorage, which is exactly what
     // makes opening this link on a different device/tab/browser work.
     void verifyMagicLink(token, {}, { apiBase: "" })
-      .then((session) => {
+      .then(async (session) => {
         if (cancelled) return;
-        router.replace(
-          await continueAfterAuth(session.onboardingStage, { apiBase: "" }),
-        );
+        const next = await continueAfterAuth(session.onboardingStage, {
+          apiBase: "",
+        });
+        if (cancelled) return;
+        router.replace(next);
       })
       .catch((err: unknown) => {
         if (!cancelled) setNote(authUserMessage(err));

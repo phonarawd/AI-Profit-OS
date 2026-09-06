@@ -19,11 +19,13 @@ export function VerifyEmailRuntime() {
     }
     let cancelled = false;
     void signupClassicActivate(token, { apiBase: "" })
-      .then((session) => {
+      .then(async (session) => {
         if (cancelled) return;
-        router.replace(
-          await continueAfterAuth(session.onboardingStage, { apiBase: "" }),
-        );
+        const next = await continueAfterAuth(session.onboardingStage, {
+          apiBase: "",
+        });
+        if (cancelled) return;
+        router.replace(next);
       })
       .catch((err: unknown) => {
         if (!cancelled) setNote(authUserMessage(err));

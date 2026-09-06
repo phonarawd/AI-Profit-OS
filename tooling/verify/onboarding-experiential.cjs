@@ -120,6 +120,9 @@ for (const rel of authRuntimes) {
   if (src && !src.includes("continueAfterAuth")) {
     fails.push(`${rel} must use continueAfterAuth`);
   }
+  if (src && /then\(\s*\([^)]*\)\s*=>[\s\S]*?await continueAfterAuth/.test(src)) {
+    fails.push(`${rel} then-callback must be async before await continueAfterAuth`);
+  }
 }
 
 const authFetch = read("packages/sdk/src/auth/fetch.ts");
