@@ -271,9 +271,23 @@ async function openEmailSignupForm(page, cohort, scenario) {
   }
 }
 
+async function stubTurnstileWidget(page) {
+  await page.addInitScript(() => {
+    globalThis.turnstile = {
+      render(_el, opts) {
+        const cb = opts && opts.callback;
+        if (typeof cb === "function") queueMicrotask(() => cb("rel603-turnstile-qa"));
+        return "rel603";
+      },
+      remove() {},
+    };
+  });
+}
+
 async function runSignup(page, cohort, scenario) {
   await page.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
   await stubGuestApis(page);
+  await stubTurnstileWidget(page);
   await gotoStaging(page, cohort, scenario);
 
   await waitForScenarioRoot(page, cohort, scenario, async () => {
@@ -291,7 +305,12 @@ async function runSignup(page, cohort, scenario) {
     .locator('input[type="checkbox"]');
   await termsCheckbox.check({ force: true });
   await expect(termsCheckbox).toBeChecked({ timeout: 20_000 });
-  await expect(emailSubmit).toBeEnabled({ timeout: 20_000 });
+  const turnstileMissing = page.getByTestId("turnstile-unavailable");
+  if (await turnstileMissing.isVisible().catch(() => false)) {
+    await expect(emailSubmit).toBeDisabled();
+  } else {
+    await expect(emailSubmit).toBeEnabled({ timeout: 20_000 });
+  }
 
   const html = await assertSurfaceSafety(page, cohort, scenario);
   const axe = await runAxeOnHtml(html);

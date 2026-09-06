@@ -176,6 +176,12 @@
       "name": "s3_34_peotteok_history",
       "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
       "reason": "S3/3.4 peotteok conversation/message tables. Additive. Production apply after S5 staging. Do not apply to mgsytcetsiecllmhcyox from this commit."
+    },
+    {
+      "version": "20260906233000",
+      "name": "product_onboarding_progress",
+      "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
+      "reason": "Product onboarding server SoT. Additive table. Production apply after S5 staging. Do not apply to mgsytcetsiecllmhcyox from this commit."
     }
   ]
 }
