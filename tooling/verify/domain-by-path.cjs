@@ -1459,7 +1459,7 @@ const RULES = [
       /^services\/engine-rust\//.test(f) ||
       /^tooling\/verify\/settlement-rule-parity\.cjs$/.test(f) ||
       (/^services\/api-nest\//.test(f) &&
-        /(opportunit|participat|settlement|trade|execution|membership|match)/i.test(f)),
+        /(opportunit|participat|settlement|trade|execution|membership|match|payout-reservation)/i.test(f)),
     scripts: [
       "match-success-rule.cjs",
       "settlement-rule-parity.cjs",

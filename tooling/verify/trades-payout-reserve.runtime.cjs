@@ -52,6 +52,16 @@ if (!svc.includes("resolveMatchProfitSource")) {
 if (!types.includes("MATCH_PROFIT_EXPENSE")) {
   fail("ledger.types must define MATCH_PROFIT_EXPENSE");
 }
+const reserveSrc = read("services/api-nest/src/ledger/payout-reservation.service.ts");
+if (!reserveSrc.includes("MATCH_PROFIT_EXPENSE_MISSING")) {
+  fail("payout-reservation must fail-closed with MATCH_PROFIT_EXPENSE_MISSING");
+}
+if (reserveSrc.includes("?? SYSTEM_ACCOUNT_CODES.OPS_POOL")) {
+  fail("payout-reservation must not fall back to SYS:OPS_POOL");
+}
+if (reserveSrc.includes("없으면 SYS:OPS_POOL")) {
+  fail("payout-reservation must not treat OPS_POOL as a missing-account fallback");
+}
 const svcNoComments = svc.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
 if (/evaluatePayoutFeasibility/.test(svcNoComments)) {
   fail(
@@ -97,6 +107,24 @@ if (build.status !== 0) {
     process.stderr.write(run.stderr || "");
     if (run.status !== 0 || !(run.stdout || "").includes("ALL PASS")) {
       fail("trades.payout-reserve.selftest did not report ALL PASS");
+    }
+  }
+  const reserveSelftestJs = path.join(
+    root,
+    "services/api-nest/dist/ledger/payout-reservation.selftest.js",
+  );
+  if (!fs.existsSync(reserveSelftestJs)) {
+    fail(`missing compiled selftest: ${reserveSelftestJs}`);
+  } else {
+    const reserveRun = spawnSync(process.execPath, [reserveSelftestJs], {
+      cwd: root,
+      encoding: "utf8",
+      timeout: 30_000,
+    });
+    process.stdout.write(reserveRun.stdout || "");
+    process.stderr.write(reserveRun.stderr || "");
+    if (reserveRun.status !== 0 || !(reserveRun.stdout || "").includes("ALL PASS")) {
+      fail("payout-reservation.selftest did not report ALL PASS");
     }
   }
 }

@@ -32,7 +32,10 @@
  * runtime) so each race can be exercised directly without also having to
  * fake the settlement_rule.cjs Rust bridge and every executeTick dependency.
  */
-import { PayoutReservationService } from "../ledger/payout-reservation.service";
+import {
+  MatchProfitExpenseMissingError,
+  PayoutReservationService,
+} from "../ledger/payout-reservation.service";
 import { TradeExecutionService } from "./trades.execution.service";
 import type { PostgresService } from "../db/postgres";
 import type { LedgerPostingService } from "../ledger/ledger.posting.service";
@@ -80,6 +83,7 @@ function freshRow(id: string): Row {
 class FakeTradeDb {
   row: Row;
   queryLog: string[] = [];
+  hasMatchProfitExpense = true;
 
   constructor(row: Row) {
     this.row = row;
@@ -92,7 +96,16 @@ class FakeTradeDb {
   async withTransaction<T>(
     fn: (client: FakeTradeDb) => Promise<T>,
   ): Promise<T> {
-    return fn(this);
+    const snap: Row = {
+      ...this.row,
+      asset: { ...this.row.asset },
+    };
+    try {
+      return await fn(this);
+    } catch (err) {
+      this.row = snap;
+      throw err;
+    }
   }
 
   async query<T>(sql: string, params: unknown[] = []): Promise<{ rows: T[] }> {
@@ -105,7 +118,10 @@ class FakeTradeDb {
 
     if (sql.includes("FROM public.ledger_accounts")) {
       this.queryLog.push("match-profit-source");
-      return { rows: [] };
+      if (!this.hasMatchProfitExpense) return { rows: [] };
+      return {
+        rows: [{ code: "SYS:MATCH_PROFIT_EXPENSE" } as unknown as T],
+      };
     }
 
     // finalizeMatchSuccess's claim UPDATE.
@@ -386,6 +402,34 @@ async function main() {
       "finalizeMatchSuccess on an already-finalized trade posts no journal",
       posting.calls.length === 0,
       `calls=${posting.calls.length}`,
+    );
+  }
+
+  // 8. MATCH_PROFIT_EXPENSE 없으면 OPS_POOL 대체 0. 같은 TX rollback.
+  //    claim 이후 throw여도 trade는 running, journal 0, 안전중단 승격 0.
+  {
+    const row = freshRow("missing-expense");
+    const db = new FakeTradeDb(row);
+    db.hasMatchProfitExpense = false;
+    const posting = new FakePostingService();
+    const svc = makeService(db, posting);
+    let thrown: unknown = null;
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (svc as any).finalizeMatchSuccess(row, successInput(row));
+    } catch (err) {
+      thrown = err;
+    }
+    const missing =
+      thrown instanceof MatchProfitExpenseMissingError &&
+      thrown.code === "MATCH_PROFIT_EXPENSE_MISSING";
+    record(
+      "missing MATCH_PROFIT_EXPENSE rolls back; no OPS_POOL; trade stays running",
+      missing === true &&
+        db.row.status === "running" &&
+        db.row.ledger_journal_id === null &&
+        posting.calls.length === 0,
+      `thrown=${thrown instanceof Error ? thrown.message : String(thrown)} status=${db.row.status} journalId=${db.row.ledger_journal_id} calls=${posting.calls.length}`,
     );
   }
 

@@ -50,6 +50,7 @@ for (const needle of [
   "finalizeSafeStop",
   "Promise.all",
   "journal total, never both",
+  "missing MATCH_PROFIT_EXPENSE rolls back",
 ]) {
   if (!testSrc.includes(needle)) {
     fail(`race selftest missing coverage marker: ${needle}`);

@@ -1,6 +1,6 @@
 -- In-app match profit source. Real USDT/KRW leaves only at withdraw broadcast.
--- SYS:MATCH_PROFIT_EXPENSE = debit-normal ops_pool (virtual expense).
--- Nest falls back to SYS:OPS_POOL if this row is missing.
+-- SYS:MATCH_PROFIT_EXPENSE = debit-normal virtual expense.
+-- Nest fail-closed if this row is missing. SYS:OPS_POOL fallback 0.
 
 INSERT INTO public.ledger_accounts (code, owner_type, account_kind, bucket, balance_usdt)
 VALUES
