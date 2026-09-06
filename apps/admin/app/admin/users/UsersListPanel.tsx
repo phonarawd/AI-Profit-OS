@@ -225,7 +225,14 @@ export function UsersListPanel() {
         data-testid="admin-users-export"
         onClick={() => {
           if (!items.length) return;
-          const header = ["id", "username", "emailMasked", "status", "signupMethod", "createdAt"];
+          const header = [
+            "id",
+            "username",
+            "emailMasked",
+            "status",
+            "signupMethod",
+            "createdAt",
+          ] as const;
           const lines = [header.join(",")].concat(
             items.map((item) =>
               header
