@@ -1,8 +1,8 @@
 {
   "projectRef": "mgsytcetsiecllmhcyox",
-  "asOf": "2026-09-04",
-  "source": "Supabase MCP execute_sql read-only on supabase_migrations.schema_migrations after REL-701-DB apply (2026-09-04 02:35 UTC: raw applied 55 · head 20260902155632_withdraw_broadcast_tron · committedUnapplied 0)",
-  "remoteRawAppliedCount": 55,
+  "asOf": "2026-09-06",
+  "source": "Supabase MCP execute_sql read-only on supabase_migrations.schema_migrations after REL-701-DB apply (2026-09-04 02:35 UTC: raw applied 55 · head 20260902155632_withdraw_broadcast_tron · committedUnapplied 0) · 2026-09-06 push RLS apply 20260906170000",
+  "remoteRawAppliedCount": 56,
   "remoteHistoricalMappings": [
     {
       "remoteVersion": "20260810212231",
@@ -125,7 +125,8 @@
     "20260823210000",
     "20260901224000",
     "20260902032000",
-    "20260902155632"
+    "20260902155632",
+    "20260906170000"
   ],
   "committedUnapplied": [
     {

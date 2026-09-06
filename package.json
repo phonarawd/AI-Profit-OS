@@ -397,6 +397,7 @@
     "lowspec:status": "node tooling/lowspec/status.cjs",
     "lowspec:lean-extensions": "node tooling/lowspec/disable-heavy-extensions.cjs",
     "dev:ensure-node": "node tooling/dev/ensure-node.cjs",
+    "render:ensure-cli": "node tooling/dev/ensure-render-cli.cjs",
     "dev:web": "node tooling/dev/ensure-node.cjs && pnpm --filter @aipo/web dev",
     "dev:admin": "node tooling/dev/ensure-node.cjs && pnpm --filter @aipo/admin dev",
     "dev:api": "node tooling/dev/ensure-node.cjs && node tooling/dev/start-api.cjs",
