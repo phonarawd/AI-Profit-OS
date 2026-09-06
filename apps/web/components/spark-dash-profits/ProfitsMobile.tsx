@@ -304,7 +304,7 @@ export function ProfitsMobile({ model }: { model: ProfitsDesktopModel }) {
     const root = scrollRef.current;
     if (!root || typeof IntersectionObserver === "undefined") return;
     let cancelled = false;
-    let observer = null;
+    let observer: IntersectionObserver | null = null;
     let pollId = 0;
     let rafId = 0;
     const grow = () => {
