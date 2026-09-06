@@ -11,13 +11,15 @@ import {
   type AdminResult,
 } from "../../../lib/admin-api";
 import { AdminFetchNote, AdminTruth } from "../../../components/AdminTruth";
+import { DASH_COPY, ReadOnlyAdminApiPanel, ReserveLivePanel } from "../../../components/AdminLivePanels";
 
-const TABS = ["circuit", "reserve"] as const;
+const TABS = ["circuit", "reserve", "ops"] as const;
 type SystemTab = (typeof TABS)[number];
 
 const TAB_LABEL: Record<SystemTab, string> = {
   circuit: "서비스 멈춤",
   reserve: "운영 준비금",
+  ops: DASH_COPY.ops,
 };
 
 const ACTION_REASON_MIN = 10;
@@ -51,6 +53,7 @@ function SystemControlContent() {
   const tab = useMemo((): SystemTab => {
     const raw = searchParams.get("tab");
     if (raw === "reserve") return "reserve";
+    if (raw === "ops") return "ops";
     return "circuit";
   }, [searchParams]);
 
@@ -155,7 +158,9 @@ function SystemControlContent() {
             href={
               t === "circuit"
                 ? "/admin/system-control"
-                : "/admin/system-control?tab=reserve"
+                : t === "ops"
+                  ? "/admin/system-control?tab=ops"
+                  : "/admin/system-control?tab=reserve"
             }
             data-tab={t}
             className={
@@ -169,7 +174,13 @@ function SystemControlContent() {
         ))}
       </nav>
 
-      {tab === "reserve" ? (
+      {tab === "ops" ? (
+        <ReadOnlyAdminApiPanel
+          api="/api/v1/admin/ops/modes"
+          title={DASH_COPY.ops}
+          testId="system-control-ops-panel"
+        />
+      ) : tab === "reserve" ? (
         <section
           className="mt-6 space-y-4"
           data-testid="system-control-reserve-panel"
@@ -180,6 +191,7 @@ function SystemControlContent() {
           <p className="text-sm text-lux-text-muted">
             혜택과 행사를 시작하기 전에 반드시 지켜야 할 운영 준비금입니다.
           </p>
+          <ReserveLivePanel />
           <div
             className="rounded border border-lux-border p-3 space-y-2"
             data-field="targetUsdt"

@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
 import { T } from "@aipo/ui/copy/ko";
+import { AuditEventsPanel } from "../../../components/AdminLivePanels";
 
 const TABS = ["records", "rbac"] as const;
 type AuditTab = (typeof TABS)[number];
@@ -46,24 +47,18 @@ function AuditContent() {
           </a>
         ))}
       </nav>
+
       {tab === "rbac" ? (
         <section className="mt-6" data-testid="audit-rbac-panel">
           <p
             className="text-sm text-lux-text-muted"
             data-testid="audit-empty-rbac"
           >
-            표시할 관리자 권한이 없습니다.
+            {T.admin.state.empty}
           </p>
         </section>
       ) : (
-        <section className="mt-6" data-testid="audit-records-panel">
-          <p
-            className="text-sm text-lux-text-muted"
-            data-testid="audit-empty-records"
-          >
-            아직 관리자가 바꾼 기록이 없습니다.
-          </p>
-        </section>
+        <AuditEventsPanel />
       )}
     </main>
   );

@@ -701,7 +701,15 @@ const RULES = [
       "rel-219-admin-growth-ticker.cjs",
       "rel-220-admin-growth-whale.cjs",
       "rel-221-admin-growth-content.cjs",
+      "admin-s3-31-full.cjs",
+      "admin-user-matching-b7.cjs",
     ],
+  },
+  {
+    test: (f) =>
+      /^governance\/admin\/s3-31-connection-matrix\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/admin-s3-31-full\.cjs$/.test(f),
+    scripts: ["admin-s3-31-full.cjs", "admin-user-matching-b7.cjs"],
   },
   {
     test: (f) =>
@@ -735,6 +743,7 @@ const RULES = [
       "rel-220-admin-growth-whale.cjs",
       "rel-221-admin-growth-content.cjs",
       "admin-entry-e2e.cjs",
+      "admin-s3-31-full.cjs",
     ],
   },
   {

@@ -38,6 +38,7 @@ export const STEP_UP_WRITE_CAPABILITIES = Object.freeze([
   "loginPasswordReset",
   "userMatchPolicy",
   "userOpportunityOverride",
+  "users",
 ]);
 
 export const MAKER_CHECKER_ACTIONS = Object.freeze([

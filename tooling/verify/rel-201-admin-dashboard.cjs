@@ -17,6 +17,7 @@ function read(rel) {
 }
 
 const page = read("apps/admin/app/admin/page.tsx");
+const panels = read("apps/admin/components/AdminLivePanels.tsx");
 const api = read("apps/admin/lib/admin-api.ts");
 const truth = read("apps/admin/lib/admin-truth.ts");
 const session = read("apps/admin/lib/admin-session.ts");
@@ -25,15 +26,29 @@ if (page.includes("Admin §9.1.1 골격") && !page.includes("adminGet")) {
   fails.push("dashboard must not stay stub-only");
 }
 for (const needle of [
-  'data-metric="user-count"',
-  'data-truth="unavailable"',
+  "UserCountTile",
+  "QueueCountTile",
+  "ReconTile",
   "/api/v1/admin/system-control/push",
   "/api/v1/admin/risk/circuit",
   "/api/v1/admin/risk/queue",
+  "/api/v1/admin/wallet/withdraw-intents",
   "adminGet",
-  "확인할 수 없음",
 ]) {
   if (!page.includes(needle)) fails.push(`dashboard missing ${needle}`);
+}
+if (page.includes('data-metric="user-count"') && page.includes('data-truth="unavailable"')) {
+  fails.push("dashboard must not hardcode user-count unavailable");
+}
+for (const needle of [
+  'data-metric="user-count"',
+  "/api/v1/admin/users",
+  "totalCount",
+]) {
+  if (!panels.includes(needle)) fails.push(`live panels missing ${needle}`);
+}
+if (!truth.includes("UNAVAILABLE_LABEL")) {
+  fails.push("admin-truth must keep honest unavailable label");
 }
 if (/ROAS|todayPossible|fake/i.test(page)) {
   fails.push("dashboard must not invent growth/ROAS/fake money");

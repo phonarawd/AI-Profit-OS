@@ -212,6 +212,7 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
   UsersAdminController: {
     list: read("users"),
     get: read("users"),
+    revealPii: write("users"),
   },
   TradesAdminController: {
     reconcileTick: write("circuit"),

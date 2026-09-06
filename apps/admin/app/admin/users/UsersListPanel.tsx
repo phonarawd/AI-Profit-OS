@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { T } from "@aipo/ui/copy/ko";
 import { adminGet, type AdminFailure } from "../../../lib/admin-api";
 import { AdminFetchNote, AdminTruth } from "../../../components/AdminTruth";
+import { DASH_COPY } from "../../../components/AdminLivePanels";
 
 type UserListItem = {
   id?: unknown;
@@ -66,8 +67,14 @@ function buildQuery(params: Record<string, string | number>): string {
  */
 export function UsersListPanel() {
   const [page, setPage] = useState(1);
-  const [searchDraft, setSearchDraft] = useState("");
-  const [search, setSearch] = useState("");
+  const [searchDraft, setSearchDraft] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return new URLSearchParams(window.location.search).get("search") ?? "";
+  });
+  const [search, setSearch] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return new URLSearchParams(window.location.search).get("search") ?? "";
+  });
   const [status, setStatus] = useState<StatusFilter>("all");
   const [signupMethod, setSignupMethod] = useState<SignupFilter>("all");
   const [order, setOrder] = useState<OrderFilter>("desc");
@@ -212,6 +219,31 @@ export function UsersListPanel() {
         </div>
       </section>
 
+      <button
+        type="button"
+        className="mt-3 rounded bg-lux-elevated px-2 py-1 text-sm"
+        data-testid="admin-users-export"
+        onClick={() => {
+          if (!items.length) return;
+          const header = ["id", "username", "emailMasked", "status", "signupMethod", "createdAt"];
+          const lines = [header.join(",")].concat(
+            items.map((item) =>
+              header
+                .map((key) => JSON.stringify(item[key] == null ? "" : String(item[key])))
+                .join(","),
+            ),
+          );
+          const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "users-page.csv";
+          a.click();
+          URL.revokeObjectURL(url);
+        }}
+      >
+        {DASH_COPY.exportPage}
+      </button>
       <section className="mt-4" data-testid="admin-users-table">
         {loading ? (
           <p className="text-sm text-lux-text-muted">{T.admin.state.loading}</p>

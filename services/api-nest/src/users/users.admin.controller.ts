@@ -1,4 +1,14 @@
-import { Controller, Get, Param, Query, Req, UseGuards } from "@nestjs/common";
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from "@nestjs/common";
 import { AdminGuard, type RequestWithAdmin } from "../common/admin.guard";
 import { AdminAuditService } from "../audit/admin-audit.service";
 import {
@@ -94,6 +104,37 @@ export class UsersAdminController {
           targetId: id,
           mode: "n/a",
           result: detail ? "applied" : "denied",
+        })
+        .catch(() => undefined);
+    }
+    return detail;
+  }
+
+  @Post(":id/pii-reveal")
+  async revealPii(
+    @Param("id") id: string,
+    @Body() body: Record<string, unknown>,
+    @Req() req: RequestWithAdmin,
+  ) {
+    const reason = String(body.reason ?? "").trim();
+    if (reason.length < 10) {
+      throw new BadRequestException("reason must be at least 10 characters");
+    }
+    const detail = await this.users.get(id);
+    const admin = req.admin;
+    if (admin) {
+      await this.audit
+        .write({
+          actorKey: admin.adminId,
+          actorId: admin.adminId,
+          role: admin.role,
+          action: "admin.users.pii_reveal",
+          targetType: "user",
+          targetId: id,
+          mode: "n/a",
+          result: detail ? "applied" : "denied",
+          reason,
+          payload: { reasonLength: reason.length },
         })
         .catch(() => undefined);
     }

@@ -7,6 +7,7 @@ import { T } from "@aipo/ui/copy/ko";
 import { adminGet, adminSend, type AdminResult } from "../../../../lib/admin-api";
 import { readStatusLabel, readText } from "../../../../lib/admin-truth";
 import { AdminFetchNote, AdminTruth } from "../../../../components/AdminTruth";
+import { User360OpsPanel } from "../../../../components/User360OpsPanel";
 
 /**
  * Admin §9.8 · 유저360
@@ -52,6 +53,7 @@ type UserIdentity = {
   emailVerified?: unknown;
   phoneVerified?: unknown;
   createdAt?: unknown;
+  updatedAt?: unknown;
 };
 
 function maskEmail(raw: unknown): string | null {
@@ -110,6 +112,7 @@ function UserDetailInner() {
   const [policyNote, setPolicyNote] = useState<string | null>(null);
   const [assignOpp, setAssignOpp] = useState("");
   const [assignReason, setAssignReason] = useState("");
+  const [piiRevealed, setPiiRevealed] = useState(false);
 
   useEffect(() => {
     if (!userId) return;
@@ -615,7 +618,7 @@ function UserDetailInner() {
             {!identity ? (
               <p className="text-lux-text-muted">{T.admin.state.loading}</p>
             ) : identity.ok ? (
-              <dl className="grid gap-2" data-pii="masked">
+              <dl className="grid gap-2" data-pii={piiRevealed ? "revealed" : "masked"}>
                 <div>
                   {T.admin.usersList.identityId}{" "}
                   <AdminTruth value={readText(identity.data.id)} />
@@ -630,14 +633,14 @@ function UserDetailInner() {
                 </div>
                 <div>
                   {T.admin.usersList.identityEmail}{" "}
-                  <AdminTruth value={maskEmail(identity.data.email)} />
+                  <AdminTruth value={piiRevealed ? readText(identity.data.email) : maskEmail(identity.data.email)} />
                   {identity.data.emailVerified === true
                     ? T.admin.usersList.emailVerifiedYes
                     : T.admin.usersList.emailVerifiedNo}
                 </div>
                 <div>
                   {T.admin.usersList.identityPhone}{" "}
-                  <AdminTruth value={maskPhone(identity.data.phoneE164)} />
+                  <AdminTruth value={piiRevealed ? readText(identity.data.phoneE164) : maskPhone(identity.data.phoneE164)} />
                   {identity.data.phoneVerified === true
                     ? T.admin.usersList.emailVerifiedYes
                     : T.admin.usersList.identityPhoneUnverified}
@@ -659,6 +662,19 @@ function UserDetailInner() {
               <AdminFetchNote failure={identity.failure} />
             )}
           </div>
+          <User360OpsPanel
+            userId={userId}
+            updatedAt={identity?.ok ? identity.data.updatedAt : undefined}
+            revealed={piiRevealed}
+            onReveal={async (reason) => {
+              const res = await adminSend(`/api/v1/admin/users/${userId}/pii-reveal`, "POST", { reason });
+              if (res.ok) {
+                setPiiRevealed(true);
+                setIdentity(await adminGet(`/api/v1/admin/users/${userId}`));
+              }
+              return res.ok;
+            }}
+          />
           <p className="text-lux-text-muted">
             위 메뉴에서 이 회원에게 보여 줄 수익 기회와 회원 등급을 확인할 수 있습니다.
           </p>

@@ -5,6 +5,12 @@ import { useEffect, useState } from "react";
 import { T } from "@aipo/ui/copy/ko";
 import { adminGet, type AdminFailure } from "../../lib/admin-api";
 import { AdminFetchNote, AdminTruth } from "../../components/AdminTruth";
+import {
+  DASH_COPY,
+  QueueCountTile,
+  ReconTile,
+  UserCountTile,
+} from "../../components/AdminLivePanels";
 
 type PushState = { pushEnabled?: unknown };
 type CircuitState = { open?: unknown };
@@ -118,26 +124,20 @@ export default function Page() {
 
       <h2 className="admin-dashboard-section-title">{T.admin.dashboard.statusTitle}</h2>
       <section className="admin-dashboard-grid" aria-label={T.admin.dashboard.statusTitle}>
-        <article
-          className="admin-status-card"
-          data-metric="user-count"
-          data-truth="unavailable"
-        >
-          <div className="admin-status-card-header">
-            <h2>{T.admin.dashboard.userCount}</h2>
-            <span className="admin-state-badge">정보 준비 중</span>
-          </div>
-          <p className="admin-status-card-value" data-testid="admin-user-count">
-            <AdminTruth value={null} />
-          </p>
-          <p className="sr-only">확인할 수 없음</p>
-          <p className="admin-status-card-note">
-            {T.admin.dashboard.userCountUnavailable}
-          </p>
-          <Link className="admin-status-card-link" href="/admin/users">
-            {T.admin.dashboard.viewDetails}
-          </Link>
-        </article>
+        <UserCountTile />
+        <QueueCountTile
+          title={DASH_COPY.withdrawQ}
+          api="/api/v1/admin/wallet/withdraw-intents"
+          testId="admin-withdraw-queue"
+          href="/admin/wallet?tab=review"
+        />
+        <QueueCountTile
+          title={DASH_COPY.identityQ}
+          api="/api/v1/admin/compliance/kyc?status=pending"
+          testId="admin-kyc-queue"
+          href="/admin/compliance?tab=kyc"
+        />
+        <ReconTile />
 
         <MetricCard
           title={T.admin.dashboard.push}

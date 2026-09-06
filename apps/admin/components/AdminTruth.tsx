@@ -29,7 +29,13 @@ export function AdminTruth({
   );
 }
 
-export function AdminFetchNote({ failure }: { failure: AdminFailure }) {
+export function AdminFetchNote({
+  failure,
+  onRetry,
+}: {
+  failure: AdminFailure;
+  onRetry?: () => void;
+}) {
   return (
     <div
       className="admin-fetch-note"
@@ -40,6 +46,11 @@ export function AdminFetchNote({ failure }: { failure: AdminFailure }) {
       <strong>{failureLabel(failure)}</strong>
       {failure.kind === "unavailable" ? (
         <span>{T.admin.state.unavailableHint}</span>
+      ) : null}
+      {onRetry ? (
+        <button type="button" className="admin-retry" onClick={onRetry}>
+          {T.admin.usersList.retry}
+        </button>
       ) : null}
     </div>
   );
