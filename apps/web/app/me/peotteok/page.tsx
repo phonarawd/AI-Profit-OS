@@ -22,7 +22,19 @@ import styles from "../account.module.css";
  */
 export default function Page() {
   const [view, setView] = useState<AccountView>("loading");
-  const { messages, chips, toneBand, busy, lastDone, send } = usePeotteokChat({
+  const {
+    messages,
+    chips,
+    toneBand,
+    busy,
+    lastDone,
+    send,
+    conversations,
+    conversationId,
+    newConversation,
+    openConversation,
+    deleteConversation,
+  } = usePeotteokChat({
     getAccessToken: () => null,
     enabled: view === "ready",
     fallbackChips: PEOTTEOK_FALLBACK_CHIPS,
@@ -119,6 +131,11 @@ export default function Page() {
           busy={busy}
           degradedToast={degradedToast}
           onSend={send}
+          conversations={conversations}
+          activeConversationId={conversationId}
+          onNewConversation={newConversation}
+          onOpenConversation={(id) => { void openConversation(id); }}
+          onDeleteConversation={(id) => { void deleteConversation(id); }}
         />
       </div>
     </AccountFrame>

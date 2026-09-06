@@ -163,6 +163,12 @@
       "name": "s3_33_product_pipeline",
       "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
       "reason": "S3/3.3 listings unique + identity_review_queue. Additive. Does not change money columns. Production apply after S5 staging. Do not apply to mgsytcetsiecllmhcyox from this commit."
+    },
+    {
+      "version": "20260906160000",
+      "name": "s3_34_peotteok_history",
+      "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
+      "reason": "S3/3.4 peotteok conversation/message tables. Additive. Production apply after S5 staging. Do not apply to mgsytcetsiecllmhcyox from this commit."
     }
   ]
 }

@@ -1109,7 +1109,10 @@ const RULES = [
       /apps\/web\/app\/me\/peotteok\//.test(f) ||
       /packages\/sdk\/src\/peotteok\//.test(f) ||
       /^tooling\/e2e\/specs\/peotteok-closure\.spec\.cjs$/.test(f) ||
-      /^tooling\/verify\/peotteok-closure\.cjs$/.test(f),
+      /^tooling\/verify\/peotteok-closure\.cjs$/.test(f) ||
+      /^tooling\/verify\/s3-34-peotteok\.cjs$/.test(f) ||
+      /^governance\/peotteok\//.test(f) ||
+      /^supabase\/migrations\/20260906160000_s3_34_peotteok_history\.sql$/.test(f),
     scripts: [
       "ai-coach-ui.cjs",
       "canon-surfaces.cjs",
@@ -1118,6 +1121,7 @@ const RULES = [
       "ai-coach-runtime.cjs",
       "age-tone-surfaces.cjs",
       "peotteok-closure.cjs",
+      "s3-34-peotteok.cjs",
     ],
   },
   {
@@ -1126,7 +1130,7 @@ const RULES = [
         f,
       ) ||
       /^services\/memory-service\/src\/(preference-memory|memory)\.cjs$/.test(f) ||
-      /^services\/api-nest\/src\/ai\/(coach\.orchestrator|fact-tool\.service|conversation-state\.service|memory\.service|ai\.engine)\.ts$/.test(
+      /^services\/api-nest\/src\/ai\/(coach\.orchestrator|fact-tool\.service|conversation-state\.service|memory\.service|ai\.engine|peotteok-history\.service|peotteok-citation|coach\.controller|coach\.routes)\.ts$/.test(
         f,
       ) ||
       /^tooling\/verify\/(reference-resolution|conversation-state-bounded)\.cjs$/.test(
@@ -1140,6 +1144,7 @@ const RULES = [
       "ai-coach-no-autonomy.cjs",
       "ai-general-no-money-tools.cjs",
       "age-tone-surfaces.cjs",
+      "s3-34-peotteok.cjs",
     ],
   },
   {

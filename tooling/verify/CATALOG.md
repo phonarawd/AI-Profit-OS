@@ -74,6 +74,7 @@
 | admin-s3-31-full | `verify:admin-s3-31-full` | T0 path | live (S3/3.1 B1-B6 · LIVE_E2E=NOT_RUN) |
 | s3-32-user-auth | `verify:s3-32-user-auth` | T0 path | live (S3/3.2 C1-C3 code · LIVE_E2E=NOT_RUN) |
 | s3-33-products | `verify:s3-33-products` | T0 path | live (S3/3.3 Phase D code · LIVE_E2E=NOT_RUN) |
+| s3-34-peotteok | `verify:s3-34-peotteok` | T0 path | live (S3/3.4 history/citation/IME/IDOR · LIVE_E2E=NOT_RUN) |
 | coach-sse-error-canonical | `verify:coach-sse-error-canonical` | T0 path | live (SSE error is constant coach_error; raw exception 0) |
 | release-manifest-identity-lock | `verify:release-manifest-identity-lock` | T0 path | live (manifest identity + deploy invariants fail closed) |
 | production-deploy-path-lock | `verify:production-deploy-path-lock` | T0 path | live (low-level prod helpers gated, acceptance required, rebuild/bundle forbidden) |
@@ -161,6 +162,7 @@
 | `governance/admin/s3-31-connection-matrix.v1.json` · `tooling/verify/admin-s3-31-full.cjs` | admin-s3-31-full |
 | `governance/auth/**` · `packages/ui/components/auth/**` · `apps/web/app/auth/**` · `tooling/verify/s3-32-user-auth.cjs` | s3-32-user-auth |
 | `governance/products/**` · `tooling/verify/s3-33-products.cjs` · `supabase/migrations/20260906150000_s3_33_product_pipeline.sql` | s3-33-products |
+| `governance/peotteok/**` · `tooling/verify/s3-34-peotteok.cjs` · `supabase/migrations/20260906160000_s3_34_peotteok_history.sql` | s3-34-peotteok |
 | `tooling/verify/coach-sse-error-canonical.cjs` | coach-sse-error-canonical |
 | `tooling/verify/release-manifest-identity-lock.cjs` | release-manifest-identity-lock |
 | `tooling/verify/production-deploy-path-lock.cjs` · `tooling/deploy/lib/accepted-artifact-authority.cjs` | production-deploy-path-lock |

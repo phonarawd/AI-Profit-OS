@@ -47,6 +47,8 @@ const PURGE_TABLES: readonly [table: string, column: string][] = [
   ["memory_embeddings", "user_id"],
   ["ai_memory", "user_id"],
   ["ai_user_profile", "user_id"],
+  ["peotteok_messages", "user_id"],
+  ["peotteok_conversations", "user_id"],
   // admin-authored content about/to this user (not an audit-of-admin-decision table)
   ["tendency_memos", "user_id"],
   ["ops_inbox_messages", "user_id"],

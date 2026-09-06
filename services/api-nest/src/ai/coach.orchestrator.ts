@@ -31,6 +31,8 @@ import {
 import { AI_EVENTS } from "./ai.events";
 import { ConversationStateService } from "./conversation-state.service";
 import { MatchingPolicyService } from "../matching-policy/matching-policy.service";
+import { citationsFromFacts } from "./peotteok-citation";
+import { PeotteokHistoryService } from "./peotteok-history.service";
 import { FactToolService } from "./fact-tool.service";
 import { LlmAdapterService } from "./llm.adapter.service";
 import { MemoryService } from "./memory.service";
@@ -66,6 +68,7 @@ export class CoachOrchestrator {
     private readonly bus: InProcessEventBus,
     private readonly convState: ConversationStateService,
     private readonly matchingPolicy: MatchingPolicyService,
+    private readonly history: PeotteokHistoryService,
   ) {}
 
   private async factsForUser<T extends { source?: string; payload?: Record<string, unknown> }>(
@@ -425,6 +428,25 @@ export class CoachOrchestrator {
       { role: "assistant", text: answerText, lane },
     ]);
 
+    const factCards = factsUsed as Array<{
+      source?: string;
+      payload?: Record<string, unknown>;
+    }>;
+    const citations = citationsFromFacts(factCards, new Date().toISOString());
+    try {
+      await this.history.appendTurn({
+        userId,
+        conversationId: convState.conversationId,
+        userText: text,
+        assistantText: answerText,
+        lane,
+        deepLink,
+        facts: factCards,
+      });
+    } catch {
+      /* durable history must never fail the coach turn */
+    }
+
     const trace = await this.logs.append(
       {
         intent: route.intent || classifyLane(text),
@@ -453,6 +475,7 @@ export class CoachOrchestrator {
       degraded,
       guard_result: guard,
       answer_text: answerText,
+      citations,
     };
 
     this.bus.emit(AI_EVENTS.coachAnswerCompleted, {

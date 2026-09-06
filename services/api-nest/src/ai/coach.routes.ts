@@ -8,4 +8,8 @@ export const COACH_USER_ROUTES = {
   chat: "me/peotteok/chat",
   /** GET — P-lane suggestion chips */
   chips: "me/peotteok/chips",
+  /** GET — durable conversation list (JWT user only) */
+  conversations: "me/peotteok/conversations",
+  /** GET/PATCH/DELETE — one conversation (id + JWT user) */
+  conversation: "me/peotteok/conversations/:id",
 } as const;

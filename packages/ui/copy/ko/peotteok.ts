@@ -24,6 +24,13 @@ export const peotteok = {
   chipBenefits: "받을 혜택",
   chipInvite: "친구 초대",
   chipKyc: "본인 확인",
+  newChat: "\uC0C8 \uB300\uD654",
+  history: "\uC774\uC804 \uB300\uD654",
+  emptyHistory: "\uC800\uC7A5\uB41C \uB300\uD654\uAC00 \uC5C6\uC5B4\uC694",
+  deleteChat: "\uC9C0\uC6B0\uAE30",
+  citationSource: "\uCD9C\uCC98",
+  citationOpportunity: "\uC774 \uAE30\uD68C \uBCF4\uAE30",
+  citationLedger: "\uC794\uC561\uC740 \uC9C0\uAC11 \uAE30\uC900\uC774\uC5D0\uC694",
   chipUsdt: "테더 준비",
   /** §27.10.5 voice SSOT */
   voice: {

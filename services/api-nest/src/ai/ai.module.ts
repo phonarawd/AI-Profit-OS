@@ -14,6 +14,7 @@ import { AssistantService } from "./assistant.service";
 import { CoachController } from "./coach.controller";
 import { CoachOrchestrator } from "./coach.orchestrator";
 import { ConversationStateService } from "./conversation-state.service";
+import { PeotteokHistoryService } from "./peotteok-history.service";
 import { FactToolService } from "./fact-tool.service";
 import { HelpRagService } from "./help-rag.service";
 import { LlmAdapterService } from "./llm.adapter.service";
@@ -54,6 +55,7 @@ import { UserTwinService } from "./user-twin.service";
     HelpRagService,
     FactToolService,
     ConversationStateService,
+    PeotteokHistoryService,
     CoachOrchestrator,
   ],
   exports: [
@@ -67,6 +69,7 @@ import { UserTwinService } from "./user-twin.service";
     HelpRagService,
     FactToolService,
     ConversationStateService,
+    PeotteokHistoryService,
     CoachOrchestrator,
   ],
 })
