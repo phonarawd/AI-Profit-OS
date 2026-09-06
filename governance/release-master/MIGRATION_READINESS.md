@@ -12,10 +12,10 @@ APPLY_MIGRATION = 0
 APPLY_LOG = 0
 APPLY_OWNER = REL-701-DB
 PROJECT_REF = mgsytcetsiecllmhcyox
-LOCAL_MIGRATION_FILES = 56
+LOCAL_MIGRATION_FILES = 61
 REMOTE_APPLIED_SNAPSHOT = 54
 REMOTE_RAW_APPLIED = 55
-COMMITTED_UNAPPLIED = 2
+COMMITTED_UNAPPLIED = 7
 TRACK_A_FILE_RESTORE = 3
 REL_408_BASELINE = 1
 REL_502_ISSUED = 0
@@ -45,6 +45,10 @@ UNAPPLIED`는 `0`에서 `1`로 정직하게 바뀐다(파일이 존재하고 커
 **2026-09-06:** `20260906060000_payout_reservation_and_execution_confirm.sql` 추가
 (로컬 55 → 56 · `COMMITTED_UNAPPLIED` 1 → 2). `SYS:MATCH_PROFIT_EXPENSE` seed only.
 Production apply 0. 원격 카운트 불변.
+
+**2026-09-06 S3 continuation:** Admin identity / B7 / consent / product unique / peotteok history
+migrations landed in-repo (`20260906120000` … `20260906160000`). Local 56 → 61.
+`COMMITTED_UNAPPLIED` 2 → 7. Production apply 0. Remote snapshot/raw counts unchanged.
 
 ## 2026-09-04 REL-701-DB EXECUTED (Founder-authorized · owner REL-701-DB · not this REL)
 
