@@ -15,12 +15,9 @@ async function runInteractiveA(items) {
 
   let pool;
   try {
-    pool = await mintTurnstileTokens(8);
+    pool = await mintTurnstileTokens(12);
   } catch (err) {
-    const why =
-      String(err && err.message) === "playwright_unavailable"
-        ? "BLOCKED_LOCAL_ENVIRONMENT playwright"
-        : "BLOCKED_LOCAL_ENVIRONMENT turnstile mint";
+    const why = "BLOCKED_LOCAL_ENVIRONMENT " + String(err && err.message ? err.message : "turnstile mint");
     markRange(items, 0, 15, "BLOCKED_LOCAL_ENVIRONMENT", why);
     return null;
   }

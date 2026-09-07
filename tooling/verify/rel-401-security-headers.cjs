@@ -78,6 +78,7 @@ for (const host of [
   spec.hosts.ebayImg,
   spec.hosts.turnstile,
   "https://*.r2.cloudflarestorage.com",
+  "https://*.challenges.cloudflare.com",
 ]) {
   if (!prodCsp.includes(host)) fails.push("document CSP missing " + host);
 }

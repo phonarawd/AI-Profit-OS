@@ -1,33 +1,116 @@
 {
   "schema": "j0-live.v1",
   "verdict": "NOT_PASS",
-  "recordedAt": "2026-09-07T07:00:00Z",
-  "shaAligned": false,
-  "stagingSha": "30a723e1",
-  "workspaceHead": "5a1eaee5",
+  "recordedAt": "2026-09-07T08:47:26.233Z",
+  "shaAligned": true,
+  "stagingSha": "db00922b",
+  "workspaceHead": "db00922b",
   "migrationHead": "20260906233000",
-  "counts": { "NOT_RUN": 16, "PASS": 4 },
+  "counts": {
+    "BLOCKED_LOCAL_ENVIRONMENT": 16,
+    "PASS": 4
+  },
   "items": [
-    { "id": 1, "status": "NOT_RUN", "why": "" },
-    { "id": 2, "status": "NOT_RUN", "why": "" },
-    { "id": 3, "status": "NOT_RUN", "why": "" },
-    { "id": 4, "status": "NOT_RUN", "why": "" },
-    { "id": 5, "status": "NOT_RUN", "why": "" },
-    { "id": 6, "status": "NOT_RUN", "why": "" },
-    { "id": 7, "status": "NOT_RUN", "why": "" },
-    { "id": 8, "status": "NOT_RUN", "why": "" },
-    { "id": 9, "status": "NOT_RUN", "why": "" },
-    { "id": 10, "status": "NOT_RUN", "why": "" },
-    { "id": 11, "status": "NOT_RUN", "why": "" },
-    { "id": 12, "status": "NOT_RUN", "why": "" },
-    { "id": 13, "status": "NOT_RUN", "why": "" },
-    { "id": 14, "status": "NOT_RUN", "why": "" },
-    { "id": 15, "status": "NOT_RUN", "why": "" },
-    { "id": 16, "status": "NOT_RUN", "why": "" },
-    { "id": 17, "status": "PASS", "why": "status=302" },
-    { "id": 18, "status": "PASS", "why": "production/direct origin did not mint human admin session" },
-    { "id": 19, "status": "PASS", "why": "status=400" },
-    { "id": 20, "status": "PASS", "why": "service token reaches origin login" }
+    {
+      "id": 1,
+      "status": "BLOCKED_LOCAL_ENVIRONMENT",
+      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+    },
+    {
+      "id": 2,
+      "status": "BLOCKED_LOCAL_ENVIRONMENT",
+      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+    },
+    {
+      "id": 3,
+      "status": "BLOCKED_LOCAL_ENVIRONMENT",
+      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+    },
+    {
+      "id": 4,
+      "status": "BLOCKED_LOCAL_ENVIRONMENT",
+      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+    },
+    {
+      "id": 5,
+      "status": "BLOCKED_LOCAL_ENVIRONMENT",
+      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+    },
+    {
+      "id": 6,
+      "status": "BLOCKED_LOCAL_ENVIRONMENT",
+      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+    },
+    {
+      "id": 7,
+      "status": "BLOCKED_LOCAL_ENVIRONMENT",
+      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+    },
+    {
+      "id": 8,
+      "status": "BLOCKED_LOCAL_ENVIRONMENT",
+      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+    },
+    {
+      "id": 9,
+      "status": "BLOCKED_LOCAL_ENVIRONMENT",
+      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+    },
+    {
+      "id": 10,
+      "status": "BLOCKED_LOCAL_ENVIRONMENT",
+      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+    },
+    {
+      "id": 11,
+      "status": "BLOCKED_LOCAL_ENVIRONMENT",
+      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+    },
+    {
+      "id": 12,
+      "status": "BLOCKED_LOCAL_ENVIRONMENT",
+      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+    },
+    {
+      "id": 13,
+      "status": "BLOCKED_LOCAL_ENVIRONMENT",
+      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+    },
+    {
+      "id": 14,
+      "status": "BLOCKED_LOCAL_ENVIRONMENT",
+      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+    },
+    {
+      "id": 15,
+      "status": "BLOCKED_LOCAL_ENVIRONMENT",
+      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+    },
+    {
+      "id": 16,
+      "status": "BLOCKED_LOCAL_ENVIRONMENT",
+      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+    },
+    {
+      "id": 17,
+      "status": "PASS",
+      "why": "status=302"
+    },
+    {
+      "id": 18,
+      "status": "PASS",
+      "why": "production/direct origin did not mint human admin session"
+    },
+    {
+      "id": 19,
+      "status": "PASS",
+      "why": "status=400"
+    },
+    {
+      "id": 20,
+      "status": "PASS",
+      "why": "service token reaches origin login"
+    }
   ],
   "note": "Human one-time login is not J0 PASS. Static verify is not live PASS."
 }

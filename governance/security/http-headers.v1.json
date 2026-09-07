@@ -30,7 +30,10 @@
     "r2Dev": "https://asset-images.r2.dev",
     "turnstile": "https://challenges.cloudflare.com"
   },
-  "allowedHostWildcard": ["https://*.r2.cloudflarestorage.com"],
+  "allowedHostWildcard": [
+    "https://*.r2.cloudflarestorage.com",
+    "https://*.challenges.cloudflare.com"
+  ],
   "forbiddenCspSources": ["*", "https:", "http:", "'unsafe-eval'"],
   "notes": {
     "scriptUnsafeInline": "Next/OpenNext hydration. Not a host wildcard.",
@@ -38,6 +41,6 @@
     "jsdelivr": "Current Pretendard @import in lux-theme.css.",
     "r2Wildcard": "Same REL-013 exception as image-hosts **.r2.cloudflarestorage.com.",
     "sw": "worker-src 'self' keeps /sw.js registration.",
-    "turnstile": "Managed checkbox widget. script/frame/connect only. Not a wildcard."
+    "turnstile": "Apex plus challenge subdomain wildcard. Challenge platform uses regional hosts."
   }
 }
