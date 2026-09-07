@@ -52,12 +52,16 @@ const flow = read("services/api-nest/src/common/admin-auth.flow.ts");
 if (!flow.includes("startAdminPasswordLogin") || !flow.includes("finishAdminMfaLogin")) {
   fail("password + MFA login flow missing");
 }
+if (!flow.includes("peekChallenge") || !flow.includes("consumeChallenge")) {
+  fail("MFA must peek then consume only after a correct factor");
+}
 if (!flow.includes("mintEmergencyCodeSession")) {
   fail("connection-code session must be a distinct emergency kind");
 }
 
 const store = read("services/api-nest/src/common/admin-session.store.ts");
 if (!store.includes("createMemoryAdminIdentityStore")) fail("durable store missing");
+if (!store.includes("peekChallenge")) fail("MFA challenge peek must exist so a wrong TOTP does not burn the login");
 
 const guard = read("services/api-nest/src/common/admin.guard.ts");
 if (!guard.includes("resolveAdminSession")) fail("AdminGuard must read durable session");
@@ -89,6 +93,9 @@ if (!/@Post\("login"\)[\s\S]{0,120}@UseGuards\(TurnstileGuard\)/.test(authCtrl))
 }
 if (/@Post\("mfa"\)[\s\S]{0,80}@UseGuards\(TurnstileGuard\)/.test(authCtrl)) {
   fail("MFA must not replay the login Turnstile token");
+}
+if (!authCtrl.includes("stepUpIsFresh") || !authCtrl.includes("@HttpCode(200)")) {
+  fail("step-up/start must return 200 when the session step-up is already fresh");
 }
 
 const page = read("apps/admin/app/admin/login/page.tsx");

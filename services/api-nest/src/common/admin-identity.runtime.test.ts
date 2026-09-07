@@ -138,3 +138,21 @@ test("password login is generic and MFA plus durable revoke survive map reset", 
   assert.equal(challengeId.length > 0, true);
   clearAdminIdentityStore();
 });
+
+test("peekChallenge does not burn a login challenge", async () => {
+  const store = createMemoryAdminIdentityStore();
+  await store.putChallenge({
+    id: "00000000-0000-4000-8000-000000000011",
+    adminId: ADMIN_ID,
+    purpose: "login_mfa",
+    tokenHash: "pending-retry",
+    expiresAt: new Date(Date.now() + 60_000).toISOString(),
+  });
+  const first = await store.peekChallenge("pending-retry", "login_mfa");
+  const second = await store.peekChallenge("pending-retry", "login_mfa");
+  assert.equal(first?.adminId, ADMIN_ID);
+  assert.equal(second?.adminId, ADMIN_ID);
+  const consumed = await store.consumeChallenge("pending-retry", "login_mfa");
+  assert.equal(consumed?.adminId, ADMIN_ID);
+  assert.equal(await store.peekChallenge("pending-retry", "login_mfa"), null);
+});

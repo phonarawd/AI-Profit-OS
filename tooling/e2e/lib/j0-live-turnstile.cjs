@@ -1,8 +1,57 @@
-/** 전용 ops 로그인에서 Turnstile 토큰을 여러 개 만든다. 값 출력 금지. */
+/** 전용 웹 민트에서 Turnstile 토큰을 모은다. 값 출력 금지. */
 "use strict";
 
+const fs = require("node:fs");
+const os = require("node:os");
+const path = require("node:path");
 const { hosts } = require("./j0-live-lib.cjs");
 const { launchCdpChrome, mintWithChromeFile } = require("./j0-live-chrome-cdp.cjs");
+
+function tokenFileNameOk(name) {
+  return /^j0-turnstile(\s*\(\d+\))?\.token(\s*\(\d+\))?(\.txt)?$/i.test(String(name || ""));
+}
+
+function defaultTokenDir() {
+  const fromEnv = String(process.env.J0_TURNSTILE_DIR || "").trim();
+  if (fromEnv) return fromEnv;
+  return path.join(os.homedir(), "Downloads");
+}
+
+function loadTokensFromDir(dir, count) {
+  const n = Math.max(1, count);
+  if (!dir || !fs.existsSync(dir)) return [];
+  const files = fs
+    .readdirSync(dir)
+    .filter(tokenFileNameOk)
+    .map((name) => {
+      const abs = path.join(dir, name);
+      let mtime = 0;
+      try {
+        mtime = fs.statSync(abs).mtimeMs;
+      } catch {
+        mtime = 0;
+      }
+      return { abs, mtime };
+    })
+    .sort((a, b) => b.mtime - a.mtime);
+  const tokens = [];
+  for (const file of files) {
+    if (tokens.length >= n) break;
+    let raw = "";
+    try {
+      raw = fs.readFileSync(file.abs, "utf8").trim();
+    } catch {
+      continue;
+    }
+    try {
+      fs.unlinkSync(file.abs);
+    } catch {
+      /* ignore */
+    }
+    if (raw.length > 20) tokens.push(raw);
+  }
+  return tokens;
+}
 
 function launchOpts() {
   const headed = process.env.J0_PW_HEADED === "1";
@@ -148,4 +197,10 @@ function takeToken(pool) {
   return t;
 }
 
-module.exports = { mintTurnstileTokens, takeToken, mintWithChromeFile };
+module.exports = {
+  mintTurnstileTokens,
+  takeToken,
+  mintWithChromeFile,
+  loadTokensFromDir,
+  defaultTokenDir,
+};

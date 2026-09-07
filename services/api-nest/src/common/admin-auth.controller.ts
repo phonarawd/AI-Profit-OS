@@ -5,6 +5,7 @@
 import {
   Body,
   Controller,
+  HttpCode,
   Post,
   Req,
   Res,
@@ -27,7 +28,7 @@ import {
   startAdminPasswordLogin,
   startAdminStepUp,
 } from "./admin-auth.flow";
-import { ADMIN_GENERIC_AUTH_FAILED } from "./admin-identity.policy";
+import { ADMIN_GENERIC_AUTH_FAILED, stepUpIsFresh } from "./admin-identity.policy";
 import { verifyAdminAccessToken } from "./admin-token";
 import { resolveAdminSession } from "./admin-session.store";
 import { readAdminRefreshCookie } from "./admin-session.controller";
@@ -47,6 +48,7 @@ type CookieResponse = {
     opts?: Record<string, unknown>,
   ) => void;
   clearCookie: (name: string, opts?: { path?: string }) => void;
+  status?: (code: number) => CookieResponse;
 };
 
 @Controller("admin-auth")
@@ -106,10 +108,19 @@ export class AdminAuthController {
   }
 
   @Post("step-up/start")
-  async stepUpStart(@Req() req: CookieRequest) {
+  @HttpCode(200)
+  async stepUpStart(
+    @Req() req: CookieRequest,
+    @Res({ passthrough: true }) res: CookieResponse,
+  ) {
     const session = await requireLiveAdmin(req);
+    if (stepUpIsFresh(session.stepUpAt)) {
+      res.status?.(200);
+      return { fresh: true };
+    }
     const result = await startAdminStepUp(session.adminId);
     if (!result.ok) throw new UnauthorizedException(ADMIN_GENERIC_AUTH_FAILED);
+    res.status?.(201);
     return { challengeId: result.challengeId };
   }
 
@@ -155,6 +166,7 @@ export class AdminAuthController {
 async function requireLiveAdmin(req: CookieRequest): Promise<{
   adminId: string;
   sessionId: string;
+  stepUpAt: string | null;
 }> {
   const token = String(req.cookies?.[ADMIN_SESSION_COOKIE_NAME] ?? "").trim();
   if (!token) throw new UnauthorizedException("ADMIN_AUTH_REQUIRED");
@@ -166,5 +178,9 @@ async function requireLiveAdmin(req: CookieRequest): Promise<{
   if (session.kind !== "active") {
     throw new UnauthorizedException("ADMIN_AUTH_INVALID");
   }
-  return { adminId: principal.adminId, sessionId: session.session.id };
+  return {
+    adminId: principal.adminId,
+    sessionId: session.session.id,
+    stepUpAt: session.session.stepUpAt,
+  };
 }

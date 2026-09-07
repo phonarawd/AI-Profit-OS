@@ -260,6 +260,24 @@ export class AdminSessionStoreService
     );
   }
 
+  async peekChallenge(
+    tokenHash: string,
+    purpose: "login_mfa" | "step_up",
+  ): Promise<{ adminId: string } | null> {
+    const r = await this.db.query<{ admin_id: string }>(
+      `SELECT admin_id
+         FROM public.admin_login_challenges
+        WHERE token_hash = $1
+          AND purpose = $2
+          AND consumed_at IS NULL
+          AND expires_at > now()
+        LIMIT 1`,
+      [tokenHash, purpose],
+    );
+    const row = r.rows[0];
+    return row ? { adminId: row.admin_id } : null;
+  }
+
   async consumeChallenge(
     tokenHash: string,
     purpose: "login_mfa" | "step_up",

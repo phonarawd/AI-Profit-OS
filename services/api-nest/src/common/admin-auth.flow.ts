@@ -135,11 +135,15 @@ export async function finishAdminMfaLogin(input: {
   const challengeId = String(input.challengeId ?? "").trim();
   if (!challengeId) return { ok: false, code: ADMIN_GENERIC_AUTH_FAILED };
 
-  const consumed = await store.consumeChallenge(hashOpaque(challengeId), "login_mfa");
-  if (!consumed) return { ok: false, code: ADMIN_GENERIC_AUTH_FAILED };
+  const tokenHash = hashOpaque(challengeId);
+  const pending = await store.peekChallenge(tokenHash, "login_mfa");
+  if (!pending) return { ok: false, code: ADMIN_GENERIC_AUTH_FAILED };
 
-  const row = await store.findCredentialByAdminId(consumed.adminId);
+  const row = await store.findCredentialByAdminId(pending.adminId);
   if (!row || !row.active) return { ok: false, code: ADMIN_GENERIC_AUTH_FAILED };
+  if (isAdminLocked(row.lockedUntil)) {
+    return { ok: false, code: ADMIN_GENERIC_AUTH_FAILED };
+  }
 
   const cipher = await store.getTotp(row.adminId);
   if (!cipher) return { ok: false, code: ADMIN_GENERIC_AUTH_FAILED };
@@ -152,8 +156,24 @@ export async function finishAdminMfaLogin(input: {
     ? await store.consumeBackupCode(row.adminId, hashBackupCode(backup))
     : false;
   if (!totpOk && !backupOk) {
+    const failed = row.failedAttempts + 1;
+    const locked = nextAdminLockUntil(failed);
+    await store.updateCredentialLock({
+      adminId: row.adminId,
+      failedAttempts: failed,
+      lockedUntil: locked ? locked.toISOString() : null,
+    });
     return { ok: false, code: ADMIN_GENERIC_AUTH_FAILED };
   }
+
+  const consumed = await store.consumeChallenge(tokenHash, "login_mfa");
+  if (!consumed) return { ok: false, code: ADMIN_GENERIC_AUTH_FAILED };
+
+  await store.updateCredentialLock({
+    adminId: row.adminId,
+    failedAttempts: 0,
+    lockedUntil: null,
+  });
 
   const minted = await mintPasswordMfaSession(store, {
     adminId: row.adminId,
@@ -353,11 +373,9 @@ export async function finishAdminStepUp(input: {
 }): Promise<{ ok: true } | { ok: false; code: typeof ADMIN_GENERIC_AUTH_FAILED }> {
   const store = getAdminIdentityStore();
   if (!store) return { ok: false, code: ADMIN_GENERIC_AUTH_FAILED };
-  const consumed = await store.consumeChallenge(
-    hashOpaque(String(input.challengeId ?? "")),
-    "step_up",
-  );
-  if (!consumed || consumed.adminId !== input.adminId) {
+  const tokenHash = hashOpaque(String(input.challengeId ?? ""));
+  const pending = await store.peekChallenge(tokenHash, "step_up");
+  if (!pending || pending.adminId !== input.adminId) {
     return { ok: false, code: ADMIN_GENERIC_AUTH_FAILED };
   }
   const cipher = await store.getTotp(input.adminId);
@@ -368,6 +386,10 @@ export async function finishAdminStepUp(input: {
     ? await store.consumeBackupCode(input.adminId, hashBackupCode(backup))
     : false;
   if (!totpOk && !backupOk) return { ok: false, code: ADMIN_GENERIC_AUTH_FAILED };
+  const consumed = await store.consumeChallenge(tokenHash, "step_up");
+  if (!consumed || consumed.adminId !== input.adminId) {
+    return { ok: false, code: ADMIN_GENERIC_AUTH_FAILED };
+  }
   await store.markStepUp(input.sessionId, new Date().toISOString());
   return { ok: true };
 }

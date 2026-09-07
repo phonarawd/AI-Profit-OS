@@ -83,6 +83,9 @@ export type AdminIdentityStore = {
     tokenHash: string;
     expiresAt: string;
   }): Promise<void>;
+  peekChallenge(tokenHash: string, purpose: "login_mfa" | "step_up"): Promise<{
+    adminId: string;
+  } | null>;
   consumeChallenge(tokenHash: string, purpose: "login_mfa" | "step_up"): Promise<{
     adminId: string;
   } | null>;
@@ -248,6 +251,12 @@ export function createMemoryAdminIdentityStore(): AdminIdentityStore {
         expiresAt: input.expiresAt,
         consumed: false,
       });
+    },
+    async peekChallenge(tokenHash, purpose) {
+      const row = challenges.get(tokenHash);
+      if (!row || row.consumed || row.purpose !== purpose) return null;
+      if (Date.parse(row.expiresAt) <= Date.now()) return null;
+      return { adminId: row.adminId };
     },
     async consumeChallenge(tokenHash, purpose) {
       const row = challenges.get(tokenHash);
