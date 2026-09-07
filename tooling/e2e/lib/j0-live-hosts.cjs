@@ -3,6 +3,8 @@
 
 module.exports = {
   DEDICATED_WEB: "https://ai-profit-web-dedicated.ebay-adapter.workers.dev",
+  DEDICATED_WEB_MINT:
+    "https://ai-profit-web-dedicated.ebay-adapter.workers.dev/internal/admin-login",
   DEDICATED_OPS: "https://ai-profit-ops-dedicated.ebay-adapter.workers.dev",
   DEDICATED_OPS_LOGIN:
     "https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login",

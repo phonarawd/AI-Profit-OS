@@ -38,6 +38,9 @@ const required = [
   "tooling/e2e/lib/j0-live-http.cjs",
   "tooling/e2e/lib/j0-live-edge.cjs",
   "tooling/e2e/lib/j0-live-turnstile.cjs",
+  "tooling/e2e/lib/j0-live-chrome-cdp.cjs",
+  "apps/web/app/internal/admin-login/page.tsx",
+  "apps/web/app/internal/admin-login/AdminLoginMintClient.tsx",
   "tooling/e2e/lib/j0-live-creds.cjs",
   "tooling/e2e/lib/j0-live-interactive-a.cjs",
   "tooling/e2e/lib/j0-live-interactive-b.cjs",
@@ -71,6 +74,20 @@ if (!tokenScript.includes("ai-profit-web-dedicated") || !tokenScript.includes("a
 if (!provision.includes("srv-da5r1tqjobas73fl16dg") || !provision.includes("founder.ops")) {
   fails.push("provision must refuse production and not rotate founder.ops");
 }
+const hostsLock = read("tooling/e2e/lib/j0-live-hosts.cjs");
+const mintPage = read("apps/web/app/internal/admin-login/page.tsx");
+const mintClient = read("apps/web/app/internal/admin-login/AdminLoginMintClient.tsx");
+const mintRunner = read("tooling/e2e/lib/j0-live-turnstile.cjs");
+const chromeFile = read("tooling/e2e/lib/j0-live-chrome-cdp.cjs");
+if (!hostsLock.includes("DEDICATED_WEB_MINT")) fails.push("hosts must lock dedicated web mint");
+if (!mintPage.includes("ai-profit-web-dedicated.ebay-adapter.workers.dev")) {
+  fails.push("mint page must host-gate dedicated web");
+}
+if (!mintClient.includes('action="admin-login"')) fails.push("mint client must use admin-login action");
+if (!mintRunner.includes("DEDICATED_WEB_MINT")) fails.push("turnstile mint must use dedicated web");
+if (mintRunner.includes("DEDICATED_OPS_LOGIN")) fails.push("turnstile mint must not use Access-gated ops login");
+if (!chromeFile.includes("mintWithChromeFile")) fails.push("chrome file mint fallback missing");
+if (!mintClient.includes("handoff")) fails.push("mint client must support file handoff");
 if (false) {
   fails.push("J0 scripts must not print secrets");
 }

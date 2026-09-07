@@ -3,7 +3,7 @@
 
 const { hosts, totp, mergeJar, parseSetCookies, cookieHeader } = require("./j0-live-lib.cjs");
 const { jsonSafe, opsApi, loginStart, loginMfa, sessionStatus, fullLogin } = require("./j0-live-http.cjs");
-const { mintTurnstileTokens, takeToken } = require("./j0-live-turnstile.cjs");
+const { mintTurnstileTokens, takeToken, mintWithChromeFile } = require("./j0-live-turnstile.cjs");
 const { j0Accounts, markRange } = require("./j0-live-creds.cjs");
 
 async function runInteractiveA(items) {
@@ -17,9 +17,15 @@ async function runInteractiveA(items) {
   try {
     pool = await mintTurnstileTokens(12);
   } catch (err) {
-    const why = "BLOCKED_LOCAL_ENVIRONMENT " + String(err && err.message ? err.message : "turnstile mint");
-    markRange(items, 0, 15, "BLOCKED_LOCAL_ENVIRONMENT", why);
-    return null;
+    try {
+      pool = await mintWithChromeFile(12, hosts.DEDICATED_WEB_MINT);
+    } catch (err2) {
+      const why =
+        "BLOCKED_LOCAL_ENVIRONMENT " +
+        String(err2 && err2.message ? err2.message : err && err.message ? err.message : "turnstile mint");
+      markRange(items, 0, 15, "BLOCKED_LOCAL_ENVIRONMENT", why);
+      return null;
+    }
   }
   const nextTok = () => takeToken(pool);
 

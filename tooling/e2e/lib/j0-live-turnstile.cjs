@@ -1,8 +1,8 @@
 /** 전용 ops 로그인에서 Turnstile 토큰을 여러 개 만든다. 값 출력 금지. */
 "use strict";
 
-const { hosts, accessHeaders } = require("./j0-live-lib.cjs");
-const { launchCdpChrome } = require("./j0-live-chrome-cdp.cjs");
+const { hosts } = require("./j0-live-lib.cjs");
+const { launchCdpChrome, mintWithChromeFile } = require("./j0-live-chrome-cdp.cjs");
 
 function launchOpts() {
   const headed = process.env.J0_PW_HEADED === "1";
@@ -53,11 +53,6 @@ async function mintTurnstileTokens(count) {
     for (let i = 0; i < n; i += 1) {
       const page = await (browser.contexts()[0] || (await browser.newContext())).newPage();
       page.setDefaultTimeout(45000);
-      await page.route(/ai-profit-ops-dedicated|cloudflareaccess\.com/, async (route) => {
-        await route.continue({
-          headers: Object.assign({}, route.request().headers(), accessHeaders()),
-        });
-      });
       await page.addInitScript(() => {
         window.__aipoJ0Ts = "";
         const wrap = () => {
@@ -85,8 +80,9 @@ async function mintTurnstileTokens(count) {
         const id = setInterval(wrap, 20);
         setTimeout(() => clearInterval(id), 40000);
       });
-      const nav = await page.goto(hosts.DEDICATED_OPS_LOGIN, { waitUntil: "domcontentloaded" });
+      const nav = await page.goto(hosts.DEDICATED_WEB_MINT, { waitUntil: "domcontentloaded" });
       if (nav && nav.status() >= 300 && nav.status() < 400) throw new Error("turnstile_access_redirect");
+      if (nav && nav.status() === 404) throw new Error("turnstile_mint_not_deployed");
       if (await page.locator("[data-turnstile='not-configured']").count()) {
         throw new Error("turnstile_not_configured");
       }
@@ -152,4 +148,4 @@ function takeToken(pool) {
   return t;
 }
 
-module.exports = { mintTurnstileTokens, takeToken };
+module.exports = { mintTurnstileTokens, takeToken, mintWithChromeFile };
