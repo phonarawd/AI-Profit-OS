@@ -1,0 +1,65 @@
+/* 홈 세션 로딩 골격. Home Desktop/Mobile geometry 클래스 재사용. 숫자 0 */
+
+[data-home-loading] .sd-skel-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+[data-home-loading] .sd-skel {
+  display: block;
+  flex: 0 0 auto;
+  border-radius: 0.45rem;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 45, 107, 0.16) 46%,
+    rgba(255, 255, 255, 0.07) 100%
+  );
+  background-size: 220% 100%;
+  animation: sd-home-skel 1.55s ease-in-out infinite;
+}
+
+[data-home-loading] .sd-skel.is-light {
+  background: linear-gradient(90deg, #e6eaF2 0%, #f6f8fc 48%, #e6eaf2 100%);
+  background-size: 220% 100%;
+}
+
+[data-home-loading] .sd-skel.is-ink {
+  background: linear-gradient(90deg, #d7dde8 0%, #eef1f6 48%, #d7dde8 100%);
+  background-size: 220% 100%;
+}
+
+[data-home-loading] .sd-root .sd-pop {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0.62rem 0.8rem 0.58rem;
+  border-radius: 1rem;
+  border: 1px solid #e7eaf0;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(7, 16, 29, 0.05);
+  color: inherit;
+}
+
+@keyframes sd-home-skel {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-home-loading] .sd-skel {
+    animation: none;
+    background-position: 50% 0;
+  }
+}

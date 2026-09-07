@@ -7,6 +7,7 @@ import { fetchWalletBuckets } from "@aipo/sdk/wallet";
 import { useEffect, useState } from "react";
 import { GuestFirstVisit, HomeSessionUnavailable } from "./GuestFirstVisit";
 import { HomeDesktop } from "../components/spark-dash-home/HomeDesktop";
+import { HomeLoading } from "../components/spark-dash-home/HomeLoading";
 import { HomeMobile } from "../components/spark-dash-home/HomeMobile";
 import { emptyRuntimeModel, mapRuntimeHome } from "../components/spark-dash-home/map-runtime";
 import type { SparkDashHomeModel } from "../components/spark-dash-home/types";
@@ -62,13 +63,7 @@ export function HomeDesktopClient() {
   }, []);
 
   if (gate === "loading") {
-    return (
-      <div data-testid="home-session-loading" className="gfv gfv--plain">
-        <div className="gfv-stage gfv-stage--narrow">
-          <p className="gfv-lead">불러오는 중…</p>
-        </div>
-      </div>
-    );
+    return <HomeLoading />;
   }
 
   if (gate === "unavailable") {
