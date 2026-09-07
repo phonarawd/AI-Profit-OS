@@ -47,12 +47,13 @@ const SHELL_ROUTES = [
 const AUTH_DIRECT_ROUTES = [
   "/auth/login",
   "/auth/signup",
-  "/onboarding",
 ];
-// Stage-B profile completion is protected by design. An unauthenticated visual
-// regression visit must land on the Spark login composition, not bypass auth.
+// Product onboarding is a 7-step education surface. Guest auth-split chrome
+// is forbidden (product-onboarding.wire `guest_chrome_auth_split`).
+// Unauthenticated visits must land on Spark login, same as complete-profile.
 const AUTH_GUARDED_ROUTES = [
   { from: "/auth/complete-profile", unauthenticatedTo: "/auth/login" },
+  { from: "/onboarding", unauthenticatedTo: "/auth/login" },
 ];
 
 const LANDING_ROUTES = ["/ads", "/ads/meta", "/l/meta"];

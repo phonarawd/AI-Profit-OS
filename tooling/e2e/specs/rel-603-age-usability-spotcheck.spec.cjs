@@ -206,6 +206,7 @@ async function assertNoHorizontalOverflow(page, label) {
 }
 
 async function assertSurfaceSafety(page, cohort, scenario) {
+  await stabilizePage(page);
   const html = await page.content();
   const bad = forbiddenHit(html);
   expect(bad, cohort.id + " " + scenario.id + " forbidden token").toBeNull();
@@ -365,21 +366,29 @@ async function runParticipateEntry(page, cohort, scenario) {
   });
   const card = profitsCard(page, cohort.viewport.width);
   await expect(card).toBeVisible({ timeout: 20_000 });
-  const detailPath = "/profits/" + TEST_OPPORTUNITY_ITEM.id;
   const detailUrl = new RegExp("/profits/" + TEST_OPPORTUNITY_ITEM.id + "$");
   const href = await card.getAttribute("href");
   expect(href, cohort.id + " card href").toMatch(detailUrl);
-  await card.scrollIntoViewIfNeeded().catch(() => {});
-  await Promise.all([
-    page.waitForURL(detailUrl, { timeout: 8_000 }).catch(() => {}),
-    card.click({ timeout: 8_000 }).catch(() => {}),
-  ]);
-  if (!detailUrl.test(new URL(page.url()).pathname)) {
-    const dest = new URL(href, baseUrl).toString();
-    await page.goto(dest, { waitUntil: "domcontentloaded", timeout: GOTO_TIMEOUT_MS });
+  const dest = new URL(href, baseUrl).toString();
+  for (let attempt = 0; attempt < 3; attempt++) {
+    if (detailUrl.test(new URL(page.url()).pathname)) break;
+    // Cross-document nav drops handlers — re-bind before every click/goto.
+    await stubCoreOpportunityJourney(page);
+    const liveCard = profitsCard(page, cohort.viewport.width);
+    await expect(liveCard).toBeVisible({ timeout: 20_000 });
+    await liveCard.scrollIntoViewIfNeeded().catch(() => {});
+    await Promise.all([
+      page.waitForURL(detailUrl, { timeout: 8_000 }).catch(() => {}),
+      liveCard.click({ timeout: 8_000 }).catch(() => {}),
+    ]);
+    if (detailUrl.test(new URL(page.url()).pathname)) break;
+    await stubCoreOpportunityJourney(page);
+    await page.goto(dest, {
+      waitUntil: "domcontentloaded",
+      timeout: GOTO_TIMEOUT_MS,
+    });
   }
   await expect(page).toHaveURL(detailUrl);
-  // Re-bind stubs after navigation (handlers can drop on cross-document nav).
   await stubCoreOpportunityJourney(page);
   await expect(page.getByTestId("opportunity-detail")).toHaveAttribute(
     "data-detail-state",
