@@ -81,6 +81,8 @@ _worktree-*/
 # Misc
 .claude/
 _docx_extract.txt
+# Founder prompt drafts at repo root — 실행 SSOT는 플랜. 커밋 금지
+/PUTDUK_*.md
 
 # Local-only credentials / authorizations (never commit)
 .cursor/*.local.json
