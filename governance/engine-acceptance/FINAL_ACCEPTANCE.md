@@ -27,7 +27,7 @@ NEXT = ENGINE_ACCEPTANCE_REBASE_V1
 BASELINE_ID = ea-baseline-0d8825e8f333-5ac0f4291966
 PREDECESSOR_BASELINE_ID = ea-baseline-74683b6e39a7-590263f0f273
 REBASE_ID = pending
-LIVE_AGGREGATE = 51bd18befb9375b89473a2f6d129d1f8501ca2e4e5d99350f9a9cdaf229142e4
+LIVE_AGGREGATE = faae139c3115adf90aae7e5ff2558ca494bffcc694e9a6ecfe3fc459d41d5da6
 BASELINE_AGGREGATE = 5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9
 PATH_COUNT_LIVE = 564
 PATH_COUNT_BASELINE = 491
@@ -35,7 +35,7 @@ CHANGED_PATHS = 124
 ADDED_PATHS = 73
 MUTATED_PATHS = 51
 MISSING_PATHS = 0
-EXIT_GATE = D1-S1F (2026-09-05) plus PUTDUK continuation through 11th recert (2026-09-06, after a7b09991) · protected-scope still drifting without ENGINE_ACCEPTANCE_REBASE_V1 ACK (73 added · 51 mutated · 124 changed) · ISSUED forbidden until formal rebase + current-epoch QA0-QA9
+EXIT_GATE = D1-S1F (2026-09-05) plus PUTDUK continuation through 12th recert (2026-09-07, after 7ba771ba) · protected-scope still drifting without ENGINE_ACCEPTANCE_REBASE_V1 ACK (73 added · 51 mutated · 124 changed) · ISSUED forbidden until formal rebase + current-epoch QA0-QA9
 ```
 
 ## 판정 (D1-S1E 정정, 2026-09-05, append 성격의 사실 정정)
@@ -350,4 +350,10 @@ live protected aggregate `94ce63559185de178ff430497bce72a098ffb01815391b52739622
 `0eff117c` added `payout-reservation.selftest.ts` and removed OPS_POOL as match-profit fallback. `a7b09991` committed Nest product-onboarding (8 files). Production apply 0. STATUS stays NOT_ISSUED. CERT_ISSUED stays 0. REL-502 is not issued by this recert.
 
 live protected aggregate `51bd18befb9375b89473a2f6d129d1f8501ca2e4e5d99350f9a9cdaf229142e4` differs from baseline (added 73 · mutated 51 · missing 0 · changed 124). Values from `compareProtectedScope()` on HEAD `a7b09991`. No issue. No fake QA.
+
+## 12th recert (2026-09-07)
+
+`92b2c811` / `7ba771ba` mutated staging Turnstile host/action on existing Nest files (`phase0.env.ts`, `turnstile.policy.cjs`, admin-auth login guard). Path counts stay 564 / added 73 / mutated 51 / changed 124. Production apply 0. STATUS stays NOT_ISSUED. CERT_ISSUED stays 0. REL-502 is not issued by this recert.
+
+live protected aggregate `faae139c3115adf90aae7e5ff2558ca494bffcc694e9a6ecfe3fc459d41d5da6` differs from baseline (added 73 · mutated 51 · missing 0 · changed 124). Values from `compareProtectedScope()` on dirty HEAD after the login-fix commits. No issue. No fake QA.
 
