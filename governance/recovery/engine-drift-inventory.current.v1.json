@@ -1,22 +1,23 @@
 {
   "schema": "governance.recovery.engine-drift-inventory.v1",
-  "computed_at": "2026-09-06T11:12:23.506Z",
+  "computed_at": "2026-09-07T09:09:28.158Z",
   "predecessor_head_sha": "0d8825e8f333ca309a1d6eaf26a3d826722d11fd",
-  "inventory_head_sha": "57767ef2d006a92c9c8b3f91203fd7ea181e3ddc",
-  "changed_paths": 110,
-  "expected_changed_paths": 110,
+  "inventory_head_sha": "710ebd7a8b4c3ca1554634c82df3cac1710cc020",
+  "changed_paths": 124,
+  "expected_changed_paths": 124,
   "count_match": true,
   "by_category": {
     "ADMIN_SESSION": 22,
     "AI_COACH": 8,
     "AUTH_SECURITY": 29,
-    "LEDGER": 4,
+    "LEDGER": 5,
     "MATCH_POLICY": 7,
     "PARTICIPATE": 2,
+    "PRODUCT_ONBOARDING": 8,
     "PUSH": 3,
     "TRADES_EXECUTION": 11,
-    "MONEY_WALLET": 4,
-    "DB_MIGRATION": 7,
+    "MONEY_WALLET": 6,
+    "DB_MIGRATION": 10,
     "DOMAIN_CLOCK": 1,
     "ADAPTER_INGEST": 1,
     "MODULE_WIRING": 8,
@@ -29,6 +30,7 @@
   "note": "Classification only. Formal rebase + QA0-QA9 rerun are still required. Do not treat this file as an ACK.",
   "required_rerun_matrix": {
     "QA0": [
+      "supabase/migrations/20260904060000_krw_deposit_bank_snapshot.sql",
       "supabase/migrations/20260905110000_classic_signup_sessions_and_admin.sql",
       "supabase/migrations/20260906060000_payout_reservation_and_execution_confirm.sql",
       "supabase/migrations/20260906120000_admin_identity_sessions.sql",
@@ -36,6 +38,8 @@
       "supabase/migrations/20260906140000_s3_32_consent_versions.sql",
       "supabase/migrations/20260906150000_s3_33_product_pipeline.sql",
       "supabase/migrations/20260906160000_s3_34_peotteok_history.sql",
+      "supabase/migrations/20260906170000_push_control_subscriptions_rls.sql",
+      "supabase/migrations/20260906233000_product_onboarding_progress.sql",
       "services/api-nest/src/app.module.ts",
       "services/api-nest/src/common/common.module.ts",
       "services/api-nest/src/config/phase0.env.ts",
@@ -137,6 +141,14 @@
       "services/api-nest/src/matching-policy/matching-policy.routes.ts",
       "services/api-nest/src/matching-policy/matching-policy.runtime.test.ts",
       "services/api-nest/src/matching-policy/matching-policy.service.ts",
+      "services/api-nest/src/product-onboarding/product-onboarding.lesson.ts",
+      "services/api-nest/src/product-onboarding/product-onboarding.module.ts",
+      "services/api-nest/src/product-onboarding/product-onboarding.parse.ts",
+      "services/api-nest/src/product-onboarding/product-onboarding.routes.ts",
+      "services/api-nest/src/product-onboarding/product-onboarding.runtime.test.ts",
+      "services/api-nest/src/product-onboarding/product-onboarding.service.ts",
+      "services/api-nest/src/product-onboarding/product-onboarding.store.ts",
+      "services/api-nest/src/product-onboarding/product-onboarding.user.controller.ts",
       "services/api-nest/src/push/push.public.controller.ts",
       "services/api-nest/src/users/users-admin.module.ts",
       "services/api-nest/src/users/users-admin.service.ts",
@@ -174,6 +186,7 @@
       "services/api-nest/src/push/push.routes.ts"
     ],
     "QA3": [
+      "services/api-nest/src/ledger/payout-reservation.selftest.ts",
       "services/api-nest/src/ledger/payout-reservation.service.ts",
       "services/api-nest/src/opportunities/participate.atomicity.selftest.ts",
       "services/api-nest/src/trades/authoritative-success.runtime.test.ts",
@@ -186,6 +199,7 @@
       "services/api-nest/src/trades/trades.reconcile.selftest.ts",
       "services/api-nest/src/wallet/withdraw-coverage.ts",
       "services/api-nest/src/wallet/withdraw-treasury-solvency.ts",
+      "supabase/migrations/20260904060000_krw_deposit_bank_snapshot.sql",
       "supabase/migrations/20260905110000_classic_signup_sessions_and_admin.sql",
       "supabase/migrations/20260906060000_payout_reservation_and_execution_confirm.sql",
       "supabase/migrations/20260906120000_admin_identity_sessions.sql",
@@ -193,6 +207,8 @@
       "supabase/migrations/20260906140000_s3_32_consent_versions.sql",
       "supabase/migrations/20260906150000_s3_33_product_pipeline.sql",
       "supabase/migrations/20260906160000_s3_34_peotteok_history.sql",
+      "supabase/migrations/20260906170000_push_control_subscriptions_rls.sql",
+      "supabase/migrations/20260906233000_product_onboarding_progress.sql",
       "services/api-nest/src/ledger/ledger.module.ts",
       "services/api-nest/src/ledger/ledger.posting.service.ts",
       "services/api-nest/src/ledger/ledger.types.ts",
@@ -200,10 +216,13 @@
       "services/api-nest/src/trades/index.ts",
       "services/api-nest/src/trades/trades.execution.service.ts",
       "services/api-nest/src/trades/trades.module.ts",
+      "services/api-nest/src/wallet/krw-deposit.service.ts",
       "services/api-nest/src/wallet/resend-email.provider.ts",
+      "services/api-nest/src/wallet/wallet.types.ts",
       "services/api-nest/src/wallet/withdraw-intent.service.ts"
     ],
     "QA4": [
+      "services/api-nest/src/ledger/payout-reservation.selftest.ts",
       "services/api-nest/src/ledger/payout-reservation.service.ts",
       "services/api-nest/src/opportunities/participate.atomicity.selftest.ts",
       "services/api-nest/src/trades/authoritative-success.runtime.test.ts",
@@ -216,6 +235,7 @@
       "services/api-nest/src/trades/trades.reconcile.selftest.ts",
       "services/api-nest/src/wallet/withdraw-coverage.ts",
       "services/api-nest/src/wallet/withdraw-treasury-solvency.ts",
+      "supabase/migrations/20260904060000_krw_deposit_bank_snapshot.sql",
       "supabase/migrations/20260905110000_classic_signup_sessions_and_admin.sql",
       "supabase/migrations/20260906060000_payout_reservation_and_execution_confirm.sql",
       "supabase/migrations/20260906120000_admin_identity_sessions.sql",
@@ -223,6 +243,8 @@
       "supabase/migrations/20260906140000_s3_32_consent_versions.sql",
       "supabase/migrations/20260906150000_s3_33_product_pipeline.sql",
       "supabase/migrations/20260906160000_s3_34_peotteok_history.sql",
+      "supabase/migrations/20260906170000_push_control_subscriptions_rls.sql",
+      "supabase/migrations/20260906233000_product_onboarding_progress.sql",
       "services/api-nest/src/ledger/ledger.module.ts",
       "services/api-nest/src/ledger/ledger.posting.service.ts",
       "services/api-nest/src/ledger/ledger.types.ts",
@@ -230,7 +252,9 @@
       "services/api-nest/src/trades/index.ts",
       "services/api-nest/src/trades/trades.execution.service.ts",
       "services/api-nest/src/trades/trades.module.ts",
+      "services/api-nest/src/wallet/krw-deposit.service.ts",
       "services/api-nest/src/wallet/resend-email.provider.ts",
+      "services/api-nest/src/wallet/wallet.types.ts",
       "services/api-nest/src/wallet/withdraw-intent.service.ts"
     ],
     "QA5": [
@@ -244,6 +268,7 @@
       "services/api-nest/src/trades/trades.reconcile.selftest.ts",
       "services/api-nest/src/wallet/withdraw-coverage.ts",
       "services/api-nest/src/wallet/withdraw-treasury-solvency.ts",
+      "supabase/migrations/20260904060000_krw_deposit_bank_snapshot.sql",
       "supabase/migrations/20260905110000_classic_signup_sessions_and_admin.sql",
       "supabase/migrations/20260906060000_payout_reservation_and_execution_confirm.sql",
       "supabase/migrations/20260906120000_admin_identity_sessions.sql",
@@ -251,11 +276,15 @@
       "supabase/migrations/20260906140000_s3_32_consent_versions.sql",
       "supabase/migrations/20260906150000_s3_33_product_pipeline.sql",
       "supabase/migrations/20260906160000_s3_34_peotteok_history.sql",
+      "supabase/migrations/20260906170000_push_control_subscriptions_rls.sql",
+      "supabase/migrations/20260906233000_product_onboarding_progress.sql",
       "services/api-nest/src/adapters/adapters.admin.service.ts",
       "services/api-nest/src/trades/index.ts",
       "services/api-nest/src/trades/trades.execution.service.ts",
       "services/api-nest/src/trades/trades.module.ts",
+      "services/api-nest/src/wallet/krw-deposit.service.ts",
       "services/api-nest/src/wallet/resend-email.provider.ts",
+      "services/api-nest/src/wallet/wallet.types.ts",
       "services/api-nest/src/wallet/withdraw-intent.service.ts"
     ],
     "QA6": [
@@ -306,6 +335,7 @@
       "services/api-nest/src/common/turnstile.guard.ts",
       "services/api-nest/src/common/turnstile.selftest.cjs",
       "services/api-nest/src/common/turnstile.service.ts",
+      "services/api-nest/src/ledger/payout-reservation.selftest.ts",
       "services/api-nest/src/ledger/payout-reservation.service.ts",
       "services/api-nest/src/matching-policy/matching-policy.admin.controller.ts",
       "services/api-nest/src/matching-policy/matching-policy.admin.service.ts",
@@ -315,6 +345,14 @@
       "services/api-nest/src/matching-policy/matching-policy.runtime.test.ts",
       "services/api-nest/src/matching-policy/matching-policy.service.ts",
       "services/api-nest/src/opportunities/participate.atomicity.selftest.ts",
+      "services/api-nest/src/product-onboarding/product-onboarding.lesson.ts",
+      "services/api-nest/src/product-onboarding/product-onboarding.module.ts",
+      "services/api-nest/src/product-onboarding/product-onboarding.parse.ts",
+      "services/api-nest/src/product-onboarding/product-onboarding.routes.ts",
+      "services/api-nest/src/product-onboarding/product-onboarding.runtime.test.ts",
+      "services/api-nest/src/product-onboarding/product-onboarding.service.ts",
+      "services/api-nest/src/product-onboarding/product-onboarding.store.ts",
+      "services/api-nest/src/product-onboarding/product-onboarding.user.controller.ts",
       "services/api-nest/src/trades/authoritative-success.runtime.test.ts",
       "services/api-nest/src/trades/authoritative-success.ts",
       "services/api-nest/src/trades/trades.admin.controller.ts",
@@ -329,6 +367,7 @@
       "services/api-nest/src/wallet/withdraw-coverage.ts",
       "services/api-nest/src/wallet/withdraw-treasury-solvency.ts",
       "services/api-nest/turnstile.policy.cjs",
+      "supabase/migrations/20260904060000_krw_deposit_bank_snapshot.sql",
       "supabase/migrations/20260905110000_classic_signup_sessions_and_admin.sql",
       "supabase/migrations/20260906060000_payout_reservation_and_execution_confirm.sql",
       "supabase/migrations/20260906120000_admin_identity_sessions.sql",
@@ -336,6 +375,8 @@
       "supabase/migrations/20260906140000_s3_32_consent_versions.sql",
       "supabase/migrations/20260906150000_s3_33_product_pipeline.sql",
       "supabase/migrations/20260906160000_s3_34_peotteok_history.sql",
+      "supabase/migrations/20260906170000_push_control_subscriptions_rls.sql",
+      "supabase/migrations/20260906233000_product_onboarding_progress.sql",
       "services/api-nest/auth-rate-limit.cjs",
       "services/api-nest/clock.core.cjs",
       "services/api-nest/src/adapters/adapters.admin.service.ts",
@@ -365,7 +406,9 @@
       "services/api-nest/src/trades/index.ts",
       "services/api-nest/src/trades/trades.execution.service.ts",
       "services/api-nest/src/trades/trades.module.ts",
+      "services/api-nest/src/wallet/krw-deposit.service.ts",
       "services/api-nest/src/wallet/resend-email.provider.ts",
+      "services/api-nest/src/wallet/wallet.types.ts",
       "services/api-nest/src/wallet/withdraw-intent.service.ts"
     ],
     "QA9": [
@@ -765,8 +808,12 @@
       "kind": "added",
       "owning_commit": "247486f3a8ee360c38234b284bae889a9ddada65",
       "owning_subject": "feat(admin): add durable identity login, MFA, and maker-checker.",
-      "commit_count": 1,
+      "commit_count": 2,
       "commits": [
+        {
+          "sha": "92b2c8116ea1ba713292357d5fae7bb8162d9556",
+          "subject": "아이디·비밀번호가 아니라 사람 확인 문이 먼저 닫혀 있었다. 스테이징만 열고 관리자 경로를 손님 로그인과 섞지 않는다."
+        },
         {
           "sha": "247486f3a8ee360c38234b284bae889a9ddada65",
           "subject": "feat(admin): add durable identity login, MFA, and maker-checker."
@@ -1026,8 +1073,12 @@
       "kind": "added",
       "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
       "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
-      "commit_count": 2,
+      "commit_count": 3,
       "commits": [
+        {
+          "sha": "92b2c8116ea1ba713292357d5fae7bb8162d9556",
+          "subject": "아이디·비밀번호가 아니라 사람 확인 문이 먼저 닫혀 있었다. 스테이징만 열고 관리자 경로를 손님 로그인과 섞지 않는다."
+        },
         {
           "sha": "d2ab282e67c38cfb871543e09210acab2315cc8a",
           "subject": "feat(auth): close user signup, Kakao seed, and Turnstile replay."
@@ -1053,8 +1104,12 @@
       "kind": "added",
       "owning_commit": "d2ab282e67c38cfb871543e09210acab2315cc8a",
       "owning_subject": "feat(auth): close user signup, Kakao seed, and Turnstile replay.",
-      "commit_count": 1,
+      "commit_count": 2,
       "commits": [
+        {
+          "sha": "92b2c8116ea1ba713292357d5fae7bb8162d9556",
+          "subject": "아이디·비밀번호가 아니라 사람 확인 문이 먼저 닫혀 있었다. 스테이징만 열고 관리자 경로를 손님 로그인과 섞지 않는다."
+        },
         {
           "sha": "d2ab282e67c38cfb871543e09210acab2315cc8a",
           "subject": "feat(auth): close user signup, Kakao seed, and Turnstile replay."
@@ -1076,8 +1131,12 @@
       "kind": "added",
       "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
       "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
-      "commit_count": 2,
+      "commit_count": 3,
       "commits": [
+        {
+          "sha": "92b2c8116ea1ba713292357d5fae7bb8162d9556",
+          "subject": "아이디·비밀번호가 아니라 사람 확인 문이 먼저 닫혀 있었다. 스테이징만 열고 관리자 경로를 손님 로그인과 섞지 않는다."
+        },
         {
           "sha": "d2ab282e67c38cfb871543e09210acab2315cc8a",
           "subject": "feat(auth): close user signup, Kakao seed, and Turnstile replay."
@@ -1099,12 +1158,39 @@
       ]
     },
     {
+      "path": "services/api-nest/src/ledger/payout-reservation.selftest.ts",
+      "kind": "added",
+      "owning_commit": "0eff117c3cd16b2523e74a41242d554d1ae1e465",
+      "owning_subject": "매칭 수익은 MATCH_PROFIT_EXPENSE만 쓰고, 없으면 같은 거래에서 롤백한다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "0eff117c3cd16b2523e74a41242d554d1ae1e465",
+          "subject": "매칭 수익은 MATCH_PROFIT_EXPENSE만 쓰고, 없으면 같은 거래에서 롤백한다."
+        }
+      ],
+      "category": "LEDGER",
+      "reason": "Idempotency/ledger fingerprint drift. Money truth must be re-proven.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA3",
+        "QA4",
+        "QA8"
+      ]
+    },
+    {
       "path": "services/api-nest/src/ledger/payout-reservation.service.ts",
       "kind": "added",
       "owning_commit": "c92a9d440be473ac253596de5cfd926737ed0065",
       "owning_subject": "fix(money): credit match profit from in-app ledger, not on-chain pool",
-      "commit_count": 1,
+      "commit_count": 2,
       "commits": [
+        {
+          "sha": "0eff117c3cd16b2523e74a41242d554d1ae1e465",
+          "subject": "매칭 수익은 MATCH_PROFIT_EXPENSE만 쓰고, 없으면 같은 거래에서 롤백한다."
+        },
         {
           "sha": "c92a9d440be473ac253596de5cfd926737ed0065",
           "subject": "fix(money): credit match profit from in-app ledger, not on-chain pool"
@@ -1311,6 +1397,182 @@
       ]
     },
     {
+      "path": "services/api-nest/src/product-onboarding/product-onboarding.lesson.ts",
+      "kind": "added",
+      "owning_commit": "a7b0999132cc2960838b4b6502f05975e2cc5484",
+      "owning_subject": "제품 온보딩 7단계를 서버 상태에 묶고, 가입 방식과 무관하게 같은 다음 경로로 보낸다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "a7b0999132cc2960838b4b6502f05975e2cc5484",
+          "subject": "제품 온보딩 7단계를 서버 상태에 묶고, 가입 방식과 무관하게 같은 다음 경로로 보낸다."
+        }
+      ],
+      "category": "PRODUCT_ONBOARDING",
+      "reason": "Server onboarding lesson/route. Not a ledger writer. Post-auth entry stays server-owned.",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/product-onboarding/product-onboarding.module.ts",
+      "kind": "added",
+      "owning_commit": "a7b0999132cc2960838b4b6502f05975e2cc5484",
+      "owning_subject": "제품 온보딩 7단계를 서버 상태에 묶고, 가입 방식과 무관하게 같은 다음 경로로 보낸다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "a7b0999132cc2960838b4b6502f05975e2cc5484",
+          "subject": "제품 온보딩 7단계를 서버 상태에 묶고, 가입 방식과 무관하게 같은 다음 경로로 보낸다."
+        }
+      ],
+      "category": "PRODUCT_ONBOARDING",
+      "reason": "Server onboarding lesson/route. Not a ledger writer. Post-auth entry stays server-owned.",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/product-onboarding/product-onboarding.parse.ts",
+      "kind": "added",
+      "owning_commit": "a7b0999132cc2960838b4b6502f05975e2cc5484",
+      "owning_subject": "제품 온보딩 7단계를 서버 상태에 묶고, 가입 방식과 무관하게 같은 다음 경로로 보낸다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "a7b0999132cc2960838b4b6502f05975e2cc5484",
+          "subject": "제품 온보딩 7단계를 서버 상태에 묶고, 가입 방식과 무관하게 같은 다음 경로로 보낸다."
+        }
+      ],
+      "category": "PRODUCT_ONBOARDING",
+      "reason": "Server onboarding lesson/route. Not a ledger writer. Post-auth entry stays server-owned.",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/product-onboarding/product-onboarding.routes.ts",
+      "kind": "added",
+      "owning_commit": "a7b0999132cc2960838b4b6502f05975e2cc5484",
+      "owning_subject": "제품 온보딩 7단계를 서버 상태에 묶고, 가입 방식과 무관하게 같은 다음 경로로 보낸다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "a7b0999132cc2960838b4b6502f05975e2cc5484",
+          "subject": "제품 온보딩 7단계를 서버 상태에 묶고, 가입 방식과 무관하게 같은 다음 경로로 보낸다."
+        }
+      ],
+      "category": "PRODUCT_ONBOARDING",
+      "reason": "Server onboarding lesson/route. Not a ledger writer. Post-auth entry stays server-owned.",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/product-onboarding/product-onboarding.runtime.test.ts",
+      "kind": "added",
+      "owning_commit": "a7b0999132cc2960838b4b6502f05975e2cc5484",
+      "owning_subject": "제품 온보딩 7단계를 서버 상태에 묶고, 가입 방식과 무관하게 같은 다음 경로로 보낸다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "a7b0999132cc2960838b4b6502f05975e2cc5484",
+          "subject": "제품 온보딩 7단계를 서버 상태에 묶고, 가입 방식과 무관하게 같은 다음 경로로 보낸다."
+        }
+      ],
+      "category": "PRODUCT_ONBOARDING",
+      "reason": "Server onboarding lesson/route. Not a ledger writer. Post-auth entry stays server-owned.",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/product-onboarding/product-onboarding.service.ts",
+      "kind": "added",
+      "owning_commit": "a7b0999132cc2960838b4b6502f05975e2cc5484",
+      "owning_subject": "제품 온보딩 7단계를 서버 상태에 묶고, 가입 방식과 무관하게 같은 다음 경로로 보낸다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "a7b0999132cc2960838b4b6502f05975e2cc5484",
+          "subject": "제품 온보딩 7단계를 서버 상태에 묶고, 가입 방식과 무관하게 같은 다음 경로로 보낸다."
+        }
+      ],
+      "category": "PRODUCT_ONBOARDING",
+      "reason": "Server onboarding lesson/route. Not a ledger writer. Post-auth entry stays server-owned.",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/product-onboarding/product-onboarding.store.ts",
+      "kind": "added",
+      "owning_commit": "a7b0999132cc2960838b4b6502f05975e2cc5484",
+      "owning_subject": "제품 온보딩 7단계를 서버 상태에 묶고, 가입 방식과 무관하게 같은 다음 경로로 보낸다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "a7b0999132cc2960838b4b6502f05975e2cc5484",
+          "subject": "제품 온보딩 7단계를 서버 상태에 묶고, 가입 방식과 무관하게 같은 다음 경로로 보낸다."
+        }
+      ],
+      "category": "PRODUCT_ONBOARDING",
+      "reason": "Server onboarding lesson/route. Not a ledger writer. Post-auth entry stays server-owned.",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/product-onboarding/product-onboarding.user.controller.ts",
+      "kind": "added",
+      "owning_commit": "a7b0999132cc2960838b4b6502f05975e2cc5484",
+      "owning_subject": "제품 온보딩 7단계를 서버 상태에 묶고, 가입 방식과 무관하게 같은 다음 경로로 보낸다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "a7b0999132cc2960838b4b6502f05975e2cc5484",
+          "subject": "제품 온보딩 7단계를 서버 상태에 묶고, 가입 방식과 무관하게 같은 다음 경로로 보낸다."
+        }
+      ],
+      "category": "PRODUCT_ONBOARDING",
+      "reason": "Server onboarding lesson/route. Not a ledger writer. Post-auth entry stays server-owned.",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
       "path": "services/api-nest/src/push/push.public.controller.ts",
       "kind": "added",
       "owning_commit": "902a355cf244aa752354a7df17f648fedd8a3118",
@@ -1432,8 +1694,12 @@
       "kind": "added",
       "owning_commit": "f29a8e0679f808182f3f33a9ae7269f0e7aeeced",
       "owning_subject": "fix(money): close success-vs-safe-stop double-journal race in trade settlement (Step 7.2)",
-      "commit_count": 2,
+      "commit_count": 3,
       "commits": [
+        {
+          "sha": "0eff117c3cd16b2523e74a41242d554d1ae1e465",
+          "subject": "매칭 수익은 MATCH_PROFIT_EXPENSE만 쓰고, 없으면 같은 거래에서 롤백한다."
+        },
         {
           "sha": "c92a9d440be473ac253596de5cfd926737ed0065",
           "subject": "fix(money): credit match profit from in-app ledger, not on-chain pool"
@@ -1677,8 +1943,12 @@
       "kind": "added",
       "owning_commit": "d2ab282e67c38cfb871543e09210acab2315cc8a",
       "owning_subject": "feat(auth): close user signup, Kakao seed, and Turnstile replay.",
-      "commit_count": 1,
+      "commit_count": 2,
       "commits": [
+        {
+          "sha": "92b2c8116ea1ba713292357d5fae7bb8162d9556",
+          "subject": "아이디·비밀번호가 아니라 사람 확인 문이 먼저 닫혀 있었다. 스테이징만 열고 관리자 경로를 손님 로그인과 섞지 않는다."
+        },
         {
           "sha": "d2ab282e67c38cfb871543e09210acab2315cc8a",
           "subject": "feat(auth): close user signup, Kakao seed, and Turnstile replay."
@@ -1692,6 +1962,31 @@
       "required_rerun": [
         "QA1",
         "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "supabase/migrations/20260904060000_krw_deposit_bank_snapshot.sql",
+      "kind": "added",
+      "owning_commit": "9ee04677e9f656991c678d6575e2293a3b95880c",
+      "owning_subject": "S4: UNIQUE_AND_REQUIRED만 통합하고 후보 SHA를 이 커밋에서 동결한다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "9ee04677e9f656991c678d6575e2293a3b95880c",
+          "subject": "S4: UNIQUE_AND_REQUIRED만 통합하고 후보 SHA를 이 커밋에서 동결한다."
+        }
+      ],
+      "category": "DB_MIGRATION",
+      "reason": "Schema/ledger change after Engine baseline. Formal rebase must re-prove money invariants.",
+      "security_impact": "HIGH",
+      "schema_impact": true,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA3",
+        "QA4",
+        "QA5",
         "QA8"
       ]
     },
@@ -1729,8 +2024,12 @@
       "kind": "added",
       "owning_commit": "c92a9d440be473ac253596de5cfd926737ed0065",
       "owning_subject": "fix(money): credit match profit from in-app ledger, not on-chain pool",
-      "commit_count": 2,
+      "commit_count": 3,
       "commits": [
+        {
+          "sha": "0eff117c3cd16b2523e74a41242d554d1ae1e465",
+          "subject": "매칭 수익은 MATCH_PROFIT_EXPENSE만 쓰고, 없으면 같은 거래에서 롤백한다."
+        },
         {
           "sha": "c1854376fd48c1da8fdda3f22a1744e77a052117",
           "subject": "fix(engine): pay match profit only after an authoritative event"
@@ -1863,6 +2162,56 @@
         {
           "sha": "b0cef6576a59b73761216004753060b5ef35af54",
           "subject": "feat(peotteok): persist chat history with citations and IME on the server."
+        }
+      ],
+      "category": "DB_MIGRATION",
+      "reason": "Schema/ledger change after Engine baseline. Formal rebase must re-prove money invariants.",
+      "security_impact": "HIGH",
+      "schema_impact": true,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "supabase/migrations/20260906170000_push_control_subscriptions_rls.sql",
+      "kind": "added",
+      "owning_commit": "65ab999bfdf7ad0067036b3151785c22c92bf354",
+      "owning_subject": "BrowserStack MCP·Render CLI·push RLS 프로덕션 적용.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "65ab999bfdf7ad0067036b3151785c22c92bf354",
+          "subject": "BrowserStack MCP·Render CLI·push RLS 프로덕션 적용."
+        }
+      ],
+      "category": "DB_MIGRATION",
+      "reason": "Schema/ledger change after Engine baseline. Formal rebase must re-prove money invariants.",
+      "security_impact": "HIGH",
+      "schema_impact": true,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "supabase/migrations/20260906233000_product_onboarding_progress.sql",
+      "kind": "added",
+      "owning_commit": "133502539a2d7b7d41e67a1c6ae298651b9d0543",
+      "owning_subject": "S5: 온보딩 진행 테이블을 unapplied로 정직하게 올리고 REL-504 카운트를 맞춘다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "133502539a2d7b7d41e67a1c6ae298651b9d0543",
+          "subject": "S5: 온보딩 진행 테이블을 unapplied로 정직하게 올리고 REL-504 카운트를 맞춘다."
         }
       ],
       "category": "DB_MIGRATION",
@@ -2085,8 +2434,12 @@
       "kind": "mutated",
       "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
       "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
-      "commit_count": 3,
+      "commit_count": 4,
       "commits": [
+        {
+          "sha": "a7b0999132cc2960838b4b6502f05975e2cc5484",
+          "subject": "제품 온보딩 7단계를 서버 상태에 묶고, 가입 방식과 무관하게 같은 다음 경로로 보낸다."
+        },
         {
           "sha": "e929a308d0849d4375152512e48a5fb94afc29c2",
           "subject": "feat(matching): enforce per-user product policy on the server."
@@ -2357,8 +2710,12 @@
       "kind": "mutated",
       "owning_commit": "d2ab282e67c38cfb871543e09210acab2315cc8a",
       "owning_subject": "feat(auth): close user signup, Kakao seed, and Turnstile replay.",
-      "commit_count": 2,
+      "commit_count": 3,
       "commits": [
+        {
+          "sha": "0f2fea9565fea4a94974f1498e770ce47963ad39",
+          "subject": "S5: 계정 삭제 시 온보딩 진행 행을 지우도록 분류하고 REL-502 실측만 갱신한다."
+        },
         {
           "sha": "b0cef6576a59b73761216004753060b5ef35af54",
           "subject": "feat(peotteok): persist chat history with citations and IME on the server."
@@ -2622,8 +2979,12 @@
       "kind": "mutated",
       "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
       "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
-      "commit_count": 1,
+      "commit_count": 2,
       "commits": [
+        {
+          "sha": "92b2c8116ea1ba713292357d5fae7bb8162d9556",
+          "subject": "아이디·비밀번호가 아니라 사람 확인 문이 먼저 닫혀 있었다. 스테이징만 열고 관리자 경로를 손님 로그인과 섞지 않는다."
+        },
         {
           "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
           "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
@@ -3059,6 +3420,30 @@
       ]
     },
     {
+      "path": "services/api-nest/src/wallet/krw-deposit.service.ts",
+      "kind": "mutated",
+      "owning_commit": "9ee04677e9f656991c678d6575e2293a3b95880c",
+      "owning_subject": "S4: UNIQUE_AND_REQUIRED만 통합하고 후보 SHA를 이 커밋에서 동결한다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "9ee04677e9f656991c678d6575e2293a3b95880c",
+          "subject": "S4: UNIQUE_AND_REQUIRED만 통합하고 후보 SHA를 이 커밋에서 동결한다."
+        }
+      ],
+      "category": "MONEY_WALLET",
+      "reason": "Wallet/TRON/withdraw path. Synthetic HMAC derivation remains forbidden. Vault still external.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
       "path": "services/api-nest/src/wallet/resend-email.provider.ts",
       "kind": "mutated",
       "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
@@ -3072,6 +3457,30 @@
         {
           "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
           "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "MONEY_WALLET",
+      "reason": "Wallet/TRON/withdraw path. Synthetic HMAC derivation remains forbidden. Vault still external.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/wallet/wallet.types.ts",
+      "kind": "mutated",
+      "owning_commit": "9ee04677e9f656991c678d6575e2293a3b95880c",
+      "owning_subject": "S4: UNIQUE_AND_REQUIRED만 통합하고 후보 SHA를 이 커밋에서 동결한다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "9ee04677e9f656991c678d6575e2293a3b95880c",
+          "subject": "S4: UNIQUE_AND_REQUIRED만 통합하고 후보 SHA를 이 커밋에서 동결한다."
         }
       ],
       "category": "MONEY_WALLET",

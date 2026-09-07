@@ -393,6 +393,16 @@ function classify(rel) {
       required_rerun: ["QA3", "QA4", "QA8"],
     };
   }
+  if (p.includes("product-onboarding")) {
+    return {
+      category: "PRODUCT_ONBOARDING",
+      reason: "Server onboarding lesson/route. Not a ledger writer. Post-auth entry stays server-owned.",
+      security_impact: "MEDIUM",
+      schema_impact: false,
+      prompt_impact: false,
+      required_rerun: ["QA2", "QA8"],
+    };
+  }
   if (p.includes("clock.core")) {
     return {
       category: "DOMAIN_CLOCK",
