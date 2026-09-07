@@ -94,7 +94,8 @@ function isTransientNavigationError(error) {
     /frame was detached/i.test(msg) ||
     /Target closed/i.test(msg) ||
     /Cannot find context/i.test(msg) ||
-    /Execution context was destroyed/i.test(msg)
+    /Execution context was destroyed/i.test(msg) ||
+    /REL-603 preview HTTP 5\d\d/i.test(msg)
   );
 }
 
@@ -135,7 +136,14 @@ async function gotoOnce(page, cohort, scenario) {
     timeout: GOTO_TIMEOUT_MS,
   });
   expect(res, cohort.id + " " + scenario.id + " response").not.toBeNull();
-  expect(scenario.expectStatus).toContain(res.status());
+  const status = res.status();
+  // Same GOTO_ATTEMPTS bound as network throw — HTTP 5xx/530 retry is not a skip.
+  if (status >= 500) {
+    throw new Error(
+      "REL-603 preview HTTP " + status + " " + url,
+    );
+  }
+  expect(scenario.expectStatus).toContain(status);
   await hideNextDevChrome(page);
   await stabilizePage(page);
   return res;
@@ -207,7 +215,16 @@ async function assertNoHorizontalOverflow(page, label) {
 
 async function assertSurfaceSafety(page, cohort, scenario) {
   await stabilizePage(page);
-  const html = await page.content();
+  let html;
+  try {
+    html = await page.content();
+  } catch (error) {
+    const msg = String(error?.message || error);
+    if (!/navigating and changing the content/i.test(msg)) throw error;
+    await page.waitForLoadState("domcontentloaded").catch(() => {});
+    await stabilizePage(page);
+    html = await page.content();
+  }
   const bad = forbiddenHit(html);
   expect(bad, cohort.id + " " + scenario.id + " forbidden token").toBeNull();
   expect(
