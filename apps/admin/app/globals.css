@@ -294,11 +294,30 @@ summary {
 }
 
 .admin-session-form > p,
-.admin-session-note {
+.admin-session-note,
+.turnstile-block-help {
   margin: 0;
   color: var(--color-lux-text-muted);
   font-size: 0.78rem;
   line-height: 1.55;
+}
+
+.turnstile-block {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0.35rem 0 0.15rem;
+}
+
+.admin-session-form [data-testid="turnstile-field"] {
+  min-height: 4.5rem;
+}
+
+.admin-session-form button:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+  background: #2a3140;
+  border-color: var(--color-lux-border);
+  color: #929caf;
 }
 
 .admin-session-field-row {

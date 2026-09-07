@@ -27,7 +27,8 @@
     "ebayImg": "https://i.ebayimg.com",
     "pokemonImg": "https://images.pokemontcg.io",
     "ygoImg": "https://images.ygoprodeck.com",
-    "r2Dev": "https://asset-images.r2.dev"
+    "r2Dev": "https://asset-images.r2.dev",
+    "turnstile": "https://challenges.cloudflare.com"
   },
   "allowedHostWildcard": ["https://*.r2.cloudflarestorage.com"],
   "forbiddenCspSources": ["*", "https:", "http:", "'unsafe-eval'"],
@@ -36,6 +37,7 @@
     "scriptUnsafeEvalDevOnly": "Non-production next dest webpack/turbopack only. Production CSP must keep unsafe-eval forbidden.",
     "jsdelivr": "Current Pretendard @import in lux-theme.css.",
     "r2Wildcard": "Same REL-013 exception as image-hosts **.r2.cloudflarestorage.com.",
-    "sw": "worker-src 'self' keeps /sw.js registration."
+    "sw": "worker-src 'self' keeps /sw.js registration.",
+    "turnstile": "Managed checkbox widget. script/frame/connect only. Not a wildcard."
   }
 }

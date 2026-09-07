@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useId, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { T } from "../../copy/ko";
 import { isTurnstileReady, turnstileSiteKey } from "./turnstile-ready";
 
 type Props = {
   action: string;
   onToken: (token: string) => void;
+  theme?: "light" | "dark" | "auto";
 };
 
 type TurnstileApi = {
@@ -15,6 +16,8 @@ type TurnstileApi = {
     opts: {
       sitekey: string;
       action?: string;
+      theme?: "light" | "dark" | "auto";
+      appearance?: "always" | "execute" | "interaction-only";
       callback?: (token: string) => void;
       "expired-callback"?: () => void;
       "error-callback"?: () => void;
@@ -29,20 +32,20 @@ function getApi(): TurnstileApi | null {
   return w.turnstile ?? null;
 }
 
-export function TurnstileField({ action, onToken }: Props) {
-  const hostId = useId();
+export function TurnstileField({ action, onToken, theme = "auto" }: Props) {
+  const hostRef = useRef<HTMLDivElement | null>(null);
   const widgetId = useRef<string | null>(null);
   const ready = isTurnstileReady();
 
   useEffect(() => {
     if (!ready) return;
-    const host = document.getElementById(hostId);
+    const host = hostRef.current;
     if (!host) return;
     let cancelled = false;
 
     function mount() {
       const api = getApi();
-      if (!api || cancelled) return;
+      if (!api || cancelled || !host) return;
       if (widgetId.current) {
         try {
           api.remove(widgetId.current);
@@ -50,9 +53,11 @@ export function TurnstileField({ action, onToken }: Props) {
           /* ignore */
         }
       }
-      widgetId.current = api.render(host!, {
+      widgetId.current = api.render(host, {
         sitekey: turnstileSiteKey(),
         action,
+        theme,
+        appearance: "always",
         callback: (token) => onToken(token),
         "expired-callback": () => onToken(""),
         "error-callback": () => onToken(""),
@@ -86,14 +91,15 @@ export function TurnstileField({ action, onToken }: Props) {
         }
       }
     };
-  }, [action, hostId, onToken, ready]);
+  }, [action, onToken, ready, theme]);
 
   if (!ready) {
     return (
       <p
-        className="text-xs text-lux-text-muted"
+        className="admin-session-note"
         data-testid="turnstile-unavailable"
         data-turnstile="not-configured"
+        role="status"
       >
         {T.authClassic.turnstileNeeded}
       </p>
@@ -101,11 +107,14 @@ export function TurnstileField({ action, onToken }: Props) {
   }
 
   return (
-    <div
-      id={hostId}
-      data-testid="turnstile-field"
-      data-turnstile-action={action}
-      className="min-h-16"
-    />
+    <div className="turnstile-block" data-turnstile-block="ready">
+      <p className="turnstile-block-help">{T.authClassic.turnstileHelp}</p>
+      <div
+        ref={hostRef}
+        data-testid="turnstile-field"
+        data-turnstile-action={action}
+        className="min-h-16"
+      />
+    </div>
   );
 }

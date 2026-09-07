@@ -83,8 +83,15 @@ export function AdminLoginForm() {
             value={secret}
             onChange={(event) => setSecret(event.target.value)}
           />
-          <TurnstileField action="admin-login" onToken={setTurnstileToken} />
-          <button type="submit" disabled={busy || !turnstileReady || !turnstileToken}>
+          <TurnstileField
+            action="admin-login"
+            theme="dark"
+            onToken={setTurnstileToken}
+          />
+          <button
+            type="submit"
+            disabled={busy || !turnstileReady || !turnstileToken}
+          >
             {T.admin.session.login}
           </button>
         </form>

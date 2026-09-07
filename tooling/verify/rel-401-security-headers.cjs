@@ -76,9 +76,19 @@ for (const host of [
   spec.hosts.app,
   spec.hosts.pretendard,
   spec.hosts.ebayImg,
+  spec.hosts.turnstile,
   "https://*.r2.cloudflarestorage.com",
 ]) {
   if (!prodCsp.includes(host)) fails.push("document CSP missing " + host);
+}
+if (!/script-src[^;]*challenges\.cloudflare\.com/.test(prodCsp)) {
+  fails.push("document CSP must allow Turnstile script-src");
+}
+if (!/frame-src[^;]*challenges\.cloudflare\.com/.test(prodCsp)) {
+  fails.push("document CSP must allow Turnstile frame-src");
+}
+if (!/connect-src[^;]*challenges\.cloudflare\.com/.test(prodCsp)) {
+  fails.push("document CSP must allow Turnstile connect-src");
 }
 if (!prodCsp.includes("worker-src 'self'")) {
   fails.push("document CSP must keep worker-src 'self' for /sw.js");

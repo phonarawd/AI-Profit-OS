@@ -48,7 +48,7 @@ function documentConnectSrc(spec, production) {
 
 function documentCsp(spec, production) {
   const h = spec.hosts;
-  const script = ["'self'", "'unsafe-inline'"];
+  const script = ["'self'", "'unsafe-inline'", h.turnstile];
   if (!production) {
     // next dest webpack/turbopack hydrate uses eval(). Production CSP stays fail-closed.
     script.push("'unsafe-eval'");
@@ -56,6 +56,7 @@ function documentCsp(spec, production) {
   const directives = {
     "default-src": ["'self'"],
     "script-src": script,
+    "frame-src": [h.turnstile],
     "style-src": ["'self'", "'unsafe-inline'", h.pretendard],
     "img-src": [
       "'self'",
@@ -67,7 +68,7 @@ function documentCsp(spec, production) {
       h.r2Dev,
       spec.allowedHostWildcard[0],
     ],
-    "connect-src": documentConnectSrc(spec, production),
+    "connect-src": unique([...documentConnectSrc(spec, production), h.turnstile]),
     "font-src": ["'self'", "data:", h.pretendard],
     "worker-src": ["'self'"],
     "manifest-src": ["'self'"],
