@@ -76,6 +76,12 @@ if (loginUi.includes("connectAdminSession")) {
 if (!loginUi.includes("TurnstileField") || !loginUi.includes('action="admin-login"')) {
   fail("login form must fail-closed with Turnstile admin-login");
 }
+if (!loginUi.includes("confirmCode") || !loginUi.includes("backupCode")) {
+  fail("MFA step must use confirm/backup copy, not the password-login hint");
+}
+if (loginUi.includes('htmlFor="admin-login-code">{T.admin.login.description}')) {
+  fail("MFA code field must not reuse the password-login description");
+}
 
 const authCtrl = read("services/api-nest/src/common/admin-auth.controller.ts");
 if (!/@Post\("login"\)[\s\S]{0,120}@UseGuards\(TurnstileGuard\)/.test(authCtrl)) {

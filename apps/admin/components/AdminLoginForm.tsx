@@ -47,7 +47,7 @@ export function AdminLoginForm() {
     const ok = await finishAdminLogin(challengeId, confirmCode, backup, turnstileToken);
     setBusy(false);
     if (!ok) {
-      setNote(T.admin.usersList.retry);
+      setNote(T.admin.login.confirmFailed);
       return;
     }
     window.location.assign("/admin");
@@ -60,8 +60,10 @@ export function AdminLoginForm() {
       data-path={ADMIN_LOGIN_PATH}
     >
       <div className="admin-session-copy">
-        <strong>{T.admin.login.title}</strong>
-        <span>{T.admin.login.description}</span>
+        <strong>{challengeId ? T.admin.login.confirmTitle : T.admin.login.title}</strong>
+        <span>
+          {challengeId ? T.admin.login.confirmDescription : T.admin.login.description}
+        </span>
       </div>
 
       {!challengeId ? (
@@ -97,16 +99,19 @@ export function AdminLoginForm() {
         </form>
       ) : (
         <form className="admin-session-form" onSubmit={onFinish}>
-          <label htmlFor="admin-login-code">{T.admin.login.description}</label>
+          <label htmlFor="admin-login-code">{T.admin.login.confirmCode}</label>
           <input
             id="admin-login-code"
             name="code"
             inputMode="numeric"
             autoComplete="one-time-code"
+            maxLength={8}
             value={confirmCode}
-            onChange={(event) => setConfirmCode(event.target.value)}
+            onChange={(event) =>
+              setConfirmCode(event.target.value.replace(/[^\d]/g, "").slice(0, 8))
+            }
           />
-          <label htmlFor="admin-login-backup">{T.admin.usersList.retry}</label>
+          <label htmlFor="admin-login-backup">{T.admin.login.backupCode}</label>
           <input
             id="admin-login-backup"
             name="backupCode"
@@ -114,8 +119,11 @@ export function AdminLoginForm() {
             value={backup}
             onChange={(event) => setBackup(event.target.value)}
           />
-          <button type="submit" disabled={busy}>
-            {T.admin.session.login}
+          <button
+            type="submit"
+            disabled={busy || confirmCode.replace(/\D/g, "").length < 6}
+          >
+            {T.admin.login.confirmSubmit}
           </button>
         </form>
       )}
