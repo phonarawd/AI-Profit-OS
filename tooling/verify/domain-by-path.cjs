@@ -15,6 +15,23 @@ const root = path.resolve(__dirname, "../..");
 const RULES = [
   {
     test: (f) =>
+      /^tooling\/verify\/(gate-runner|gate-tiers|gate-fast|gate-push|gate|web-lint|api-nest-build|gate-local-speed)\.cjs$/.test(
+        f,
+      ) ||
+      /^tooling\/verify\/lib\/(gate-stamp|run-verify-in-process|verify-input-cache)\.cjs$/.test(
+        f,
+      ) ||
+      /^tooling\/verify\/stubs\/run-all\.cjs$/.test(f),
+    scripts: ["gate-local-speed.cjs"],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\//.test(f) ||
+      /^tooling\/verify\/api-nest-build\.cjs$/.test(f),
+    scripts: ["api-nest-build.cjs"],
+  },
+  {
+    test: (f) =>
       /^\.cursor\/hooks(\/|$)/.test(f) ||
       /^\.cursor\/hooks\.json$/.test(f) ||
       /^\.cursor\/rules\/project-isolation/.test(f) ||

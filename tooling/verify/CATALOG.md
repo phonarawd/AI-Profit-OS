@@ -10,6 +10,8 @@
 
 경로 기반 T0 도메인 = `tooling/verify/domain-by-path.cjs` (변경 파일 → 해당 `verify:*`만).
 
+로컬 가속(검사 목록 불변): stamp skip · stub in-process+cache · web-lint --cache · api-nest-build path+T2. CI/`AIPO_GATE_NO_STAMP=1` 실실행.
+
 ## T1 push tier (infra · domain stubs)
 
 | id | 스크립트 | tier | 상태 |
@@ -38,7 +40,7 @@
 | ia-tabs | `verify:ia-tabs` | T1 | ✅ live |
 | admin-routes | `verify:admin-routes` | T1 | ✅ live |
 | admin-novice-ui | `verify:admin-novice-ui` | T0 path | ✅ live (초보 관리자용 한국어 · 반응형 셸 · 접근성 · 상태 진실성) |
-| api-nest-build | `verify:api-nest-build` | T1 | ✅ live |
+| api-nest-build | `verify:api-nest-build` | T0 path + T2 always | ✅ live |
 | packages-ui-typecheck | `verify:packages-ui-typecheck` | T0 path (packages/ui/**) | ✅ live (D1-BLK-004 · standalone tsc · negative fixture · 기존 앱별 typecheck과 중복/충돌 0) |
 | stubs/run-all | domain stubs | T1 | ✅ live |
 | settlement-rule-parity | `verify:settlement-rule-parity` | T0 path + T1 always | ✅ live (REL-008 · rust==cjs golden vectors · REL-502 대체 0) |
@@ -119,6 +121,8 @@
 | `governance/figma/**` · `tooling/verify/figma-project-registry.cjs` | figma-project-registry |
 | `governance/visual-reconciliation/**` · `tooling/verify/locked-visual-reconciliation.cjs` · locked Account Hub `/me` | locked-visual-reconciliation |
 | `tooling/verify/domain-by-path.cjs` · `tooling/verify/domain-by-path.selftest.cjs` · `tooling/verify/domain-by-path-ci.cjs` · `.github/workflows/gate.yml` | domain-by-path-ci |
+| `tooling/verify/gate-runner.cjs` · `gate-tiers.cjs` · `gate-local-speed.cjs` · `lib/gate-stamp.cjs` · `stubs/run-all.cjs` · `web-lint.cjs` | gate-local-speed |
+| `services/api-nest/**` · `tooling/verify/api-nest-build.cjs` | api-nest-build |
 | `.cursor/hooks/**` · `.cursor/hooks.json` · `scripts/verify-night-guard.mjs` · `tooling/verify/night-guard.cjs` · `scripts/verify-project-boundary.mjs` | night-guard · project-boundary |
 | `tooling/e2e/**` · `tooling/verify/qa-env-isolation-guard.cjs` | qa-env-isolation-guard |
 | `governance/db-recon/**` · b1-push-rls-design · b2-ownership-design · `tooling/verify/db-recon-inventory.cjs` · `tooling/verify/live-schema-forensic.cjs` | db-recon-inventory · live-schema-forensic |

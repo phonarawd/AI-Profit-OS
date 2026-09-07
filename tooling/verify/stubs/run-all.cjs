@@ -1,8 +1,7 @@
 /** Domain stubs — harden when apps/services land; copy/Canon locks run live */
-const { spawnSync } = require("child_process");
 const path = require("path");
+const { runVerifyScript } = require("../lib/run-verify-in-process.cjs");
 
-const root = path.resolve(__dirname, "../..");
 const live = [
   "cta-earn-profit.cjs",
   "user-trader-jargon-0.cjs",
@@ -162,13 +161,16 @@ const live = [
 ];
 
 let failed = false;
+let cacheHits = 0;
+let spawned = 0;
+let inProcess = 0;
 for (const step of live) {
-  const r = spawnSync(process.execPath, [path.join(__dirname, "..", step)], {
-    cwd: root,
-    encoding: "utf8",
-  });
+  const r = runVerifyScript(path.join(__dirname, "..", step));
   process.stdout.write(r.stdout || "");
   process.stderr.write(r.stderr || "");
+  if (r.cached) cacheHits += 1;
+  else if (r.mode === "spawn") spawned += 1;
+  else inProcess += 1;
   if (r.status !== 0) {
     failed = true;
     console.error(`[verify:stubs] FAIL at ${step}`);
@@ -178,5 +180,5 @@ for (const step of live) {
 
 if (failed) process.exit(1);
 console.log(
-  "[verify:stubs] PASS (… · llm-adapter-contract · llm-quota-degrade · ai-coach-fact-only · ai-coach-no-autonomy · ai-general-no-money-tools · ai-lane-router · fact-freshness · answer-trace · user-opportunity-feed · participate-http · execute-rule-loop · catalog-runtime-seed · benefit-hub-surfaces · auth-jwt-runtime live; other domain stubs pending)",
+  `[verify:stubs] PASS (${live.length} live · ${cacheHits} cache hit · ${inProcess} in-process · ${spawned} spawn · llm-adapter-contract · llm-quota-degrade · ai-coach-fact-only · ai-coach-no-autonomy · ai-general-no-money-tools · ai-lane-router · fact-freshness · answer-trace · user-opportunity-feed · participate-http · execute-rule-loop · catalog-runtime-seed · benefit-hub-surfaces · auth-jwt-runtime live; other domain stubs pending)`,
 );

@@ -1,8 +1,8 @@
 /**
  * 3-tier gate SSOT (ADR-016)
- * T0 fast  — commit (~10–30s)
- * T1 push  — push / 슬라이스 품질 (~1–3min)
- * T2 full  — CI / main 합격 (next+opennext 포함)
+ * T0 fast  — commit (~10–30s · stamp hit면 재실행 0)
+ * T1 push  — push / 슬라이스 품질 (stub in-process+cache · nest tsc는 경로 변경 시)
+ * T2 full  — CI / main 합격 (next+opennext+api-nest-build 포함 · stamp 0)
  */
 const { scriptsForChangedFiles, getChangedFiles } = require("./domain-by-path.cjs");
 
@@ -40,12 +40,11 @@ const T1_PUSH = [
   "domain-clock.cjs",
   "db-recovery.cjs",
   "privacy-purge.cjs",
-  "api-nest-build.cjs",
   "stubs/run-all.cjs",
 ];
 
 /** @type {string[]} */
-const T2_CI = ["next-build.cjs", "opennext-build.cjs"];
+const T2_CI = ["api-nest-build.cjs", "next-build.cjs", "opennext-build.cjs"];
 
 function domainSteps() {
   const files = getChangedFiles();
