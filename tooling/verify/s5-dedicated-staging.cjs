@@ -150,6 +150,9 @@ if (!dedicatedWorkflow.includes("NEXT_PUBLIC_TURNSTILE_SITE_KEY")) {
 if (!dedicatedWorkflow.includes("infra/turnstile.public.json")) {
   fails.push("dedicated workflow must fall back to public Turnstile site key file");
 }
+if (!stagingWorkflow.includes("infra/turnstile.public.json")) {
+  fails.push("deploy-staging must bake public Turnstile site key for dedicated slot");
+}
 const turnstilePublic = readJson("infra/turnstile.public.json");
 if (!turnstilePublic.siteKey || String(turnstilePublic.siteKey).length < 10) {
   fails.push("infra/turnstile.public.json must carry a public site key");

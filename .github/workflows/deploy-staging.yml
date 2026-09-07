@@ -68,6 +68,7 @@ jobs:
         env:
           STAGING_API_HOST: ${{ secrets.STAGING_API_HOST }}
           DEPLOY_SLOT: ${{ inputs.slot }}
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
         run: |
           set -euo pipefail
           test -n "${STAGING_API_HOST:-}" || {
@@ -102,7 +103,16 @@ jobs:
               process.exit(1);
             }
           ' "$API"
+          SITE_KEY="${NEXT_PUBLIC_TURNSTILE_SITE_KEY:-}"
+          if [ -z "$SITE_KEY" ]; then
+            SITE_KEY="$(node -e "process.stdout.write(String(require('./infra/turnstile.public.json').siteKey||'').trim())")"
+          fi
+          test -n "$SITE_KEY" || {
+            echo "Missing NEXT_PUBLIC_TURNSTILE_SITE_KEY — dedicated admin login is fail-closed"
+            exit 1
+          }
           printf 'API_HOST=%s\n' "$API" >> .env
+          printf 'NEXT_PUBLIC_TURNSTILE_SITE_KEY=%s\n' "$SITE_KEY" >> .env
 
       - name: Deploy web
         if: inputs.surface == 'web' || inputs.surface == 'all'
