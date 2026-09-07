@@ -73,6 +73,17 @@ if (!loginUi.includes("identifier") || !loginUi.includes('type="password"')) {
 if (loginUi.includes("connectAdminSession")) {
   fail("login form must not exchange a connection code");
 }
+if (!loginUi.includes("TurnstileField") || !loginUi.includes('action="admin-login"')) {
+  fail("login form must fail-closed with Turnstile admin-login");
+}
+
+const authCtrl = read("services/api-nest/src/common/admin-auth.controller.ts");
+if (!/@Post\("login"\)[\s\S]{0,120}@UseGuards\(TurnstileGuard\)/.test(authCtrl)) {
+  fail("password login must stay behind Turnstile");
+}
+if (/@Post\("mfa"\)[\s\S]{0,80}@UseGuards\(TurnstileGuard\)/.test(authCtrl)) {
+  fail("MFA must not replay the login Turnstile token");
+}
 
 const page = read("apps/admin/app/admin/login/page.tsx");
 if (!page.includes("AdminLoginForm")) fail("login route missing");

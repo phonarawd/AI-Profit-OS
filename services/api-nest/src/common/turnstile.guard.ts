@@ -9,10 +9,18 @@ import {
   Injectable,
   ServiceUnavailableException,
 } from "@nestjs/common";
+import { createRequire } from "node:module";
+import { join } from "node:path";
 import {
   TurnstileService,
   type TurnstileAction,
 } from "./turnstile.service";
+
+const policy = createRequire(__filename)(
+  join(__dirname, "..", "..", "turnstile.policy.cjs"),
+) as {
+  turnstileActionFromPath: (path: string) => TurnstileAction | undefined;
+};
 
 type RequestWithTurnstile = {
   body?: { turnstileToken?: unknown };
@@ -23,15 +31,7 @@ type RequestWithTurnstile = {
 };
 
 export function turnstileActionFromPath(path: string): TurnstileAction | undefined {
-  const p = String(path || "");
-  if (p.includes("signup/classic") || p.endsWith("/signup")) return "signup";
-  if (p.endsWith("/login") || p.includes("/auth/login")) return "login";
-  if (p.includes("find-id")) return "find-id";
-  if (p.includes("password-reset")) return "password-reset";
-  if (p.includes("email/resend")) return "email-resend";
-  if (p.includes("magic-link")) return "magic-link";
-  if (p.includes("admin") && p.includes("login")) return "admin-login";
-  return undefined;
+  return policy.turnstileActionFromPath(path);
 }
 
 @Injectable()

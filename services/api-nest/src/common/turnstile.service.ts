@@ -199,7 +199,7 @@ export class TurnstileService {
     }
 
     const judged = policy.evaluateSiteverify(json, {
-      nodeEnv: env.nodeEnv,
+      nodeEnv: env.turnstileSurface || env.nodeEnv,
       expectedAction: opts.expectedAction,
       nowMs: this.nowMs(),
     });

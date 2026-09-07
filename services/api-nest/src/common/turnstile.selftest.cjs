@@ -10,6 +10,7 @@ const {
   hostnameAllowed,
   memoryReplayStore,
   resetTurnstileReplayForTests,
+  turnstileActionFromPath,
 } = require("../../turnstile.policy.cjs");
 
 function fail(msg) {
@@ -31,6 +32,27 @@ if (hostnameAllowed("hitpk.app", "production")) fail("hitpk typo must be rejecte
 if (!hostnameAllowed("app.hiptk.app", "production")) fail("app.hiptk.app must be allowed");
 if (hostnameAllowed("localhost", "production")) fail("localhost not allowed in production");
 if (!hostnameAllowed("localhost", "development")) fail("localhost allowed in development");
+if (!hostnameAllowed("ai-profit-ops-dedicated.ebay-adapter.workers.dev", "staging")) {
+  fail("dedicated ops host allowed on staging");
+}
+if (hostnameAllowed("ai-profit-ops-dedicated.ebay-adapter.workers.dev", "production")) {
+  fail("dedicated ops host not allowed in production");
+}
+if (!hostnameAllowed("ai-profit-web-dedicated.ebay-adapter.workers.dev", "staging")) {
+  fail("dedicated web host allowed on staging");
+}
+if (turnstileActionFromPath("/api/v1/admin-auth/login") !== "admin-login") {
+  fail("admin-auth/login must not collapse to login");
+}
+if (turnstileActionFromPath("/admin-auth/login") !== "admin-login") {
+  fail("short admin-auth/login must be admin-login");
+}
+if (turnstileActionFromPath("/api/v1/auth/login") !== "login") {
+  fail("user auth login stays login");
+}
+if (turnstileActionFromPath("/api/v1/admin-auth/mfa") !== undefined) {
+  fail("admin MFA has no Turnstile action");
+}
 if (!challengeFresh(new Date().toISOString(), Date.now())) fail("fresh challenge");
 if (challengeFresh("1999-01-01T00:00:00.000Z", Date.now())) fail("old challenge");
 
@@ -74,4 +96,5 @@ void replay.consume(tokenHash, 60_000).then(async (ok1) => {
   const ok2 = await replay.consume(tokenHash, 60_000);
   if (ok2) fail("replay must fail");
   console.log("[turnstile.selftest] PASS");
+  process.exit(0);
 });

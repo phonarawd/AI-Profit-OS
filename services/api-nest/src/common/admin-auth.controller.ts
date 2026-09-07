@@ -66,7 +66,6 @@ export class AdminAuthController {
   }
 
   @Post("mfa")
-  @UseGuards(TurnstileGuard)
   async mfa(
     @Body() body: Record<string, unknown>,
     @Req() req: CookieRequest,

@@ -144,6 +144,28 @@ if (dedicatedWorkflow.includes("secrets.API_HOST")) {
 if (!dedicatedWorkflow.includes("STAGING_API_HOST")) {
   fails.push("dedicated workflow must require STAGING_API_HOST");
 }
+if (!dedicatedWorkflow.includes("NEXT_PUBLIC_TURNSTILE_SITE_KEY")) {
+  fails.push("dedicated workflow must fail-closed without Turnstile site key");
+}
+if (!dedicatedWorkflow.includes("infra/turnstile.public.json")) {
+  fails.push("dedicated workflow must fall back to public Turnstile site key file");
+}
+const turnstilePublic = readJson("infra/turnstile.public.json");
+if (!turnstilePublic.siteKey || String(turnstilePublic.siteKey).length < 10) {
+  fails.push("infra/turnstile.public.json must carry a public site key");
+}
+if (/secret/i.test(String(turnstilePublic.siteKey || ""))) {
+  fails.push("public Turnstile file must not hold the secret key");
+}
+const turnstileProv = read("tooling/dev/provision-staging-turnstile.cjs");
+if (
+  !turnstileProv.includes("srv-dabph32fngtc73esj8rg") ||
+  !turnstileProv.includes("srv-da5r1tqjobas73fl16dg") ||
+  !turnstileProv.includes("TURNSTILE_SECRET_KEY") ||
+  !turnstileProv.includes("TURNSTILE_SURFACE")
+) {
+  fails.push("provision-staging-turnstile must merge secret+surface on staging only");
+}
 if (!dedicatedWorkflow.includes("cf-pages-web.cjs dedicated")) {
   fails.push("dedicated workflow must deploy web dedicated");
 }
@@ -212,8 +234,11 @@ if (!originProbe.stagingApi || originProbe.stagingApi.migrationHead !== "2026090
 if (!originProbe.stagingApi || originProbe.stagingApi.dbOk !== true) {
   fails.push("origin probe must record staging dbOk");
 }
-if (originProbe.turnstileConfigured !== false) {
-  fails.push("origin probe must record turnstileConfigured=false until a real key exists");
+if (
+  originProbe.turnstileConfigured !== false &&
+  originProbe.turnstileConfigured !== true
+) {
+  fails.push("origin probe must record boolean turnstileConfigured");
 }
 if (originProbe.accessEdgeOnDedicatedOps === true && evidence.j0 !== "NOT_RUN") {
   fails.push("Access edge probe is not J0");

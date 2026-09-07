@@ -151,11 +151,26 @@ if (/if\s*\(\s*!secret\s*\)[\s\S]{0,80}ok:\s*true/.test(turnstile)) {
   fail("Turnstile must not pass when secret is missing");
 }
 
-const guard = read("services/api-nest/src/common/turnstile.guard.ts");
-for (const action of ["signup", "login", "find-id", "password-reset", "magic-link"]) {
+const guard =
+  read("services/api-nest/src/common/turnstile.guard.ts") +
+  read("services/api-nest/turnstile.policy.cjs");
+for (const action of [
+  "signup",
+  "login",
+  "find-id",
+  "password-reset",
+  "magic-link",
+  "admin-login",
+]) {
   if (!guard.includes('"' + action + '"') && !guard.includes("'" + action + "'")) {
     fail("Turnstile guard missing action " + action);
   }
+}
+if (
+  !guard.includes("admin-auth") ||
+  guard.indexOf("admin-auth") > guard.indexOf('p.endsWith("/login")')
+) {
+  fail("admin-auth login action must be classified before generic /login");
 }
 
 const limiter = read("services/api-nest/auth-rate-limit.cjs");

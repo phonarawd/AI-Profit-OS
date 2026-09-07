@@ -1,0 +1,5 @@
+{
+  "schema": "turnstile.public.v1",
+  "note": "browser site key only. secret key is never stored here.",
+  "siteKey": "0x4AAAAAAEqx5cACAFpdDpz2"
+}

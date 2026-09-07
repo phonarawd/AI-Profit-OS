@@ -1013,6 +1013,7 @@ const RULES = [
     test: (f) =>
       /^governance\/release-master\/REL-600-STAGING\.md$/.test(f) ||
       /^infra\/domain\.manifest\.json$/.test(f) ||
+      /^infra\/turnstile\.public\.json$/.test(f) ||
       /^tooling\/deploy\/cf-(pages-web|pages-ops|deploy-staging|deploy-dedicated|origin-smoke|preflight|access-dedicated)\.cjs$/.test(f) ||
       /^tooling\/deploy\/render-staging-sha\.cjs$/.test(f) ||
       /^tooling\/deploy\/lib\/(env|non-prod-api-host(\.runtime\.test)?)\.cjs$/.test(f) ||
@@ -1021,7 +1022,7 @@ const RULES = [
       /^governance\/release-master\/S5-STAGING-MIGRATIONS\.v1\.json$/.test(f) ||
       /^governance\/release-master\/S5-STAGING-ORIGIN-PROBE\.v1\.json$/.test(f) ||
       /^governance\/release-master\/HARD_GATE_LIVE\.v1\.json$/.test(f) ||
-      /^tooling\/dev\/(apply-staging-unapplied|s5-staging-origin-probe)\.cjs$/.test(f) ||
+      /^tooling\/dev\/(apply-staging-unapplied|s5-staging-origin-probe|provision-staging-turnstile)\.cjs$/.test(f) ||
       /^apps\/admin\/(middleware\.ts|proxy\.ts|lib\/cf-access-jwt\.ts)$/.test(f) ||
       /^infra\/(web|ops)\/wrangler\.toml$/.test(f) ||
       /^\.github\/workflows\/deploy-dedicated\.yml$/.test(f) ||

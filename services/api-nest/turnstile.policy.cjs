@@ -18,6 +18,8 @@ const TURNSTILE_DEV_HOSTS = Object.freeze([
   "localhost",
   "127.0.0.1",
   "example.com",
+  "ai-profit-ops-dedicated.ebay-adapter.workers.dev",
+  "ai-profit-web-dedicated.ebay-adapter.workers.dev",
 ]);
 
 const memoryReplay = new Map();
@@ -41,6 +43,19 @@ function hostnameAllowed(hostname, nodeEnv) {
     .split(":")[0];
   if (!host || host.includes("hitpk.app")) return false;
   return allowedTurnstileHostnames(nodeEnv).has(host);
+}
+
+/** 관리자 로그인은 일반 /login 보다 먼저 본다. */
+function turnstileActionFromPath(path) {
+  const p = String(path || "");
+  if (p.includes("admin-auth") && p.includes("login")) return "admin-login";
+  if (p.includes("signup/classic") || p.endsWith("/signup")) return "signup";
+  if (p.endsWith("/login") || p.includes("/auth/login")) return "login";
+  if (p.includes("find-id")) return "find-id";
+  if (p.includes("password-reset")) return "password-reset";
+  if (p.includes("email/resend")) return "email-resend";
+  if (p.includes("magic-link")) return "magic-link";
+  return undefined;
 }
 
 function challengeFresh(challengeTs, nowMs, maxAgeMs = CHALLENGE_MAX_AGE_MS) {
@@ -99,6 +114,7 @@ module.exports = {
   hashTurnstileToken,
   allowedTurnstileHostnames,
   hostnameAllowed,
+  turnstileActionFromPath,
   challengeFresh,
   memoryReplayStore,
   resetTurnstileReplayForTests,

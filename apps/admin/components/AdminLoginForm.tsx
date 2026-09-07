@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { T } from "@aipo/ui/copy/ko";
+import { TurnstileField, isTurnstileReady } from "@aipo/ui/components/auth";
 import { finishAdminLogin, startAdminLogin } from "../lib/admin-login";
 
 const ADMIN_LOGIN_PATH = "/admin/login";
@@ -14,12 +15,18 @@ export function AdminLoginForm() {
   const [backup, setBackup] = useState("");
   const [note, setNote] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileReady = isTurnstileReady();
 
   async function onStart(event: FormEvent) {
     event.preventDefault();
+    if (!turnstileReady || !turnstileToken) {
+      setNote(T.authClassic.turnstileNeeded);
+      return;
+    }
     setBusy(true);
     setNote(null);
-    const result = await startAdminLogin(identifier, secret, "");
+    const result = await startAdminLogin(identifier, secret, turnstileToken);
     setBusy(false);
     if (!result.ok) {
       setNote(
@@ -37,7 +44,7 @@ export function AdminLoginForm() {
     if (!challengeId) return;
     setBusy(true);
     setNote(null);
-    const ok = await finishAdminLogin(challengeId, confirmCode, backup, "");
+    const ok = await finishAdminLogin(challengeId, confirmCode, backup, turnstileToken);
     setBusy(false);
     if (!ok) {
       setNote(T.admin.usersList.retry);
@@ -76,7 +83,8 @@ export function AdminLoginForm() {
             value={secret}
             onChange={(event) => setSecret(event.target.value)}
           />
-          <button type="submit" disabled={busy}>
+          <TurnstileField action="admin-login" onToken={setTurnstileToken} />
+          <button type="submit" disabled={busy || !turnstileReady || !turnstileToken}>
             {T.admin.session.login}
           </button>
         </form>

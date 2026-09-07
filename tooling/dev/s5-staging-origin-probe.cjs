@@ -69,8 +69,11 @@ async function probe(target) {
       row.redisOk = parsed && parsed.redis && parsed.redis.ok === true;
     } else if (target.kind === "auth-deny") {
       row.ok = res.status === 400 || res.status === 401 || res.status === 403 || res.status === 503;
-      if (target.kind === "auth-deny" && /TURNSTILE_UNAVAILABLE/.test(body)) {
+      if (/TURNSTILE_UNAVAILABLE/.test(body)) {
         row.turnstileUnavailable = true;
+      }
+      if (/TURNSTILE_FAILED/.test(body)) {
+        row.turnstileFailedClosed = true;
       }
     } else if (target.kind === "admin") {
       row.ok =
@@ -112,7 +115,7 @@ async function main() {
     j1: "NOT_RUN",
     j2: "NOT_RUN",
     j3: "NOT_RUN",
-    note: "HTTP origin probe only. Not auth E2E. Not J0. Dedicated web 200 is not Access/J0. Login 503 TURNSTILE_UNAVAILABLE is fail-closed, not J1 PASS.",
+    note: "HTTP origin probe only. Not auth E2E. Not J0. Dedicated web 200 is not Access/J0. Empty-token login 400/503 is fail-closed, not J1 PASS.",
     stagingApi: {
       gitSha: health.gitSha || null,
       environment: health.environment || null,
@@ -120,7 +123,11 @@ async function main() {
       dbOk: health.dbOk === true,
       redisOk: health.redisOk === true,
     },
-    turnstileConfigured: probes.some((p) => p.turnstileUnavailable === true) ? false : null,
+    turnstileConfigured: probes.some((p) => p.turnstileUnavailable === true)
+      ? false
+      : probes.some((p) => p.turnstileFailedClosed === true)
+        ? true
+        : null,
     accessEdgeOnDedicatedOps: ops.accessRedirect === true,
     probes,
   };
