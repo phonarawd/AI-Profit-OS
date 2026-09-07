@@ -22,7 +22,7 @@
     "routeContractMatrixPath": "governance/platform-redesign/route-contract-matrix.v1.json",
     "factStateRegistryPath": "governance/platform-redesign/fact-state-registry.v1.json",
     "changeControlPath": "governance/platform-redesign/change-control.v1.md",
-    "baselineCommitSha": "930e0c23073c18576cad21bc5f6ac21221cc0340",
+    "baselineCommitSha": "e55a084334450766617923569e08a0067c801604",
     "baselineTodoId": "platform-redesign-r0-inventory",
     "handoffPacket": "canvases/peotteok-r0-handoff-packet.canvas.tsx",
     "absorptionMapRef": "%USERPROFILE%/.cursor/plans/r0_흡수_반영_플랜_eaebafd6.plan.md"

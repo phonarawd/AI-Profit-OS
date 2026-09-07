@@ -17,6 +17,8 @@ const SYNTH_USER_A = "11111111-1111-4111-8111-111111111111";
 const SYNTH_USER_B = "22222222-2222-4222-8222-222222222222";
 const SYNTH_USER_ORDINARY = "33333333-3333-4333-8333-333333333333";
 const SYNTH_ADMIN = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
+/** marketing role · 별도 admin_rbac 행. JWT role만으로 권한을 올리면 안 된다. */
+const SYNTH_ADMIN_INSUFFICIENT = "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb";
 
 const IDENTITY_CLASSES = Object.freeze([
   "user_a",
@@ -106,7 +108,7 @@ function buildIdentityMatrix(secrets) {
   const adminSuper = mintAdminToken(secrets.jwtAdminSecret, SYNTH_ADMIN, {
     role: ADMIN_ROLE_SUPER,
   });
-  const adminInsufficient = mintAdminToken(secrets.jwtAdminSecret, SYNTH_ADMIN, {
+  const adminInsufficient = mintAdminToken(secrets.jwtAdminSecret, SYNTH_ADMIN_INSUFFICIENT, {
     role: ADMIN_ROLE_INSUFFICIENT,
   });
   const expired = mintUserToken(secrets.jwtUserSecret, SYNTH_USER_A, {
@@ -157,7 +159,7 @@ function buildIdentityMatrix(secrets) {
     },
     admin_insufficient: {
       class: "admin_insufficient",
-      userId: SYNTH_ADMIN,
+      userId: SYNTH_ADMIN_INSUFFICIENT,
       role: ADMIN_ROLE_INSUFFICIENT,
       authorization: `Bearer ${adminInsufficient}`,
     },
@@ -237,6 +239,7 @@ module.exports = {
   SYNTH_USER_B,
   SYNTH_USER_ORDINARY,
   SYNTH_ADMIN,
+  SYNTH_ADMIN_INSUFFICIENT,
   ADMIN_ROLE_SUPER,
   ADMIN_ROLE_INSUFFICIENT,
   IDENTITY_CLASSES,

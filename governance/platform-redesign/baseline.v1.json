@@ -3,37 +3,42 @@
   "schema": "governance.platform-redesign.baseline.v1",
   "redesignStage": "R0",
   "todoId": "platform-redesign-r0-inventory",
-  "measuredAt": "2026-09-06T05:22:00.000Z",
+  "measuredAt": "2026-09-07T10:29:28.796Z",
   "pathSeparator": "/",
-  "commitSha": "930e0c23073c18576cad21bc5f6ac21221cc0340",
+  "commitSha": "e55a084334450766617923569e08a0067c801604",
   "dirtyPaths": [
-    "_tmp_add_matrix_rows.cjs",
-    "_tmp_build_drift_inventory.cjs",
-    "_tmp_drift_paths.json",
-    "_tmp_regen_baseline.cjs",
-    "_tmp_write_drift_files.cjs",
-    "governance/platform-redesign/baseline.v1.json",
-    "governance/recovery/engine-drift-inventory.current.v1.json",
-    "governance/recovery/engine-rebase-evidence.current.v1.json",
-    "governance/release-master/rel-106-profits/runtime-ready-1440.png",
+    ".husky/pre-commit",
+    ".husky/pre-push",
+    "_tmp_qa8_dl/",
+    "_tmp_remeasure_platform.cjs",
+    "governance/release-master/J0-LIVE.v1.json",
+    "governance/release-master/S5-STAGING-ORIGIN-PROBE.v1.json",
+    "governance/release-master/rel-106-profits/runtime-empty-390.png",
     "governance/release-master/rel-106-profits/runtime-ready-390.png",
-    "services/api-nest/src/users/users-admin.service.ts"
+    "tooling/e2e/lib/j0-mint-probe.cjs",
+    "tooling/e2e/lib/j0-mint-pw-probe.cjs",
+    "tooling/engine-acceptance/harness/qa8-admin-session-seed.cjs",
+    "tooling/engine-acceptance/lib/synthetic-identity.cjs",
+    "tooling/engine-acceptance/run-qa8-adversarial.cjs",
+    "tooling/engine-acceptance/selftest-pre-rebase-harness.cjs",
+    "tooling/engine-acceptance/tmp-hash-probe.cjs",
+    "tooling/verify/day-pulse-live-only.cjs"
   ],
   "counts": {
     "webLogicalRoutes": 41,
-    "webPhysicalPages": 54,
-    "adminPhysicalPages": 22,
+    "webPhysicalPages": 55,
+    "adminPhysicalPages": 24,
     "adminTopLevel": 12,
-    "canonPhysicalWires": 38,
-    "canonManifestSurfaces": 33,
+    "canonPhysicalWires": 39,
+    "canonManifestSurfaces": 34,
     "wiresNotInManifest": 5,
-    "nestImports": 28,
-    "localMigrations": 56,
-    "remoteMigrations": 54,
+    "nestImports": 31,
+    "localMigrations": 64,
+    "remoteMigrations": 55,
     "brandAssets": 31,
     "publicBrandAssets": 24,
-    "verifyScripts": 343,
-    "verifyPackageIds": 334,
+    "verifyScripts": 368,
+    "verifyPackageIds": 359,
     "contracts": 15
   },
   "web": {
@@ -151,6 +156,10 @@
       {
         "logicalRoute": "/dev/spark-dash-room",
         "physicalPage": "apps/web/app/dev/spark-dash-room/page.tsx"
+      },
+      {
+        "logicalRoute": "/internal/admin-login",
+        "physicalPage": "apps/web/app/internal/admin-login/page.tsx"
       },
       {
         "logicalRoute": "/l/[variant]",
@@ -369,6 +378,10 @@
         "physicalPage": "apps/admin/app/admin/ledger/page.tsx"
       },
       {
+        "logicalRoute": "/admin/login",
+        "physicalPage": "apps/admin/app/admin/login/page.tsx"
+      },
+      {
         "logicalRoute": "/admin/opportunities",
         "physicalPage": "apps/admin/app/admin/opportunities/page.tsx"
       },
@@ -391,6 +404,10 @@
       {
         "logicalRoute": "/admin/system-control",
         "physicalPage": "apps/admin/app/admin/system-control/page.tsx"
+      },
+      {
+        "logicalRoute": "/admin/users/[id]/adjust",
+        "physicalPage": "apps/admin/app/admin/users/[id]/adjust/page.tsx"
       },
       {
         "logicalRoute": "/admin/users/[id]/finance",
@@ -621,6 +638,12 @@
         "state": "preflight"
       },
       {
+        "path": "packages/ui/canon/surfaces/product-onboarding.wire.json",
+        "id": "product-onboarding",
+        "route": "/onboarding",
+        "state": "product_education"
+      },
+      {
         "path": "packages/ui/canon/surfaces/public-ticker.wire.json",
         "id": "public-ticker",
         "route": "/",
@@ -716,6 +739,13 @@
         "route": "/onboarding",
         "wire": "packages/ui/canon/surfaces/onboarding-demo-card.wire.json",
         "state": "demo_tap",
+        "aliases": []
+      },
+      {
+        "id": "product-onboarding",
+        "route": "/onboarding",
+        "wire": "packages/ui/canon/surfaces/product-onboarding.wire.json",
+        "state": "product_education",
         "aliases": []
       },
       {
@@ -913,6 +943,7 @@
     "imports": [
       "CommonModule",
       "EventsModule",
+      "AdminIdentityModule",
       "LedgerModule",
       "WalletModule",
       "GrowthModule",
@@ -921,12 +952,14 @@
       "RiskModule",
       "ReferralModule",
       "MissionModule",
+      "MatchingPolicyModule",
       "OpportunitiesModule",
       "TradesModule",
       "ExecutionPolicyModule",
       "MembershipModule",
       "InboxModule",
       "UserUxPrefsModule",
+      "ProductOnboardingModule",
       "PushModule",
       "LoopModule",
       "AdaptersModule",
@@ -997,8 +1030,16 @@
       "supabase/migrations/20260901224000_withdraw_stepup_token_single_use.sql",
       "supabase/migrations/20260902032000_production_schema_parity.sql",
       "supabase/migrations/20260902155632_withdraw_broadcast_tron.sql",
+      "supabase/migrations/20260904060000_krw_deposit_bank_snapshot.sql",
       "supabase/migrations/20260905110000_classic_signup_sessions_and_admin.sql",
-      "supabase/migrations/20260906060000_payout_reservation_and_execution_confirm.sql"
+      "supabase/migrations/20260906060000_payout_reservation_and_execution_confirm.sql",
+      "supabase/migrations/20260906120000_admin_identity_sessions.sql",
+      "supabase/migrations/20260906130000_user_matching_policy_b7.sql",
+      "supabase/migrations/20260906140000_s3_32_consent_versions.sql",
+      "supabase/migrations/20260906150000_s3_33_product_pipeline.sql",
+      "supabase/migrations/20260906160000_s3_34_peotteok_history.sql",
+      "supabase/migrations/20260906170000_push_control_subscriptions_rls.sql",
+      "supabase/migrations/20260906233000_product_onboarding_progress.sql"
     ],
     "localVersions": [
       "20260808205842",
@@ -1055,8 +1096,16 @@
       "20260901224000",
       "20260902032000",
       "20260902155632",
+      "20260904060000",
       "20260905110000",
-      "20260906060000"
+      "20260906060000",
+      "20260906120000",
+      "20260906130000",
+      "20260906140000",
+      "20260906150000",
+      "20260906160000",
+      "20260906170000",
+      "20260906233000"
     ],
     "remoteFixturePath": "tooling/verify/fixtures/migrations-applied.v1.json",
     "remoteVersions": [
@@ -1113,7 +1162,8 @@
       "20260823210000",
       "20260901224000",
       "20260902032000",
-      "20260902155632"
+      "20260902155632",
+      "20260906170000"
     ]
   },
   "assets": {
@@ -1180,6 +1230,10 @@
   },
   "verify": {
     "scriptPaths": [
+      "tooling/verify/a3-same-poolclient-lock.cjs",
+      "tooling/verify/a4-pg-concurrency.cjs",
+      "tooling/verify/a4-withdraw-reserve-race.cjs",
+      "tooling/verify/a5-authoritative-success.cjs",
       "tooling/verify/account-compat-closure.cjs",
       "tooling/verify/account-hub-batch.cjs",
       "tooling/verify/account-journey.cjs",
@@ -1187,11 +1241,16 @@
       "tooling/verify/adapter-ingest-fail-closed.cjs",
       "tooling/verify/adapter-ingest-fail-closed.runtime.cjs",
       "tooling/verify/adapter-matching-kpi.cjs",
+      "tooling/verify/adapter-worker-machine-auth.cjs",
       "tooling/verify/admin-boundary.cjs",
+      "tooling/verify/admin-code-exchange-isolation.cjs",
       "tooling/verify/admin-csrf-double-submit.cjs",
       "tooling/verify/admin-entry-e2e.cjs",
+      "tooling/verify/admin-identity-b0.cjs",
       "tooling/verify/admin-novice-ui.cjs",
       "tooling/verify/admin-routes.cjs",
+      "tooling/verify/admin-s3-31-full.cjs",
+      "tooling/verify/admin-user-matching-b7.cjs",
       "tooling/verify/admin-user-opportunity-override.cjs",
       "tooling/verify/age-tone-surfaces.cjs",
       "tooling/verify/ai-coach-fact-only.cjs",
@@ -1277,6 +1336,7 @@
       "tooling/verify/full-product-axe-inventory.cjs",
       "tooling/verify/fx-snapshot-formula.cjs",
       "tooling/verify/gate-fast.cjs",
+      "tooling/verify/gate-local-speed.cjs",
       "tooling/verify/gate-push.cjs",
       "tooling/verify/gate-runner.cjs",
       "tooling/verify/gate-tiers.cjs",
@@ -1284,6 +1344,7 @@
       "tooling/verify/governance-observation-registry.cjs",
       "tooling/verify/growth-public-surface.cjs",
       "tooling/verify/guides-closure.cjs",
+      "tooling/verify/hard-gate-live.cjs",
       "tooling/verify/home-closure.cjs",
       "tooling/verify/home-live-wire.cjs",
       "tooling/verify/home-money-read-contract.cjs",
@@ -1295,6 +1356,7 @@
       "tooling/verify/inbox-closure.cjs",
       "tooling/verify/invite-closure.cjs",
       "tooling/verify/invite-explain-surfaces.cjs",
+      "tooling/verify/j0-admin-auth-live.cjs",
       "tooling/verify/korean-ui.cjs",
       "tooling/verify/krw-admin-decide.cjs",
       "tooling/verify/krw-deposit-closure.cjs",
@@ -1371,6 +1433,7 @@
       "tooling/verify/p0-ebay-secret-provisioning.cjs",
       "tooling/verify/packages-ui-typecheck.cjs",
       "tooling/verify/part5-shell-toast.cjs",
+      "tooling/verify/participate-atomicity.runtime.cjs",
       "tooling/verify/participate-http.cjs",
       "tooling/verify/participate-proof.cjs",
       "tooling/verify/participate-sheet-live-wire.cjs",
@@ -1468,8 +1531,16 @@
       "tooling/verify/responsive.cjs",
       "tooling/verify/root-domain-env.cjs",
       "tooling/verify/routing-coverage.cjs",
+      "tooling/verify/s3-32-user-auth.cjs",
+      "tooling/verify/s3-33-products.cjs",
+      "tooling/verify/s3-34-peotteok.cjs",
+      "tooling/verify/s3-35-pwa.cjs",
+      "tooling/verify/s3-36-observability.cjs",
+      "tooling/verify/s3-37-merge-rules.cjs",
+      "tooling/verify/s5-dedicated-staging.cjs",
       "tooling/verify/sdk-user-feed.cjs",
       "tooling/verify/secrets.cjs",
+      "tooling/verify/seo-schema.cjs",
       "tooling/verify/settings-closure.cjs",
       "tooling/verify/settlement-detail.cjs",
       "tooling/verify/settlement-rule-parity.cjs",
@@ -1490,7 +1561,10 @@
       "tooling/verify/ticker-pii-0.cjs",
       "tooling/verify/toast-emoji.cjs",
       "tooling/verify/trade-execution-hook.cjs",
+      "tooling/verify/trades-execution-race.runtime.cjs",
       "tooling/verify/trades-live-wire.cjs",
+      "tooling/verify/trades-payout-reserve.runtime.cjs",
+      "tooling/verify/trades-reconcile.runtime.cjs",
       "tooling/verify/trades-web-wire.cjs",
       "tooling/verify/trading-card-vertical.cjs",
       "tooling/verify/transaction-detail-closure.cjs",
@@ -1521,6 +1595,7 @@
       "tooling/verify/withdraw-mode-default.cjs",
       "tooling/verify/withdraw-stepup-security.cjs",
       "tooling/verify/withdraw-stepup-security.runtime.cjs",
+      "tooling/verify/withdraw-treasury-solvency.cjs",
       "tooling/verify/workers-types.cjs",
       "tooling/verify/workflow-action-pin.cjs"
     ],
@@ -1532,6 +1607,10 @@
       "tooling/verify/stubs/user-trader-jargon-0.cjs"
     ],
     "packageScriptIds": [
+      "verify:a3-same-poolclient-lock",
+      "verify:a4-pg-concurrency",
+      "verify:a4-withdraw-reserve-race",
+      "verify:a5-authoritative-success",
       "verify:account-compat-closure",
       "verify:account-hub-batch",
       "verify:account-journey",
@@ -1539,11 +1618,16 @@
       "verify:adapter-ingest-fail-closed",
       "verify:adapter-ingest-fail-closed-runtime",
       "verify:adapter-matching-kpi",
+      "verify:adapter-worker-machine-auth",
       "verify:admin-boundary",
+      "verify:admin-code-exchange-isolation",
       "verify:admin-csrf-double-submit",
       "verify:admin-entry-e2e",
+      "verify:admin-identity-b0",
       "verify:admin-novice-ui",
       "verify:admin-routes",
+      "verify:admin-s3-31-full",
+      "verify:admin-user-matching-b7",
       "verify:admin-user-opportunity-override",
       "verify:age-tone-surfaces",
       "verify:ai-coach-fact-only",
@@ -1628,11 +1712,13 @@
       "verify:full-product-axe-inventory",
       "verify:fx-snapshot-formula",
       "verify:gate",
+      "verify:gate-local-speed",
       "verify:gate:fast",
       "verify:gate:push",
       "verify:governance-observation-registry",
       "verify:growth-public-surface",
       "verify:guides-closure",
+      "verify:hard-gate-live",
       "verify:home-closure",
       "verify:home-live-wire",
       "verify:home-money-read-contract",
@@ -1645,6 +1731,7 @@
       "verify:inbox-closure",
       "verify:invite-closure",
       "verify:invite-explain-surfaces",
+      "verify:j0-admin-auth-live",
       "verify:korean-ui",
       "verify:krw-admin-decide",
       "verify:krw-deposit-closure",
@@ -1718,6 +1805,7 @@
       "verify:p0-ebay-secret-provisioning",
       "verify:packages-ui-typecheck",
       "verify:part5-shell-toast",
+      "verify:participate-atomicity",
       "verify:participate-http",
       "verify:participate-proof",
       "verify:participate-sheet-live-wire",
@@ -1813,8 +1901,16 @@
       "verify:responsive",
       "verify:root-domain-env",
       "verify:routing-coverage",
+      "verify:s3-32-user-auth",
+      "verify:s3-33-products",
+      "verify:s3-34-peotteok",
+      "verify:s3-35-pwa",
+      "verify:s3-36-observability",
+      "verify:s3-37-merge-rules",
+      "verify:s5-dedicated-staging",
       "verify:sdk-user-feed",
       "verify:secrets",
+      "verify:seo-schema",
       "verify:settings-closure",
       "verify:settlement-detail",
       "verify:settlement-rule-parity",
@@ -1835,7 +1931,10 @@
       "verify:toast-emoji",
       "verify:tooling",
       "verify:trade-execution-hook",
+      "verify:trades-execution-race",
       "verify:trades-live-wire",
+      "verify:trades-payout-reserve",
+      "verify:trades-reconcile",
       "verify:trades-web-wire",
       "verify:trading-card-vertical",
       "verify:transaction-detail-closure",
@@ -1864,6 +1963,7 @@
       "verify:withdraw-mode-default",
       "verify:withdraw-stepup-security",
       "verify:withdraw-stepup-security-runtime",
+      "verify:withdraw-treasury-solvency",
       "verify:workers-types",
       "verify:workflow-action-pin"
     ]
@@ -2148,10 +2248,5 @@
       },
       "note": "HistoryDetailClient - implemented per-journal-entry wallet history detail view"
     }
-  ],
-  "notes": [
-    "문서전용 Forensic · 구현코드 수정 0",
-    "외부 d903eef7 = REFERENCE ONLY · 본 baseline 수치만 실행 증거",
-    "논리 route ≠ 물리 page · Canon physical wire ≠ manifest surface"
   ]
 }

@@ -96,6 +96,8 @@ function run() {
     const red = ident.redactAuthorization(matrix.user_a.authorization);
     assert.ok(red.startsWith("Bearer sha256:"));
     assert.equal(red.includes(token.slice(0, 20)), false);
+    assert.equal(matrix.admin_insufficient.userId, ident.SYNTH_ADMIN_INSUFFICIENT);
+    assert.notEqual(matrix.admin_insufficient.userId, ident.SYNTH_ADMIN);
   });
 
   check("db_target_denies_production_and_supabase", () => {

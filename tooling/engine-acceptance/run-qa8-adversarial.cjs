@@ -26,6 +26,7 @@ const {
   snapshotPrivacyUser,
   queryLedgerCreatedBy,
 } = require("./harness/qa8-privacy-probe.cjs");
+const { seedAdminSessionsForQa8 } = require("./harness/qa8-admin-session-seed.cjs");
 
 function outDir() {
   const d =
@@ -380,6 +381,7 @@ async function runQa8Adversarial(opts = {}) {
       },
     });
     await nest.waitForHealth({ port });
+    await seedAdminSessionsForQa8(databaseUrl, matrix);
   }
 
   const rows = [];
