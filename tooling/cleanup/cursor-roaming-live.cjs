@@ -49,11 +49,7 @@ if (fs.existsSync(projectsDir)) {
   }
 }
 
-// Local Playwright browsers — E2E is CI-only on 8GB Phase0 (ADR-016)
-const msPw = process.env.LOCALAPPDATA
-  ? path.join(process.env.LOCALAPPDATA, "ms-playwright")
-  : "";
-if (msPw && rmrf(msPw)) removed.push("Local/ms-playwright");
+// Playwright browsers stay. T1 stubs (profits-closure 등)는 로컬 브라우저가 없으면 FAIL.
 
 // Cursor AI checkpoints — keep newest 20 (692+ folders → I/O lag)
 const ckpt = path.join(roaming, "User", "globalStorage", "anysphere.cursor-commits", "checkpoints");
