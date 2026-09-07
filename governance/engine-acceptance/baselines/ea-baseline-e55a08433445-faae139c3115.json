@@ -1,18 +1,28 @@
 {
   "schema": "governance.engine-acceptance.baseline.v1",
   "version": "1.0.0",
-  "id": "ea-baseline-1292c584c81f-6e4af6f46fe5",
+  "id": "ea-baseline-e55a08433445-faae139c3115",
   "todoId": "engine-acceptance-rebase-v1",
-  "measuredAt": "2026-09-07T12:57:07.700Z",
-  "commit_sha": "1292c584c81fd5e64ad91114cd36b210c9635b73",
-  "tree_sha": "473e243c3656e5493d750b6477e2229112f5626f",
+  "measuredAt": "2026-09-07T10:34:48.680Z",
+  "commit_sha": "e55a084334450766617923569e08a0067c801604",
+  "tree_sha": "b161a8942afe031e8dbd06419794f606c25d8732",
   "working_tree_clean": false,
   "protected_scope_clean": true,
   "dirty_paths_all": [
-    "governance/recovery/engine-rebase-evidence.current.v1.json",
-    "tooling/engine-acceptance/lib/hash-scope.cjs",
+    ".husky/pre-push",
+    "governance/platform-redesign/baseline.v1.json",
+    "governance/platform-redesign/fact-state-registry.v1.json",
+    "governance/platform-redesign/governance-observations.v1.json",
+    "governance/platform-redesign/route-contract-matrix.v1.json",
+    "governance/release-master/J0-LIVE.v1.json",
+    "governance/release-master/S5-STAGING-ORIGIN-PROBE.v1.json",
+    "governance/release-master/rel-106-profits/runtime-empty-390.png",
+    "governance/release-master/rel-106-profits/runtime-ready-390.png",
+    "tooling/engine-acceptance/lib/synthetic-identity.cjs",
+    "tooling/engine-acceptance/run-qa8-adversarial.cjs",
     "tooling/engine-acceptance/selftest-pre-rebase-harness.cjs",
-    "tooling/verify/day-pulse-live-only.cjs"
+    "tooling/verify/day-pulse-live-only.cjs",
+    "tooling/engine-acceptance/harness/qa8-admin-session-seed.cjs"
   ],
   "dirty_paths_protected": [],
   "lockfile_hash": "15499ed7ec72ae55d04a6e9268fadd9c3f185ffc3201054fcc3fba18fbacd96d",
@@ -26,7 +36,7 @@
   "protected_scope_manifest": {
     "pathSeparator": "/",
     "hashAlgorithm": "sha256",
-    "aggregate": "6e4af6f46fe5f5692617e10d1c1293f8aaa43d3ba613aab10ef1894fbe529721",
+    "aggregate": "faae139c3115adf90aae7e5ff2558ca494bffcc694e9a6ecfe3fc459d41d5da6",
     "pathCount": 564,
     "entries": [
       {
@@ -751,11 +761,11 @@
       },
       {
         "path": "services/api-nest/src/common/admin-auth.controller.ts",
-        "sha256": "5a40278382f0e74ac009798ded7cfa64b7375f5557199eb65f8990c19f387f8d"
+        "sha256": "9d6652059895d27c260e33568e21b57efe7bdc3390ea028b7830315a366ade25"
       },
       {
         "path": "services/api-nest/src/common/admin-auth.flow.ts",
-        "sha256": "3c0ae93bf1b3e374f3dee042e388d0e98f5b86b139e27361aaf2718ba3b3b65a"
+        "sha256": "e997e91343477a11aef4a3fb3108674ba649d12dc33fa7abf465a3917f3869ba"
       },
       {
         "path": "services/api-nest/src/common/admin-capabilities.ts",
@@ -779,7 +789,7 @@
       },
       {
         "path": "services/api-nest/src/common/admin-identity.runtime.test.ts",
-        "sha256": "38580654371701d358ac735a3eabce3853cf65f917d4ce852cf38303f729fc2c"
+        "sha256": "5ea02ef18cd60d1b18b8582fb9663e7723e77511ec19116583666fe3ff3f545f"
       },
       {
         "path": "services/api-nest/src/common/admin-operator.decorator.ts",
@@ -819,11 +829,11 @@
       },
       {
         "path": "services/api-nest/src/common/admin-session.store.pg.ts",
-        "sha256": "11867b976f2918aeee23baa82674e4cb30463db8e8f30f2f94ad1306b1894a37"
+        "sha256": "6bd88a4072a0586e6a764400b55e3c41733e0897c2f5ae9145110e95932e2894"
       },
       {
         "path": "services/api-nest/src/common/admin-session.store.ts",
-        "sha256": "dc94664c33267ee507b0c700550e8320a5d378581bb973f1e7b793b8e4d8de16"
+        "sha256": "984fdfd27aeb8ff9e9ba33c10618e1894a3312007693e8bcd3b16ac1786c8619"
       },
       {
         "path": "services/api-nest/src/common/admin-token.ts",
@@ -2293,8 +2303,8 @@
   "next": "QA1_DETERMINISTIC_TRUTH",
   "epoch": {
     "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
-    "rebase_id": "ea-rebase-b9308bb15bf6-6e4af6f46fe5",
-    "predecessor_baseline_id": "ea-baseline-e55a08433445-faae139c3115",
+    "rebase_id": "ea-rebase-b0cef6576a59-faae139c3115",
+    "predecessor_baseline_id": "ea-baseline-0d8825e8f333-5ac0f4291966",
     "kind": "product_rebase"
   }
 }

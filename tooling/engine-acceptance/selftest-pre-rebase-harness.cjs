@@ -7,7 +7,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const http = require("node:http");
-const { ROOT } = require("./lib/hash-scope.cjs");
+const { ROOT, isScopeExcluded } = require("./lib/hash-scope.cjs");
 const catalog = require("./k6/route-catalog.cjs");
 const ident = require("./lib/synthetic-identity.cjs");
 const { evaluateKillSwitch, evaluateDbTarget, assemblePostgresUrl } = require("./kill-switch.cjs");
@@ -35,6 +35,23 @@ function run() {
   };
 
   console.log("[selftest-pre-rebase-harness] start");
+
+  check("build_dist_is_not_protected_dirty", () => {
+    const scope = JSON.parse(
+      fs.readFileSync(
+        path.join(ROOT, "governance/engine-acceptance/protected-scope.v1.json"),
+        "utf8",
+      ),
+    );
+    assert.equal(
+      isScopeExcluded("services/api-nest/dist/main.js", scope.excludeGlobs),
+      true,
+    );
+    assert.equal(
+      isScopeExcluded("services/api-nest/src/common/admin-auth.flow.ts", scope.excludeGlobs),
+      false,
+    );
+  });
 
   check("k6_routes_match_catalog", () => {
     const src = fs.readFileSync(

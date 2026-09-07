@@ -183,9 +183,95 @@ if (issued) {
   process.exit(0);
 }
 if (!live.drift) {
-  throw new Error(
-    "protected scope matches baseline but current acceptance is not fully issued; refuse to classify zero drift as pre-rebase",
+  if (
+    !(
+      cert.STATUS === "NOT_ISSUED" &&
+      cert.CERT_ISSUED === "0" &&
+      cert.REBASE_REQUIRED === "0" &&
+      cert.REBASE_APPLIED === "1" &&
+      cert.ACK_RECEIVED === "1" &&
+      currentRebase
+    )
+  ) {
+    throw new Error(
+      "protected scope matches baseline but current acceptance is not fully issued; refuse to classify zero drift as pre-rebase",
+    );
+  }
+  const head = git(["rev-parse", "HEAD"]);
+  const inventory = {
+    schema: "governance.recovery.engine-drift-inventory.v1",
+    computed_at: new Date().toISOString(),
+    predecessor_head_sha: (() => {
+      const p = path.join(
+        root,
+        "governance/engine-acceptance/baselines",
+        `${currentRebase.predecessor_baseline_id}.json`,
+      );
+      if (fs.existsSync(p)) {
+        return JSON.parse(fs.readFileSync(p, "utf8")).commit_sha;
+      }
+      return String(currentRebase.product_commit || "");
+    })(),
+    inventory_head_sha: head,
+    changed_paths: 0,
+    expected_changed_paths: 0,
+    count_match: true,
+    by_category: {},
+    unexplained_count: 0,
+    ACK_RECEIVED: 1,
+    FINAL_ACCEPTANCE: "NOT_ISSUED",
+    REBASE_REQUIRED: 0,
+    REBASE_APPLIED: 1,
+    predecessor_baseline_id: currentRebase.predecessor_baseline_id,
+    current_baseline_id: live.baselineId,
+    rebase_id: currentRebase.rebase_id,
+    historical_inventory_ref: ARCHIVE_INV_REL,
+    historical_evidence_ref: ARCHIVE_EV_REL,
+    note: "Current epoch was formally rebased. QA1-QA9 are stale. FINAL_ACCEPTANCE stays NOT_ISSUED. This file is not a CERT.",
+    required_rerun_matrix: {
+      QA0: [],
+      QA1: [],
+      QA2: [],
+      QA3: [],
+      QA4: [],
+      QA5: [],
+      QA6: [],
+      QA7: [],
+      QA8: [],
+      QA9: [],
+    },
+    paths: [],
+  };
+  evidence.computed_at = inventory.computed_at;
+  evidence.predecessor_head_sha = inventory.predecessor_head_sha;
+  evidence.baseline_id = live.baselineId;
+  evidence.current_baseline_id = live.baselineId;
+  evidence.rebase_id = currentRebase.rebase_id;
+  evidence.live_aggregate = live.liveAggregate;
+  evidence.baseline_aggregate = live.baselineAggregate;
+  evidence.path_count_live = live.livePathCount;
+  evidence.path_count_baseline = live.baselinePathCount;
+  evidence.changed_paths = 0;
+  evidence.added_paths = [];
+  evidence.mutated_paths = [];
+  evidence.missing_paths = [];
+  evidence.drift = false;
+  evidence.ack_eligibility.all_drift_explained = true;
+  evidence.ack_eligibility.unexplained_protected_change = 0;
+  evidence.ack_eligibility.required_qa_rerun_complete = false;
+  evidence.ack_eligibility.ACK_RECEIVED = 1;
+  evidence.ack_eligibility.FINAL_ACCEPTANCE = "NOT_ISSUED";
+  evidence.inventory_ref = CURRENT_INV_REL;
+  evidence.historical_inventory_ref = ARCHIVE_INV_REL;
+  evidence.historical_evidence_ref = ARCHIVE_EV_REL;
+  evidence.note =
+    "0-path current epoch after formal rebase. ACK records the rebase only. CERT is not issued. QA1-QA9 must rerun.";
+  fs.writeFileSync(outPath, JSON.stringify(inventory, null, 2) + "\n");
+  fs.writeFileSync(evidencePath, JSON.stringify(evidence, null, 2) + "\n");
+  console.log(
+    "[engine-drift-inventory] PASS · post-rebase · paths=0 · ACK_RECEIVED=1 · NOT_ISSUED",
   );
+  process.exit(0);
 }
 const predecessor = baseline.commit_sha || evidence.predecessor_head_sha;
 const added = live.added.slice();

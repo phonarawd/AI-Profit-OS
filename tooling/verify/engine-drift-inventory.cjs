@@ -138,6 +138,40 @@ if (issued) {
     fail("issued: historical_evidence_ref");
   }
   if (evidence.inventory_ref !== INV_REL) fail("inventory_ref");
+} else if (
+  !live.drift &&
+  cert.STATUS === "NOT_ISSUED" &&
+  cert.CERT_ISSUED === "0" &&
+  cert.REBASE_REQUIRED === "0" &&
+  cert.REBASE_APPLIED === "1" &&
+  cert.ACK_RECEIVED === "1"
+) {
+  if (inventory.ACK_RECEIVED !== 1) fail("post-rebase: inventory ACK_RECEIVED must be 1");
+  if (inventory.FINAL_ACCEPTANCE !== "NOT_ISSUED") fail("post-rebase: FINAL_ACCEPTANCE");
+  if (inventory.REBASE_REQUIRED !== 0) fail("post-rebase: REBASE_REQUIRED must be 0");
+  if (inventory.current_baseline_id !== live.baselineId) {
+    fail("post-rebase: inventory current_baseline_id");
+  }
+  if (!currentRebase || inventory.rebase_id !== currentRebase.rebase_id) {
+    fail("post-rebase: inventory rebase_id");
+  }
+  if (live.changedPathCount !== 0) fail("post-rebase: live changedPathCount must be 0");
+  if (live.liveAggregate !== live.baselineAggregate) {
+    fail("post-rebase: liveAggregate must equal baselineAggregate");
+  }
+  if (!evidence.ack_eligibility || evidence.ack_eligibility.ACK_RECEIVED !== 1) {
+    fail("post-rebase: evidence ACK_RECEIVED");
+  }
+  if (evidence.ack_eligibility.FINAL_ACCEPTANCE !== "NOT_ISSUED") {
+    fail("post-rebase: evidence FINAL_ACCEPTANCE");
+  }
+  if (evidence.ack_eligibility.required_qa_rerun_complete !== false) {
+    fail("post-rebase: required_qa_rerun_complete must stay false");
+  }
+  if (inventory.historical_inventory_ref !== archiveInvRel) {
+    fail("post-rebase: historical_inventory_ref");
+  }
+  if (evidence.inventory_ref !== INV_REL) fail("inventory_ref");
 } else if (preRebase) {
   if (inventory.ACK_RECEIVED !== 0) fail("pre-rebase: ACK_RECEIVED must stay 0");
   if (inventory.FINAL_ACCEPTANCE !== "NOT_ISSUED") fail("pre-rebase: FINAL_ACCEPTANCE");

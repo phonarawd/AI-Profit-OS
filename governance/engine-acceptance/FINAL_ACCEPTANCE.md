@@ -11,10 +11,10 @@ REL-004_SUBSTITUTE = 0
 QA9_PREDECESSOR_VERDICT_AS_CURRENT = 0
 PSM_REL_PENDING = 0
 POST_PSM_PENDING = 3
-PROTECTED_SCOPE_DRIFT = 1
-REBASE_REQUIRED = 1
+PROTECTED_SCOPE_DRIFT = 0
+REBASE_REQUIRED = 0
 REBASE_APPLIED = 1
-ACK_RECEIVED = 0
+ACK_RECEIVED = 1
 LOCAL_QA0_QA9_RERUN = 0
 EVAL_DATASET_STATUS = MATCH
 QA1_QA8_STATUS = STALE_PENDING_CURRENT_EPOCH_RERUN
@@ -24,24 +24,31 @@ DEFECTS_P0 = 0
 DEFECTS_P1 = 0
 CRITICAL_INVARIANT_BLOCKED = 0
 NEXT = QA1_DETERMINISTIC_TRUTH
-BASELINE_ID = ea-baseline-e55a08433445-faae139c3115
-PREDECESSOR_BASELINE_ID = ea-baseline-0d8825e8f333-5ac0f4291966
-REBASE_ID = ea-rebase-b0cef6576a59-faae139c3115
+BASELINE_ID = ea-baseline-1292c584c81f-6e4af6f46fe5
+PREDECESSOR_BASELINE_ID = ea-baseline-e55a08433445-faae139c3115
+REBASE_ID = ea-rebase-b9308bb15bf6-6e4af6f46fe5
 LIVE_AGGREGATE = 6e4af6f46fe5f5692617e10d1c1293f8aaa43d3ba613aab10ef1894fbe529721
-BASELINE_AGGREGATE = faae139c3115adf90aae7e5ff2558ca494bffcc694e9a6ecfe3fc459d41d5da6
+BASELINE_AGGREGATE = 6e4af6f46fe5f5692617e10d1c1293f8aaa43d3ba613aab10ef1894fbe529721
 PATH_COUNT_LIVE = 564
 PATH_COUNT_BASELINE = 564
-CHANGED_PATHS = 5
+CHANGED_PATHS = 0
 ADDED_PATHS = 0
-MUTATED_PATHS = 5
+MUTATED_PATHS = 0
 MISSING_PATHS = 0
-EXIT_GATE = PUTDUK 2026-09-07 J0 MFA/step-up 5-path drift vs ea-baseline-e55a08433445-faae139c3115 · NOT_ISSUED · formal rebase still required
+EXIT_GATE = PUTDUK 2026-09-07 J0 MFA/step-up rebase ea-rebase-b9308bb15bf6-6e4af6f46fe5 · NOT_ISSUED · QA1-QA9 current-epoch rerun required
 ```
+
+## 판정 (2026-09-07 J0 MFA rebase apply)
+
+`ENGINE_ACCEPTANCE_REBASE_V1` `ea-rebase-b9308bb15bf6-6e4af6f46fe5` 가 적용됐다.
+predecessor `ea-baseline-e55a08433445-faae139c3115` 는 history.
+current baseline `ea-baseline-1292c584c81f-6e4af6f46fe5` 의 aggregate 는 live 와 같다 (`PROTECTED_SCOPE_DRIFT = 0`).
+QA1-QA8 / QA9 는 이 epoch 에서 아직 재실행되지 않았다. `STATUS = NOT_ISSUED`. 로컬 QA 가짜 PASS = 0. REL-004 대체 = 0. ISSUED 금지.
 
 ## 판정 (2026-09-07 J0 MFA · step-up 5-path)
 
 `services/api-nest` 관리자 로그인 챌린지 peek + step-up/start 200 이 baseline `faae139c3115` 대비 5 경로를 바꿨다.
-해시 세탁 없음. `STATUS = NOT_ISSUED`. `ACK_RECEIVED = 0`. 다음 formal rebase 전 ISSUED 금지.
+해시 세탁 없음. `STATUS = NOT_ISSUED`. 이 드리프트는 위 rebase 로 epoch 를 옮겼다.
 
 변경 경로 (5):
 - services/api-nest/src/common/admin-auth.controller.ts

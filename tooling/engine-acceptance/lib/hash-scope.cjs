@@ -121,6 +121,17 @@ function git(cmd) {
   return execSync(cmd, { cwd: ROOT, encoding: "utf8" }).trim();
 }
 
+/** git porcelain 경로가 해시 exclude(dist/target 등)면 protected dirty가 아니다. */
+function isScopeExcluded(relPosix, excludeGlobs) {
+  const p = normPath(relPosix).replace(/\/$/, "");
+  const candidates = [p, `${p}/`, `${p}/x`];
+  const segs = p.split("/").filter(Boolean);
+  for (let i = 1; i < segs.length; i += 1) {
+    candidates.push(`${segs.slice(0, i).join("/")}/x`);
+  }
+  return candidates.some((c) => isExcluded(c, excludeGlobs || []));
+}
+
 function dualDirty(scope) {
   let porcelain;
   try {
@@ -140,8 +151,11 @@ function dualDirty(scope) {
     .filter(Boolean);
 
   const roots = scope.roots.map(normPath);
-  const dirtyProtected = dirtyAll.filter((p) =>
-    roots.some((r) => p === r || p.startsWith(`${r}/`)),
+  const excludeGlobs = scope.excludeGlobs || [];
+  const dirtyProtected = dirtyAll.filter(
+    (p) =>
+      roots.some((r) => p === r || p.startsWith(`${r}/`)) &&
+      !isScopeExcluded(p, excludeGlobs),
   );
 
   return {
@@ -173,6 +187,7 @@ module.exports = {
   buildManifest,
   hashPathList,
   dualDirty,
+  isScopeExcluded,
   git,
   packageManagerVersion,
   nodeVersion,

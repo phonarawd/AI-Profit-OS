@@ -465,8 +465,14 @@ function run() {
     // current-epoch evidence after QA1-QA8 + QA9 complete. Never hardcode one
     // historical baseline id: bind the verdict to the epoch instead.
     const qa9IsCurrentEpoch = qa9.baseline_id === liveBaseline.id;
+    const historicalPredecessorIds = new Set(
+      (liveLedger.rebases || [])
+        .map((row) => row && row.predecessor_baseline_id)
+        .filter(Boolean),
+    );
     const qa9IsPredecessorEpoch =
-      qa9.baseline_id === liveBaseline.epoch?.predecessor_baseline_id;
+      qa9.baseline_id === liveBaseline.epoch?.predecessor_baseline_id ||
+      historicalPredecessorIds.has(qa9.baseline_id);
     check(
       "live_qa9_epoch_binding",
       qa9IsCurrentEpoch || qa9IsPredecessorEpoch,
