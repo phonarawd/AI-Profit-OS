@@ -9,6 +9,11 @@
       "sha256": "9c53be322ac1e18f40595406e5d45fd80dfa94f87c68d99f3482e4fe5606790a",
       "bytes": 242,
       "note": "Canonical committed git blob (HEAD) value — pure LF, zero CRLF bytes. Previous lock value 2ec7a4ea357aec77b475baaa7b404675fe0d79c2ef16b10f8e0e06aa70103cad/252 was computed from this machine's CRLF-contaminated local working-tree bytes, not from what any clean checkout (CI, fresh clone) actually receives. CRLF->LF normalization of the old disk bytes reproduces this exact sha256/byte-count (verified fresh this session), proving the only difference is line-ending representation — zero character/token/CSS-rule content change, zero rendering difference, zero visual difference from the Founder-approved Home baseline."
+    },
+    "apps/web/app/HomeDesktopClient.tsx": {
+      "sha256": "912dfce0a6ce702a07e0568b8df82531c4bfafcacef79371c0433e89094a51bb",
+      "bytes": 2874,
+      "note": "Canonical committed git blob (HEAD), pure LF. Base lock 925815ac81e56bf7bde2099e3812342f7a8859e51045d1b44a45a30f5860ec18/3007 is the bind-commit 98c3e9f379f8c757a0fa6c5a2f0a2abd9ffd30d6 byte pin — not a CRLF artifact of the current file. HEAD differs only in the session-loading return: inline gfv '불러오는 중…' markup was replaced by <HomeLoading /> (5a1eaee5). HomeDesktop.tsx / HomeMobile.tsx / Home CSS / money / geometry hashes still match the v2 lock exactly. v2 rewrite remains FORBIDDEN; this overlay only. Home presentation freeze is not reopened."
     }
   }
 }

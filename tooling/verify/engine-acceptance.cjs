@@ -338,8 +338,9 @@ if (baseline && scope) {
 
   const liveDirty = dualDirty(scope);
   if (baseline.protected_scope_clean !== liveDirty.protected_scope_clean) {
+    const listed = (liveDirty.dirtyPathsProtected || []).slice(0, 20).join(",");
     fail(
-      `baseline.protected_scope_clean stale (baseline=${baseline.protected_scope_clean} live=${liveDirty.protected_scope_clean})`,
+      `baseline.protected_scope_clean stale (baseline=${baseline.protected_scope_clean} live=${liveDirty.protected_scope_clean} dirtyProtected=${listed || "(none-listed)"})`,
     );
   }
   const liveManifest = buildManifest(scope);

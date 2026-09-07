@@ -45,10 +45,12 @@ const {
   mintUserToken,
   mintAdminToken,
   SYNTH_USER_A,
+  SYNTH_ADMIN,
   ADMIN_ROLE_SUPER,
   redactAuthorization,
 } = require("../engine-acceptance/lib/synthetic-identity.cjs");
 const { prepareIsolatedPostgres } = require("../engine-acceptance/harness/ci-postgres.cjs");
+const { seedAdminSessionsForQa8 } = require("../engine-acceptance/harness/qa8-admin-session-seed.cjs");
 const nest = require("../engine-acceptance/harness/ci-nest-boot.cjs");
 const fs = require("node:fs");
 
@@ -199,13 +201,17 @@ async function runEbayFaultInjection(opts = {}) {
   if (databaseUrl) assertDbTarget({ databaseUrl, target_env: opts.target_env });
 
   const secrets = createEphemeralSecrets();
-  const adapterIngestToken = crypto.randomBytes(32).toString("base64url");
+  // CI sets ADAPTER_INGEST_TOKEN; Nest extraEnv overrides process.env.
+  // Header and Nest must share one value — env-first then random is the same token.
+  const adapterIngestToken = String(
+    process.env.ADAPTER_INGEST_TOKEN || crypto.randomBytes(32).toString("base64url"),
+  ).trim();
+  const adminAccessJti = crypto.randomUUID();
   const userBearer = `Bearer ${mintUserToken(secrets.jwtUserSecret, SYNTH_USER_A)}`;
-  const adminBearer = `Bearer ${mintAdminToken(
-    secrets.jwtAdminSecret,
-    "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
-    { role: ADMIN_ROLE_SUPER },
-  )}`;
+  const adminBearer = `Bearer ${mintAdminToken(secrets.jwtAdminSecret, SYNTH_ADMIN, {
+    role: ADMIN_ROLE_SUPER,
+    jti: adminAccessJti,
+  })}`;
 
   const skipBoot = opts.skipBoot === true || process.env.AIPO_EBAY_FAULT_SKIP_BOOT === "1";
   const port = Number(opts.port || process.env.PORT || 4000);
@@ -226,6 +232,13 @@ async function runEbayFaultInjection(opts = {}) {
       },
     });
     await nest.waitForHealth({ port });
+    await seedAdminSessionsForQa8(databaseUrl, {
+      admin_super: {
+        userId: SYNTH_ADMIN,
+        authorization: adminBearer,
+        accessJti: adminAccessJti,
+      },
+    });
   }
 
   const evidence = {};
@@ -235,13 +248,10 @@ async function runEbayFaultInjection(opts = {}) {
   const coreHealthBefore = await httpJson("GET", productBaseUrl, "/api/v1/health", {}, undefined);
 
   // --- D (setup) — a stale eBay-sourced opportunity, seeded BEFORE the fault ---
-  const ingestToken = String(
-    process.env.ADAPTER_INGEST_TOKEN || adapterIngestToken || "",
-  ).trim();
-  if (!ingestToken) {
+  if (!adapterIngestToken) {
     throw harnessFailure("ADAPTER_INGEST_TOKEN required — ingest is fail-closed");
   }
-  const ingestHeaders = { "x-adapter-token": ingestToken };
+  const ingestHeaders = { "x-adapter-token": adapterIngestToken };
   const staleOpportunityId = databaseUrl ? await seedStaleEbayOpportunity(databaseUrl) : null;
 
   // --- A/B/C — full eBay OAuth outage tick, delivered as 3 identical batches ---

@@ -52,6 +52,17 @@ const files = [
   "supabase/migrations/20260814140000_ptf00c_r1_provider_tick_ledger.sql",
 ];
 for (const f of files) mustExist(f);
+const harnessSrc = read("tooling/ebay-resilience/run-fault-injection.cjs");
+if (!harnessSrc.includes("seedAdminSessionsForQa8")) {
+  fails.push(
+    "ebay fault harness must seed admin_sessions for AdminGuard (do not weaken the guard)",
+  );
+}
+if (!harnessSrc.includes("process.env.ADAPTER_INGEST_TOKEN || crypto.randomBytes")) {
+  fails.push(
+    "ebay ingest token must be one value shared by Nest extraEnv and x-adapter-token",
+  );
+}
 if (fails.length) {
   console.error("[verify:ebay-resilience] FAIL\n- " + fails.join("\n- "));
   process.exit(1);

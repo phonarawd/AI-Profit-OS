@@ -87,13 +87,22 @@ if (mismatchCount === 0) {
 
 // 2. globals.css specifically: corrections overlay wins, base file left untouched (old value).
 const GLOBALS_REL = "apps/web/app/globals.css";
+const HOME_CLIENT_REL = "apps/web/app/HomeDesktopClient.tsx";
 const baseGlobalsEntry = (lock.files || {})[GLOBALS_REL];
 const correctionGlobalsEntry = (corrections.corrections || {})[GLOBALS_REL];
+const baseHomeClientEntry = (lock.files || {})[HOME_CLIENT_REL];
+const correctionHomeClientEntry = (corrections.corrections || {})[HOME_CLIENT_REL];
 if (!baseGlobalsEntry) {
   failures.push(`base lock is missing its (expected-stale, expected-present) ${GLOBALS_REL} entry`);
 }
 if (!correctionGlobalsEntry) {
   failures.push(`corrections overlay is missing its ${GLOBALS_REL} entry`);
+}
+if (!baseHomeClientEntry) {
+  failures.push(`base lock is missing its (expected-stale, expected-present) ${HOME_CLIENT_REL} entry`);
+}
+if (!correctionHomeClientEntry) {
+  failures.push(`corrections overlay is missing its ${HOME_CLIENT_REL} entry`);
 }
 if (baseGlobalsEntry && correctionGlobalsEntry) {
   if (baseGlobalsEntry.sha256 === correctionGlobalsEntry.sha256) {
@@ -110,6 +119,20 @@ if (baseGlobalsEntry && correctionGlobalsEntry) {
   if (blob.ok && blob.sha256 !== correctionGlobalsEntry.sha256) {
     failures.push(
       `corrections overlay's globals.css hash does not match the current HEAD blob: overlay=${correctionGlobalsEntry.sha256.slice(0, 12)} blob=${blob.sha256.slice(0, 12)}`,
+    );
+  }
+}
+if (baseHomeClientEntry && correctionHomeClientEntry) {
+  if (baseHomeClientEntry.sha256 === correctionHomeClientEntry.sha256) {
+    failures.push(
+      "base lock's HomeDesktopClient hash and the correction's hash are identical - " +
+        "expected them to differ (base = bind-commit 98c3e9f pin; correction = current HEAD blob after HomeLoading swap)",
+    );
+  }
+  const homeBlob = gitBlobSha256(root, "HEAD", HOME_CLIENT_REL);
+  if (homeBlob.ok && homeBlob.sha256 !== correctionHomeClientEntry.sha256) {
+    failures.push(
+      `corrections overlay's HomeDesktopClient hash does not match the current HEAD blob: overlay=${correctionHomeClientEntry.sha256.slice(0, 12)} blob=${homeBlob.sha256.slice(0, 12)}`,
     );
   }
 }
