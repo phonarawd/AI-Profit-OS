@@ -1,6 +1,7 @@
 node_modules/
 .next/
 dist/
+dist-selftest/
 build/
 target/
 .turbo/
@@ -15,6 +16,15 @@ pnpm-lock.yaml
 *.tsbuildinfo
 .env
 .git/
+
+# Nested recovery worktrees — second repo copies; index/watch = 8GB freeze
+_worktree-*/
+.tools/
+.vercel/
+.release-prebuilt/
+out/
+docker-data/
+governance/release-master/**/*.png
 
 # ADR-016 — keep agent index thin on 8GB
 **/pnpm-store/**
