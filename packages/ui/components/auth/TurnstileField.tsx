@@ -64,6 +64,11 @@ export function TurnstileField({ action, onToken, theme = "auto" }: Props) {
       });
     }
 
+    const poll = window.setInterval(() => {
+      if (cancelled || widgetId.current) return;
+      if (getApi()) mount();
+    }, 50);
+    window.setTimeout(() => window.clearInterval(poll), 40000);
     if (getApi()) {
       mount();
     } else {
@@ -77,11 +82,13 @@ export function TurnstileField({ action, onToken, theme = "auto" }: Props) {
         document.head.appendChild(s);
       } else {
         existing.addEventListener("load", mount);
+        if (getApi()) mount();
       }
     }
 
     return () => {
       cancelled = true;
+      window.clearInterval(poll);
       const api = getApi();
       if (api && widgetId.current) {
         try {
