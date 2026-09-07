@@ -342,6 +342,11 @@ if (baseline && scope) {
     fail(
       `baseline.protected_scope_clean stale (baseline=${baseline.protected_scope_clean} live=${liveDirty.protected_scope_clean} dirtyProtected=${listed || "(none-listed)"})`,
     );
+    for (const row of liveDirty.dirtyInspect || []) {
+      fail(
+        `dirtyProtectedInspect path=${row.rel} sameBlob=${row.sameBlob} head=${String(row.head).slice(0, 12)} workFiltered=${String(row.workFiltered).slice(0, 12)} workRaw=${String(row.workRaw).slice(0, 12)} raw=${String(row.raw).replace(/\s+/g, " ")} stat=${String(row.stat).replace(/\s+/g, " ")}`,
+      );
+    }
   }
   const liveManifest = buildManifest(scope);
   if (

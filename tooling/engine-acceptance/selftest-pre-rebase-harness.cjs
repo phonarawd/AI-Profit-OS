@@ -7,7 +7,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const http = require("node:http");
-const { ROOT, isScopeExcluded } = require("./lib/hash-scope.cjs");
+const { ROOT, isScopeExcluded, parsePorcelainLine } = require("./lib/hash-scope.cjs");
 const catalog = require("./k6/route-catalog.cjs");
 const ident = require("./lib/synthetic-identity.cjs");
 const { evaluateKillSwitch, evaluateDbTarget, assemblePostgresUrl } = require("./kill-switch.cjs");
@@ -50,6 +50,17 @@ function run() {
     assert.equal(
       isScopeExcluded("services/api-nest/src/common/admin-auth.flow.ts", scope.excludeGlobs),
       false,
+    );
+  });
+
+  check("porcelain_keeps_unstaged_leading_space", () => {
+    const guard = "services/api-nest/src/auth/auth-rate-limit.guard.ts";
+    assert.equal(parsePorcelainLine(` M ${guard}`), guard);
+    assert.equal(parsePorcelainLine(`M  ${guard}`), guard);
+    assert.equal(parsePorcelainLine(`?? ${guard}`), guard);
+    assert.equal(
+      parsePorcelainLine(`R  services/api-nest/src/auth/old.ts -> ${guard}`),
+      guard,
     );
   });
 

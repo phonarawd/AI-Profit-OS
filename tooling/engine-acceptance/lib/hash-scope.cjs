@@ -118,7 +118,51 @@ function hashPathList(relPaths, scope) {
 }
 
 function git(cmd) {
-  return execSync(cmd, { cwd: ROOT, encoding: "utf8" }).trim();
+  // trimEnd only — trim() would eat porcelain XY's leading space (` M path`).
+  return execSync(cmd, { cwd: ROOT, encoding: "utf8" }).trimEnd();
+}
+
+/** `git status --porcelain` 한 줄 → 경로. 선행 공백은 XY 상태라 지우지 않는다. */
+function parsePorcelainLine(line) {
+  const raw = String(line || "").replace(/\r$/, "");
+  if (!raw) return null;
+  const m = raw.match(/^.. (?:.* -> )?(.*)$/);
+  if (!m) return null;
+  let p = m[1];
+  if (p.startsWith('"') && p.endsWith('"') && p.length >= 2) {
+    p = p
+      .slice(1, -1)
+      .replace(/\\\\/g, "\\")
+      .replace(/\\"/g, '"')
+      .replace(/\\n/g, "\n")
+      .replace(/\\t/g, "\t");
+  }
+  return normPath(p);
+}
+
+function inspectDirtyPath(rel) {
+  const q = String(rel).replace(/"/g, '\\"');
+  const run = (cmd) => {
+    try {
+      return execSync(cmd, { cwd: ROOT, encoding: "utf8" }).trimEnd();
+    } catch {
+      return "";
+    }
+  };
+  const raw = run(`git diff --raw -- "${q}"`) || "(no-raw-diff)";
+  const stat = run(`git diff --stat -- "${q}"`) || "(no-stat)";
+  const head = run(`git rev-parse HEAD:${q}`) || "NA";
+  const workRaw = run(`git hash-object -- "${q}"`) || "NA";
+  const workFiltered = run(`git hash-object --path="${q}" -- "${q}"`) || "NA";
+  return {
+    rel: normPath(rel),
+    raw,
+    stat,
+    head,
+    workRaw,
+    workFiltered,
+    sameBlob: head !== "NA" && workFiltered !== "NA" && head === workFiltered,
+  };
 }
 
 /** git porcelain 경로가 해시 exclude(dist/target 등)면 protected dirty가 아니다. */
@@ -133,6 +177,16 @@ function isScopeExcluded(relPosix, excludeGlobs) {
 }
 
 function dualDirty(scope) {
+  try {
+    execSync("git update-index --refresh -q", {
+      cwd: ROOT,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+  } catch {
+    // refresh exits 1 when some paths are actually dirty — expected
+  }
+
   let porcelain;
   try {
     porcelain = git("git status --porcelain");
@@ -141,13 +195,9 @@ function dualDirty(scope) {
   }
   const dirtyAll = porcelain
     .split(/\r?\n/)
-    .map((l) => l.trimEnd())
+    .map((l) => l.replace(/\r$/, ""))
     .filter(Boolean)
-    .map((line) => {
-      // XY PATH or XY ORIG -> PATH
-      const m = line.match(/^.. (?:.* -> )?(.*)$/);
-      return m ? normPath(m[1]) : null;
-    })
+    .map(parsePorcelainLine)
     .filter(Boolean);
 
   const roots = scope.roots.map(normPath);
@@ -163,6 +213,7 @@ function dualDirty(scope) {
     protected_scope_clean: dirtyProtected.length === 0,
     dirtyPathsAll: dirtyAll,
     dirtyPathsProtected: dirtyProtected,
+    dirtyInspect: dirtyProtected.slice(0, 20).map(inspectDirtyPath),
   };
 }
 
@@ -188,6 +239,8 @@ module.exports = {
   hashPathList,
   dualDirty,
   isScopeExcluded,
+  parsePorcelainLine,
+  inspectDirtyPath,
   git,
   packageManagerVersion,
   nodeVersion,
