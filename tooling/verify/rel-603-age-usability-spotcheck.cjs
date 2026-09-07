@@ -358,12 +358,32 @@ function runPlaywright() {
           env: { ...process.env, CI: "true" },
         },
       );
+      if (run.stdout) process.stdout.write(run.stdout);
+      if (run.stderr) process.stderr.write(run.stderr);
       if (run.status !== 0) {
+        const combined = [
+          run.stdout,
+          run.stderr,
+          run.error && String(run.error.message),
+        ]
+          .filter(Boolean)
+          .join("\n");
+        const detail = combined
+          .split(/\r?\n/)
+          .map((l) => l.trim())
+          .filter(
+            (l) =>
+              l &&
+              /FAIL|error after|status=|missing x-opennext|timed? ?out/i.test(l),
+          )
+          .slice(0, 24);
         fails.push(
           "re-run FAIL " +
             script +
             ": " +
-            String(run.stderr || run.stdout || "").split("\n")[0],
+            (detail.join(" · ") ||
+              (run.error && run.error.code) ||
+              "exit=" + String(run.status)),
         );
       }
     }
