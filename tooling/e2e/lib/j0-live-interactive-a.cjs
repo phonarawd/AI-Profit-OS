@@ -78,16 +78,24 @@ async function runInteractiveA(items) {
 
   const backupStart = await loginStart(maker.identifier, maker.password, nextTok());
   const backupBody = jsonSafe(backupStart.text);
-  const code = maker.backups[0] || "";
-  if (!code || backupBody.next !== "mfa") {
+  if (!maker.backups.length || backupBody.next !== "mfa") {
     items[3] = { id: 4, status: "BLOCKED_EXTERNAL", why: "backup code or second login missing" };
   } else {
-    const first = await loginMfa(backupBody.challengeId, { backupCode: code }, {});
+    let first = { res: { status: 0 }, text: "{}" };
+    let used = "";
+    for (const code of maker.backups) {
+      first = await loginMfa(backupBody.challengeId, { backupCode: code }, {});
+      if (jsonSafe(first.text).connected === true) {
+        used = code;
+        break;
+      }
+    }
     const reuseStart = await loginStart(maker.identifier, maker.password, nextTok());
     const reuseBody = jsonSafe(reuseStart.text);
-    const reuse = reuseBody.challengeId
-      ? await loginMfa(reuseBody.challengeId, { backupCode: code }, {})
-      : { res: { status: 0 }, text: "{}" };
+    const reuse =
+      reuseBody.challengeId && used
+        ? await loginMfa(reuseBody.challengeId, { backupCode: used }, {})
+        : { res: { status: 0 }, text: "{}" };
     items[3] = {
       id: 4,
       status: jsonSafe(first.text).connected === true && reuse.res.status >= 400 ? "PASS" : "FAIL",

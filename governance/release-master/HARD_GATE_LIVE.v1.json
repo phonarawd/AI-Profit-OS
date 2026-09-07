@@ -26,7 +26,7 @@
     { "id": "HG-A5", "group": "ADMIN", "status": "CODE_ONLY", "why": "step-up gate code exists; live expiry mutation-0 not run" },
     { "id": "HG-A6", "group": "ADMIN", "status": "CODE_ONLY", "why": "self-approval constraint + policy; live two-admin path not run" },
     { "id": "HG-A7", "group": "ADMIN", "status": "CODE_ONLY", "why": "connection-code is distinct emergency kind; live not run" },
-    { "id": "HG-A8", "group": "ADMIN", "status": "PARTIAL", "why": "Access app live + email allow + service-auth. J0 17-20 HTTP pass. J0 1-16 not complete. Not PASS." },
+    { "id": "HG-A8", "group": "ADMIN", "status": "PARTIAL", "why": "Access app live + email allow + service-auth. J0-LIVE 20/20 + shaAligned on d92445e8. HG-A8 stays PARTIAL until hard-gate PASS allowlist opens." },
     { "id": "HG-A9", "group": "ADMIN", "status": "NOT_RUN", "why": "admin auth automated live suite not run" },
     { "id": "HG-P1", "group": "PRODUCT", "status": "CODE_ONLY", "why": "B7 server policy engine wired; live same-engine proof not run" },
     { "id": "HG-P2", "group": "PRODUCT", "status": "CODE_ONLY", "why": "DIRECT_URL_BYPASS=0 code; live bypass not run" },

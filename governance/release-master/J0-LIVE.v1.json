@@ -1,95 +1,94 @@
 {
   "schema": "j0-live.v1",
-  "verdict": "NOT_PASS",
-  "recordedAt": "2026-09-07T08:47:26.233Z",
+  "verdict": "PASS",
+  "recordedAt": "2026-09-07T12:18:58.791Z",
   "shaAligned": true,
-  "stagingSha": "db00922b",
-  "workspaceHead": "db00922b",
+  "stagingSha": "d92445e8",
+  "workspaceHead": "d92445e8",
   "migrationHead": "20260906233000",
   "counts": {
-    "BLOCKED_LOCAL_ENVIRONMENT": 16,
-    "PASS": 4
+    "PASS": 20
   },
   "items": [
     {
       "id": 1,
-      "status": "BLOCKED_LOCAL_ENVIRONMENT",
-      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+      "status": "PASS",
+      "why": "status=201"
     },
     {
       "id": 2,
-      "status": "BLOCKED_LOCAL_ENVIRONMENT",
-      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+      "status": "PASS",
+      "why": "status=401"
     },
     {
       "id": 3,
-      "status": "BLOCKED_LOCAL_ENVIRONMENT",
-      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+      "status": "PASS",
+      "why": "wrong=401 ok=201"
     },
     {
       "id": 4,
-      "status": "BLOCKED_LOCAL_ENVIRONMENT",
-      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+      "status": "PASS",
+      "why": "first=201 reuse=401"
     },
     {
       "id": 5,
-      "status": "BLOCKED_LOCAL_ENVIRONMENT",
-      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+      "status": "PASS",
+      "why": "status=200"
     },
     {
       "id": 6,
-      "status": "BLOCKED_LOCAL_ENVIRONMENT",
-      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+      "status": "PASS",
+      "why": "connected=false"
     },
     {
       "id": 7,
-      "status": "BLOCKED_LOCAL_ENVIRONMENT",
-      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+      "status": "PASS",
+      "why": "other-device connected=false"
     },
     {
       "id": 8,
-      "status": "BLOCKED_LOCAL_ENVIRONMENT",
-      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+      "status": "PASS",
+      "why": "durable revoke on ops+api"
     },
     {
       "id": 9,
-      "status": "BLOCKED_LOCAL_ENVIRONMENT",
-      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+      "status": "PASS",
+      "why": "same revoke on two origins"
     },
     {
       "id": 10,
-      "status": "BLOCKED_LOCAL_ENVIRONMENT",
-      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+      "status": "PASS",
+      "why": "status=401"
     },
     {
       "id": 11,
-      "status": "BLOCKED_LOCAL_ENVIRONMENT",
-      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+      "status": "PASS",
+      "why": "status=403"
     },
     {
       "id": 12,
-      "status": "BLOCKED_LOCAL_ENVIRONMENT",
-      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+      "status": "PASS",
+      "why": "step-up/start=200 mutation=201"
     },
     {
       "id": 13,
-      "status": "BLOCKED_LOCAL_ENVIRONMENT",
-      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+      "status": "PASS",
+      "why": "self=403 checker=201"
     },
     {
       "id": 14,
-      "status": "BLOCKED_LOCAL_ENVIRONMENT",
-      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+      "status": "PASS",
+      "why": "status=403"
     },
     {
       "id": 15,
-      "status": "BLOCKED_LOCAL_ENVIRONMENT",
-      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+      "status": "PASS",
+      "why": "no token in url/error"
     },
     {
       "id": 16,
-      "status": "BLOCKED_LOCAL_ENVIRONMENT",
-      "why": "BLOCKED_LOCAL_ENVIRONMENT turnstile_token_empty {\"href\":\"https://ai-profit-ops-dedicated.ebay-adapter.workers.dev/admin/login\",\"field\":true,\"notCfg\":false,\"iframe\":0,\"hasTs\":\"object\",\"wrapped\":true,\"tsLen\":0,\"err\":\"\",\"hasInput\":true,\"inputLen\":0,\"kids\":[\"DIV\"],\"iframes\":[],\"site\":\"\"}"
+      "status": "PASS",
+      "why": "csrf=401"
     },
     {
       "id": 17,
