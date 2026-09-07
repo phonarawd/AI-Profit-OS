@@ -79,6 +79,12 @@ if (!plan.assets || plan.assets.length < 1) {
 if (!plan.bundles || plan.bundles.length < 1) {
   fails.push("bundles must be ≥1");
 }
+if (plan.bundles.length !== plan.assets.length) {
+  fails.push("bundles must cover every Day-1 asset master");
+}
+if (plan.bundles.length < 30) {
+  fails.push("launch catalog bundles must be dozens (≥30)");
+}
 const crTrue = plan.bundles.filter(
   (b) => b.opportunity.pricing.compareReady === true,
 ).length;

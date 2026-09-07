@@ -240,8 +240,10 @@ function buildRuntimeSeedBundleForAsset(asset, opts = {}) {
 }
 
 /**
- * Build min catalog bundles: all assets · first of each category compareReady
- * true when possible · one forced false per category (일부 true).
+ * Day-1 운영 시드 전부 → 기회 번들.
+ * 카테고리당 2번째만 compareReady 강제 false (일부 true). 나머지는 가드 통과 시 available.
+ * Nest ensureMinCatalog는 available≥1이면 여전히 skip (기존 행·이베이 사진 보호).
+ * 출시 물량 채움 = seed:catalog-runtime (기존 asset/opportunity 덮어쓰기 0).
  * @returns {{
  *   fx: ReturnType<typeof day1FxSnapshot>,
  *   assets: ReturnType<typeof listDay1AssetMasters>,
@@ -263,19 +265,12 @@ function buildMinCatalogRuntimeSeed(opts = {}) {
   for (const cat of ["trading_card", "luxury_bag", "watch"]) {
     const rows = byCat[cat];
     if (!rows.length) continue;
-    // First → compareReady aspirational true
-    bundles.push(
-      buildRuntimeSeedBundleForAsset(rows[0], {
-        observedAt,
-        compareReadyForceFalse: false,
-      }),
-    );
-    // Second (if any) → forced false so catalog has mixed compareReady
-    if (rows[1]) {
+    for (let i = 0; i < rows.length; i += 1) {
       bundles.push(
-        buildRuntimeSeedBundleForAsset(rows[1], {
+        buildRuntimeSeedBundleForAsset(rows[i], {
           observedAt,
-          compareReadyForceFalse: true,
+          // 카테고리 2번째만 강제 false — 기존 6행 의미 유지 · verify 일부 true
+          compareReadyForceFalse: i === 1,
         }),
       );
     }
