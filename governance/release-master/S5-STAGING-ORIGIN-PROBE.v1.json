@@ -1,21 +1,21 @@
 {
   "schema": "s5-staging-origin-probe.v1",
-  "recordedAt": "2026-09-06T20:07:24.537Z",
+  "recordedAt": "2026-09-07T12:25:09.269Z",
   "productionDeploy": 0,
   "j0": "NOT_RUN",
   "j1": "NOT_RUN",
   "j2": "NOT_RUN",
   "j3": "NOT_RUN",
-  "note": "HTTP origin probe only. Not auth E2E. Not J0. Dedicated web 200 is not Access/J0. Login 503 TURNSTILE_UNAVAILABLE is fail-closed, not J1 PASS.",
+  "note": "HTTP origin probe only. Not auth E2E. Not J0. Dedicated web 200 is not Access/J0. Empty-token login 400/503 is fail-closed, not J1 PASS.",
   "stagingApi": {
-    "gitSha": "a23d2fa6629a31426934c3ace42c3f50e3c46a92",
+    "gitSha": "d92445e89c14558a79397c1b8195736ac60cdf3b",
     "environment": "staging",
     "migrationHead": "20260906233000",
     "dbOk": true,
     "redisOk": true
   },
-  "turnstileConfigured": false,
-  "accessEdgeOnDedicatedOps": false,
+  "turnstileConfigured": true,
+  "accessEdgeOnDedicatedOps": true,
   "probes": [
     {
       "id": "staging-api-health",
@@ -23,9 +23,9 @@
       "locationHost": null,
       "accessRedirect": false,
       "xOpenNext": false,
-      "ms": 1749,
+      "ms": 1543,
       "ok": true,
-      "gitSha": "a23d2fa6629a31426934c3ace42c3f50e3c46a92",
+      "gitSha": "d92445e89c14558a79397c1b8195736ac60cdf3b",
       "environment": "staging",
       "migrationHead": "20260906233000",
       "dbOk": true,
@@ -37,7 +37,7 @@
       "locationHost": null,
       "accessRedirect": false,
       "xOpenNext": true,
-      "ms": 1366,
+      "ms": 1205,
       "ok": true
     },
     {
@@ -46,7 +46,7 @@
       "locationHost": null,
       "accessRedirect": false,
       "xOpenNext": true,
-      "ms": 295,
+      "ms": 217,
       "ok": true
     },
     {
@@ -55,7 +55,7 @@
       "locationHost": null,
       "accessRedirect": false,
       "xOpenNext": true,
-      "ms": 201,
+      "ms": 206,
       "ok": true
     },
     {
@@ -64,7 +64,7 @@
       "locationHost": null,
       "accessRedirect": false,
       "xOpenNext": true,
-      "ms": 239,
+      "ms": 177,
       "ok": true
     },
     {
@@ -73,28 +73,28 @@
       "locationHost": null,
       "accessRedirect": false,
       "xOpenNext": true,
-      "ms": 260,
+      "ms": 198,
       "ok": true
     },
     {
       "id": "dedicated-ops-admin",
-      "status": 503,
-      "locationHost": null,
-      "accessRedirect": false,
+      "status": 302,
+      "locationHost": "snowy-glade-4d88.cloudflareaccess.com",
+      "accessRedirect": true,
       "xOpenNext": false,
-      "ms": 922,
+      "ms": 545,
       "ok": true,
       "reachedHtml": false
     },
     {
       "id": "staging-auth-login-unauth",
-      "status": 503,
+      "status": 400,
       "locationHost": null,
       "accessRedirect": false,
       "xOpenNext": false,
-      "ms": 250,
+      "ms": 161,
       "ok": true,
-      "turnstileUnavailable": true
+      "turnstileFailedClosed": true
     },
     {
       "id": "staging-onboarding-unauth",
@@ -102,7 +102,7 @@
       "locationHost": null,
       "accessRedirect": false,
       "xOpenNext": false,
-      "ms": 299,
+      "ms": 141,
       "ok": true
     }
   ]
