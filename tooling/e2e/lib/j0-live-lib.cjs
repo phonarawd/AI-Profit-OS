@@ -107,7 +107,7 @@ function base32Decode(input) {
 }
 
 async function stagingHealth() {
-  const { res, text } = await fetchRaw(hosts.STAGING_API + "/health", {
+  const { res, text } = await fetchRaw(hosts.STAGING_API + "/api/v1/health", {
     headers: { accept: "application/json" },
   });
   let json = {};
@@ -119,11 +119,11 @@ async function stagingHealth() {
   return {
     ok: res.status === 200 && json.ok === true,
     status: res.status,
-    env: json.env || "",
+    env: json.environment || json.env || "",
     gitSha: String(json.gitSha || json.sha || "").toLowerCase(),
     migrationHead: String(json.migrationHead || ""),
-    dbOk: json.db === "ok" || json.dbOk === true,
-    redisOk: json.redis === "ok" || json.redisOk === true,
+    dbOk: json.db === "ok" || json.dbOk === true || (json.db && json.db.ok === true),
+    redisOk: json.redis === "ok" || json.redisOk === true || (json.redis && json.redis.ok === true),
   };
 }
 
