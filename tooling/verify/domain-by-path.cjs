@@ -1034,11 +1034,15 @@ const RULES = [
       /^tooling\/deploy\/cf-(pages-web|pages-ops|deploy-staging|deploy-dedicated|origin-smoke|preflight|access-dedicated)\.cjs$/.test(f) ||
       /^tooling\/deploy\/render-staging-sha\.cjs$/.test(f) ||
       /^tooling\/deploy\/lib\/(env|non-prod-api-host(\.runtime\.test)?)\.cjs$/.test(f) ||
-      /^tooling\/verify\/(rel-600-staging|s5-dedicated-staging|hard-gate-live)\.cjs$/.test(f) ||
+      /^tooling\/verify\/(rel-600-staging|s5-dedicated-staging|hard-gate-live|j0-admin-auth-live)\.cjs$/.test(f) ||
       /^governance\/release-master\/S5-DEDICATED-STAGING\.v1\.json$/.test(f) ||
       /^governance\/release-master\/S5-STAGING-MIGRATIONS\.v1\.json$/.test(f) ||
       /^governance\/release-master\/S5-STAGING-ORIGIN-PROBE\.v1\.json$/.test(f) ||
       /^governance\/release-master\/HARD_GATE_LIVE\.v1\.json$/.test(f) ||
+      /^governance\/release-master\/J0-LIVE\.v1\.json$/.test(f) ||
+      /^tooling\/e2e\/(j0-admin-auth-live.*|lib\/j0-live-.*)\.cjs$/.test(f) ||
+      /^tooling\/deploy\/cf-access-j0-service-token\.cjs$/.test(f) ||
+      /^tooling\/dev\/(provision-staging-j0-admins|patch-catalog-j0)\.cjs$/.test(f) ||
       /^tooling\/dev\/(apply-staging-unapplied|s5-staging-origin-probe|provision-staging-turnstile)\.cjs$/.test(f) ||
       /^apps\/admin\/(middleware\.ts|proxy\.ts|lib\/cf-access-jwt\.ts)$/.test(f) ||
       /^infra\/(web|ops)\/wrangler\.toml$/.test(f) ||
@@ -1051,7 +1055,7 @@ const RULES = [
       /^\.github\/workflows\/deploy-cloudflare\.yml$/.test(f) ||
       /^tooling\/verify\/fixtures\/rel-600-staging\.v1\.json$/.test(f) ||
       /^\.github\/workflows\/deploy-staging\.yml$/.test(f),
-    scripts: ["rel-600-staging.cjs", "staging-topology-readiness.cjs", "s5-dedicated-staging.cjs", "hard-gate-live.cjs"],
+    scripts: ["rel-600-staging.cjs", "staging-topology-readiness.cjs", "s5-dedicated-staging.cjs", "hard-gate-live.cjs", "j0-admin-auth-live.cjs"],
   },
   {
     test: (f) =>

@@ -1,0 +1,33 @@
+{
+  "schema": "j0-live.v1",
+  "verdict": "NOT_PASS",
+  "recordedAt": "2026-09-07T07:00:00Z",
+  "shaAligned": false,
+  "stagingSha": "30a723e1",
+  "workspaceHead": "5a1eaee5",
+  "migrationHead": "20260906233000",
+  "counts": { "NOT_RUN": 16, "PASS": 4 },
+  "items": [
+    { "id": 1, "status": "NOT_RUN", "why": "" },
+    { "id": 2, "status": "NOT_RUN", "why": "" },
+    { "id": 3, "status": "NOT_RUN", "why": "" },
+    { "id": 4, "status": "NOT_RUN", "why": "" },
+    { "id": 5, "status": "NOT_RUN", "why": "" },
+    { "id": 6, "status": "NOT_RUN", "why": "" },
+    { "id": 7, "status": "NOT_RUN", "why": "" },
+    { "id": 8, "status": "NOT_RUN", "why": "" },
+    { "id": 9, "status": "NOT_RUN", "why": "" },
+    { "id": 10, "status": "NOT_RUN", "why": "" },
+    { "id": 11, "status": "NOT_RUN", "why": "" },
+    { "id": 12, "status": "NOT_RUN", "why": "" },
+    { "id": 13, "status": "NOT_RUN", "why": "" },
+    { "id": 14, "status": "NOT_RUN", "why": "" },
+    { "id": 15, "status": "NOT_RUN", "why": "" },
+    { "id": 16, "status": "NOT_RUN", "why": "" },
+    { "id": 17, "status": "PASS", "why": "status=302" },
+    { "id": 18, "status": "PASS", "why": "production/direct origin did not mint human admin session" },
+    { "id": 19, "status": "PASS", "why": "status=400" },
+    { "id": 20, "status": "PASS", "why": "service token reaches origin login" }
+  ],
+  "note": "Human one-time login is not J0 PASS. Static verify is not live PASS."
+}

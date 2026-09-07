@@ -5,7 +5,7 @@
   "rel600Unchanged": true,
   "productionDeploy": 0,
   "j0": "NOT_RUN",
-  "accessLive": false,
+  "accessLive": true,
   "shaAlignedLive": false,
   "shaAlignedDedicatedWorkers": true,
   "shaAlignedRenderStaging": true,

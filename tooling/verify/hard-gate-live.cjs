@@ -109,8 +109,8 @@ if (passed.length !== 0) {
 }
 
 const byId = Object.fromEntries(gates.filter((g) => g && g.id).map((g) => [g.id, g]));
-if (!byId["HG-A8"] || byId["HG-A8"].status !== "BLOCKED_EXTERNAL") {
-  fails.push("HG-A8 must stay BLOCKED_EXTERNAL until Access+J0 live");
+if (!byId["HG-A8"] || !["BLOCKED_EXTERNAL", "PARTIAL"].includes(byId["HG-A8"].status)) {
+  fails.push("HG-A8 must stay BLOCKED_EXTERNAL or PARTIAL until J0 20/20");
 }
 if (!byId["HG-L8"] || byId["HG-L8"].status !== "NOT_READY") {
   fails.push("HG-L8 must stay NOT_READY while production migrations are unapplied");
