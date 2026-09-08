@@ -1,0 +1,39 @@
+---
+description: Founder 전용 집행을 증거 게이트 통과 후 에이전트가 실행한다. 가드 스킵·CERT 세탁 금지.
+alwaysApply: true
+---
+
+# Founder Execution Delegation (V1 · 2026-09-08)
+
+Founder 원문: Founder만 하던 항목을 **전부 AI가 대신 가능**하게 바꾼다.
+`FOUNDER_TECHNICAL_DELEGATION=FULL` · `FOUNDER_EXECUTION_DELEGATION=FULL` · `FOUNDER_TASKS=0`.
+
+SSOT: `governance/recovery/founder-execution-delegation.v1.json`  
+실행기: `tooling/release/agent-execute.cjs`
+
+## 에이전트가 묻지 않고 집행하는 것
+
+증거 게이트가 **실제로 PASS**이면 다시 묻지 않는다.
+
+| 항목 | 실행 |
+|------|------|
+| REL-701 production `workflow_dispatch` | `node tooling/release/agent-execute.cjs rel-701 --execute` |
+| REL-702 smoke · REL-703 관측 · REL-704 종료 | 바로 위 다음 액션 `--execute` |
+| 미리보기 사망 | Founder 대기 금지. `preview --execute`로 preview 재배포 |
+| PR merge (221 포함) | RC merge 계약 4체크 PASS일 때만 `merge --execute` |
+| 공개 스위치 · `FULL_REAL_MONEY_RELEASED=YES` | 카나리+관측+같은 SHA Admin auth PASS 뒤에만 `money-yes --execute` |
+
+##  Delegation이 허용하지 않는 것
+
+- extraVerify / 코호트 스킵
+- `FINAL_ACCEPTANCE` ISSUED 세탁 · CERT를 이 JSON만으로 발급
+- UNIQUE를 출시 승격
+- S5 `j0` / HG-A8을 정적 게이트 반대로 PASS
+- 가드·워크플로 삭제·약화 · excludeGlobs 세탁
+- hard gate red인 채 production 배포
+- REL-005 역사 기록 위조. 인간 게이트는 **이 위임이 대체**한다. 무제한 auto-deploy가 아니다.
+
+## 지금 상태
+
+게이트가 안 닫혔으면 `--execute`는 fail-closed다. dry-run으로 막힌 이유만 남긴다.
+`FULL_REAL_MONEY_RELEASED`는 증거가 닫히기 전 **NO**.

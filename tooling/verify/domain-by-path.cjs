@@ -104,6 +104,16 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/recovery\/founder-execution-delegation\.v1\.json$/.test(f) ||
+      /^tooling\/release\/agent-execute\.cjs$/.test(f) ||
+      /^tooling\/verify\/founder-execution-delegation\.cjs$/.test(f) ||
+      /^\.cursor\/rules\/founder-execution-delegation\.mdc$/.test(f) ||
+      /^\.cursor\/rules\/cursor-autonomous-ops\.mdc$/.test(f) ||
+      /^governance\/release-master\/PROD_READINESS\.md$/.test(f),
+    scripts: ["founder-execution-delegation.cjs"],
+  },
+  {
+    test: (f) =>
       /^tooling\/e2e\//.test(f) ||
       /^tooling\/verify\/qa-env-isolation-guard\.cjs$/.test(f) ||
       /^tooling\/verify\/critical-cross-browser\.cjs$/.test(f) ||
