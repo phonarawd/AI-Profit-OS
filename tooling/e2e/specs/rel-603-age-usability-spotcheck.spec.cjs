@@ -372,7 +372,7 @@ async function runParticipateEntry(page, cohort, scenario) {
   });
 
   await page.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
-  await stubCoreOpportunityJourney(page);
+  await rebindJourney(page);
   await gotoStaging(page, cohort, scenario);
 
   await waitForScenarioRoot(page, cohort, scenario, async () => {
@@ -391,7 +391,7 @@ async function runParticipateEntry(page, cohort, scenario) {
   for (let attempt = 0; attempt < DETAIL_NAV_ATTEMPTS; attempt += 1) {
     if (detailUrl.test(currentPathname(page))) break;
     // Cross-document nav drops handlers — re-bind before every click/goto.
-    await rebindJourney(page);
+    await bindJourney(page);
     const liveCard = profitsCard(page, cohort.viewport.width);
     const cardReady = await liveCard.isVisible().catch(() => false);
     if (cardReady) {
@@ -408,12 +408,7 @@ async function runParticipateEntry(page, cohort, scenario) {
     await gotoBound(page, dest);
   }
   await expect(page).toHaveURL(detailUrl);
-  await rebindJourney(page);
-  await expect(page.getByTestId("opportunity-detail")).toHaveAttribute(
-    "data-detail-state",
-    "ready",
-    { timeout: 30_000 },
-  );
+  await waitDetailReady(page, dest, detailUrl);
 
   const detailCta = page
     .locator("[data-requires-preflight='true']")
@@ -454,10 +449,47 @@ async function runWallet(page, cohort, scenario) {
   await assertSurfaceSafety(page, cohort, scenario);
 }
 
+async function bindJourney(page) {
+  // Context route survives a new document. Do not unroute after the first bind —
+  // unroute during detail fetch lets the live API 401 win (unauthorized).
+  const ctx = page.context();
+  if (ctx._rel603JourneyBound) return;
+  await stubCoreOpportunityJourney(ctx);
+  ctx._rel603JourneyBound = true;
+}
+
 async function rebindJourney(page) {
-  // Cross-document / hung /profits nav drops page.route — unroute then bind again.
+  // Only after unrouteAll / about:blank. Cross-document nav drops page.route.
+  const ctx = page.context();
+  ctx._rel603JourneyBound = false;
+  await ctx.unroute("**/api/v1/**").catch(() => {});
   await page.unroute("**/api/v1/**").catch(() => {});
-  await stubCoreOpportunityJourney(page);
+  await bindJourney(page);
+}
+
+async function waitDetailReady(page, dest, detailUrl) {
+  for (let attempt = 0; attempt < DETAIL_NAV_ATTEMPTS; attempt += 1) {
+    await bindJourney(page);
+    if (!detailUrl.test(currentPathname(page))) {
+      await page.goto("about:blank", { timeout: 10_000 }).catch(() => {});
+      await gotoBound(page, dest);
+    }
+    const detail = page.getByTestId("opportunity-detail");
+    const state = await detail.getAttribute("data-detail-state").catch(() => null);
+    if (state === "ready") return;
+    await bindJourney(page);
+    await page.reload({
+      waitUntil: "domcontentloaded",
+      timeout: GOTO_TIMEOUT_MS,
+    });
+    await hideNextDevChrome(page);
+    await stabilizePage(page);
+  }
+  await expect(page.getByTestId("opportunity-detail")).toHaveAttribute(
+    "data-detail-state",
+    "ready",
+    { timeout: 30_000 },
+  );
 }
 
 function currentPathname(page) {
@@ -472,7 +504,7 @@ async function gotoBound(page, url) {
   let lastError;
   for (let attempt = 1; attempt <= GOTO_ATTEMPTS; attempt += 1) {
     try {
-      await rebindJourney(page);
+      await bindJourney(page);
       const res = await page.goto(url, {
         waitUntil: "domcontentloaded",
         timeout: GOTO_TIMEOUT_MS,
