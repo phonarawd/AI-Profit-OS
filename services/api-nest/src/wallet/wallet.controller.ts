@@ -61,8 +61,17 @@ export class WalletController {
    */
   @UseGuards(JwtAuthGuard)
   @Get(WALLET_USER_ROUTES.buckets)
-  getBuckets(@Req() req: SessionReq) {
-    return this.buckets.getUserBuckets(this.sessionUserId(req));
+  async getBuckets(@Req() req: SessionReq) {
+    const full = await this.buckets.getUserBuckets(this.sessionUserId(req));
+    return {
+      userId: full.userId,
+      principalUsdt: full.principalUsdt,
+      profitUsdt: full.profitUsdt,
+      lockedUsdt: full.lockedUsdt,
+      practiceUsdt: full.practiceUsdt,
+      liabilityUsdt: full.liabilityUsdt,
+      asOfLedgerEntryId: full.asOfLedgerEntryId,
+    };
   }
 
   /** §49.7 POST profit→principal merge */

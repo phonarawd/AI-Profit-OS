@@ -37,11 +37,16 @@ const WITHDRAW_TERMINAL_STATUSES = [
  * non-retention class from §20/§21.
  */
 const PURGE_TABLES: readonly [table: string, column: string][] = [
+  // trial_settlements.trade_id → trade_executions 보다 먼저
+  ["trial_settlements", "user_id"],
   // participate/trade — participate_requests.trade_id -> trade_executions
   ["participate_requests", "user_id"],
   ["trade_executions", "user_id"],
   // practice + mission accrual (explicit §21 purge set)
   ["practice_grants", "user_id"],
+  ["trial_grants", "user_id"],
+  ["trial_user_state", "user_id"],
+  ["referral_slot_grants", "user_id"],
   ["mission_accruals", "user_id"],
   // AI memory/profile — memory_embeddings.memory_id -> ai_memory (child first)
   ["memory_embeddings", "user_id"],
@@ -138,9 +143,9 @@ export class PrivacyAccountService {
     const view = await this.buckets.getUserBuckets(userId);
     const pendingWithdrawCount = await this.countPendingWithdraws(userId);
     return {
-      lockedUsdt: Number(view.lockedUsdt),
+      lockedUsdt: Number(view.lockedUsdt) + Number(view.trialLockedUsdt),
       pendingWithdrawCount,
-      principalUsdt: Number(view.principalUsdt),
+      principalUsdt: Number(view.principalUsdt) + Number(view.trialPrincipalUsdt),
       profitUsdt: Number(view.profitUsdt),
       practiceUsdt: Number(view.practiceUsdt),
     };

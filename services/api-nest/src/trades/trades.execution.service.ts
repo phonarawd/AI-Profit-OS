@@ -10,6 +10,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  Optional,
   UnauthorizedException,
 } from "@nestjs/common";
 import { createRequire } from "node:module";
@@ -23,6 +24,10 @@ import {
 } from "../ledger/ledger.money";
 import { LedgerPostingService } from "../ledger/ledger.posting.service";
 import { PayoutReservationService } from "../ledger/payout-reservation.service";
+import { TrialFundingService } from "../ledger/trial-funding.service";
+import { krwToUsdt, usdtToKrwInt } from "../ledger/trial-fx";
+import { ReferralSlotService } from "../referral/referral-slot.service";
+import type { FundingSource } from "../ledger/trial-funding.service";
 import {
   SYSTEM_ACCOUNT_CODES,
   type PostingLineInput,
@@ -111,6 +116,7 @@ type TradeRow = {
   asset: Record<string, unknown>;
   created_at: Date;
   updated_at: Date;
+  funding_source?: string | null;
 };
 
 type OppRow = {
@@ -147,6 +153,8 @@ export class TradeExecutionService {
     private readonly simulation: SimulationAdminService,
     @Inject(CLOCK) private readonly clock: Clock,
     private readonly reservations: PayoutReservationService,
+    @Optional() private readonly trialFunding?: TrialFundingService,
+    @Optional() private readonly referralSlots?: ReferralSlotService,
   ) {}
 
   async peekAuthoritativeEvent(tradeId: string): Promise<boolean> {
@@ -443,7 +451,8 @@ export class TradeExecutionService {
                 status, result_code, step_index, progress_pct::text, log_line,
                 expected_profit_usdt::text, settled_profit_usdt::text,
                 ledger_journal_id::text, idempotency_key, asset,
-                created_at, updated_at
+                created_at, updated_at,
+                COALESCE(funding_source, 'own_principal') AS funding_source
            FROM public.trade_executions
           WHERE id = $1::uuid
           FOR UPDATE`,
@@ -492,29 +501,48 @@ export class TradeExecutionService {
 
       const profitSource =
         await this.reservations.resolveMatchProfitSource(client);
+      const funding = this.fundingOf(current);
+      const unlockFrom = funding === "trial" ? "trial_locked" : "locked";
+      const unlockTo = funding === "trial" ? "trial_principal" : "principal";
+      let profitUsdt = input.expectedProfitUsdt;
+      let profitKrw = 0;
+      let capped = false;
+      let holdFx = false;
+      if (funding === "trial" && this.trialFunding) {
+        const planned = await this.planTrialProfit(
+          client,
+          trade.user_id,
+          input.expectedProfitUsdt,
+          input.fxSnapshotId,
+        );
+        profitUsdt = planned.profitUsdt;
+        profitKrw = planned.profitKrw;
+        capped = planned.capped;
+        holdFx = planned.holdFx;
+      }
       const lines: PostingLineInput[] = [
         {
-          account: { userId: trade.user_id, bucket: "locked" },
+          account: { userId: trade.user_id, bucket: unlockFrom },
           direction: "debit",
           amountUsdt: input.capitalUsdt,
         },
         {
-          account: { userId: trade.user_id, bucket: "principal" },
+          account: { userId: trade.user_id, bucket: unlockTo },
           direction: "credit",
           amountUsdt: input.capitalUsdt,
         },
       ];
-      if (cmpAmount(input.expectedProfitUsdt, "0") > 0) {
+      if (cmpAmount(profitUsdt, "0") > 0 && !holdFx) {
         lines.push(
           {
             account: { systemCode: profitSource },
             direction: "debit",
-            amountUsdt: input.expectedProfitUsdt,
+            amountUsdt: profitUsdt,
           },
           {
             account: { userId: trade.user_id, bucket: "profit" },
             direction: "credit",
-            amountUsdt: input.expectedProfitUsdt,
+            amountUsdt: profitUsdt,
           },
         );
       }
@@ -544,6 +572,33 @@ export class TradeExecutionService {
         lines,
       });
 
+      if (funding === "trial" && this.trialFunding) {
+        if (!holdFx && profitKrw > 0) {
+          await this.trialFunding.addCreditedProfitKrw(
+            client,
+            trade.user_id,
+            profitKrw,
+          );
+        }
+        await this.trialFunding.recordSettlement(client, {
+          tradeId: trade.id,
+          userId: trade.user_id,
+          fundingSource: "trial",
+          profitUsdt: holdFx ? "0" : profitUsdt,
+          profitKrw: holdFx ? 0 : profitKrw,
+          capped,
+          status: holdFx ? "profit_held_fx" : "settled",
+        });
+        if (holdFx || capped) {
+          await client.query(
+            `UPDATE public.trade_executions
+                SET settled_profit_usdt = $2::numeric
+              WHERE id = $1::uuid`,
+            [trade.id, holdFx ? "0" : profitUsdt],
+          );
+        }
+      }
+
       const { rows } = await client.query<TradeRow>(
         `UPDATE public.trade_executions
             SET ledger_journal_id = $2::uuid,
@@ -567,6 +622,7 @@ export class TradeExecutionService {
       return this.toState(finalRow, deadlines);
     }
     await this.posting.drainOutboxAfterCommit();
+    await this.maybeGrantInviteSlot(trade.user_id);
     return this.toState(outcome.row, deadlines);
   }
 
@@ -643,7 +699,8 @@ export class TradeExecutionService {
                 status, result_code, step_index, progress_pct::text, log_line,
                 expected_profit_usdt::text, settled_profit_usdt::text,
                 ledger_journal_id::text, idempotency_key, asset,
-                created_at, updated_at
+                created_at, updated_at,
+                COALESCE(funding_source, 'own_principal') AS funding_source
            FROM public.trade_executions
           WHERE id = $1::uuid
           FOR UPDATE`,
@@ -681,18 +738,32 @@ export class TradeExecutionService {
 
       const lines: PostingLineInput[] = [];
       if (cmpAmount(capital, "0") > 0) {
+        const funding = this.fundingOf(current);
+        const unlockFrom = funding === "trial" ? "trial_locked" : "locked";
+        const unlockTo = funding === "trial" ? "trial_principal" : "principal";
         lines.push(
           {
-            account: { userId: trade.user_id, bucket: "locked" },
+            account: { userId: trade.user_id, bucket: unlockFrom },
             direction: "debit",
             amountUsdt: capital,
           },
           {
-            account: { userId: trade.user_id, bucket: "principal" },
+            account: { userId: trade.user_id, bucket: unlockTo },
             direction: "credit",
             amountUsdt: capital,
           },
         );
+        if (funding === "trial" && this.trialFunding) {
+          await this.trialFunding.recordSettlement(client, {
+            tradeId: trade.id,
+            userId: trade.user_id,
+            fundingSource: "trial",
+            profitUsdt: "0",
+            profitKrw: 0,
+            capped: false,
+            status: "unlocked",
+          });
+        }
       }
 
       if (lines.length < 2) {
@@ -734,7 +805,72 @@ export class TradeExecutionService {
     if (outcome.drained) {
       await this.posting.drainOutboxAfterCommit();
     }
+    if (outcome.kind === "won") {
+      await this.maybeGrantInviteSlot(trade.user_id);
+    }
     return this.toState(outcome.row, deadlines);
+  }
+
+  private fundingOf(row: { funding_source?: string | null }): FundingSource {
+    return row.funding_source === "trial" ? "trial" : "own_principal";
+  }
+
+  private async planTrialProfit(
+    client: {
+      query: (
+        sql: string,
+        params?: unknown[],
+      ) => Promise<{ rows: Array<{ usd_krw?: string }> }>;
+    },
+    userId: string,
+    expectedProfitUsdt: string,
+    fxSnapshotId: string,
+  ): Promise<{
+    profitUsdt: string;
+    profitKrw: number;
+    capped: boolean;
+    holdFx: boolean;
+  }> {
+    if (!this.trialFunding || cmpAmount(expectedProfitUsdt, "0") <= 0) {
+      return { profitUsdt: "0", profitKrw: 0, capped: false, holdFx: false };
+    }
+    const fx = await client.query(
+      `SELECT usd_krw::text FROM public.fx_snapshots WHERE id = $1`,
+      [fxSnapshotId],
+    );
+    const usdKrw = fx.rows[0]?.usd_krw;
+    if (!usdKrw) {
+      return { profitUsdt: "0", profitKrw: 0, capped: false, holdFx: true };
+    }
+    const remaining = await this.trialFunding.remainingCapKrw(
+      client as never,
+      userId,
+    );
+    const wantKrw = usdtToKrwInt(expectedProfitUsdt, usdKrw);
+    const creditKrw = Math.min(wantKrw, remaining);
+    if (creditKrw < 1) {
+      return {
+        profitUsdt: "0",
+        profitKrw: 0,
+        capped: wantKrw > 0,
+        holdFx: false,
+      };
+    }
+    return {
+      profitUsdt: krwToUsdt(creditKrw, usdKrw),
+      profitKrw: creditKrw,
+      capped: creditKrw < wantKrw,
+      holdFx: false,
+    };
+  }
+
+  private async maybeGrantInviteSlot(userId: string): Promise<void> {
+    if (!this.referralSlots) return;
+    try {
+      await this.referralSlots.tryGrantOnWorkDone(userId);
+    } catch {
+      return;
+    }
   }
 
   private presentationProgress(

@@ -11,6 +11,7 @@ import { ReferralProgramService } from "./referral.program.service";
 import { ReferralHooks } from "./referral.hooks";
 import { ReferralOwnCodeService } from "./referral.own-code.service";
 import { ReferralShareService } from "./referral.share.service";
+import { ReferralSlotService } from "./referral-slot.service";
 
 /**
  * Money §51.5 Nest referral module.
@@ -28,6 +29,7 @@ import { ReferralShareService } from "./referral.share.service";
     ReferralShareService,
     ReferralOwnCodeService,
     ReferralHooks,
+    ReferralSlotService,
   ],
   exports: [
     ReferralProgramService,
@@ -37,6 +39,7 @@ import { ReferralShareService } from "./referral.share.service";
     ReferralClawbackService,
     ReferralShareService,
     ReferralOwnCodeService,
+    ReferralSlotService,
   ],
 })
 export class ReferralModule {}

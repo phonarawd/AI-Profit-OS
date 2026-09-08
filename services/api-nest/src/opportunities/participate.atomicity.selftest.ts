@@ -187,6 +187,11 @@ function baseInput(idempotencyKey: string) {
       category: "watch",
       fxSnapshotId: "fx-1",
     },
+    funding: {
+      source: "own_principal" as const,
+      fromBucket: "principal" as const,
+      toBucket: "locked" as const,
+    },
   };
 }
 

@@ -10,6 +10,8 @@ import { LedgerUserController } from "./ledger.user.controller";
 import { LedgerUserQueryService } from "./ledger.user-query.service";
 import { PayoutReservationService } from "./payout-reservation.service";
 import { PracticeGrantService } from "./practice-grant.service";
+import { TrialFundingService } from "./trial-funding.service";
+import { TrialGrantService } from "./trial-grant.service";
 
 @Module({
   controllers: [LedgerAdminController, LedgerUserController],
@@ -22,6 +24,8 @@ import { PracticeGrantService } from "./practice-grant.service";
     LedgerAdminService,
     LedgerUserQueryService,
     PracticeGrantService,
+    TrialGrantService,
+    TrialFundingService,
     PayoutReservationService,
   ],
   exports: [
@@ -33,6 +37,8 @@ import { PracticeGrantService } from "./practice-grant.service";
     LedgerAdminService,
     LedgerUserQueryService,
     PracticeGrantService,
+    TrialGrantService,
+    TrialFundingService,
     PayoutReservationService,
   ],
 })

@@ -144,6 +144,13 @@ export class WithdrawIntentService {
     if (input.asset !== "USDT" && input.asset !== "KRW") {
       throw new BadRequestException("invalid asset");
     }
+    if (mode !== "profit" || input.asset !== "USDT") {
+      throw new ForbiddenException({
+        code: "WITHDRAW_PROFIT_USDT_ONLY",
+        toastCode: "WITHDRAW_PROFIT_USDT_ONLY",
+        statusCode: 403,
+      });
+    }
 
     const amountUsdt = assertAmountUsdt(input.amountUsdt, "amountUsdt");
     if (parseAmount(amountUsdt) <= 0n) {

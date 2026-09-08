@@ -24,6 +24,7 @@ import { NotificationPrefsService } from "../inbox/notification-prefs.service";
 import { UserUxPrefsService } from "../ux-prefs/user-ux-prefs.service";
 import { LedgerProvisionService } from "../ledger/ledger.provision.service";
 import { PracticeGrantService } from "../ledger/practice-grant.service";
+import { TrialGrantService } from "../ledger/trial-grant.service";
 import {
   ADMIN_JWT_ISSUER,
   DELETE_ACCOUNT_CONFIRM_PHRASE,
@@ -81,6 +82,7 @@ export class AuthService {
     private readonly db: PostgresService,
     private readonly ledgerProvision: LedgerProvisionService,
     private readonly practiceGrant: PracticeGrantService,
+    private readonly trialGrant: TrialGrantService,
     private readonly notificationPrefs: NotificationPrefsService,
     private readonly uxPrefs: UserUxPrefsService,
     private readonly privacy: PrivacyAccountService,
@@ -91,13 +93,13 @@ export class AuthService {
   ) {}
 
   /**
-   * After a real `users` row insert (Stage A persist) — provision §49 buckets
-   * then §51.7 welcome practice (+10 · 1회 · expire 7d).
-   * Calls SQL `provision_user_bucket_accounts` (idempotent).
+   * After a real `users` row insert — provision §49 buckets then trial welcome.
+   * practice_grant_welcome is NOT auto-granted (PUTDUK desk).
+   * practiceGrant.grantWelcome stays on HTTP/referee only.
    */
   async provisionLedgerBucketsForUser(userId: string): Promise<void> {
     await this.ledgerProvision.provisionUserBucketAccounts(userId);
-    await this.practiceGrant.grantWelcome(userId);
+    await this.trialGrant.grantWelcome(userId);
     /** UI §50.1n — 가입 시 알림 prefs 전부 ON */
     await this.notificationPrefs.ensureDefaultsForUser(userId);
     await this.uxPrefs.ensureDefaultsForUser(userId);
@@ -158,6 +160,7 @@ export class AuthService {
       issuer: USER_JWT_ISSUER,
       ledgerProvision: "provisionLedgerBucketsForUser" as const,
       practiceWelcome: "practice_grant_welcome" as const,
+      trialWelcome: "trial_grant_welcome" as const,
     };
   }
 

@@ -1388,6 +1388,13 @@ const RULES = [
   },
   {
     test: (f) =>
+      /trial-grant|trial-funding|trial-fx|trial_welcome|referral-slot|trial-welcome/.test(
+        f,
+      ),
+    scripts: ["trial-welcome.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/ledger\/ledger\.user/.test(f) ||
       /^services\/api-nest\/ledger-user-query\.core\.cjs$/.test(f) ||
       /^packages\/sdk\/src\/ledger\//.test(f) ||

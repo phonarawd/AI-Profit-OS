@@ -1,6 +1,13 @@
 /** Money §11 · §43.5 · §49 — ledger posting contracts */
 
-export const USER_BUCKETS = ["principal", "profit", "locked", "practice"] as const;
+export const USER_BUCKETS = [
+  "principal",
+  "profit",
+  "locked",
+  "practice",
+  "trial_principal",
+  "trial_locked",
+] as const;
 export type UserBucket = (typeof USER_BUCKETS)[number];
 
 export const JOURNAL_TYPES = [
@@ -17,6 +24,7 @@ export const JOURNAL_TYPES = [
   "referral_clawback",
   "practice_grant",
   "practice_expire",
+  "trial_grant",
   "mission_reward",
   "mission_clawback",
   "fee",
@@ -61,6 +69,18 @@ export const CREDIT_NORMAL_KINDS = new Set([
 export const SOLVENCY_CONSTRAINED_KINDS = new Set([
   "user_bucket",
   "opportunity_pool",
+]);
+
+/** Withdraw/deposit/merge must never touch trial principal/lock. */
+export const TRIAL_FORBIDDEN_JOURNAL_TYPES = new Set<JournalType>([
+  "deposit_usdt",
+  "deposit_krw",
+  "withdraw",
+  "withdraw_refund",
+  "merge_profit_to_principal",
+  "fee",
+  "referral_reward",
+  "referral_clawback",
 ]);
 
 /** Journal types that must never touch practice bucket (§49). */
@@ -129,6 +149,8 @@ export type WalletBucketsView = {
   profitUsdt: string;
   lockedUsdt: string;
   practiceUsdt: string;
+  trialPrincipalUsdt: string;
+  trialLockedUsdt: string;
   liabilityUsdt: string;
   asOfLedgerEntryId: string;
 };

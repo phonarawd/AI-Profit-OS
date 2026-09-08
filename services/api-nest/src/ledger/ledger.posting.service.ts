@@ -32,6 +32,7 @@ import {
   CREDIT_NORMAL_KINDS,
   DEBIT_NORMAL_KINDS,
   PRACTICE_FORBIDDEN_JOURNAL_TYPES,
+  TRIAL_FORBIDDEN_JOURNAL_TYPES,
   SOLVENCY_CONSTRAINED_KINDS,
   type AccountRef,
   type JournalType,
@@ -146,6 +147,7 @@ export class LedgerPostingService {
 
     const resolved = await this.resolveLines(client, input.lines);
     this.assertPracticeIsolation(input.journalType, resolved);
+    this.assertTrialWithdrawIsolation(input.journalType, resolved);
     this.assertBalanced(resolved);
 
     const accountIds = [...new Set(resolved.map((l) => l.account.id))].sort();
@@ -375,6 +377,23 @@ export class LedgerPostingService {
       if (l.account.bucket === "practice") {
         throw new BadRequestException(
           "PRACTICE_PATH_FORBIDDEN: practice bucket cannot enter withdraw/participate/settlement paths",
+        );
+      }
+    }
+  }
+
+  private assertTrialWithdrawIsolation(
+    journalType: JournalType,
+    lines: Array<{ account: AccountRow }>,
+  ): void {
+    if (!TRIAL_FORBIDDEN_JOURNAL_TYPES.has(journalType)) return;
+    for (const l of lines) {
+      if (
+        l.account.bucket === "trial_principal" ||
+        l.account.bucket === "trial_locked"
+      ) {
+        throw new BadRequestException(
+          "TRIAL_PRINCIPAL_NOT_WITHDRAWABLE: trial capital cannot enter withdraw/deposit/merge",
         );
       }
     }

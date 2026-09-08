@@ -4,6 +4,7 @@ import { ExecutionPolicyModule } from "../execution-policy/execution-policy.modu
 import { LedgerModule } from "../ledger/ledger.module";
 import { RiskModule } from "../risk/risk.module";
 import { SimulationModule } from "../simulation/simulation.module";
+import { ReferralModule } from "../referral/referral.module";
 import { TradeExecutionService } from "./trades.execution.service";
 import { TradesUserController } from "./trades.user.controller";
 import { TradesAdminController } from "./trades.admin.controller";
@@ -21,6 +22,7 @@ import { TradesInternalController } from "./trades.internal.controller";
     ExecutionPolicyModule,
     SimulationModule,
     AdminAuditModule,
+    ReferralModule,
   ],
   controllers: [
     TradesUserController,

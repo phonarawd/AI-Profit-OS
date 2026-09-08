@@ -274,6 +274,7 @@
     "verify:referral-idempotency": "node tooling/verify/referral-idempotency.cjs",
     "verify:share-copy": "node tooling/verify/share-copy.cjs",
     "verify:practice-non-withdrawable": "node tooling/verify/practice-non-withdrawable.cjs",
+    "verify:trial-welcome": "node tooling/verify/trial-welcome.cjs",
     "verify:mission-auto-payout": "node tooling/verify/mission-auto-payout.cjs",
     "verify:mission-idempotency": "node tooling/verify/mission-idempotency.cjs",
     "verify:mission-no-manual-grant": "node tooling/verify/mission-no-manual-grant.cjs",

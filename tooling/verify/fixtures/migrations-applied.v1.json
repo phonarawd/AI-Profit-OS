@@ -194,6 +194,12 @@
       "name": "fashionphile_image_source",
       "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
       "reason": "Additive CHECK: assets/opportunities image_source includes fashionphile. Observation photo persist. Production apply after S5 staging."
+    },
+    {
+      "version": "20260909060000",
+      "name": "trial_welcome_grant",
+      "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
+      "reason": "PUTDUK desk trial capital: trial buckets, trial_grant journal, program tables, funding_source. Additive. Do not apply to mgsytcetsiecllmhcyox from this commit."
     }
   ]
 }
