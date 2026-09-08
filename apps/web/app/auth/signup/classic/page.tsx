@@ -1,5 +1,10 @@
+import { GuestChrome } from "../../../components/GuestChrome";
 import { ClassicSignupRuntime } from "./ClassicSignupRuntime";
 
 export default function Page() {
-  return <ClassicSignupRuntime />;
+  return (
+    <GuestChrome>
+      <ClassicSignupRuntime />
+    </GuestChrome>
+  );
 }
