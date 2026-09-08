@@ -60,7 +60,10 @@ export const CODES = {
  *   REL-701-DB : Production migration apply (supabase db push / migration up · MCP apply_migration)
  *
  * 승인으로도 절대 열리지 않는 것: migration-history repair · db reset · Production deploy/rollback ·
- * secret/env 변이 · GitHub ruleset/protection · force push · main/release push · --no-verify.
+ * 프로덕션 secret/env 변이 · GitHub ruleset/protection · force push · main/release push · --no-verify.
+ *
+ * 스테이징 전용은 승인 없이 ALLOW: `gh secret set STAGING_*` ·
+ * `deploy-cloudflare.yml -f target=preview|dedicated` · `deploy-staging` / `deploy-dedicated`.
  */
 export const FOUNDER_AUTH_SCHEMA = "night-guard.founder-auth.v1";
 export const FOUNDER_AUTH_MAX_WINDOW_MS = 4 * 60 * 60 * 1000;
@@ -636,9 +639,33 @@ function decidePsql(cmd) {
   return denyDb(kind.kind === "unknown" ? "dml" : kind.kind);
 }
 
+function githubSecretName(cmd) {
+  const m = String(cmd || "").match(
+    /\bgh\s+(secret|variable)\s+(?:set|delete)\s+([A-Za-z0-9_]+)/i
+  );
+  return m ? m[2] : "";
+}
+
+function isStagingGithubSecretName(name) {
+  return /^STAGING_[A-Z0-9_]+$/.test(String(name || ""));
+}
+
+function isNonProdDeployDispatch(cmd) {
+  if (!/\bgh\s+workflow\s+run\b/i.test(cmd)) return false;
+  if (/deploy-staging|deploy-dedicated/i.test(cmd)) return true;
+  if (
+    /deploy-cloudflare/i.test(cmd) &&
+    /(?:^|\s)-f\s+target=(preview|dedicated)\b/i.test(cmd)
+  ) {
+    return true;
+  }
+  return false;
+}
+
 function decideDeployCli(cmd) {
   const stripped = stripQuoted(cmd);
   if (isExplicitlyNonProduction(cmd)) return null;
+  if (isNonProdDeployDispatch(cmd)) return null;
 
   if (
     /\bcf:deploy:[a-z0-9:-]*prod\b/i.test(cmd) ||
@@ -720,6 +747,7 @@ function decideSecretCli(cmd) {
     );
   }
   if (/\bgh\s+secret\s+(set|delete)\b/i.test(cmd)) {
+    if (isStagingGithubSecretName(githubSecretName(cmd))) return null;
     return deny(
       CODES.PROD_SECRET_ENV,
       "Blocked: Production GitHub secret mutation.",
@@ -727,6 +755,7 @@ function decideSecretCli(cmd) {
     );
   }
   if (/\bgh\s+variable\s+(set|delete)\b/i.test(cmd)) {
+    if (isStagingGithubSecretName(githubSecretName(cmd))) return null;
     return deny(
       CODES.PROD_SECRET_ENV,
       "Blocked: Production GitHub env/variable mutation.",

@@ -33,6 +33,14 @@ if (imagesBindingCheck.status !== 0) {
 requireRootDomainForProd(target);
 requireCloudflareCreds();
 loadDotEnv();
+if (
+  target !== "production" &&
+  target !== "prod" &&
+  !process.env.STAGING_API_HOST &&
+  process.env.API_HOST
+) {
+  process.env.STAGING_API_HOST = process.env.API_HOST;
+}
 requireNonProdApiIsolation(target, { root, env: process.env });
 
 const requiredInfra = [

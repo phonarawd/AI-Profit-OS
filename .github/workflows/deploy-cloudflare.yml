@@ -165,6 +165,7 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          STAGING_API_HOST: ${{ secrets.STAGING_API_HOST }}
         run: node tooling/deploy/cf-preflight.cjs ${{ inputs.target }} web && node tooling/deploy/cf-pages-web.cjs ${{ inputs.target }}
 
       - name: Deploy ops (apps/admin required)
@@ -172,6 +173,7 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          STAGING_API_HOST: ${{ secrets.STAGING_API_HOST }}
         run: node tooling/deploy/cf-preflight.cjs ${{ inputs.target }} ops && node tooling/deploy/cf-pages-ops.cjs ${{ inputs.target }}
 
       - name: Origin smoke (workers.dev HTTP)

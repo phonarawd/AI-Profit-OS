@@ -232,6 +232,23 @@ expectDeny(
   CODES.PROD_DEPLOY
 );
 expectDeny(
+  "DENY gh workflow run deploy-cloudflare production",
+  shell("gh workflow run deploy-cloudflare.yml -f target=production"),
+  CODES.PROD_DEPLOY
+);
+expectAllow(
+  "ALLOW gh workflow run deploy-cloudflare preview",
+  shell("gh workflow run deploy-cloudflare.yml -f target=preview")
+);
+expectAllow(
+  "ALLOW gh workflow run deploy-cloudflare dedicated",
+  shell("gh workflow run deploy-cloudflare.yml -f target=dedicated")
+);
+expectAllow(
+  "ALLOW gh workflow run deploy-staging",
+  shell("gh workflow run deploy-staging.yml")
+);
+expectDeny(
   "DENY wrangler secret put production",
   shell("wrangler secret put FOO"),
   CODES.PROD_SECRET_ENV
@@ -240,6 +257,19 @@ expectDeny(
   "DENY gh secret set",
   shell("gh secret set FOO --body fixture"),
   CODES.PROD_SECRET_ENV
+);
+expectDeny(
+  "DENY gh secret set production API_HOST",
+  shell("gh secret set API_HOST --body fixture"),
+  CODES.PROD_SECRET_ENV
+);
+expectAllow(
+  "ALLOW gh secret set STAGING_API_HOST",
+  shell("gh secret set STAGING_API_HOST --body fixture")
+);
+expectAllow(
+  "ALLOW gh secret set STAGING_ACCESS_ALLOWED_EMAILS",
+  shell("gh secret set STAGING_ACCESS_ALLOWED_EMAILS --body fixture")
 );
 expectAllow(
   "ALLOW wrangler deploy preview",
