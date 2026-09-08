@@ -137,11 +137,14 @@ if (!mi.isPartnerListingAdapterId("amazon") || !mi.isPartnerListingAdapterId("ya
 if (mi.isForbiddenMarketId("yahoo_jp")) {
   fails.push("yahoo_jp must not be FORBIDDEN market (v7.22.41 partner)");
 }
+if (mi.isForbiddenAdapterId("kream") || mi.isForbiddenAdapterId("feelway")) {
+  fails.push("kream/feelway must not be FORBIDDEN after global-source-unlock");
+}
 if (mi.isForbiddenAdapterId("yahoo_jp") || mi.isForbiddenAdapterId("amazon")) {
   fails.push("yahoo_jp/amazon adapters must not be FORBIDDEN");
 }
-if (!mi.PUBLISH_GUARDS?.yahooJpForbidden) {
-  fails.push("Day-1 PUBLISH_GUARDS.yahooJpForbidden must remain true");
+if (mi.PUBLISH_GUARDS?.yahooJpForbidden === true) {
+  fails.push("PUBLISH_GUARDS.yahooJpForbidden must be false after global-source-unlock");
 }
 if (!mi.PUBLISH_GUARDS?.amazonAutoPublishForbidden) {
   fails.push("PUBLISH_GUARDS.amazonAutoPublishForbidden must be true");

@@ -17,17 +17,42 @@ const PIPELINE_STAGES = Object.freeze([
 /** Auto-publish guards (Opportunity status=available) */
 const PUBLISH_GUARDS = Object.freeze({
   minPricingLegs: 1,
+  /** Money settlement auto-publish legs (compare may use OBSERVATION_SOURCES_ALLOWED) */
   listingLegsOnly: ["ebay", "admin"],
   catalogAloneForbidden: ["pokemontcg", "ygoprodeck"],
   requireFreshLegs: true,
   requireAssetImageUrl: true,
   requireExpectedProfitPositive: true,
-  /** Day-1 auto-publish 0 for yahoo/amazon · Phase1+ partner adapters exist (§0.0.1c) */
-  yahooJpForbidden: true,
+  /** Partner adapters ingest allowed · Day-1 auto-publish still ebay|admin */
+  yahooJpForbidden: false,
   amazonAutoPublishForbidden: true,
   /** Engine §4.2a — available 공개 시 arbitrageTypeKo 필수 */
   requireArbitrageTypeKo: true,
 });
+
+/**
+ * Observation / web-parser sources authorized for compare + image hydrate.
+ * SSOT: governance/global-product/global-source-unlock-authorization.v1.md
+ */
+const OBSERVATION_SOURCES_ALLOWED = Object.freeze([
+  "fashionphile",
+  "chrono24",
+  "tcgplayer",
+  "mercari_jp",
+  "kream",
+  "bunjang",
+  "stockx",
+  "goat",
+  "vestiaire",
+  "feelway",
+  "coupang",
+  "cardpick",
+  "pokahub",
+  "snkrdunk",
+  "the_realreal",
+  "cardmarket",
+  "pokard",
+]);
 
 /**
  * Day-1 recommended leg pairs (ebay multi | ebay×admin).
@@ -104,6 +129,7 @@ function resolveStoredLegListingPrices(input) {
 module.exports = {
   PIPELINE_STAGES,
   PUBLISH_GUARDS,
+  OBSERVATION_SOURCES_ALLOWED,
   DAY1_LEG_PAIRS,
   isAllowedLegPair,
   resolveStoredLegListingPrices,

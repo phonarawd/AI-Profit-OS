@@ -7,15 +7,17 @@
 | measuredAt | `2026-08-16` |
 | owner | Engine §0.0.2c |
 | matrices | `governance/global-product/parser-contract-matrices.v1.json` |
-| fx additive | `governance/global-product/jpy-krw-additive-fx-contract.v1.md` (§0.0.2d PASS · runtime 0) |
-| runtime | **0** |
-| listing-leg authorization | **NO** |
-| Home / 03 / 04 | **DO NOT MODIFY** |
+| fx additive | `governance/global-product/jpy-krw-additive-fx-contract.v1.md` (§0.0.2d PASS · **runtime AUTHORIZED**) |
+| unlock | `governance/global-product/global-source-unlock-authorization.v1.md` (2026-09-08) |
+| runtime | **AUTHORIZED** |
+| listing-leg authorization | **OBSERVATION YES** · settlement listing = ebay\|admin\|partner |
+| Home / 03 / 04 | **DO NOT MODIFY** (functional) · image allowlist = additive todo |
 
 > **Verdict:** `GLOBAL_PARSER_IMPLEMENTATION_CONTRACT = PASS`  
 > **Principle:** `SOURCE_OBSERVATION != LISTING_LEG`  
-> Vestiaire image gate = **BLOCKED** (resolved, not fake-PASS). Bunjang representative image = **LOCKED**.  
-> Yahoo Japan = `PERMANENTLY_FORBIDDEN`. DROP / REFERENCE_ONLY = parser current-price 대상 0.
+> Vestiaire image gate = **AUTHORIZED** (1st-party URL 관측). Bunjang representative image = **LOCKED** (추출 규칙).  
+> Yahoo Japan scrape alias = forbidden · official `yahoo_jp` adapter = **AUTHORIZED**.  
+> DROP / REFERENCE_ONLY = **CONDITIONAL** · product fit gate 통과 시 observation 허용.
 
 ---
 
@@ -56,7 +58,8 @@ SOURCE PRICE
 ≠ SETTLEMENT / LEDGER TRUTH
 ```
 
-`PUBLISH_GUARDS.listingLegsOnly=["ebay","admin"]` · `yahooJpForbidden=true` — 본 계약이 supersede하지 않는다.
+`PUBLISH_GUARDS.listingLegsOnly=["ebay","admin"]` = **money settlement auto-publish** only.  
+Observation/compare ingest = **`OBSERVATION_SOURCES_ALLOWED`** (`global-source-unlock-authorization.v1.md`).
 
 ---
 

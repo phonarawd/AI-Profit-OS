@@ -182,6 +182,12 @@
       "name": "product_onboarding_progress",
       "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
       "reason": "Product onboarding server SoT. Additive table. Production apply after S5 staging. Do not apply to mgsytcetsiecllmhcyox from this commit."
+    },
+    {
+      "version": "20260908164000",
+      "name": "global_source_unlock_observation_sources",
+      "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
+      "reason": "Global source unlock: extend source_observations enum (feelway, coupang, reference/conditional sources). Additive CHECK only. Production apply after S5 staging."
     }
   ]
 }

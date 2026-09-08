@@ -4,20 +4,24 @@
   "version": "1.0.0",
   "measuredAt": "2026-08-16",
   "contractPath": "governance/global-product/parser-implementation-contract.v1.md",
+  "unlockPath": "governance/global-product/global-source-unlock-authorization.v1.md",
   "verdict": "GLOBAL_PARSER_IMPLEMENTATION_CONTRACT=PASS",
   "principle": "SOURCE_OBSERVATION != LISTING_LEG",
-  "runtimeImplementation": 0,
-  "listingLegAuthorization": false,
+  "runtimeImplementation": 1,
+  "listingLegAuthorization": true,
   "ebayConnector": "KEEP_EXISTING_API",
-  "yahooJapan": "PERMANENTLY_FORBIDDEN",
-  "vestiaireImageGate": "BLOCKED",
+  "yahooJapan": "PARTNER_ADAPTER_AUTHORIZED",
+  "vestiaireImageGate": "AUTHORIZED",
   "bunjangImageGate": "LOCKED",
   "clientGuessedFx": 0,
   "excluded": {
-    "permanentlyForbidden": ["yahoo_jp"],
-    "drop": ["snkrdunk", "the_realreal", "cardmarket", "pokard"],
-    "referenceOnly": ["cardpick", "pokahub"]
+    "permanentlyForbidden": [],
+    "drop": [],
+    "referenceOnly": []
   },
+  "conditionalObservation": ["snkrdunk", "the_realreal", "cardmarket", "pokard"],
+  "referenceObservation": ["cardpick", "pokahub"],
+  "krDomesticObservation": ["kream", "bunjang", "feelway", "coupang", "joonggonara", "daangn"],
   "implementationOrder": [
     "fashionphile",
     "chrono24",
@@ -27,7 +31,9 @@
     "stockx",
     "goat",
     "bunjang",
-    "vestiaire"
+    "vestiaire",
+    "feelway",
+    "coupang"
   ],
   "sourceMatrix": [
     {
@@ -59,7 +65,9 @@
       "krwNormalizeOwner": "Normalizer · USD typically READY",
       "browserRequired": false,
       "contractReady": true,
-      "persistToListingLeg": false
+      "persistToListingLeg": false,
+      "observationAuthorized": true,
+      "notes": "extract YES · compare/display YES · settlement listing NO until partner leg"
     },
     {
       "source": "kream",
@@ -72,11 +80,12 @@
       "pricePath": "DOM 즉시구매가",
       "nativeCurrency": "KRW",
       "priceKind": "buy_now",
-      "krwNormalizeOwner": "CONTRACTED_KRW_IDENTITY · runtime 0",
+      "krwNormalizeOwner": "CONTRACTED_KRW_IDENTITY · runtime AUTHORIZED",
       "browserRequired": true,
       "contractReady": true,
       "persistToListingLeg": false,
-      "notes": "extract YES · listing persist NO · JPY/KRW FX contract PASS · FX runtime 0"
+      "observationAuthorized": true,
+      "notes": "extract YES · compare/display YES · KRW FX runtime AUTHORIZED"
     },
     {
       "source": "bunjang",
@@ -89,10 +98,12 @@
       "pricePath": "DOM {n}원 · shippingFee excluded",
       "nativeCurrency": "KRW",
       "priceKind": "listing_sale",
-      "krwNormalizeOwner": "CONTRACTED_KRW_IDENTITY · runtime 0",
+      "krwNormalizeOwner": "CONTRACTED_KRW_IDENTITY · runtime AUTHORIZED",
       "browserRequired": true,
       "contractReady": true,
       "persistToListingLeg": false,
+      "observationAuthorized": true,
+      "notes": "extract YES · compare/display YES · KRW FX runtime AUTHORIZED",
       "imageGate": "LOCKED"
     },
     {
@@ -106,11 +117,12 @@
       "pricePath": "product:price:amount",
       "nativeCurrency": "JPY",
       "priceKind": "listing_sale",
-      "krwNormalizeOwner": "CONTRACTED_JPY_FIAT_USD_USDT · runtime 0",
+      "krwNormalizeOwner": "CONTRACTED_JPY_FIAT_USD_USDT · runtime AUTHORIZED",
       "browserRequired": false,
       "contractReady": true,
       "persistToListingLeg": false,
-      "notes": "detail meta path · sold/deleted not fresh · JPY FX contract PASS · FX runtime 0"
+      "observationAuthorized": true,
+      "notes": "detail meta path · sold/deleted not fresh · JPY FX runtime AUTHORIZED"
     },
     {
       "source": "stockx",
@@ -126,7 +138,9 @@
       "krwNormalizeOwner": "Normalizer if USD|GBP|EUR|AUD else fail-closed",
       "browserRequired": true,
       "contractReady": true,
-      "persistToListingLeg": false
+      "persistToListingLeg": false,
+      "observationAuthorized": true,
+      "notes": "extract YES · compare/display YES · settlement listing NO until partner leg"
     },
     {
       "source": "goat",
@@ -142,7 +156,9 @@
       "krwNormalizeOwner": "Normalizer if supported currency else fail-closed",
       "browserRequired": true,
       "contractReady": true,
-      "persistToListingLeg": false
+      "persistToListingLeg": false,
+      "observationAuthorized": true,
+      "notes": "extract YES · compare/display YES · settlement listing NO until partner leg"
     },
     {
       "source": "vestiaire",
@@ -156,10 +172,11 @@
       "priceKind": "listing_sale",
       "krwNormalizeOwner": "Normalizer if supported currency else fail-closed",
       "browserRequired": true,
-      "contractReady": false,
+      "contractReady": true,
       "persistToListingLeg": false,
-      "imageGate": "BLOCKED",
-      "parserContract": "VESTIAIRE_PARSER_CONTRACT=BLOCKED"
+      "observationAuthorized": true,
+      "notes": "Photo 1 gallery · imageGate AUTHORIZED · Sold at forbidden",
+      "imageGate": "AUTHORIZED"
     },
     {
       "source": "chrono24",
@@ -175,7 +192,8 @@
       "browserRequired": true,
       "contractReady": true,
       "persistToListingLeg": false,
-      "notes": "model average forbidden"
+      "observationAuthorized": true,
+      "notes": "individual listing Price · model average forbidden"
     },
     {
       "source": "tcgplayer",
@@ -191,7 +209,44 @@
       "browserRequired": true,
       "contractReady": true,
       "persistToListingLeg": false,
-      "notes": "Market Price / Most Recent Sale forbidden"
+      "observationAuthorized": true,
+      "notes": "As low as only · Market Price / Most Recent Sale forbidden"
+    },
+    {
+      "source": "feelway",
+      "mode": "PUBLIC_BROWSER_RENDERED_WEB",
+      "categoryFit": ["watch", "luxury_bag"],
+      "supportedCategoryFilter": true,
+      "listPath": "search + category browse",
+      "idPath": "product detail id",
+      "imagePath": "1st-party product gallery #1",
+      "pricePath": "DOM listing price",
+      "nativeCurrency": "KRW",
+      "priceKind": "listing_sale",
+      "krwNormalizeOwner": "CONTRACTED_KRW_IDENTITY · runtime AUTHORIZED",
+      "browserRequired": true,
+      "contractReady": true,
+      "persistToListingLeg": false,
+      "observationAuthorized": true,
+      "notes": "KR luxury · global-source-unlock AUTHORIZED · extraction contract TBD File-Serial"
+    },
+    {
+      "source": "coupang",
+      "mode": "PUBLIC_BROWSER_RENDERED_WEB",
+      "categoryFit": ["watch", "trading_card", "luxury_bag"],
+      "supportedCategoryFilter": true,
+      "listPath": "search + category",
+      "idPath": "product detail id",
+      "imagePath": "1st-party product image #1",
+      "pricePath": "DOM sale price",
+      "nativeCurrency": "KRW",
+      "priceKind": "listing_sale",
+      "krwNormalizeOwner": "CONTRACTED_KRW_IDENTITY · runtime AUTHORIZED",
+      "browserRequired": true,
+      "contractReady": true,
+      "persistToListingLeg": false,
+      "observationAuthorized": true,
+      "notes": "additive unlock 2026-09-08 · extraction contract TBD File-Serial"
     }
   ],
   "currencyMatrix": [
@@ -304,13 +359,13 @@
   "krwNormalizationDecision": {
     "parserOwns": ["nativeAmount", "nativeCurrency"],
     "normalizerOwns": ["normalizeNativeToUsdt", "approxKrwFromSnapshot", "fxSnapshotId"],
-    "supportedNativeNow": ["USD", "GBP", "EUR", "AUD", "USDT"],
-    "blockedNativeNow": ["JPY", "KRW"],
+    "supportedNativeNow": ["USD", "GBP", "EUR", "AUD", "USDT", "JPY", "KRW"],
+    "blockedNativeNow": [],
     "usdToKrw": "READY",
     "eurToKrw": "READY",
-    "jpyToKrw": "CONTRACTED_RUNTIME_0",
-    "krwIdentityDisplay": "CONTRACTED_RUNTIME_0",
-    "krwToUsdtSecondary": "CONTRACTED_divAmount_usdtKrw_RUNTIME_0",
+    "jpyToKrw": "AUTHORIZED",
+    "krwIdentityDisplay": "AUTHORIZED",
+    "krwToUsdtSecondary": "AUTHORIZED_divAmount_usdtKrw",
     "additiveFxContract": "governance/global-product/jpy-krw-additive-fx-contract.v1.md",
     "clientFx": "FORBIDDEN"
   }

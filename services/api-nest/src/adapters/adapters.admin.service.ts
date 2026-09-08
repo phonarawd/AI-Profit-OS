@@ -203,7 +203,7 @@ export class AdaptersAdminService {
       })),
       day1AutoPublishYahooJp: DAY1_AUTO_PUBLISH_YAHOO_JP,
       phase1Partners: ["amazon", "yahoo_jp"],
-      forbidden: ["bunjang", "joonggonara", "daangn", "chrono24", "tcgplayer"],
+      forbidden: [],
     };
   }
 
