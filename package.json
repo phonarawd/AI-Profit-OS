@@ -120,6 +120,7 @@
     "verify:ops-inbox": "node tooling/verify/ops-inbox.cjs",
     "verify:notification-prefs-default-on": "node tooling/verify/notification-prefs-default-on.cjs",
     "verify:listing-legs-day1": "node tooling/verify/listing-legs-day1.cjs",
+    "verify:fashionphile-parser": "node tooling/verify/fashionphile-parser.cjs",
     "verify:signup-ready-adapters": "node tooling/verify/signup-ready-adapters.cjs",
     "verify:market-partner-adapters": "node tooling/verify/market-partner-adapters.cjs",
     "verify:market-partner-trust": "node tooling/verify/market-partner-trust.cjs",

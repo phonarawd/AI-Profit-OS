@@ -67,6 +67,9 @@ if (forbidden.FORBIDDEN_MARKET_IDS.includes("yahoo_jp")) {
 if (forbidden.isForbiddenAdapterId("kream") || forbidden.isForbiddenAdapterId("feelway")) {
   fails.push("kream/feelway must not be forbidden after global-source-unlock");
 }
+if (!require(path.join(root, "services/market-intelligence/src/index.cjs")).isIngestableAdapterId("fashionphile")) {
+  fails.push("fashionphile must be ingestable observation adapter");
+}
 if (forbidden.isForbiddenAdapterId("yahoo_jp") || forbidden.isForbiddenAdapterId("amazon")) {
   fails.push("partner adapters yahoo_jp/amazon must not be forbidden");
 }

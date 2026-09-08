@@ -99,27 +99,59 @@ function isSignupReadyAdapterId(adapterId) {
   return SIGNUP_READY_ADAPTER_IDS.includes(adapterId);
 }
 
+/** Web-parser observation adapters — not listing legs */
+const OBSERVATION_ADAPTERS = Object.freeze([
+  {
+    adapterId: "fashionphile",
+    worker: "fashionphile-parser",
+    role: "observation",
+    verticals: ["luxury_bag"],
+    cacheHintSec: 1800,
+    persistToListingLeg: false,
+  },
+]);
+
+const OBSERVATION_ADAPTER_IDS = Object.freeze(
+  OBSERVATION_ADAPTERS.map((a) => a.adapterId),
+);
+
+const OBSERVATION_WORKER_NAMES = Object.freeze(
+  OBSERVATION_ADAPTERS.map((a) => a.worker),
+);
+
+function isObservationAdapterId(adapterId) {
+  return OBSERVATION_ADAPTER_IDS.includes(adapterId);
+}
+
 /**
- * Signup-ready + Phase1+ partner listing adapters (Nest ingest allow-list).
+ * Signup-ready + Phase1+ partner listing + observation parsers.
  * @param {string} adapterId
  * @returns {boolean}
  */
 function isIngestableAdapterId(adapterId) {
   return (
     isSignupReadyAdapterId(adapterId) ||
-    PARTNER_LISTING_ADAPTER_IDS.includes(adapterId)
+    PARTNER_LISTING_ADAPTER_IDS.includes(adapterId) ||
+    isObservationAdapterId(adapterId)
   );
 }
 
 /** @returns {ReadonlyArray<{ adapterId: string, worker: string, role: string, verticals: string[], cacheHintSec: number }>} */
 function allDeployAdapters() {
-  return Object.freeze([...SIGNUP_READY_ADAPTERS, ...PARTNER_LISTING_ADAPTERS]);
+  return Object.freeze([
+    ...SIGNUP_READY_ADAPTERS,
+    ...PARTNER_LISTING_ADAPTERS,
+    ...OBSERVATION_ADAPTERS,
+  ]);
 }
 
 module.exports = {
   SIGNUP_READY_ADAPTER_IDS,
   SIGNUP_READY_WORKER_NAMES,
   SIGNUP_READY_ADAPTERS,
+  OBSERVATION_ADAPTERS,
+  OBSERVATION_ADAPTER_IDS,
+  OBSERVATION_WORKER_NAMES,
   PARTNER_LISTING_ADAPTERS,
   PARTNER_LISTING_ADAPTER_IDS,
   PARTNER_LISTING_WORKER_NAMES,
@@ -127,6 +159,7 @@ module.exports = {
   EBAY_MARKETPLACE_TO_MARKET_ID,
   marketIdFromEbayMarketplace,
   isSignupReadyAdapterId,
+  isObservationAdapterId,
   isIngestableAdapterId,
   allDeployAdapters,
 };

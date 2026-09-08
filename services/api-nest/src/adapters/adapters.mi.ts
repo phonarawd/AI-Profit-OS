@@ -26,7 +26,7 @@ const mi = require("@aipo/market-intelligence") as {
   SIGNUP_READY_ADAPTERS: Array<{
     adapterId: string;
     worker: string;
-    role: "listing" | "catalog_ref" | "fx";
+    role: "listing" | "catalog_ref" | "fx" | "observation";
     verticals: string[];
     cacheHintSec: number;
   }>;
@@ -49,10 +49,27 @@ const mi = require("@aipo/market-intelligence") as {
   }) => void;
   isForbiddenAdapterId: (id: string | null | undefined) => boolean;
   isIngestableAdapterId: (adapterId: string) => boolean;
+  isObservationAdapterId: (adapterId: string) => boolean;
+  normalizeWebObservationForPersist: (obs: Record<string, unknown>) =>
+    | { ok: false; reason: string }
+    | {
+        ok: true;
+        row: {
+          id: string;
+          source: string;
+          external_item_id: string;
+          observation_purpose: string;
+          source_status: string;
+          url: string;
+          observed_at: string;
+          payload: Record<string, unknown>;
+          content_fingerprint: string;
+        };
+      };
   allDeployAdapters: () => Array<{
     adapterId: string;
     worker: string;
-    role: "listing" | "catalog_ref" | "fx";
+    role: "listing" | "catalog_ref" | "fx" | "observation";
     verticals: string[];
     cacheHintSec: number;
   }>;
@@ -202,6 +219,9 @@ export const DAY1_LEG_PAIRS = mi.DAY1_LEG_PAIRS;
 export const assertNotForbidden = mi.assertNotForbidden;
 export const isForbiddenAdapterId = mi.isForbiddenAdapterId;
 export const isIngestableAdapterId = mi.isIngestableAdapterId;
+export const isObservationAdapterId = mi.isObservationAdapterId;
+export const normalizeWebObservationForPersist =
+  mi.normalizeWebObservationForPersist;
 export const allDeployAdapters = mi.allDeployAdapters;
 export const DAY1_AUTO_PUBLISH_YAHOO_JP = mi.DAY1_AUTO_PUBLISH_YAHOO_JP;
 export const KPI_THRESHOLDS = mi.KPI_THRESHOLDS;

@@ -24,6 +24,7 @@ const PHASE1_LOCKED = Object.freeze([
   "ygoprodeck-adapter",
   "coingecko-adapter",
   "frankfurter-adapter",
+  "fashionphile-parser",
 ]);
 
 const SECRET_NAME_NEEDLES = Object.freeze([

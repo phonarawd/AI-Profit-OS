@@ -19,6 +19,8 @@ import {
   healthStatusFromKpi,
   isForbiddenAdapterId,
   isIngestableAdapterId,
+  isObservationAdapterId,
+  normalizeWebObservationForPersist,
   resolveEbayIngestListings,
   assertNoQueryAssetIds,
   simulationS4InputFromKpi,
@@ -53,6 +55,7 @@ const LABEL_KO: Record<string, string> = {
   ygoprodeck: "유희왕 카드 목록",
   coingecko: "코인 환율",
   frankfurter: "법정화폐 환율",
+  fashionphile: "패션파일 시세",
 };
 
 type HealthState = {
@@ -300,6 +303,9 @@ export class AdaptersAdminService {
     identityUnmatchedQueued?: number;
     fxSnapshotId?: string | null;
     fxNormalizationFailed?: number;
+    observationsPersisted?: number;
+    observationsRejected?: number;
+    observationPersistError?: string | null;
   }> {
     const adapterId = String(body.adapterId ?? "");
     assertNotForbidden({ adapterId, source: adapterId });
@@ -452,6 +458,24 @@ export class AdaptersAdminService {
       await this.recordEbayProviderHeartbeat(body, observedAt);
     }
 
+    let observationsPersisted = 0;
+    let observationsRejected = 0;
+    let observationPersistError: string | null = null;
+    if (
+      isObservationAdapterId(adapterId) &&
+      Array.isArray(body.observations) &&
+      body.observations.length > 0 &&
+      !body.dryRun
+    ) {
+      const persisted = await this.persistSourceObservations(
+        adapterId,
+        body.observations,
+      );
+      observationsPersisted = persisted.inserted;
+      observationsRejected = persisted.rejected;
+      observationPersistError = persisted.error;
+    }
+
     const row = this.toRow(adapterId, this.computeKpi(adapterId));
     this.bus.emit(ADAPTER_EVENTS.healthChanged, row);
     this.bus.emit(ADAPTER_EVENTS.observationIngested, {
@@ -474,7 +498,84 @@ export class AdaptersAdminService {
       identityUnmatchedQueued,
       fxSnapshotId,
       fxNormalizationFailed,
+      observationsPersisted,
+      observationsRejected,
+      observationPersistError,
     };
+  }
+
+  /**
+   * Observation-only persist. Never writes listings / opportunity publish.
+   */
+  private async persistSourceObservations(
+    adapterId: string,
+    observations: unknown[],
+  ): Promise<{ inserted: number; rejected: number; error: string | null }> {
+    if (!this.db.configured()) {
+      return {
+        inserted: 0,
+        rejected: 0,
+        error: "DATABASE_URL_UNSET",
+      };
+    }
+    let inserted = 0;
+    let rejected = 0;
+    try {
+      for (const raw of observations) {
+        if (!raw || typeof raw !== "object") {
+          rejected += 1;
+          continue;
+        }
+        const obs = { ...(raw as Record<string, unknown>) };
+        if (!obs.source) obs.source = adapterId;
+        const normalized = normalizeWebObservationForPersist(obs);
+        if (!normalized.ok) {
+          rejected += 1;
+          continue;
+        }
+        const row = normalized.row;
+        const result = await this.db.query(
+          `INSERT INTO public.source_observations (
+             id, source, external_item_id, observation_purpose, source_status,
+             url, observed_at, payload, content_fingerprint
+           ) VALUES ($1, $2, $3, $4, $5, $6, $7::timestamptz, $8::jsonb, $9)
+           ON CONFLICT (id) DO NOTHING`,
+          [
+            row.id,
+            row.source,
+            row.external_item_id,
+            row.observation_purpose,
+            row.source_status,
+            row.url,
+            row.observed_at,
+            JSON.stringify(row.payload),
+            row.content_fingerprint,
+          ],
+        );
+        if ((result.rowCount ?? 0) > 0) inserted += 1;
+      }
+      return { inserted, rejected, error: null };
+    } catch (err) {
+      const code =
+        err && typeof err === "object" && "code" in err
+          ? String((err as { code?: string }).code || "")
+          : "";
+      if (code === "42P01") {
+        return {
+          inserted,
+          rejected,
+          error: "SOURCE_OBSERVATIONS_TABLE_MISSING",
+        };
+      }
+      return {
+        inserted,
+        rejected,
+        error:
+          err instanceof Error
+            ? err.message.slice(0, 200)
+            : "SOURCE_OBSERVATION_PERSIST_FAILED",
+      };
+    }
   }
 
   /**

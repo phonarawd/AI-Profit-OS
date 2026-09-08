@@ -13,6 +13,7 @@ const workers = [
   "workers/ygoprodeck-adapter/src/index.ts",
   "workers/coingecko-adapter/src/index.ts",
   "workers/frankfurter-adapter/src/index.ts",
+  "workers/fashionphile-parser/src/index.ts",
 ];
 
 function read(rel) {

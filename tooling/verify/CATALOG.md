@@ -339,7 +339,8 @@
 | cta-earn-profit · user-trader-jargon-0 | Index §20.2 · UI §48 · Engine §4.2b — 유저 CTA=`수익 벌기` · domain=`participate` · `이 상품으로…`/구매/판매/유저메인`매칭 참여`/판매성공률/executionPlatforms·expectedSellDays 유저0 · 대기Fact 소스가드 · INTERNAL↔USER 맵 · 면책+배지 (v7.22.28) · 구명 `cta-match-participate`=alias · **both live** |
 | soft-hard-requeue-sla | Index §20.2 · Engine §48.13 · UI §48 — Soft60/Hard90 · `MATCH_TIMEOUT` · 카피3줄(보통1분/다시맞추는중/시간지나안전정지) · presentation≠SLA (v7.22.29) · Audit A4 · **copy/Canon live** |
 | match-tension-surface | Index §20.2 · UI §48.3b — Soft/Hard전등급동일 · 긴장감=과정Fact · 등급≠대기특권 · slaAlmost/priceNearMiss · 난수틱·가짜대기·당첨게이지0 (v7.22.30) · Audit A6 · **copy/Canon live** |
-| listing-legs-day1 | Engine §0.0.1a · ebay|admin settlement · observation sources AUTHORIZED (global-source-unlock) · §38.10 partner OK — **live**|admin only · yahoo_jp Day-1 auto-publish FORBIDDEN · §38.10 partner 표기 OK(카피금지 supersede) · KR/Chrono24대체0 — **live** — **live** |
+| listing-legs-day1 | Engine §0.0.1a · ebay|admin settlement · observation sources AUTHORIZED (global-source-unlock) · §38.10 partner OK — **live** |
+| fashionphile-parser | Engine §0.0.2c — FASHIONPHILE products.json observation · listing-leg 0 · Nest source_observations persist — **live** |
 | signup-ready-adapters | Engine §0.0 — ebay 멀티marketplaceId · pokemontcg+ygoprodeck · coingecko+frankfurter · yahoo-jp경로0 · Phase1 deploy (phase0 0) · Admin `/admin/adapters` health — **live** |
 | adapter-worker-machine-auth | Adapter Workers — public manual `/tick` requires x-adapter-token · Nest ingest token optional-spread forbidden · missing token fail-closed — **live** |
 | adapter-matching-kpi | Engine §51.12+§51.15 — 등급매칭·SKU실패율 KPI(>15%/24h 알림·자동공개축소) · compareReady false>40% 시드점검 · stale>TTL 적색 · Admin `/admin/adapters` KPI·알림 · yahoo0 · Simulation S4 `adapterMatchFailureRate` 선행 — **live** |
