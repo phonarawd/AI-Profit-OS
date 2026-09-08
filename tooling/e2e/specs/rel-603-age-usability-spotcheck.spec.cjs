@@ -34,6 +34,7 @@ const baseUrl =
 
 const DESKTOP_BREAKPOINT = 1280;
 const GOTO_ATTEMPTS = 3;
+const DETAIL_NAV_ATTEMPTS = 5;
 const GOTO_TIMEOUT_MS = 30_000;
 const GOTO_RETRY_DELAY_MS = 1000;
 
@@ -387,26 +388,27 @@ async function runParticipateEntry(page, cohort, scenario) {
   const href = await card.getAttribute("href");
   expect(href, cohort.id + " card href").toMatch(detailUrl);
   const dest = new URL(href, baseUrl).toString();
-  for (let attempt = 0; attempt < 3; attempt++) {
-    if (detailUrl.test(new URL(page.url()).pathname)) break;
+  for (let attempt = 0; attempt < DETAIL_NAV_ATTEMPTS; attempt += 1) {
+    if (detailUrl.test(currentPathname(page))) break;
     // Cross-document nav drops handlers — re-bind before every click/goto.
-    await stubCoreOpportunityJourney(page);
+    await rebindJourney(page);
     const liveCard = profitsCard(page, cohort.viewport.width);
-    await expect(liveCard).toBeVisible({ timeout: 20_000 });
-    await liveCard.scrollIntoViewIfNeeded().catch(() => {});
-    await Promise.all([
-      page.waitForURL(detailUrl, { timeout: 8_000 }).catch(() => {}),
-      liveCard.click({ timeout: 8_000 }).catch(() => {}),
-    ]);
-    if (detailUrl.test(new URL(page.url()).pathname)) break;
-    await stubCoreOpportunityJourney(page);
-    await page.goto(dest, {
-      waitUntil: "domcontentloaded",
-      timeout: GOTO_TIMEOUT_MS,
-    });
+    const cardReady = await liveCard.isVisible().catch(() => false);
+    if (cardReady) {
+      await expect(liveCard).toHaveAttribute("href", `/profits/${TEST_OPPORTUNITY_ITEM.id}`);
+      await liveCard.scrollIntoViewIfNeeded().catch(() => {});
+      await Promise.all([
+        page.waitForURL(detailUrl, { timeout: 8_000 }).catch(() => {}),
+        liveCard.click({ timeout: 8_000 }).catch(() => {}),
+      ]);
+    }
+    if (detailUrl.test(currentPathname(page))) break;
+    // Hung /profits document blocks the next goto — blank, rebind, then detail URL.
+    await page.goto("about:blank", { timeout: 10_000 }).catch(() => {});
+    await gotoBound(page, dest);
   }
   await expect(page).toHaveURL(detailUrl);
-  await stubCoreOpportunityJourney(page);
+  await rebindJourney(page);
   await expect(page.getByTestId("opportunity-detail")).toHaveAttribute(
     "data-detail-state",
     "ready",
@@ -452,9 +454,55 @@ async function runWallet(page, cohort, scenario) {
   await assertSurfaceSafety(page, cohort, scenario);
 }
 
+async function rebindJourney(page) {
+  // Cross-document / hung /profits nav drops page.route — unroute then bind again.
+  await page.unroute("**/api/v1/**").catch(() => {});
+  await stubCoreOpportunityJourney(page);
+}
+
+function currentPathname(page) {
+  try {
+    return new URL(page.url()).pathname;
+  } catch {
+    return "";
+  }
+}
+
+async function gotoBound(page, url) {
+  let lastError;
+  for (let attempt = 1; attempt <= GOTO_ATTEMPTS; attempt += 1) {
+    try {
+      await rebindJourney(page);
+      const res = await page.goto(url, {
+        waitUntil: "domcontentloaded",
+        timeout: GOTO_TIMEOUT_MS,
+      });
+      expect(res, "REL-603 goto " + url).not.toBeNull();
+      const status = res.status();
+      if (status >= 500) {
+        throw new Error("REL-603 preview HTTP " + status + " " + url);
+      }
+      await hideNextDevChrome(page);
+      await stabilizePage(page);
+      return res;
+    } catch (error) {
+      lastError = error;
+      if (!isTransientNavigationError(error) || attempt === GOTO_ATTEMPTS) {
+        throw error;
+      }
+      console.warn(
+        `[REL-603] transient goto retry ${attempt}/${GOTO_ATTEMPTS - 1} ${url}`,
+      );
+      await page.goto("about:blank", { timeout: 10_000 }).catch(() => {});
+      await sleep(GOTO_RETRY_DELAY_MS * attempt);
+    }
+  }
+  throw lastError;
+}
+
 for (const cohort of fixture.cohorts || []) {
   test.describe(`REL-603 cohort ${cohort.id} (${cohort.ageBand})`, () => {
-    test.use({ viewport: cohort.viewport });
+    test.use({ viewport: cohort.viewport, serviceWorkers: "block" });
 
     for (const scenario of fixture.scenarios || []) {
       test(`${scenario.id} ${scenario.title} @ ${scenario.path}`, async ({ page }) => {

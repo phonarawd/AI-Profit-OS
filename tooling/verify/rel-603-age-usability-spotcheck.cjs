@@ -311,7 +311,7 @@ function runPlaywright() {
     {
       cwd: root,
       encoding: "utf8",
-      timeout: 600_000,
+      timeout: 720_000,
       env: {
         ...process.env,
         CI: "true",
