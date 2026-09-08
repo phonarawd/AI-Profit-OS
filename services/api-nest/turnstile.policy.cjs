@@ -20,6 +20,8 @@ const TURNSTILE_DEV_HOSTS = Object.freeze([
   "example.com",
   "ai-profit-ops-dedicated.ebay-adapter.workers.dev",
   "ai-profit-web-dedicated.ebay-adapter.workers.dev",
+  "ai-profit-ops-preview.ebay-adapter.workers.dev",
+  "ai-profit-web-preview.ebay-adapter.workers.dev",
 ]);
 
 const memoryReplay = new Map();

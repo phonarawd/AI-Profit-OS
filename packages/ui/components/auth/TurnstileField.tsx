@@ -17,12 +17,14 @@ type TurnstileApi = {
       sitekey: string;
       action?: string;
       theme?: "light" | "dark" | "auto";
+      size?: "normal" | "flexible" | "compact";
       appearance?: "always" | "execute" | "interaction-only";
       callback?: (token: string) => void;
       "expired-callback"?: () => void;
       "error-callback"?: () => void;
     },
   ) => string;
+  reset: (id: string) => void;
   remove: (id: string) => void;
 };
 
@@ -57,10 +59,20 @@ export function TurnstileField({ action, onToken, theme = "auto" }: Props) {
         sitekey: turnstileSiteKey(),
         action,
         theme,
+        size: "flexible",
         appearance: "always",
         callback: (token) => onToken(token),
         "expired-callback": () => onToken(""),
-        "error-callback": () => onToken(""),
+        "error-callback": () => {
+          onToken("");
+          if (widgetId.current) {
+            try {
+              api.reset(widgetId.current);
+            } catch {
+              /* ignore */
+            }
+          }
+        },
       });
     }
 

@@ -41,6 +41,15 @@ if (hostnameAllowed("ai-profit-ops-dedicated.ebay-adapter.workers.dev", "product
 if (!hostnameAllowed("ai-profit-web-dedicated.ebay-adapter.workers.dev", "staging")) {
   fail("dedicated web host allowed on staging");
 }
+if (!hostnameAllowed("ai-profit-web-preview.ebay-adapter.workers.dev", "staging")) {
+  fail("preview web host allowed on staging");
+}
+if (!hostnameAllowed("ai-profit-ops-preview.ebay-adapter.workers.dev", "staging")) {
+  fail("preview ops host allowed on staging");
+}
+if (hostnameAllowed("ai-profit-web-preview.ebay-adapter.workers.dev", "production")) {
+  fail("preview web host not allowed in production");
+}
 if (turnstileActionFromPath("/api/v1/admin-auth/login") !== "admin-login") {
   fail("admin-auth/login must not collapse to login");
 }

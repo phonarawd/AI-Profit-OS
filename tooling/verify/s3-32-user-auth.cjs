@@ -144,6 +144,12 @@ const turnstile =
 if (!turnstile.includes("hostnameAllowed") || !turnstile.includes("hitpk.app")) {
   fail("Turnstile hostname allowlist / typo reject missing");
 }
+if (!turnstile.includes("ai-profit-web-preview.ebay-adapter.workers.dev")) {
+  fail("Turnstile staging allowlist must include preview web host");
+}
+if (!turnstile.includes("ai-profit-ops-preview.ebay-adapter.workers.dev")) {
+  fail("Turnstile staging allowlist must include preview ops host");
+}
 if (!turnstile.includes("challengeFresh")) fail("Turnstile expiry check missing");
 if (!turnstile.includes("TOKEN_REPLAY")) fail("Turnstile replay check missing");
 if (!turnstile.includes("NOT_CONFIGURED")) fail("Turnstile fail-closed missing");
