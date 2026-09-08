@@ -32,6 +32,7 @@ const ebayIdentityMatch = require("./ebay-identity-match.cjs");
 const homeReadModel = require("./home-read-model.cjs");
 const providerHealth = require("./provider-health.cjs");
 const fashionphileObservation = require("./fashionphile-observation.cjs");
+const observationIdentityMatch = require("./observation-identity-match.cjs");
 
 module.exports = {
   ...money,
@@ -63,4 +64,5 @@ module.exports = {
   ...homeReadModel,
   ...providerHealth,
   ...fashionphileObservation,
+  ...observationIdentityMatch,
 };

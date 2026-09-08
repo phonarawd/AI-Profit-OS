@@ -324,6 +324,26 @@ export function resolveStoredLegListingPrices(input: {
 export function marketIdFromEbayMarketplace(marketplaceId: string): string;
 export function isSignupReadyAdapterId(adapterId: string): boolean;
 export function isObservationAdapterId(adapterId: string): boolean;
+export const OBSERVATION_MATCHER_VERSION: string;
+export function isFashionphileImageHost(url: string | null | undefined): boolean;
+export function resolveObservationMatches(input: {
+  observations: unknown[];
+  masters?: unknown[];
+  now?: string;
+}): {
+  matched: Array<Record<string, unknown>>;
+  unmatched: Array<Record<string, unknown>>;
+  matchAttempts: Array<{
+    adapterId: string;
+    category?: string;
+    matched: boolean;
+    reason?: string;
+    at: string;
+  }>;
+  persistToListingLeg: false;
+  matcherVersion: string;
+  stats: { input: number; matched: number; unmatched: number };
+};
 export function extractFashionphileProducts(input: {
   productsJson?: { products?: unknown[] } | null;
   observedAt?: string;

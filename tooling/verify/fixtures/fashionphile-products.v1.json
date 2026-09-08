@@ -8,7 +8,7 @@
       "product_type": "Handbags",
       "images": [
         {
-          "src": "https://cdn.shopify.com/s/files/1/fashionphile/birkin-25.jpg"
+          "src": "https://cdn.shopify.com/s/files/1/0894/3186/7695/files/birkin-25.jpg"
         }
       ],
       "variants": [{ "id": 88001, "sku": "1957753", "price": "1425.00" }]
@@ -20,7 +20,7 @@
       "vendor": "Chanel",
       "product_type": "Handbags",
       "images": [
-        { "src": "https://cdn.shopify.com/s/files/1/fashionphile/flap.jpg" }
+        { "src": "https://cdn.shopify.com/s/files/1/0894/3186/7695/files/flap.jpg" }
       ],
       "variants": [{ "id": 88002, "sku": "CF-MED", "price": "6200.00" }]
     },
@@ -31,7 +31,7 @@
       "vendor": "Cartier",
       "product_type": "Fine Jewelry",
       "images": [
-        { "src": "https://cdn.shopify.com/s/files/1/fashionphile/love.jpg" }
+        { "src": "https://cdn.shopify.com/s/files/1/0894/3186/7695/files/love.jpg" }
       ],
       "variants": [{ "id": 88003, "sku": "LOVE-N", "price": "2100.00" }]
     },
@@ -42,7 +42,7 @@
       "vendor": "Gucci",
       "product_type": "Handbags",
       "images": [
-        { "src": "https://cdn.shopify.com/s/files/1/fashionphile/jackie.jpg" }
+        { "src": "https://cdn.shopify.com/s/files/1/0894/3186/7695/files/jackie.jpg" }
       ],
       "variants": [{ "id": 88004, "sku": "JACKIE", "price": "0.00" }]
     }

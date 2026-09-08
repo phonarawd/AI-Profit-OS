@@ -188,6 +188,12 @@
       "name": "global_source_unlock_observation_sources",
       "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
       "reason": "Global source unlock: extend source_observations enum (feelway, coupang, reference/conditional sources). Additive CHECK only. Production apply after S5 staging."
+    },
+    {
+      "version": "20260908181000",
+      "name": "fashionphile_image_source",
+      "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
+      "reason": "Additive CHECK: assets/opportunities image_source includes fashionphile. Observation photo persist. Production apply after S5 staging."
     }
   ]
 }

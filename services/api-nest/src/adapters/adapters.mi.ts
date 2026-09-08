@@ -50,6 +50,26 @@ const mi = require("@aipo/market-intelligence") as {
   isForbiddenAdapterId: (id: string | null | undefined) => boolean;
   isIngestableAdapterId: (adapterId: string) => boolean;
   isObservationAdapterId: (adapterId: string) => boolean;
+  resolveObservationMatches: (input: {
+    observations: unknown[];
+    masters?: unknown[];
+    now?: string;
+  }) => {
+    matched: Array<Record<string, unknown>>;
+    unmatched: Array<Record<string, unknown>>;
+    matchAttempts: Array<{
+      adapterId: string;
+      category?: string;
+      matched: boolean;
+      reason?: string;
+      at: string;
+    }>;
+    persistToListingLeg: false;
+    matcherVersion: string;
+    stats: { input: number; matched: number; unmatched: number };
+  };
+  isFashionphileImageHost: (url: string | null | undefined) => boolean;
+  OBSERVATION_MATCHER_VERSION: string;
   normalizeWebObservationForPersist: (obs: Record<string, unknown>) =>
     | { ok: false; reason: string }
     | {
@@ -222,6 +242,10 @@ export const isIngestableAdapterId = mi.isIngestableAdapterId;
 export const isObservationAdapterId = mi.isObservationAdapterId;
 export const normalizeWebObservationForPersist =
   mi.normalizeWebObservationForPersist;
+export const resolveObservationMatches = mi.resolveObservationMatches;
+export const isFashionphileImageHost = mi.isFashionphileImageHost;
+export const OBSERVATION_MATCHER_VERSION =
+  mi.OBSERVATION_MATCHER_VERSION;
 export const allDeployAdapters = mi.allDeployAdapters;
 export const DAY1_AUTO_PUBLISH_YAHOO_JP = mi.DAY1_AUTO_PUBLISH_YAHOO_JP;
 export const KPI_THRESHOLDS = mi.KPI_THRESHOLDS;

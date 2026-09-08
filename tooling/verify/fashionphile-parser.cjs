@@ -80,11 +80,38 @@ if (!mi.OBSERVATION_SOURCES_ALLOWED.includes("fashionphile")) {
   fails.push("OBSERVATION_SOURCES_ALLOWED must include fashionphile");
 }
 
+const matched = mi.resolveObservationMatches({
+  observations: extracted.accepted,
+  now: "2026-09-08T07:00:00.000Z",
+});
+if (matched.persistToListingLeg !== false) {
+  fails.push("observation match must not persist listing legs");
+}
+if (matched.matched.length !== 2) {
+  fails.push("observation match want 2 got " + matched.matched.length);
+}
+const matchedIds = matched.matched.map((m) => m.assetId).sort();
+if (!matchedIds.includes("lb_hermes_birkin_25_noir")) {
+  fails.push("Birkin 25 Noir must exact-match seed");
+}
+if (!matchedIds.includes("lb_chanel_classic_flap_medium_black")) {
+  fails.push("Classic Flap Medium must unique-size match seed");
+}
+for (const m of matched.matched) {
+  if (m.persistToListingLeg !== false) {
+    fails.push("matched observation persistToListingLeg must be false");
+  }
+  if (!mi.isFashionphileImageHost(m.imageUrl)) {
+    fails.push("matched image host must be fashionphile shopify path");
+  }
+}
+
 for (const rel of [
   "workers/fashionphile-parser/src/index.ts",
   "workers/fashionphile-parser/src/client.ts",
   "workers/fashionphile-parser/wrangler.toml",
   "services/market-intelligence/src/fashionphile-observation.cjs",
+  "services/market-intelligence/src/observation-identity-match.cjs",
 ]) {
   if (!fs.existsSync(path.join(root, rel))) fails.push(`missing ${rel}`);
 }
@@ -110,6 +137,13 @@ if (!/persistSourceObservations/.test(ingest)) {
 }
 if (!/isObservationAdapterId/.test(ingest)) {
   fails.push("Nest ingest must gate observation persist");
+}
+if (!/attachObservationMatches/.test(ingest)) {
+  fails.push("Nest ingest must auto-match observations");
+}
+const seed = read("services/api-nest/src/opportunities/catalog-runtime-seed.service.ts") || "";
+if (!/applyObservationImageProvenance/.test(seed)) {
+  fails.push("catalog seed must apply observation image provenance");
 }
 
 const manifest = JSON.parse(read("infra/workers.manifest.json") || "{}");

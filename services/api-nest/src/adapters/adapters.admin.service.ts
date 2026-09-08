@@ -21,6 +21,9 @@ import {
   isIngestableAdapterId,
   isObservationAdapterId,
   normalizeWebObservationForPersist,
+  resolveObservationMatches,
+  isFashionphileImageHost,
+  OBSERVATION_MATCHER_VERSION,
   resolveEbayIngestListings,
   assertNoQueryAssetIds,
   simulationS4InputFromKpi,
@@ -306,6 +309,9 @@ export class AdaptersAdminService {
     observationsPersisted?: number;
     observationsRejected?: number;
     observationPersistError?: string | null;
+    observationMatches?: number;
+    observationUnmatched?: number;
+    observationImageApplied?: number;
   }> {
     const adapterId = String(body.adapterId ?? "");
     assertNotForbidden({ adapterId, source: adapterId });
@@ -461,6 +467,9 @@ export class AdaptersAdminService {
     let observationsPersisted = 0;
     let observationsRejected = 0;
     let observationPersistError: string | null = null;
+    let observationMatches = 0;
+    let observationUnmatched = 0;
+    let observationImageApplied = 0;
     if (
       isObservationAdapterId(adapterId) &&
       Array.isArray(body.observations) &&
@@ -474,6 +483,13 @@ export class AdaptersAdminService {
       observationsPersisted = persisted.inserted;
       observationsRejected = persisted.rejected;
       observationPersistError = persisted.error;
+      const attached = await this.attachObservationMatches(
+        adapterId,
+        persisted.rows,
+      );
+      observationMatches = attached.matched;
+      observationUnmatched = attached.unmatched;
+      observationImageApplied = attached.images;
     }
 
     const row = this.toRow(adapterId, this.computeKpi(adapterId));
@@ -501,6 +517,9 @@ export class AdaptersAdminService {
       observationsPersisted,
       observationsRejected,
       observationPersistError,
+      observationMatches,
+      observationUnmatched,
+      observationImageApplied,
     };
   }
 
@@ -510,16 +529,23 @@ export class AdaptersAdminService {
   private async persistSourceObservations(
     adapterId: string,
     observations: unknown[],
-  ): Promise<{ inserted: number; rejected: number; error: string | null }> {
+  ): Promise<{
+    inserted: number;
+    rejected: number;
+    error: string | null;
+    rows: Array<Record<string, unknown>>;
+  }> {
     if (!this.db.configured()) {
       return {
         inserted: 0,
         rejected: 0,
         error: "DATABASE_URL_UNSET",
+        rows: [],
       };
     }
     let inserted = 0;
     let rejected = 0;
+    const rows: Array<Record<string, unknown>> = [];
     try {
       for (const raw of observations) {
         if (!raw || typeof raw !== "object") {
@@ -553,8 +579,19 @@ export class AdaptersAdminService {
           ],
         );
         if ((result.rowCount ?? 0) > 0) inserted += 1;
+        const payload =
+          row.payload && typeof row.payload === "object"
+            ? (row.payload as Record<string, unknown>)
+            : {};
+        rows.push({
+          ...payload,
+          source: row.source,
+          externalItemId: row.external_item_id,
+          observationId: row.id,
+          url: row.url,
+        });
       }
-      return { inserted, rejected, error: null };
+      return { inserted, rejected, error: null, rows };
     } catch (err) {
       const code =
         err && typeof err === "object" && "code" in err
@@ -565,6 +602,7 @@ export class AdaptersAdminService {
           inserted,
           rejected,
           error: "SOURCE_OBSERVATIONS_TABLE_MISSING",
+          rows,
         };
       }
       return {
@@ -574,7 +612,120 @@ export class AdaptersAdminService {
           err instanceof Error
             ? err.message.slice(0, 200)
             : "SOURCE_OBSERVATION_PERSIST_FAILED",
+        rows,
       };
+    }
+  }
+
+  private async attachObservationMatches(
+    adapterId: string,
+    observations: Array<Record<string, unknown>>,
+  ): Promise<{ matched: number; unmatched: number; images: number }> {
+    if (!observations.length) {
+      return { matched: 0, unmatched: 0, images: 0 };
+    }
+    const resolved = resolveObservationMatches({ observations });
+    if (resolved.matchAttempts.length > 0) {
+      this.recordMatchAttempts(resolved.matchAttempts, { adapterId });
+    }
+    let images = 0;
+    if (this.catalogSeed) {
+      for (const m of resolved.matched) {
+        const assetId = String(m.assetId || "");
+        const imageUrl = String(m.imageUrl || "");
+        if (assetId && imageUrl && isFashionphileImageHost(imageUrl)) {
+          const applied = await this.catalogSeed.applyObservationImageProvenance({
+            assetId,
+            imageUrl,
+          });
+          if (applied.ok) images += 1;
+        }
+        await this.upsertCanonicalObservationLink(m);
+      }
+    }
+    return {
+      matched: resolved.matched.length,
+      unmatched: resolved.unmatched.length,
+      images,
+    };
+  }
+
+  private async upsertCanonicalObservationLink(
+    match: Record<string, unknown>,
+  ): Promise<void> {
+    if (!this.db.configured()) return;
+    const assetId = String(match.assetId || "").trim();
+    const observationId = String(match.observationId || "").trim();
+    const source = String(match.source || "").trim();
+    const externalItemId = String(match.externalItemId || "").trim();
+    if (!assetId || !observationId || !source || !externalItemId) return;
+    const canonicalProductId = `cp_${assetId}`;
+    const identityKey = `asset:${assetId}`;
+    try {
+      await this.db.query(
+        `INSERT INTO public.canonical_products (
+           canonical_product_id, putduk_product_code, category_profile,
+           canonical_identity_key, canonical_attributes, status,
+           identity_evidence_summary, payload
+         ) VALUES (
+           $1,
+           'PD-' || lpad(nextval('public.putduk_product_code_seq')::text, 7, '0'),
+           $2, $3,
+           $4::jsonb, 'active', $5::jsonb, $6::jsonb
+         )
+         ON CONFLICT (category_profile, canonical_identity_key) DO NOTHING`,
+        [
+          canonicalProductId,
+          String(match.category || "luxury_bag"),
+          identityKey,
+          JSON.stringify({
+            assetId,
+            brand:
+              match.meta && typeof match.meta === "object"
+                ? (match.meta as Record<string, unknown>).brand
+                : null,
+          }),
+          JSON.stringify({
+            matcherVersion: OBSERVATION_MATCHER_VERSION,
+            identityMatch: match.identityMatch || null,
+          }),
+          JSON.stringify({ assetId, persistToListingLeg: false }),
+        ],
+      );
+      const existing = await this.db.query(
+        `SELECT canonical_product_id FROM public.canonical_products
+         WHERE category_profile = $1 AND canonical_identity_key = $2`,
+        [String(match.category || "luxury_bag"), identityKey],
+      );
+      const cpId =
+        existing.rows?.[0]?.canonical_product_id || canonicalProductId;
+      await this.db.query(
+        `INSERT INTO public.canonical_product_source_links (
+           canonical_product_id, source, source_item_id, source_url,
+           latest_observation_ref, matching_decision, matcher_version, evidence
+         ) VALUES ($1, $2, $3, $4, $5, 'MATCH', $6, $7::jsonb)
+         ON CONFLICT (canonical_product_id, source, source_item_id)
+         DO UPDATE SET
+           latest_observation_ref = EXCLUDED.latest_observation_ref,
+           matching_decision = EXCLUDED.matching_decision,
+           matcher_version = EXCLUDED.matcher_version,
+           evidence = EXCLUDED.evidence,
+           updated_at = now()`,
+        [
+          cpId,
+          source,
+          externalItemId,
+          String(match.url || ""),
+          observationId,
+          OBSERVATION_MATCHER_VERSION,
+          JSON.stringify({
+            identityMatch: match.identityMatch || null,
+            persistToListingLeg: false,
+          }),
+        ],
+      );
+    } catch {
+      // table/constraint missing = fail-closed; ingest still returns match counts
     }
   }
 
