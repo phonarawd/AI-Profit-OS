@@ -8,14 +8,15 @@
 | owner | Engine §0.0.2d · formula SSOT = Engine §0.0.4.2 |
 | matrices | `governance/global-product/jpy-krw-additive-fx-matrices.v1.json` |
 | parser SSOT | `governance/global-product/parser-implementation-contract.v1.md` (extraction 불변) |
-| runtime | **0** |
-| listing-leg authorization | **NO** |
+| unlock | `governance/global-product/global-source-unlock-authorization.v1.md` (2026-09-08) |
+| runtime | **AUTHORIZED** |
+| listing-leg authorization | **OBSERVATION YES** |
 | Home / 03 / 04 / Money ledger | **DO NOT MODIFY** |
 
 > **Verdict:** `JPY_KRW_ADDITIVE_FX_CONTRACT = PASS`  
 > **Principle:** `SOURCE_OBSERVATION != LISTING_LEG`  
 > **FX principle:** 새 parallel FX truth **0** · parser 자체 환율 **0** · client guessed FX **0**  
-> Yahoo Japan = `PERMANENTLY_FORBIDDEN` (본 계약 재조사 0).
+> Yahoo Japan scrape = forbidden · official `yahoo_jp` partner adapter = **AUTHORIZED** (`global-source-unlock-authorization.v1.md`).
 
 ---
 

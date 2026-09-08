@@ -1573,6 +1573,19 @@ const RULES = [
       "balance-aware-feed.cjs",
       "price-denomination-contract.cjs",
       "ebay-resilience.cjs",
+      "fashionphile-parser.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^workers\/fashionphile-parser\//.test(f) ||
+      /^services\/market-intelligence\/src\/fashionphile-observation\.cjs$/.test(f) ||
+      /^tooling\/verify\/fashionphile-parser\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/fashionphile-products\.v1\.json$/.test(f),
+    scripts: [
+      "fashionphile-parser.cjs",
+      "listing-legs-day1.cjs",
+      "market-intel-engine.cjs",
     ],
   },
   {

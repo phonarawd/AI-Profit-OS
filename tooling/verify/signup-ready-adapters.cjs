@@ -163,11 +163,10 @@ if (
 ) {
   fails.push("frankfurter-adapter must call api.frankfurter.dev");
 }
-// KR / non-partner scrapers still forbidden
-for (const banned of ["rolex-adapter", "chrono24-adapter", "tcgplayer-adapter"]) {
-  if (fs.existsSync(path.join(root, "workers", banned))) {
-    fails.push(`workers/${banned} FORBIDDEN`);
-  }
+// Web-parser workers allowed after global-source-unlock (2026-09-08)
+const unlockDoc = read("governance/global-product/global-source-unlock-authorization.v1.md");
+if (!unlockDoc || !/GLOBAL_SOURCE_UNLOCK = AUTHORIZED/.test(unlockDoc)) {
+  fails.push("missing global-source-unlock-authorization.v1.md AUTHORIZED verdict");
 }
 
 const readme = read("workers/README.md");

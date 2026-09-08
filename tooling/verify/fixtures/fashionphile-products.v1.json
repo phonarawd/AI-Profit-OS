@@ -1,0 +1,50 @@
+{
+  "products": [
+    {
+      "id": 1957753,
+      "handle": "hermes-birkin-25-togo-noir",
+      "title": "Hermes Birkin 25 Togo Noir",
+      "vendor": "Hermes",
+      "product_type": "Handbags",
+      "images": [
+        {
+          "src": "https://cdn.shopify.com/s/files/1/fashionphile/birkin-25.jpg"
+        }
+      ],
+      "variants": [{ "id": 88001, "sku": "1957753", "price": "1425.00" }]
+    },
+    {
+      "id": 2001001,
+      "handle": "chanel-classic-flap-medium",
+      "title": "Chanel Classic Flap Medium",
+      "vendor": "Chanel",
+      "product_type": "Handbags",
+      "images": [
+        { "src": "https://cdn.shopify.com/s/files/1/fashionphile/flap.jpg" }
+      ],
+      "variants": [{ "id": 88002, "sku": "CF-MED", "price": "6200.00" }]
+    },
+    {
+      "id": 3003003,
+      "handle": "cartier-love-necklace",
+      "title": "Cartier Love Necklace",
+      "vendor": "Cartier",
+      "product_type": "Fine Jewelry",
+      "images": [
+        { "src": "https://cdn.shopify.com/s/files/1/fashionphile/love.jpg" }
+      ],
+      "variants": [{ "id": 88003, "sku": "LOVE-N", "price": "2100.00" }]
+    },
+    {
+      "id": 4004004,
+      "handle": "gucci-jackie-no-price",
+      "title": "Gucci Jackie",
+      "vendor": "Gucci",
+      "product_type": "Handbags",
+      "images": [
+        { "src": "https://cdn.shopify.com/s/files/1/fashionphile/jackie.jpg" }
+      ],
+      "variants": [{ "id": 88004, "sku": "JACKIE", "price": "0.00" }]
+    }
+  ]
+}

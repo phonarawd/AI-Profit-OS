@@ -729,7 +729,7 @@ flowchart TD
 
 | 제외 | 이유 | 잠금 |
 |------|------|------|
-| KR 중고 리셀 (당근·번개·중고나라·크림 등) | 사업모델·정책 충돌 | `resale` KR **영구 제외** · adapter FORBIDDEN |
+| KR 중고 리셀 (당근·번개·중고나라·크림·필웨이·쿠팡 등) | ~~정책 제외~~ | **AUTHORIZED** observation · `global-source-unlock-authorization.v1.md` |
 | CTA `구매하기` / `판매하기` / `마켓 둘러보기` / `거래하기` / `이 상품으로 수익 벌기` | 유저=거래 당사자 암시 | Primary=`수익 벌기` · domain=`participate` · §20.2 |
 | **투자 기회** vertical (금·ETF·배당 권유) | 제품·컴플라이언스 | opportunity type **추가 금지** · §51.20 투자권유 금지 유지 |
 | **AI 부업 마켓** (콘텐츠·번역·쇼츠 상품화) | 포지셔닝 충돌 | Day-1 vertical **0** · 퍼뜩=안내 AI만 |

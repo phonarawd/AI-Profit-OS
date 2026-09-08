@@ -38,7 +38,7 @@ const MARKETPLACE_BY_MARKET = Object.freeze({
   ebay_au: "EBAY_AU",
 });
 
-const FORBIDDEN_INGEST_ADAPTERS = Object.freeze(["amazon", "yahoo_jp"]);
+const FORBIDDEN_INGEST_ADAPTERS = Object.freeze([]);
 
 /**
  * Day-1 FX snapshot row (migration + Nest ensure share id).

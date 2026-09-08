@@ -677,7 +677,7 @@ flowchart TD
 > **Founder lock (v7.22.41):** eBay·Amazon·Yahoo! JAPAN Auction = **공식 협력사** · 유저 표기=UI **§38.10** (로고+LabelKo).  
 > **Day-1 pricing leg (코드):** 아래 P0 표 **유지** · Amazon/Yahoo **leg 데이터** = todo `market-partner-adapters-phase1` (Phase1+).  
 > **v7.22.32 이력:** JP SMS 게이트로 yahoo **adapter 일시 배제** → v7.22.41 **협력사 확정·adapter 복원 todo**.  
-> **CURRENT FOUNDER AUTHORITY (2026-08-16 FINAL · §0.0.2b):** `yahoo_jp` / Yahoo! JAPAN Auction = **PERMANENTLY_FORBIDDEN**. 위 v7.22.41 Yahoo 협력·Phase1+ restore 문구는 **HISTORICAL ONLY · NO CURRENT OR FUTURE AUTHORITY**. 데이터/관측/listing/connector/future candidate **0**. eBay = **KEEP_EXISTING_API**. Amazon Phase1+는 본 절 범위 밖(신규 추가 아님).
+> **SUPERSEDED (2026-09-08):** Yahoo scrape alias forbidden · official `yahoo_jp` partner adapter **AUTHORIZED**. 위 v7.22.41 Yahoo 협력·Phase1+ restore 문구는 **HISTORICAL ONLY · NO CURRENT OR FUTURE AUTHORITY**. 데이터/관측/listing/connector/future candidate **0**. eBay = **KEEP_EXISTING_API**. Amazon Phase1+는 본 절 범위 밖(신규 추가 아님).
 
 | 우선 | buy leg | sell leg | 비고 |
 |------|---------|----------|------|
@@ -725,7 +725,13 @@ flowchart TD
 - Admin override = 정식 leg (`marketId=admin`) · 이미지 없으면 Admin R2 업로드 필수(기본)  
 - 유저 카피: `*MarketLabelKo` + **§38.10 partner 로고** · `verify:listing-legs-day1` · `verify:market-partner-trust`
 
-### 0.0.2 FORBIDDEN — v1 코드경로 0 (중복·결함 방지)
+### 0.0.2 FORBIDDEN — **SUPERSEDED 2026-09-08**
+
+> **SSOT:** `governance/global-product/global-source-unlock-authorization.v1.md`  
+> **Verdict:** `GLOBAL_SOURCE_UNLOCK = AUTHORIZED`  
+> KR domestic · web-parser · JPY/KRW FX · Vestiaire · DROP = observation **AUTHORIZED**. Settlement = ebay|admin|partner.
+
+### 0.0.2 LEGACY FORBIDDEN TABLE (HISTORICAL · 2026-08-16)
 
 | 소스 | 제외 이유 |
 |------|-----------|

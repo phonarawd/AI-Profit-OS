@@ -13,6 +13,7 @@
 | ygoprodeck-adapter | **Phase1 CF deploy** · yugioh catalog + ref price |
 | coingecko-adapter | **Phase1 CF deploy** · USDT FX |
 | frankfurter-adapter | **Phase1 CF deploy** · fiat FX |
+| fashionphile-parser | **Phase1 CF deploy** · Shopify `products.json` observation · **not a listing leg** |
 
 Day-1 Opportunity auto-publish listing legs = **ebay multi | admin only**.  
 `amazon-adapter` / `yahoo-jp-adapter` = official partners (registry §0.0.1c) · Phase1+ leg data.

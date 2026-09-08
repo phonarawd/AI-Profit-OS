@@ -31,6 +31,7 @@ const P0_EBAY_FORBIDDEN = Object.freeze([
   "ygoprodeck-adapter",
   "coingecko-adapter",
   "frankfurter-adapter",
+  "fashionphile-parser",
   "marketing-capi-dispatcher",
   "chain-watchers",
   "chain-sweeper",
