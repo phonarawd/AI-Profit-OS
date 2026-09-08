@@ -106,6 +106,71 @@ for (const m of matched.matched) {
   }
 }
 
+const conflictExtract = mi.extractFashionphileProducts({
+  productsJson: {
+    products: [
+      {
+        id: 9001,
+        handle: "hermes-constance-18-gris-perle",
+        title: "Chevre Mysore Constance 18 Gris Perle",
+        vendor: "Hermes",
+        product_type: "Bags",
+        images: [
+          {
+            src: "https://cdn.shopify.com/s/files/1/0894/3186/7695/files/gris.jpg",
+          },
+        ],
+        variants: [{ id: 91, sku: "C18G", price: "12500.00" }],
+      },
+      {
+        id: 9002,
+        handle: "lv-speedy-30-multicolor",
+        title: "Monogram Multicolor Speedy 30 White",
+        vendor: "Louis Vuitton",
+        product_type: "Bags",
+        images: [
+          {
+            src: "https://cdn.shopify.com/s/files/1/0894/3186/7695/files/multi.jpg",
+          },
+        ],
+        variants: [{ id: 92, sku: "SP30M", price: "1800.00" }],
+      },
+    ],
+  },
+  observedAt: "2026-09-08T07:00:00.000Z",
+});
+const conflictMatch = mi.resolveObservationMatches({
+  observations: conflictExtract.accepted,
+  now: "2026-09-08T07:00:00.000Z",
+});
+if (conflictMatch.matched.length !== 0) {
+  fails.push(
+    "color-conflict observations must not match seed (got " +
+      conflictMatch.matched.map((m) => m.assetId).join(",") +
+      ")",
+  );
+}
+
+const urls = mi.fashionphileCatalogUrls(1);
+if (!Array.isArray(urls) || urls.length !== 4) {
+  fails.push("fashionphileCatalogUrls(1) want 4 collection pages");
+}
+for (const url of urls) {
+  if (!mi.isFashionphileProductsUrl(url)) {
+    fails.push("catalog url must stay on fashionphile allowlist: " + url);
+  }
+}
+if (mi.isFashionphileProductsUrl("https://evil.example/products.json")) {
+  fails.push("foreign host must not pass isFashionphileProductsUrl");
+}
+if (
+  mi.isFashionphileProductsUrl(
+    "https://www.fashionphile.com/collections/secret/products.json",
+  )
+) {
+  fails.push("unknown collection handle must be denied");
+}
+
 for (const rel of [
   "workers/fashionphile-parser/src/index.ts",
   "workers/fashionphile-parser/src/client.ts",
@@ -140,6 +205,18 @@ if (!/isObservationAdapterId/.test(ingest)) {
 }
 if (!/attachObservationMatches/.test(ingest)) {
   fails.push("Nest ingest must auto-match observations");
+}
+if (!/identityMatch === "exact_identity"/.test(ingest)) {
+  fails.push("observation image apply must require exact_identity");
+}
+const pull = read(
+  "services/api-nest/src/adapters/fashionphile-observation-pull.service.ts",
+) || "";
+if (!/fetchFashionphileObservationCatalog/.test(pull)) {
+  fails.push("Nest in-process pull must fetch fashionphile catalog");
+}
+if (!/listings:\s*\[\]/.test(pull)) {
+  fails.push("Nest in-process pull must send listings: []");
 }
 const seed = read("services/api-nest/src/opportunities/catalog-runtime-seed.service.ts") || "";
 if (!/applyObservationImageProvenance/.test(seed)) {

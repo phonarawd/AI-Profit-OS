@@ -633,7 +633,12 @@ export class AdaptersAdminService {
       for (const m of resolved.matched) {
         const assetId = String(m.assetId || "");
         const imageUrl = String(m.imageUrl || "");
-        if (assetId && imageUrl && isFashionphileImageHost(imageUrl)) {
+        if (
+          m.identityMatch === "exact_identity" &&
+          assetId &&
+          imageUrl &&
+          isFashionphileImageHost(imageUrl)
+        ) {
           const applied = await this.catalogSeed.applyObservationImageProvenance({
             assetId,
             imageUrl,

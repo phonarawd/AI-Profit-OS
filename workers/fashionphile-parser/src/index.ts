@@ -8,7 +8,10 @@ import {
   authorizeManualAdapterTick,
   requireAdapterIngestHeaders,
 } from "../../_shared/adapter-machine-auth";
-import { fetchFashionphileProductsJson } from "./client";
+import {
+  fetchFashionphileCatalog,
+  fetchFashionphileProductsJson,
+} from "./client";
 import {
   ADAPTER_ID,
   CACHE_HINT_SEC,
@@ -68,9 +71,11 @@ function healthPayload(env: Env) {
 
 async function runTick(env: Env) {
   const observedAt = new Date().toISOString();
-  const fetched = await fetchFashionphileProductsJson({
-    url: env.FASHIONPHILE_PRODUCTS_URL || DEFAULT_PRODUCTS_URL,
-  });
+  const fetched = env.FASHIONPHILE_PRODUCTS_URL
+    ? await fetchFashionphileProductsJson({
+        url: env.FASHIONPHILE_PRODUCTS_URL,
+      })
+    : await fetchFashionphileCatalog();
   const extracted = extractLocal(fetched.productsJson, observedAt);
   const observations = extracted.accepted;
   const errors: string[] = [];

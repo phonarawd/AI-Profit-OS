@@ -273,14 +273,141 @@ function fashionphileProductsJsonUrl(page = 1) {
   return `${STOREFRONT_ORIGIN}${PRODUCTS_JSON_PATH}?limit=${DEFAULT_PAGE_LIMIT}&page=${p}`;
 }
 
+const FASHIONPHILE_COLLECTION_HANDLES = Object.freeze([
+  "handbags",
+  "hermes",
+  "chanel",
+  "louis-vuitton",
+]);
+const FASHIONPHILE_PAGES_PER_COLLECTION = 2;
+
+function isFashionphileProductsUrl(url) {
+  try {
+    const parsed = new URL(String(url || "").trim());
+    if (parsed.protocol !== "https:") return false;
+    if (parsed.hostname !== "www.fashionphile.com") return false;
+    if (parsed.pathname === "/products.json") return true;
+    const match = parsed.pathname.match(
+      /^\/collections\/([a-z0-9-]+)\/products\.json$/,
+    );
+    if (!match) return false;
+    return FASHIONPHILE_COLLECTION_HANDLES.includes(match[1]);
+  } catch {
+    return false;
+  }
+}
+
+function fashionphileCatalogUrls(pages = FASHIONPHILE_PAGES_PER_COLLECTION) {
+  const n =
+    Number.isFinite(pages) && pages >= 1 ? Math.min(Math.floor(pages), 4) : 2;
+  /** @type {string[]} */
+  const urls = [];
+  for (const handle of FASHIONPHILE_COLLECTION_HANDLES) {
+    for (let page = 1; page <= n; page += 1) {
+      urls.push(
+        `${STOREFRONT_ORIGIN}/collections/${handle}/products.json?limit=${DEFAULT_PAGE_LIMIT}&page=${page}`,
+      );
+    }
+  }
+  return urls;
+}
+
+/**
+ * Public storefront JSON only. 403 = ACCESS_BLOCKED · 우회 0.
+ * @param {string} url
+ */
+async function fetchFashionphileProductsJson(url) {
+  if (!isFashionphileProductsUrl(url)) {
+    return {
+      ok: false,
+      error: "FASHIONPHILE_HOST_NOT_ALLOWED",
+      productsJson: null,
+    };
+  }
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: { accept: "application/json" },
+      signal: AbortSignal.timeout(12_000),
+    });
+    if (res.status === 403 || res.status === 401) {
+      return {
+        ok: false,
+        error: `ACCESS_BLOCKED:${res.status}`,
+        productsJson: null,
+      };
+    }
+    if (!res.ok) {
+      return {
+        ok: false,
+        error: `HTTP_${res.status}`,
+        productsJson: null,
+      };
+    }
+    const json = await res.json();
+    if (!json || !Array.isArray(json.products)) {
+      return {
+        ok: false,
+        error: "malformed_products_json",
+        productsJson: null,
+      };
+    }
+    return { ok: true, error: null, productsJson: json };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message.slice(0, 160) : "fetch_failed",
+      productsJson: null,
+    };
+  }
+}
+
+/**
+ * Allowlisted collection pages → observation extract. Listing-leg 0.
+ * @param {{ pages?: number, observedAt?: string }} [input]
+ */
+async function fetchFashionphileObservationCatalog(input) {
+  const urls = fashionphileCatalogUrls(input?.pages);
+  const byId = new Map();
+  /** @type {string[]} */
+  const fetchErrors = [];
+  for (const url of urls) {
+    const fetched = await fetchFashionphileProductsJson(url);
+    if (fetched.error) fetchErrors.push(`${fetched.error}`);
+    const products = fetched.productsJson?.products;
+    if (!Array.isArray(products)) continue;
+    for (const product of products) {
+      if (!product || typeof product !== "object" || product.id == null) continue;
+      byId.set(String(product.id), product);
+    }
+  }
+  const observedAt = String(input?.observedAt || new Date().toISOString());
+  const extracted = extractFashionphileProducts({
+    productsJson: { products: [...byId.values()] },
+    observedAt,
+  });
+  return {
+    ...extracted,
+    fetchErrors,
+    sourcePages: urls.length,
+    rawProducts: byId.size,
+  };
+}
+
 module.exports = {
   FASHIONPHILE_SOURCE: SOURCE,
   FASHIONPHILE_STOREFRONT_ORIGIN: STOREFRONT_ORIGIN,
   FASHIONPHILE_CACHE_HINT_SEC: CACHE_HINT_SEC,
   FASHIONPHILE_PRICE_KIND: PRICE_KIND,
   FASHIONPHILE_PAGE_LIMIT: DEFAULT_PAGE_LIMIT,
+  FASHIONPHILE_COLLECTION_HANDLES,
+  FASHIONPHILE_PAGES_PER_COLLECTION,
   isLuxuryBagHint,
+  isFashionphileProductsUrl,
   extractFashionphileProducts,
   normalizeWebObservationForPersist,
   fashionphileProductsJsonUrl,
+  fashionphileCatalogUrls,
+  fetchFashionphileProductsJson,
+  fetchFashionphileObservationCatalog,
 };

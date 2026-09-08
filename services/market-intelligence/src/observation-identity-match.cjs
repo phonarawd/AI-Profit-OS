@@ -31,6 +31,46 @@ const COLOR_ALIASES = Object.freeze({
   "empreinte black": "empreinte noir",
 });
 
+/** 제목에 나온 색이 시드 색과 다르면 매칭 금지 (Gris Perle ≠ Noir). */
+const COLOR_TOKENS = Object.freeze([
+  ...Object.keys(COLOR_ALIASES),
+  ...Object.values(COLOR_ALIASES),
+  "white",
+  "brown",
+  "grey",
+  "gray",
+  "pink",
+  "red",
+  "blue",
+  "green",
+  "yellow",
+  "cream",
+  "cognac",
+  "camel",
+  "ebony",
+  "sesame",
+  "bamboo",
+  "gris",
+  "gris perle",
+  "perle",
+  "multicolor",
+  "multi color",
+  "silver",
+  "nude",
+  "fuchsia",
+  "rose",
+  "burgundy",
+  "purple",
+  "turquoise",
+  "khaki",
+  "coral",
+  "grege",
+  "ecru",
+  "ivory",
+  "chocolate",
+  "bordeaux",
+]);
+
 const SIZE_ALIASES = Object.freeze({
   medium: "medium",
   md: "medium",
@@ -64,6 +104,51 @@ function normLoose(v) {
 function aliasColor(v) {
   const n = normLoose(v);
   return COLOR_ALIASES[n] || n;
+}
+
+const COLOR_TOKENS_SORTED = Object.freeze(
+  [...new Set(COLOR_TOKENS.map((t) => normLoose(t)).filter(Boolean))].sort(
+    (a, b) => b.length - a.length,
+  ),
+);
+
+function allowedColorKeys(seedColor) {
+  const allowed = new Set();
+  if (!seedColor) return allowed;
+  const n = aliasColor(seedColor);
+  allowed.add(n);
+  allowed.add(normLoose(seedColor));
+  for (const [k, v] of Object.entries(COLOR_ALIASES)) {
+    if (v === n || k === n || v === normLoose(seedColor) || k === normLoose(seedColor)) {
+      allowed.add(normLoose(k));
+      allowed.add(normLoose(v));
+      allowed.add(aliasColor(k));
+    }
+  }
+  return allowed;
+}
+
+function colorsMentioned(haystackNormOrRaw) {
+  const hay =
+    typeof haystackNormOrRaw === "string" && haystackNormOrRaw === normLoose(haystackNormOrRaw)
+      ? haystackNormOrRaw
+      : normLoose(haystackNormOrRaw);
+  const mentioned = new Set();
+  for (const token of COLOR_TOKENS_SORTED) {
+    if (titleContains(hay, token)) mentioned.add(aliasColor(token));
+  }
+  return mentioned;
+}
+
+function hasConflictingColor(haystack, seedColor) {
+  const mentioned = colorsMentioned(haystack);
+  if (mentioned.size === 0) return false;
+  const allowed = allowedColorKeys(seedColor);
+  if (allowed.size === 0) return false;
+  for (const color of mentioned) {
+    if (!allowed.has(color) && !allowed.has(normLoose(color))) return true;
+  }
+  return false;
 }
 
 function aliasSize(v) {
@@ -115,6 +200,7 @@ function observationMetaFromEvidence(haystack, asset) {
     if (size && !titleContains(hay, size) && !titleContains(hay, aliasSize(size))) {
       return null;
     }
+    if (hasConflictingColor(hay, color)) return null;
     const colorOk =
       !color ||
       titleContains(hay, color) ||
@@ -310,4 +396,6 @@ module.exports = {
   observationHaystack,
   observationMetaFromEvidence,
   resolveObservationMatches,
+  hasConflictingColor,
+  colorsMentioned,
 };

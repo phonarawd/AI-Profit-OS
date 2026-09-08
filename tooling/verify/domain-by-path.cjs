@@ -1581,6 +1581,9 @@ const RULES = [
       /^workers\/fashionphile-parser\//.test(f) ||
       /^services\/market-intelligence\/src\/fashionphile-observation\.cjs$/.test(f) ||
       /^services\/market-intelligence\/src\/observation-identity-match\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/adapters\/fashionphile-observation-pull\.service\.ts$/.test(
+        f,
+      ) ||
       /^tooling\/verify\/fashionphile-parser\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/fashionphile-products\.v1\.json$/.test(f),
     scripts: [

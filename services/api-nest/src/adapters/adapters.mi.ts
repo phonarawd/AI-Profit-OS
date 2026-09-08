@@ -70,6 +70,21 @@ const mi = require("@aipo/market-intelligence") as {
   };
   isFashionphileImageHost: (url: string | null | undefined) => boolean;
   OBSERVATION_MATCHER_VERSION: string;
+  fetchFashionphileObservationCatalog: (input?: {
+    pages?: number;
+    observedAt?: string;
+  }) => Promise<{
+    source: string;
+    persistToListingLeg: false;
+    listingRows: unknown[];
+    accepted: Array<Record<string, unknown>>;
+    rejected: Array<Record<string, unknown>>;
+    fetchErrors: string[];
+    sourcePages: number;
+    rawProducts: number;
+  }>;
+  fashionphileCatalogUrls: (pages?: number) => string[];
+  isFashionphileProductsUrl: (url: string) => boolean;
   normalizeWebObservationForPersist: (obs: Record<string, unknown>) =>
     | { ok: false; reason: string }
     | {
@@ -246,6 +261,10 @@ export const resolveObservationMatches = mi.resolveObservationMatches;
 export const isFashionphileImageHost = mi.isFashionphileImageHost;
 export const OBSERVATION_MATCHER_VERSION =
   mi.OBSERVATION_MATCHER_VERSION;
+export const fetchFashionphileObservationCatalog =
+  mi.fetchFashionphileObservationCatalog;
+export const fashionphileCatalogUrls = mi.fashionphileCatalogUrls;
+export const isFashionphileProductsUrl = mi.isFashionphileProductsUrl;
 export const allDeployAdapters = mi.allDeployAdapters;
 export const DAY1_AUTO_PUBLISH_YAHOO_JP = mi.DAY1_AUTO_PUBLISH_YAHOO_JP;
 export const KPI_THRESHOLDS = mi.KPI_THRESHOLDS;
