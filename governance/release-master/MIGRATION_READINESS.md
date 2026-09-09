@@ -116,4 +116,34 @@ COMMITTED_UNAPPLIED = 10
 PRODUCTION_DB_APPLY = 0
 ```
 
-`58 − 57 = 1` remains the existing `idempotency_request_fingerprint` rawCountDelta. Remaining 10 committedUnapplied are history-unmapped only — not a batch apply list. Migration SQL source files were not edited.
+`58 − 57 = 1` remains the existing `idempotency_request_fingerprint` rawCountDelta. Remaining 10 committedUnapplied are history-unmapped only — not a batch apply list. Effect-level survey = next section. Migration SQL source files were not edited.
+
+## 2026-09-09 TRACK A2 EFFECT SURVEY (apply 0)
+
+Read-only on `mgsytcetsiecllmhcyox` (2026-09-09). `schema_migrations` raw_count still **58**. None of the 10 versions have a remote history row. No alias mapping: object-exists without a matching remote row is not `versions[]` / `remoteHistoricalMappings`. SQL files were not edited. `PRODUCTION_DB_APPLY` stays **0**.
+
+Labels used (never `SCHEMA_ALREADY_PRESENT`):
+
+| label | meaning |
+|---|---|
+| `LOCAL_ONLY_NOT_APPLIED` | repo file present; remote history row 0; intended full effect absent |
+| `PARTIALLY_PRESENT` | some intended effects exist, not all |
+| `EFFECT_ALREADY_PRESENT` | full effect present, still no history row (not an alias) |
+| `REQUIRES_FUTURE_APPLY` | Track C candidate — authorized apply later, not this REL |
+
+Survey result: **10 / 10** = `LOCAL_ONLY_NOT_APPLIED` + `REQUIRES_FUTURE_APPLY`. `PARTIALLY_PRESENT` = 0. `EFFECT_ALREADY_PRESENT` = 0. Staging evidence is not production truth.
+
+| version | name | live miss (full effect) | class | Track C |
+|---|---|---|---|---|
+| `20260904060000` | krw_deposit_bank_snapshot | `krw_deposit_requests` columns `bank_name` / `account_number` / `account_holder` absent | `LOCAL_ONLY_NOT_APPLIED` | `REQUIRES_FUTURE_APPLY` |
+| `20260905110000` | classic_signup_sessions_and_admin | `pending_registrations` table absent; `users` username/email_canonical/verified columns absent; `users_phone_e164_key` still UNIQUE(all phones); magic-link purpose CHECK still `login`/`signup` only; session family indexes absent | `LOCAL_ONLY_NOT_APPLIED` | `REQUIRES_FUTURE_APPLY` |
+| `20260906060000` | payout_reservation_and_execution_confirm | `ledger_accounts` row `SYS:MATCH_PROFIT_EXPENSE` absent; `trade_execution_confirmations` table absent | `LOCAL_ONLY_NOT_APPLIED` | `REQUIRES_FUTURE_APPLY` |
+| `20260906120000` | admin_identity_sessions | 7 admin identity tables absent (`admin_credentials` … `admin_approval_requests`) | `LOCAL_ONLY_NOT_APPLIED` | `REQUIRES_FUTURE_APPLY` |
+| `20260906130000` | user_matching_policy_b7 | 4 `matching_policy_*` tables absent; `trade_executions` snapshot columns absent | `LOCAL_ONLY_NOT_APPLIED` | `REQUIRES_FUTURE_APPLY` |
+| `20260906140000` | s3_32_consent_versions | `pending_registrations` absent so consent columns cannot exist; `user_profiles.terms_version` / `privacy_version` / `avatar_url` absent. Depends on `20260905110000` | `LOCAL_ONLY_NOT_APPLIED` | `REQUIRES_FUTURE_APPLY` |
+| `20260906160000` | s3_34_peotteok_history | `peotteok_conversations` / `peotteok_messages` absent | `LOCAL_ONLY_NOT_APPLIED` | `REQUIRES_FUTURE_APPLY` |
+| `20260906233000` | product_onboarding_progress | `product_onboarding` table absent (staging table-true is not this project) | `LOCAL_ONLY_NOT_APPLIED` | `REQUIRES_FUTURE_APPLY` |
+| `20260908164000` | global_source_unlock_observation_sources | live `source_observations_source_check` is the old 10-source list. Missing additive members: feelway, coupang, cardpick, pokahub, snkrdunk, the_realreal, cardmarket, pokard. Overlap (`fashionphile` already in the old list) is prior apply, not a partial apply of this file | `LOCAL_ONLY_NOT_APPLIED` | `REQUIRES_FUTURE_APPLY` |
+| `20260908181000` | fashionphile_image_source | live `assets_image_source_check` / `opportunities_asset_image_source_check` = ebay, pokemontcg, ygoprodeck, admin_r2 only. `fashionphile` absent | `LOCAL_ONLY_NOT_APPLIED` | `REQUIRES_FUTURE_APPLY` |
+
+Track C (later, owner REL-701-DB / Founder): apply the 10 in version order with `supabase db push --include-all`. Do not batch-apply from this document. Do not reapply mapped s3_33 (`20260906150000`) or trial (`20260909060000`). Header counts stay 67 / 57 / 58 / 10.
