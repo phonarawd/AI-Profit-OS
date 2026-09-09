@@ -101,7 +101,8 @@
       "worker": "hiptk-web-proxy",
       "path": "workers/web-proxy",
       "hostnames": ["app.hiptk.app", "hiptk.app", "go.hiptk.app"],
-      "target": "https://ai-profit-web.ebay-adapter.workers.dev",
+      "target": "https://putduk-web.ebay-adapter.workers.dev",
+      "owner": "PUTDUK_WEB",
       "ownerLater": "PUTDUK_WEB"
     },
     "ops-proxy": {

@@ -115,6 +115,7 @@ const RULES = [
       /^governance\/recovery\/founder-backend-only-api\.v1\.json$/.test(f) ||
       /^tooling\/release\/agent-execute\.cjs$/.test(f) ||
       /^tooling\/dev\/provision-production-resend\.cjs$/.test(f) ||
+      /^tooling\/dev\/provision-production-turnstile\.cjs$/.test(f) ||
       /^tooling\/dev\/ops-auto-backend\.cjs$/.test(f) ||
       /^tooling\/dev\/redeploy-production-api\.cjs$/.test(f) ||
       /^tooling\/verify\/founder-execution-delegation\.cjs$/.test(f) ||
@@ -337,6 +338,7 @@ const RULES = [
       /^infra\/domain\.manifest\.json$/.test(f) ||
       /^tooling\/deploy\/cf-(pages-web|pages-ops|preflight|origin-smoke)/.test(f) ||
       /^workers\/(web-proxy|ops-proxy|_shared)\//.test(f) ||
+      /^tooling\/dev\/deploy-web-proxy\.cjs$/.test(f) ||
       /^tooling\/verify\/opennext-workers-origin\.cjs$/.test(f),
     scripts: [
       "opennext-workers-origin.cjs",

@@ -33,5 +33,7 @@
   "note": "Nest Render production may deploy a GitHub SHA. Cloudflare apps/web production and CERT ISSUED stay fail-closed. This is not UNIQUE promotion and not money YES. Track C leftover 10 applied 2026-09-09.",
   "boot_blocker_unlocked": "RESEND_API_KEY + RESEND_FROM_EMAIL on production Render (single-key PUT, copied from staging). REL-701 remains gated.",
   "operator_clicks": 0,
-  "ops_auto": "node tooling/release/agent-execute.cjs ops-auto --execute"
+  "ops_auto": "node tooling/release/agent-execute.cjs ops-auto --execute",
+  "consumer_live_origin": "https://putduk-web.ebay-adapter.workers.dev",
+  "web_proxy_target": "https://putduk-web.ebay-adapter.workers.dev"
 }

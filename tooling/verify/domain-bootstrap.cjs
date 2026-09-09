@@ -72,6 +72,9 @@ if (manifest) {
   if (webProxy?.target && !String(webProxy.target).includes("workers.dev")) {
     fails.push("domain.manifest web-proxy target must be workers.dev (not pages.dev)");
   }
+  if (webProxy?.target !== "https://putduk-web.ebay-adapter.workers.dev") {
+    fails.push("domain.manifest web-proxy target must be PUTDUK_WEB");
+  }
   if (opsProxy?.target && !String(opsProxy.target).includes("workers.dev")) {
     fails.push("domain.manifest ops-proxy target must be workers.dev (not pages.dev)");
   }
