@@ -1,8 +1,8 @@
 {
   "projectRef": "mgsytcetsiecllmhcyox",
   "asOf": "2026-09-09",
-  "source": "Supabase MCP execute_sql read-only on supabase_migrations.schema_migrations after REL-701-DB apply (2026-09-04 02:35 UTC: raw applied 55 · head 20260902155632_withdraw_broadcast_tron · committedUnapplied 0) · 2026-09-06 push RLS apply 20260906170000 · 2026-09-09 trial welcome grant applied as remote 20260909040657 (canonical local 20260909060000)",
-  "remoteRawAppliedCount": 57,
+  "source": "Supabase MCP execute_sql read-only on supabase_migrations.schema_migrations after REL-701-DB apply (2026-09-04 02:35 UTC: raw applied 55 · head 20260902155632_withdraw_broadcast_tron · committedUnapplied 0) · 2026-09-06 push RLS apply 20260906170000 · 2026-09-09 trial welcome grant applied as remote 20260909040657 (canonical local 20260909060000) · 2026-09-09 live reconciliation mapped remote 20260908052954 s3_33_product_pipeline to local 20260906150000 (statements+objects match · reapply 0)",
+  "remoteRawAppliedCount": 58,
   "remoteHistoricalMappings": [
     {
       "remoteVersion": "20260810212231",
@@ -40,6 +40,13 @@
       "rawCountDelta": 0
     },
     {
+      "remoteVersion": "20260908052954",
+      "localVersion": "20260906150000",
+      "name": "s3_33_product_pipeline",
+      "kind": "apply-time-version-alias",
+      "rawCountDelta": 0
+    },
+    {
       "remoteVersion": "20260909040657",
       "localVersion": "20260909060000",
       "name": "trial_welcome_grant",
@@ -47,7 +54,7 @@
       "rawCountDelta": 0
     }
   ],
-  "note": "versions[] = canonical local version prefixes corresponding to remote-applied schema truth. committedUnapplied[] = repo-only migrations awaiting their authorized production apply (0 after REL-701-DB). remoteRawAppliedCount preserves the actual schema_migrations row count. remoteHistoricalMappings explicitly records every remote version alias/history row that has no same-version local file (5 aliases · never renamed · never reapplied · never repaired). 2026-08-24 reconciliation restored the exact remote-applied SQL for krw_deposit_fx_facts and beginner_onboarding_experience into the repo. 2026-09-04 02:34 UTC REL-701-DB: Founder-authorized `supabase db push --include-all` applied the 12 committedUnapplied migrations to Production in version order (43 → 55 rows · head unchanged · alias rows intact · 93 public tables unchanged · only net schema delta = withdraw_stepup_challenges.token_consumed_at + withdraw_stepup_challenges_token_unspent_idx). Evidence = rel701db below.",
+  "note": "versions[] = canonical local version prefixes corresponding to remote-applied schema truth. committedUnapplied[] = repo-only migrations awaiting their authorized production apply (0 after REL-701-DB). remoteRawAppliedCount preserves the actual schema_migrations row count. remoteHistoricalMappings explicitly records every remote version alias/history row that has no same-version local file (7 aliases · never renamed · never reapplied · never repaired). 2026-08-24 reconciliation restored the exact remote-applied SQL for krw_deposit_fx_facts and beginner_onboarding_experience into the repo. 2026-09-04 02:34 UTC REL-701-DB: Founder-authorized `supabase db push --include-all` applied the 12 committedUnapplied migrations to Production in version order (43 → 55 rows · head unchanged · alias rows intact · 93 public tables unchanged · only net schema delta = withdraw_stepup_challenges.token_consumed_at + withdraw_stepup_challenges_token_unspent_idx). Evidence = rel701db below.",
   "rel701db": {
     "status": "APPLIED",
     "appliedAtUtc": "2026-09-04T02:33:15Z",
@@ -133,6 +140,7 @@
     "20260901224000",
     "20260902032000",
     "20260902155632",
+    "20260906150000",
     "20260906170000",
     "20260909060000"
   ],
@@ -172,12 +180,6 @@
       "name": "s3_32_consent_versions",
       "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
       "reason": "S3/3.2 consent document versions and optional avatar_url. Additive ADD COLUMN. Production apply after S5 staging. Do not apply to mgsytcetsiecllmhcyox from this commit."
-    },
-    {
-      "version": "20260906150000",
-      "name": "s3_33_product_pipeline",
-      "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
-      "reason": "S3/3.3 listings unique + identity_review_queue. Additive. Does not change money columns. Production apply after S5 staging. Do not apply to mgsytcetsiecllmhcyox from this commit."
     },
     {
       "version": "20260906160000",

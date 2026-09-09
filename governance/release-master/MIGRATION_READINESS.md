@@ -13,9 +13,9 @@ APPLY_LOG = 0
 APPLY_OWNER = REL-701-DB
 PROJECT_REF = mgsytcetsiecllmhcyox
 LOCAL_MIGRATION_FILES = 67
-REMOTE_APPLIED_SNAPSHOT = 56
-REMOTE_RAW_APPLIED = 57
-COMMITTED_UNAPPLIED = 11
+REMOTE_APPLIED_SNAPSHOT = 57
+REMOTE_RAW_APPLIED = 58
+COMMITTED_UNAPPLIED = 10
 TRACK_A_FILE_RESTORE = 3
 REL_408_BASELINE = 1
 REL_502_ISSUED = 0
@@ -100,3 +100,20 @@ Remote snapshot/raw counts unchanged.
 **2026-09-06 product onboarding (parallel, unapplied):** `20260906233000_product_onboarding_progress.sql` additive table. Local 63 → 64. `COMMITTED_UNAPPLIED` 8 → 9. Production apply 0. Do not apply to `mgsytcetsiecllmhcyox` from this commit.
 
 **2026-09-09 desk trial capital (applied):** `20260909060000_trial_welcome_grant.sql` additive trial buckets/tables. Remote alias `20260909040657`. `REMOTE_APPLIED_SNAPSHOT` 55 → 56. `REMOTE_RAW_APPLIED` 56 → 57. `COMMITTED_UNAPPLIED` 12 → 11. This REL still `PRODUCTION_DB_APPLY = 0`. Remote-only `20260908052954` (s3_33) remains unmapped.
+
+## 2026-09-09 LIVE RECONCILIATION (s3_33 alias · apply 0)
+
+Read-only `schema_migrations` + object check on `mgsytcetsiecllmhcyox`. Remote `20260908052954_s3_33_product_pipeline` statements match local `20260906150000_s3_33_product_pipeline.sql` executable SQL. Live objects present: `listings_asset_market_external_uq`, `identity_review_queue`, `identity_review_queue_queued_idx`, `identity_review_queue_identity_key_uq`. Classified `APPLIED_EQUIVALENT_TIMESTAMP_DIFFERENT`. Do not reapply the local version. Actor of the remote apply is not recorded here.
+
+Current truth after this mapping (trial alias already recorded above):
+
+```text
+LOCAL_MIGRATION_FILES = 67
+REMOTE_APPLIED_SNAPSHOT = 57
+REMOTE_RAW_APPLIED = 58
+HISTORICAL_MAPPINGS = 7
+COMMITTED_UNAPPLIED = 10
+PRODUCTION_DB_APPLY = 0
+```
+
+`58 − 57 = 1` remains the existing `idempotency_request_fingerprint` rawCountDelta. Remaining 10 committedUnapplied are history-unmapped only — not a batch apply list. Migration SQL source files were not edited.
