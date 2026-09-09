@@ -19,7 +19,8 @@
     "preview_dead": "agent_redeploy_preview_no_founder_wait",
     "pr_merge": "agent_when_rc_merge_contract_pass",
     "public_switch": "agent_after_canary_and_observation",
-    "full_real_money_released_yes": "agent_after_public_switch_and_admin_auth_same_sha"
+    "full_real_money_released_yes": "agent_after_public_switch_and_admin_auth_same_sha",
+    "api_prod_render": "agent_backend_only"
   },
   "still_forbidden": [
     "skip extraVerify or cohorts",
@@ -28,6 +29,7 @@
     "S5 j0 / HG-A8 static PASS upgrade",
     "guard or workflow deletion",
     "excludeGlobs wash",
-    "production deploy while hard gates red"
+    "REL-701 Cloudflare production web/ops while hard gates red",
+    "FULL_REAL_MONEY_RELEASED YES without canary evidence"
   ]
 }

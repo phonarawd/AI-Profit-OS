@@ -1,0 +1,13 @@
+{
+  "schema": "governance.recovery.founder-backend-only-api.v1",
+  "authorized_at": "2026-09-09T14:41:00+09:00",
+  "source": "Founder chat 2026-09-09: this repo is backend-only; consumer UI is PUTDUK_WEB; unlock Nest API deploy without REL-701 CF/CERT",
+  "repo_role": "backend_only",
+  "consumer_ui": "PUTDUK_WEB",
+  "api_prod_render": "authorized",
+  "cert_issued": false,
+  "full_real_money_released": "NO",
+  "rel_701_cloudflare_production": "still_gated",
+  "remaining_migrations_apply": 0,
+  "note": "Nest Render production may deploy a GitHub SHA. Cloudflare apps/web production and CERT ISSUED stay fail-closed. This is not UNIQUE promotion and not money YES."
+}

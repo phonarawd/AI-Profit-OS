@@ -50,3 +50,9 @@ RECORD_SYNC = 2026-09-04T12:10:00+09:00
 REL-701 dispatch / REL-702~704 / preview 재배포 / RC merge / 공개·실돈 스위치는
 `governance/recovery/founder-execution-delegation.v1.json` + `tooling/release/agent-execute.cjs`.
 hard gates red이면 fail-closed. CERT 세탁 금지. RC_FORMAL lock 미변경.
+
+## Backend-only Nest path (2026-09-09)
+
+이 레포 consumer UI는 PUTDUK_WEB. `api-prod`는 Render Nest만 올린다.
+REL-701 Cloudflare web/ops 운영 승격은 CERT+hard gate fail-closed를 유지한다.
+헤더 `PRODUCTION_DEPLOY = 0`은 REL-701 CF+artifact이지 `api-prod`가 아니다. CERT 세탁 금지. 실돈 YES 금지.

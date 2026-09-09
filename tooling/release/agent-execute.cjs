@@ -64,6 +64,20 @@ function evaluate(action) {
     return { ok: true, blocks, dispatch: "preview" };
   }
 
+  if (action === "api-prod") {
+    const d = loadDelegation();
+    if (d.actions.api_prod_render !== "agent_backend_only") {
+      blocks.push("api_prod_render not authorized as agent_backend_only");
+    }
+    if (d.cert_issued_by_delegation !== false) {
+      blocks.push("api-prod must not issue CERT");
+    }
+    if (d.full_real_money_released_by_delegation !== false) {
+      blocks.push("api-prod must not flip money YES");
+    }
+    return { ok: blocks.length === 0, blocks, dispatch: "api-prod" };
+  }
+
   if (action === "rel-701") {
     if (certStatus !== "ISSUED" || !certIssued) {
       blocks.push("FINAL_ACCEPTANCE not ISSUED (CERT_ISSUED=" + field(acceptance, "CERT_ISSUED") + ")");
@@ -154,6 +168,30 @@ function execute(action, verdict) {
     ]);
     return;
   }
+  if (action === "api-prod") {
+    const shaRun = spawnSync("git", ["rev-parse", "HEAD"], {
+      cwd: root,
+      encoding: "utf8",
+      timeout: 30000,
+    });
+    const sha = String(shaRun.stdout || "").trim();
+    if (shaRun.status !== 0 || !/^[0-9a-f]{40}$/i.test(sha)) {
+      throw new Error("api-prod needs a full HEAD SHA");
+    }
+    const deploy = spawnSync(
+      process.execPath,
+      [path.join(root, "tooling/dev/redeploy-production-api.cjs"), sha],
+      { cwd: root, encoding: "utf8", timeout: 120000 },
+    );
+    if (deploy.status !== 0) {
+      throw new Error(
+        "api-prod render failed: " +
+          String(deploy.stderr || deploy.stdout || deploy.status),
+      );
+    }
+    process.stdout.write(deploy.stdout || "");
+    return;
+  }
   if (action === "rel-701") {
     runGh([
       "workflow",
@@ -184,7 +222,7 @@ function main() {
   const action = argv.find((a) => !a.startsWith("--"));
   if (!action) {
     console.error(
-      "usage: node tooling/release/agent-execute.cjs <rel-701|rel-702|rel-703|rel-704|preview|merge|money-yes> [--execute]",
+      "usage: node tooling/release/agent-execute.cjs <api-prod|rel-701|rel-702|rel-703|rel-704|preview|merge|money-yes> [--execute]",
     );
     process.exit(2);
   }

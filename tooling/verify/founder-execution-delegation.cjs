@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * verify:founder-execution-delegation
- * 실행 주체는 에이전트. hard gate 스킵·CERT 세탁·지금-배포는 금지.
+ * 실행 주체는 에이전트. hard gate 스킵·CERT 세탁 금지. api-prod는 Nest만.
  */
 "use strict";
 
@@ -56,6 +56,14 @@ if (merge.ok) fails.push("merge must stay BLOCKED without RC required checks + C
 const preview = evaluate("preview");
 if (!preview.ok) fails.push("preview redeploy must be agent-executable without Founder wait");
 
+if (d.actions.api_prod_render !== "agent_backend_only") {
+  fails.push("api_prod_render must be agent_backend_only");
+}
+const apiProd = evaluate("api-prod");
+if (!apiProd.ok) {
+  fails.push("api-prod must be READY for backend-only Nest");
+}
+
 const dry = spawnSync(process.execPath, [path.join(root, "tooling/release/agent-execute.cjs"), "rel-701"], {
   cwd: root,
   encoding: "utf8",
@@ -71,6 +79,12 @@ if (!src.includes("evaluate(") || !src.includes("if (!verdict.ok)")) {
 }
 if (!/if \(!executeFlag\)/.test(src)) {
   fails.push("executor must default to dry-run");
+}
+if (!src.includes("redeploy-production-api.cjs")) {
+  fails.push("api-prod must deploy Render Nest via redeploy-production-api.cjs");
+}
+if (/action === ["']api-prod["'][\s\S]{0,400}deploy-cloudflare\.yml/.test(src)) {
+  fails.push("api-prod must not dispatch Cloudflare production");
 }
 
 const rule = read(".cursor/rules/founder-execution-delegation.mdc");
