@@ -12,6 +12,7 @@ const { evaluate, loadDelegation } = require("../release/agent-execute.cjs");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
+const TRIAL_SKU_NEEDLE = "7e1a0001-1000-4000-8000-747269616c01";
 
 function read(rel) {
   const p = path.join(root, rel);
@@ -59,9 +60,19 @@ if (!preview.ok) fails.push("preview redeploy must be agent-executable without F
 if (d.actions.api_prod_render !== "agent_backend_only") {
   fails.push("api_prod_render must be agent_backend_only");
 }
+if (d.actions.ops_auto !== "agent_backend_only") {
+  fails.push("ops_auto must be agent_backend_only");
+}
+if (d.operator_clicks !== 0 || d.ask_founder !== 0) {
+  fails.push("operator_clicks and ask_founder must be 0");
+}
 const apiProd = evaluate("api-prod");
 if (!apiProd.ok) {
   fails.push("api-prod must be READY for backend-only Nest");
+}
+const opsAuto = evaluate("ops-auto");
+if (!opsAuto.ok) {
+  fails.push("ops-auto must be READY for backend-only Nest");
 }
 
 const dry = spawnSync(process.execPath, [path.join(root, "tooling/release/agent-execute.cjs"), "rel-701"], {
@@ -82,6 +93,9 @@ if (!/if \(!executeFlag\)/.test(src)) {
 }
 if (!src.includes("redeploy-production-api.cjs")) {
   fails.push("api-prod must deploy Render Nest via redeploy-production-api.cjs");
+}
+if (!src.includes("ops-auto-backend.cjs")) {
+  fails.push("ops-auto must run ops-auto-backend.cjs");
 }
 if (/action === ["']api-prod["'][\s\S]{0,400}deploy-cloudflare\.yml/.test(src)) {
   fails.push("api-prod must not dispatch Cloudflare production");
@@ -104,6 +118,18 @@ if (!resend.includes("refused: staging service id")) {
 const rule = read(".cursor/rules/founder-execution-delegation.mdc");
 if (!rule.includes("alwaysApply: true")) fails.push("delegation rule must be alwaysApply");
 if (!rule.includes("FOUNDER_TASKS=0")) fails.push("rule must keep FOUNDER_TASKS=0");
+if (!rule.includes("ops-auto")) fails.push("rule must name ops-auto");
+
+const opsAutoSrc = read("tooling/dev/ops-auto-backend.cjs");
+if (!opsAutoSrc.includes("operatorClicks: 0")) {
+  fails.push("ops-auto must record operatorClicks 0");
+}
+if (!opsAutoSrc.includes("refused: staging service id")) {
+  fails.push("ops-auto must refuse staging");
+}
+if (!opsAutoSrc.includes("trial_program_config") || !opsAutoSrc.includes(TRIAL_SKU_NEEDLE)) {
+  fails.push("ops-auto must check trial program + pinned SKU");
+}
 
 const ops = read(".cursor/rules/cursor-autonomous-ops.mdc");
 if (!ops.includes("PRODUCTION_AGENT_GATE_WHEN_HARD_GATES_PASS")) {

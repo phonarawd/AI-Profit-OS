@@ -64,9 +64,12 @@ function evaluate(action) {
     return { ok: true, blocks, dispatch: "preview" };
   }
 
-  if (action === "api-prod") {
+  if (action === "ops-auto" || action === "api-prod") {
     const d = loadDelegation();
-    if (d.actions.api_prod_render !== "agent_backend_only") {
+    if (action === "ops-auto" && d.actions.ops_auto !== "agent_backend_only") {
+      blocks.push("ops_auto not authorized as agent_backend_only");
+    }
+    if (action === "api-prod" && d.actions.api_prod_render !== "agent_backend_only") {
       blocks.push("api_prod_render not authorized as agent_backend_only");
     }
     if (d.cert_issued_by_delegation !== false) {
@@ -75,7 +78,11 @@ function evaluate(action) {
     if (d.full_real_money_released_by_delegation !== false) {
       blocks.push("api-prod must not flip money YES");
     }
-    return { ok: blocks.length === 0, blocks, dispatch: "api-prod" };
+    return {
+      ok: blocks.length === 0,
+      blocks,
+      dispatch: action === "ops-auto" ? "ops-auto" : "api-prod",
+    };
   }
 
   if (action === "rel-701") {
@@ -168,6 +175,20 @@ function execute(action, verdict) {
     ]);
     return;
   }
+  if (action === "ops-auto") {
+    const run = spawnSync(
+      process.execPath,
+      [path.join(root, "tooling/dev/ops-auto-backend.cjs")],
+      { cwd: root, encoding: "utf8", timeout: 300000 },
+    );
+    if (run.status !== 0) {
+      throw new Error(
+        "ops-auto failed: " + String(run.stderr || run.stdout || run.status),
+      );
+    }
+    process.stdout.write(run.stdout || "");
+    return;
+  }
   if (action === "api-prod") {
     const argSha = process.argv.slice(2).find((a) => /^[0-9a-f]{40}$/i.test(a));
     let sha = argSha || "";
@@ -226,7 +247,7 @@ function main() {
   const action = argv.find((a) => !a.startsWith("--"));
   if (!action) {
     console.error(
-      "usage: node tooling/release/agent-execute.cjs <api-prod|rel-701|rel-702|rel-703|rel-704|preview|merge|money-yes> [--execute]",
+      "usage: node tooling/release/agent-execute.cjs <ops-auto|api-prod|rel-701|rel-702|rel-703|rel-704|preview|merge|money-yes> [--execute]",
     );
     process.exit(2);
   }

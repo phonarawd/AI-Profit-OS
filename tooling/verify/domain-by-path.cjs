@@ -115,6 +115,7 @@ const RULES = [
       /^governance\/recovery\/founder-backend-only-api\.v1\.json$/.test(f) ||
       /^tooling\/release\/agent-execute\.cjs$/.test(f) ||
       /^tooling\/dev\/provision-production-resend\.cjs$/.test(f) ||
+      /^tooling\/dev\/ops-auto-backend\.cjs$/.test(f) ||
       /^tooling\/dev\/redeploy-production-api\.cjs$/.test(f) ||
       /^tooling\/verify\/founder-execution-delegation\.cjs$/.test(f) ||
       /^\.cursor\/rules\/founder-execution-delegation\.mdc$/.test(f) ||

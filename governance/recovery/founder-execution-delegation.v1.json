@@ -20,8 +20,11 @@
     "pr_merge": "agent_when_rc_merge_contract_pass",
     "public_switch": "agent_after_canary_and_observation",
     "full_real_money_released_yes": "agent_after_public_switch_and_admin_auth_same_sha",
-    "api_prod_render": "agent_backend_only"
+    "api_prod_render": "agent_backend_only",
+    "ops_auto": "agent_backend_only"
   },
+  "operator_clicks": 0,
+  "ask_founder": 0,
   "still_forbidden": [
     "skip extraVerify or cohorts",
     "FINAL_ACCEPTANCE ISSUED wash",

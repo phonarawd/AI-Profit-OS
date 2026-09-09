@@ -23,6 +23,7 @@ SSOT: `governance/recovery/founder-execution-delegation.v1.json`
 | PR merge (221 포함) | RC merge 계약 4체크 PASS일 때만 `merge --execute` |
 | 공개 스위치 · `FULL_REAL_MONEY_RELEASED=YES` | 카나리+관측+같은 SHA Admin auth PASS 뒤에만 `money-yes --execute` |
 | Nest 운영 API (`api-prod`) | 이 레포는 백엔드 전용. CERT/REL-701 CF와 분리. `api-prod --execute` |
+| 운영 유지 (`ops-auto`) | 운영자 클릭 0. health · Resend · 체험 SKU. `ops-auto --execute`. Render/대시보드를 Founder에게 묻지 않음 |
 
 ##  Delegation이 허용하지 않는 것
 
