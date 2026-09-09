@@ -55,7 +55,7 @@ missing snapshot/amount → null. KRW 0 위조 0. client `Number()*rate` 0.
 | auth_permission | Nest `JwtAuthGuard` | `supabase.auth` 0 in api-nest | ALIGNED | REL-405 |
 | rls | REL-408 80/80 ON | `SECURITY_BASELINE.md` | ALIGNED | REL-408 |
 | indexes | applied migration `CREATE INDEX` | file-only indexes 0 | ALIGNED (REL-701-DB 2026-09-04 · unapplied 0) | REL-408 / REL-701-DB |
-| migration_head | local `20260909060000` | remote applied `20260909060000` | PENDING (2026-09-09 trial welcome grant applied. Remote row is `20260909040657` alias of local `20260909060000`. 11 committedUnapplied remain below this head, plus existing remote-only `20260908052954`. Future apply must use `--include-all`.) | REL-701-DB / S1F / PUTDUK / S5 |
+| migration_head | local `20260909060000` | remote applied `20260909060000` | PENDING (2026-09-09 trial welcome grant applied. Remote row is `20260909040657` alias of local `20260909060000`. 10 committedUnapplied remain below this head. Remote `20260908052954` is the apply-time alias of local `20260906150000` s3_33. Future apply must use `--include-all`.) | REL-701-DB / S1F / PUTDUK / S5 |
 | p0_p3_engine | REL-502 `FINAL_ACCEPTANCE` | DEFECTS_P0/P1 = 0 | STALE_PENDING_REBASE (D1-S1E: services/api-nest/clock.core.cjs drift, NOT_ISSUED) | REL-502 |
 | p0_p3_admin | REL-409 R6 cert | KNOWN_P0~P3 = 0 | ALIGNED | REL-409 |
 | ui_truth_home_money | home-money-read contract | Engine todayPossible 0 · fake zero 0 | ALIGNED | money / UI |
