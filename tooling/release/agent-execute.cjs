@@ -169,14 +169,18 @@ function execute(action, verdict) {
     return;
   }
   if (action === "api-prod") {
-    const shaRun = spawnSync("git", ["rev-parse", "HEAD"], {
-      cwd: root,
-      encoding: "utf8",
-      timeout: 30000,
-    });
-    const sha = String(shaRun.stdout || "").trim();
-    if (shaRun.status !== 0 || !/^[0-9a-f]{40}$/i.test(sha)) {
-      throw new Error("api-prod needs a full HEAD SHA");
+    const argSha = process.argv.slice(2).find((a) => /^[0-9a-f]{40}$/i.test(a));
+    let sha = argSha || "";
+    if (!sha) {
+      const shaRun = spawnSync("git", ["rev-parse", "HEAD"], {
+        cwd: root,
+        encoding: "utf8",
+        timeout: 30000,
+      });
+      sha = String(shaRun.stdout || "").trim();
+      if (shaRun.status !== 0 || !/^[0-9a-f]{40}$/i.test(sha)) {
+        throw new Error("api-prod needs a full HEAD SHA");
+      }
     }
     const deploy = spawnSync(
       process.execPath,

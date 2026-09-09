@@ -87,6 +87,20 @@ if (/action === ["']api-prod["'][\s\S]{0,400}deploy-cloudflare\.yml/.test(src)) 
   fails.push("api-prod must not dispatch Cloudflare production");
 }
 
+const resend = read("tooling/dev/provision-production-resend.cjs");
+if (!resend.includes("/env-vars/") || !resend.includes('method: "PUT"')) {
+  fails.push("production Resend provision must PUT one key at a time");
+}
+if (!resend.includes("limit=100")) {
+  fails.push("production Resend provision must page env-vars beyond default 20");
+}
+if (/env-vars["'][\s\S]{0,80}method:\s*["']PUT["']/.test(resend) && !resend.includes("/env-vars/")) {
+  fails.push("production Resend provision must not replace the full env list");
+}
+if (!resend.includes("refused: staging service id")) {
+  fails.push("production Resend provision must refuse staging");
+}
+
 const rule = read(".cursor/rules/founder-execution-delegation.mdc");
 if (!rule.includes("alwaysApply: true")) fails.push("delegation rule must be alwaysApply");
 if (!rule.includes("FOUNDER_TASKS=0")) fails.push("rule must keep FOUNDER_TASKS=0");

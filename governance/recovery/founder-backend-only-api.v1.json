@@ -9,5 +9,6 @@
   "full_real_money_released": "NO",
   "rel_701_cloudflare_production": "still_gated",
   "remaining_migrations_apply": 0,
-  "note": "Nest Render production may deploy a GitHub SHA. Cloudflare apps/web production and CERT ISSUED stay fail-closed. This is not UNIQUE promotion and not money YES."
+  "note": "Nest Render production may deploy a GitHub SHA. Cloudflare apps/web production and CERT ISSUED stay fail-closed. This is not UNIQUE promotion and not money YES.",
+  "boot_blocker_unlocked": "RESEND_API_KEY + RESEND_FROM_EMAIL on production Render (single-key PUT, copied from staging). REL-701 remains gated."
 }
