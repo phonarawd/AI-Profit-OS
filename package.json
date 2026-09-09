@@ -395,6 +395,8 @@
     "verify:gate": "node tooling/verify/gate.cjs",
     "verify:gate:fast": "node tooling/verify/gate-fast.cjs",
     "verify:gate:push": "node tooling/verify/gate-push.cjs",
+    "verify:t1-by-path": "node tooling/verify/t1-by-path.cjs",
+    "backend:fast": "node tooling/verify/backend-fast.cjs",
     "verify:gate-local-speed": "node tooling/verify/gate-local-speed.cjs",
     "verify:tooling": "node tooling/verify/gate.cjs",
     "cleanup:lowspec": "node tooling/cleanup/lowspec.cjs",

@@ -5,10 +5,11 @@
 | tier | 명령 | 시점 | SSOT |
 |------|------|------|------|
 | **T0** | `pnpm verify:gate:fast` | commit · Husky pre-commit | `gate-fast.cjs` · `domain-by-path.cjs` |
-| **T1** | `pnpm verify:gate:push` | push · Husky pre-push | `gate-push.cjs` (= T0 + infra + stubs) |
+| **T1** | `pnpm verify:gate:push` | push · Husky pre-push | `gate-push.cjs` (= T0 + path-aware T1 extras) |
 | **T2** | `pnpm verify:gate` | CI · main merge | `gate.cjs` (= T1 + next-build + opennext-build) |
 
 경로 기반 T0 도메인 = `tooling/verify/domain-by-path.cjs` (변경 파일 → 해당 `verify:*`만).
+T1 extras: lib/t1-by-path.cjs + verify:t1-by-path. domainSteps stays. T2 keeps full T1. backend:fast is local only, not husky pre-push.
 
 로컬 가속(검사 목록 불변): stamp skip · stub in-process+cache · web-lint --cache · api-nest-build path+T2. CI/`AIPO_GATE_NO_STAMP=1` 실실행.
 
@@ -122,7 +123,7 @@
 | `governance/figma/**` · `tooling/verify/figma-project-registry.cjs` | figma-project-registry |
 | `governance/visual-reconciliation/**` · `tooling/verify/locked-visual-reconciliation.cjs` · locked Account Hub `/me` | locked-visual-reconciliation |
 | `tooling/verify/domain-by-path.cjs` · `tooling/verify/domain-by-path.selftest.cjs` · `tooling/verify/domain-by-path-ci.cjs` · `.github/workflows/gate.yml` | domain-by-path-ci |
-| `tooling/verify/gate-runner.cjs` · `gate-tiers.cjs` · `gate-local-speed.cjs` · `lib/gate-stamp.cjs` · `stubs/run-all.cjs` · `web-lint.cjs` | gate-local-speed |
+| `tooling/verify/gate-runner.cjs` · `gate-tiers.cjs` · `gate-local-speed.cjs` · `t1-by-path.cjs` · `lib/t1-by-path.cjs` · `lib/gate-stamp.cjs` · `stubs/run-all.cjs` · `web-lint.cjs` | gate-local-speed · t1-by-path |
 | `services/api-nest/**` · `tooling/verify/api-nest-build.cjs` | api-nest-build |
 | `.cursor/hooks/**` · `.cursor/hooks.json` · `scripts/verify-night-guard.mjs` · `tooling/verify/night-guard.cjs` · `scripts/verify-project-boundary.mjs` | night-guard · project-boundary |
 | `tooling/e2e/**` · `tooling/verify/qa-env-isolation-guard.cjs` | qa-env-isolation-guard |

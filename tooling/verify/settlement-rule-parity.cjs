@@ -38,6 +38,7 @@ for (const [, file] of goldenFiles) {
 const pkg = fs.readFileSync(path.join(root, "package.json"), "utf8");
 const catalog = fs.readFileSync(path.join(root, "tooling/verify/CATALOG.md"), "utf8");
 const tiers = fs.readFileSync(path.join(root, "tooling/verify/gate-tiers.cjs"), "utf8");
+const t1lib = fs.readFileSync(path.join(root, "tooling/verify/lib/t1-by-path.cjs"), "utf8");
 const domain = fs.readFileSync(
   path.join(root, "tooling/verify/domain-by-path.cjs"),
   "utf8",
@@ -49,7 +50,7 @@ if (!pkg.includes('"verify:settlement-rule-parity"')) {
 if (!catalog.includes("settlement-rule-parity")) {
   fails.push("CATALOG.md must list settlement-rule-parity");
 }
-if (!tiers.includes("settlement-rule-parity.cjs")) {
+if (!t1lib.includes("settlement-rule-parity.cjs") || !tiers.includes("T1_CORE_ALWAYS")) {
   fails.push("gate-tiers T0/T1 must include settlement-rule-parity.cjs");
 }
 if (!domain.includes("settlement-rule-parity.cjs")) {

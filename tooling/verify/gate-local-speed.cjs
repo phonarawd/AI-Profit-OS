@@ -84,12 +84,15 @@ if (!webLint.includes('runLint(["."])')) {
 if (!tiers.includes('T2_CI = ["api-nest-build.cjs"')) {
   fails.push("T2_CI must always include api-nest-build.cjs");
 }
-if (/T1_PUSH = \[[\s\S]*api-nest-build\.cjs[\s\S]*\]/.test(tiers) &&
-    tiers.indexOf("api-nest-build.cjs") < tiers.indexOf("T2_CI")) {
-  const t1Block = tiers.slice(tiers.indexOf("T1_PUSH"), tiers.indexOf("T2_CI"));
-  if (t1Block.includes("api-nest-build.cjs")) {
-    fails.push("api-nest-build must not stay in T1_PUSH always-list");
-  }
+const t1lib = require("./lib/t1-by-path.cjs");
+if (t1lib.T1_PUSH.includes("api-nest-build.cjs")) {
+  fails.push("api-nest-build must not stay in T1_PUSH always-list");
+}
+if (!tiers.includes("t1PushPlan") || !tiers.includes("./lib/t1-by-path.cjs")) {
+  fails.push("T1 push extras must be path-aware via t1-by-path");
+}
+if (!/tier === "full"[\s\S]*\.\.\.T1_PUSH/.test(tiers)) {
+  fails.push("T2 full must still spread complete T1_PUSH");
 }
 if (!gate.includes("api-nest-build.cjs")) {
   fails.push("T2 gate.cjs must still run api-nest-build");

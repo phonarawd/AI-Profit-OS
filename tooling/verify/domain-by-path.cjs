@@ -15,14 +15,14 @@ const root = path.resolve(__dirname, "../..");
 const RULES = [
   {
     test: (f) =>
-      /^tooling\/verify\/(gate-runner|gate-tiers|gate-fast|gate-push|gate|web-lint|api-nest-build|gate-local-speed)\.cjs$/.test(
+      /^tooling\/verify\/(gate-runner|gate-tiers|gate-fast|gate-push|gate|web-lint|api-nest-build|gate-local-speed|t1-by-path|backend-fast)\.cjs$/.test(
         f,
       ) ||
-      /^tooling\/verify\/lib\/(gate-stamp|run-verify-in-process|verify-input-cache)\.cjs$/.test(
+      /^tooling\/verify\/lib\/(gate-stamp|run-verify-in-process|verify-input-cache|t1-by-path)\.cjs$/.test(
         f,
       ) ||
       /^tooling\/verify\/stubs\/run-all\.cjs$/.test(f),
-    scripts: ["gate-local-speed.cjs"],
+    scripts: ["gate-local-speed.cjs", "t1-by-path.cjs"],
   },
   {
     test: (f) =>
