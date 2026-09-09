@@ -136,7 +136,7 @@ export function ClassicSignupRuntime() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            minLength={15}
+            minLength={8}
             maxLength={128}
             autoComplete="new-password"
             placeholder={T.authClassic.passwordPlaceholder}

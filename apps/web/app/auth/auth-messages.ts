@@ -32,7 +32,7 @@ export function authUserMessage(err: unknown): string {
       return "이미 다른 방법으로 가입된 메일이에요. 로그인 후 연결해 주세요.";
     }
     if (err.code === "PASSWORD_TOO_SHORT" || err.code === "PASSWORD_TOO_LONG" || err.code === "PASSWORD_INVALID_LENGTH") {
-      return "비밀번호는 15자 이상 128자 이하로 입력해 주세요.";
+      return "비밀번호는 8자 이상 128자 이하로 입력해 주세요.";
     }
     if (err.code === "PASSWORD_CONFIRM_MISMATCH") return "비밀번호가 서로 달라요.";
     if (err.code === "PASSWORD_PWNED") {

@@ -6,12 +6,13 @@
  *             first char must be a lowercase letter, canonical = itself
  *             (charset already excludes uppercase — canonicalization is a
  *             defense-in-depth second layer, never the only guard).
- *   password: 15~128 chars, NO composition rules (no forced upper/digit/
+ *   password: 8~128 chars, NO composition rules (no forced upper/digit/
  *             symbol), unicode + whitespace allowed, paste/autofill allowed
  *             (enforced by NOT doing anything that blocks paste — there is
  *             no client-side restriction here), breached passwords blocked
  *             separately (pwned-password.service.ts), no periodic forced
  *             rotation (this module never expires a password by age).
+ *             Founder 2026-09-09: 최소 15자는 제품에서 너무 길어 8자로 내림.
  *
  * NIST SP 800-63B §5.1.1.2 / OWASP Authentication Cheat Sheet (2026) both
  * agree: minimum length + breach-corpus check + unicode support > forced
@@ -27,7 +28,7 @@ export const USERNAME_MAX_LEN = 20;
 /** First char must be a lowercase letter; remaining chars a-z 0-9 _. */
 export const USERNAME_PATTERN = /^[a-z][a-z0-9_]{3,19}$/;
 
-export const PASSWORD_MIN_LEN = 15;
+export const PASSWORD_MIN_LEN = 8;
 export const PASSWORD_MAX_LEN = 128;
 
 export const DECLARED_NAME_MIN_LEN = 1;

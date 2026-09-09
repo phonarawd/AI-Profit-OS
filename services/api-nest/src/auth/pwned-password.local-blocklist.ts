@@ -2,8 +2,8 @@
  * Local breached/common-password fallback — used ONLY when the HIBP Pwned
  * Passwords API (k-anonymity range lookup) is unreachable, per §6.1:
  * "HIBP 장애 시 최소 로컬 blocklist를 사용하고 장애를 기록". This is a
- * deliberately small, illustrative list of well-known long
- * (>=PASSWORD_MIN_LEN=15) breached/trivially-guessable strings — it is a
+ * deliberately small, illustrative list of well-known
+ * (>=PASSWORD_MIN_LEN=8) breached/trivially-guessable strings — it is a
  * degraded-mode safety net, not a replacement for the real HIBP corpus.
  *
  * Compared case-insensitively against the raw password by
@@ -12,6 +12,15 @@
 
 export const LOCAL_PASSWORD_BLOCKLIST: ReadonlySet<string> = new Set(
   [
+    "password",
+    "12345678",
+    "qwerty12",
+    "qwertyui",
+    "iloveyou",
+    "11111111",
+    "abcdefgh",
+    "letmein1",
+    "welcome1",
     "password12345678",
     "password123456789",
     "letmein123456789",
