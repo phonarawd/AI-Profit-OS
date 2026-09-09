@@ -100,6 +100,16 @@ export function normalizeHomeMoneyRead(
   if (typeof raw.reasonCode === "string" && raw.reasonCode.trim()) {
     dto.reasonCode = raw.reasonCode;
   }
+  if (raw.displayPrimary === "KRW") dto.displayPrimary = "KRW";
+  if (raw.displaySecondary === "USDT") dto.displaySecondary = "USDT";
+  if (raw.principalKrwApprox === null) {
+    dto.principalKrwApprox = null;
+  } else if (
+    typeof raw.principalKrwApprox === "string" &&
+    /^-?[0-9]+(\.[0-9]+)?$/.test(raw.principalKrwApprox)
+  ) {
+    dto.principalKrwApprox = raw.principalKrwApprox;
+  }
 
   return dto;
 }

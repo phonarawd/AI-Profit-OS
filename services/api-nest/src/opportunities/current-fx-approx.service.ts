@@ -5,6 +5,11 @@
  */
 
 import { Injectable } from "@nestjs/common";
+import {
+  USER_MONEY_DISPLAY_PRIMARY,
+  USER_MONEY_DISPLAY_SECONDARY,
+  userMoneyDisplay,
+} from "../money-display/user-money-display";
 import { approxKrwFromSnapshot } from "./opportunities.mi";
 import { approxKrwOrNull } from "./current-fx-approx.map";
 import { FxSnapshotService } from "./fx-snapshot.service";
@@ -16,6 +21,8 @@ export type CurrentFxApproxRequest = {
 };
 
 export type CurrentFxApproxResponse = {
+  displayPrimary: typeof USER_MONEY_DISPLAY_PRIMARY;
+  displaySecondary: typeof USER_MONEY_DISPLAY_SECONDARY;
   fxSnapshotId: string | null;
   capturedAt: string | null;
   principalKrwApprox: string | null;
@@ -24,6 +31,7 @@ export type CurrentFxApproxResponse = {
 };
 
 const EMPTY: CurrentFxApproxResponse = {
+  ...userMoneyDisplay(),
   fxSnapshotId: null,
   capturedAt: null,
   principalKrwApprox: null,
@@ -41,6 +49,7 @@ export class CurrentFxApproxService {
 
     const rate = { usdtKrw: snapshot.usdtKrw };
     return {
+      ...userMoneyDisplay(),
       fxSnapshotId: snapshot.id,
       capturedAt: snapshot.capturedAt,
       principalKrwApprox: approxKrwOrNull(

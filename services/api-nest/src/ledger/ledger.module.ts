@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { MoneyDisplayModule } from "../money-display/money-display.module";
 import { LedgerAdminController } from "./ledger.admin.controller";
 import { LedgerAdminService } from "./ledger.admin.service";
 import { LedgerBucketsService } from "./ledger.buckets.service";
@@ -16,6 +17,7 @@ import { TrialStateService } from "./trial-state.service";
 import { TrialStateUserController } from "./trial-state.user.controller";
 
 @Module({
+  imports: [MoneyDisplayModule],
   controllers: [
     LedgerAdminController,
     LedgerUserController,

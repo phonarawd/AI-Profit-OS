@@ -19,13 +19,17 @@ import { ExecutionPolicyAdminService } from "../execution-policy/execution-polic
 import { LedgerBucketsService } from "../ledger/ledger.buckets.service";
 import { TrialFundingService } from "../ledger/trial-funding.service";
 import { TrialGrantService } from "../ledger/trial-grant.service";
+import { KrwDisplayService } from "../money-display/krw-display.service";
+import { userMoneyDisplay } from "../money-display/user-money-display";
 import { PostgresService } from "../db/postgres";
 import {
   MatchingPolicyService,
   opportunityRowToCandidate,
 } from "../matching-policy/matching-policy.service";
 import { buildBalanceAwareFeedWithOverrides } from "./balance-aware-feed";
+import { approxKrwOrNull } from "./current-fx-approx.map";
 import {
+  approxKrwFromSnapshot,
   assetIconForCategory,
   isV1FeedArbitrageType,
   projectCapitalProviderUserSurface,
@@ -127,6 +131,7 @@ export class OpportunitiesUserService {
     private readonly executionPolicy: ExecutionPolicyAdminService,
     private readonly killSwitch: KillSwitchService,
     private readonly matchingPolicy: MatchingPolicyService,
+    private readonly krwDisplay: KrwDisplayService,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
@@ -150,6 +155,7 @@ export class OpportunitiesUserService {
     if (await this.killSwitch.isBlocked("opportunity")) {
       const principalUsdt = await this.readPrincipalUsdt(userId);
       return {
+        ...(await this.displayEnvelope(principalUsdt)),
         principalUsdt,
         nearMissCapUsdt: "0",
         classificationOwner: "engine:§0.0.5.1",
@@ -228,11 +234,13 @@ export class OpportunitiesUserService {
         if (!row) return null;
         return this.toUserCard(row, classified, {
           includePricing: false,
+          usdKrw: fxById.get(row.fx_snapshot_id) ?? null,
         });
       })
       .filter((x): x is Record<string, unknown> => x != null);
 
     return {
+      ...(await this.displayEnvelope(feed.principalUsdt)),
       principalUsdt: feed.principalUsdt,
       nearMissCapUsdt: feed.nearMissCapUsdt,
       classificationOwner: feed.classificationOwner,
@@ -309,11 +317,13 @@ export class OpportunitiesUserService {
     }
 
     return {
+      ...(await this.displayEnvelope(principalUsdt)),
       principalUsdt,
       nearMissCapUsdt: feed.nearMissCapUsdt,
       classificationOwner: feed.classificationOwner,
       item: this.toUserCard(row, classified, {
         includePricing: true,
+        usdKrw: fxById.get(row.fx_snapshot_id) ?? null,
       }),
     };
   }
@@ -474,10 +484,15 @@ export class OpportunitiesUserService {
     };
   }
 
+  private async displayEnvelope(principalUsdt: string) {
+    const snap = await this.krwDisplay.latest();
+    return this.krwDisplay.envelope(principalUsdt, snap);
+  }
+
   private toUserCard(
     row: OppUserRow,
     classified: ClassifiedSlice,
-    opts: { includePricing: boolean },
+    opts: { includePricing: boolean; usdKrw: string | null },
   ): Record<string, unknown> {
     const pricing = row.pricing || {};
     const tags = withTimeSensitiveTag(row.tags, {
@@ -549,6 +564,12 @@ export class OpportunitiesUserService {
 
     return {
       ...userCard,
+      ...userMoneyDisplay(),
+      requiredCapitalKrwApprox: approxKrwOrNull(
+        classified.requiredCapitalUsdt,
+        opts.usdKrw ? { usdtKrw: opts.usdKrw } : null,
+        approxKrwFromSnapshot,
+      ),
       bucket: classified.bucket,
       suggestDepositUsdt: classified.suggestDepositUsdt,
       forceShowPromoted: classified.forceShowPromoted,

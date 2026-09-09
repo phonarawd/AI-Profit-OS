@@ -6,6 +6,8 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
+    "displayPrimary",
+    "displaySecondary",
     "fxSnapshotId",
     "capturedAt",
     "principalKrwApprox",
@@ -13,6 +15,14 @@
     "expectedProfitKrwApprox"
   ],
   "properties": {
+    "displayPrimary": {
+      "const": "KRW",
+      "description": "유저 화면 주력 숫자. 장부 SoT는 계속 USDT."
+    },
+    "displaySecondary": {
+      "const": "USDT",
+      "description": "유저 화면 보조 숫자."
+    },
     "fxSnapshotId": {
       "type": ["string", "null"],
       "minLength": 1

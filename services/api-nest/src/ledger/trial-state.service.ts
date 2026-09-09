@@ -5,13 +5,23 @@
 
 import { Injectable } from "@nestjs/common";
 import { PostgresService } from "../db/postgres";
+import { KrwDisplayService } from "../money-display/krw-display.service";
+import {
+  USER_MONEY_DISPLAY_PRIMARY,
+  USER_MONEY_DISPLAY_SECONDARY,
+  userMoneyDisplay,
+} from "../money-display/user-money-display";
 import { LedgerBucketsService } from "./ledger.buckets.service";
 import { TrialGrantService, TRIAL_GRANT_KEY_WELCOME } from "./trial-grant.service";
 
 export type TrialStateView = {
+  displayPrimary: typeof USER_MONEY_DISPLAY_PRIMARY;
+  displaySecondary: typeof USER_MONEY_DISPLAY_SECONDARY;
   grantStatus: "active" | "failed_fx" | "none";
   trialPrincipalUsdt: string;
   trialLockedUsdt: string;
+  trialPrincipalKrwApprox: string | null;
+  trialLockedKrwApprox: string | null;
   welcomeTargetKrw: number;
   grantAmountUsdt: string | null;
   grantAmountKrw: number | null;
@@ -50,6 +60,7 @@ export class TrialStateService {
     private readonly db: PostgresService,
     private readonly buckets: LedgerBucketsService,
     private readonly grant: TrialGrantService,
+    private readonly krwDisplay: KrwDisplayService,
   ) {}
 
   async getForUser(userId: string): Promise<TrialStateView> {
@@ -107,10 +118,20 @@ export class TrialStateService {
     const grantAmountUsdt =
       grantStatus === "active" && g?.amount_usdt ? g.amount_usdt : null;
 
+    const snap = await this.krwDisplay.latest();
     return {
+      ...userMoneyDisplay(),
       grantStatus,
       trialPrincipalUsdt: buckets.trialPrincipalUsdt,
       trialLockedUsdt: buckets.trialLockedUsdt,
+      trialPrincipalKrwApprox: this.krwDisplay.approxAmount(
+        buckets.trialPrincipalUsdt,
+        snap,
+      ),
+      trialLockedKrwApprox: this.krwDisplay.approxAmount(
+        buckets.trialLockedUsdt,
+        snap,
+      ),
       welcomeTargetKrw: program.welcome_krw,
       grantAmountUsdt,
       grantAmountKrw,

@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { MatchingPolicyModule } from "../matching-policy/matching-policy.module";
 import { ExecutionPolicyModule } from "../execution-policy/execution-policy.module";
 import { LedgerModule } from "../ledger/ledger.module";
+import { MoneyDisplayModule } from "../money-display/money-display.module";
 import { EventsModule } from "../events/events.module";
 import { LoopModule } from "../loop/loop.module";
 import { KillSwitchModule } from "../kill-switch/kill-switch.module";
@@ -27,6 +28,7 @@ import { UserOpportunityOverrideAdminService } from "./user-opportunity-override
     EventsModule,
     MatchingPolicyModule,
     LedgerModule,
+    MoneyDisplayModule,
     ExecutionPolicyModule,
     RiskModule,
     KillSwitchModule,

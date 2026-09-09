@@ -42,7 +42,10 @@ export class HomeReadService {
     return mapHomeReadModelV1({
       sessionStatus: "authenticated",
       money: {
+        displayPrimary: money.displayPrimary,
+        displaySecondary: money.displaySecondary,
         principalUsdt: money.principalUsdt,
+        principalKrwApprox: money.principalKrwApprox ?? null,
         settlementCompletedTodayCount: money.settlementCompletedTodayCount,
         asOf: money.asOf,
         source: money.source,

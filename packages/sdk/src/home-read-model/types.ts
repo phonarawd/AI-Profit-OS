@@ -18,7 +18,10 @@ export type HomeReadModelResponse = {
   reasonCode?: string;
   session: { status: HomeSessionStatus };
   money: {
+    displayPrimary?: "KRW";
+    displaySecondary?: "USDT";
     principalUsdt: string;
+    principalKrwApprox?: string | null;
     settlementCompletedTodayCount: number;
     asOf: unknown;
     source: unknown;

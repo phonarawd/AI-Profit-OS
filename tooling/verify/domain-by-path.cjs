@@ -1030,7 +1030,7 @@ const RULES = [
       /^services\/api-nest\/src\/opportunities\/current-fx-approx/.test(f) ||
       /^tooling\/verify\/rel-508-current-fx-approx\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/rel-508-current-fx-approx\.v1\.json$/.test(f),
-    scripts: ["rel-508-current-fx-approx.cjs"],
+    scripts: ["rel-508-current-fx-approx.cjs", "user-money-display.cjs"],
   },
   {
     test: (f) =>
@@ -1404,7 +1404,19 @@ const RULES = [
       /trial-grant|trial-funding|trial-fx|trial-state|trial-eligible|trial_welcome|referral-slot|trial-welcome/.test(
         f,
       ),
-    scripts: ["trial-welcome.cjs"],
+    scripts: ["trial-welcome.cjs", "user-money-display.cjs"],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\/src\/money-display\//.test(f) ||
+      /^tooling\/verify\/user-money-display\.cjs$/.test(f) ||
+      /^schemas\/wallet-buckets\.v1\.json$/.test(f) ||
+      /^packages\/sdk\/src\/wallet\/(fetch|types)\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/wallet\/wallet\.controller\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/opportunities\.user\.service\.ts$/.test(
+        f,
+      ),
+    scripts: ["user-money-display.cjs"],
   },
   {
     test: (f) =>
@@ -1465,6 +1477,7 @@ const RULES = [
       /^tooling\/verify\/home-money-read-contract\.cjs$/.test(f),
     scripts: [
       "home-money-read-contract.cjs",
+      "user-money-display.cjs",
       "pg-module-scan.cjs",
       "bucket-invariant.cjs",
     ],

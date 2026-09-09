@@ -10,6 +10,8 @@ export type CurrentFxApproxRequest = {
 };
 
 export type CurrentFxApproxResponse = {
+  displayPrimary: "KRW";
+  displaySecondary: "USDT";
   fxSnapshotId: string | null;
   capturedAt: string | null;
   principalKrwApprox: string | null;

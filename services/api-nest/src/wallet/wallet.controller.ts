@@ -11,6 +11,7 @@ import {
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { loadPhase0Env } from "../config/phase0.env";
 import { LedgerBucketsService } from "../ledger/ledger.buckets.service";
+import { KrwDisplayService } from "../money-display/krw-display.service";
 import { PracticeGrantService } from "../ledger/practice-grant.service";
 import { ChainSweeperPhase0Service } from "./chain-sweeper.phase0.service";
 import { ChainWatcherPhase0Service } from "./chain-watcher.phase0.service";
@@ -49,6 +50,7 @@ export class WalletController {
     private readonly chainWatcher: ChainWatcherPhase0Service,
     private readonly chainSweeper: ChainSweeperPhase0Service,
     private readonly buckets: LedgerBucketsService,
+    private readonly krwDisplay: KrwDisplayService,
     private readonly practiceGrant: PracticeGrantService,
     private readonly profitMerge: ProfitMergeService,
     private readonly withdrawIntent: WithdrawIntentService,
@@ -63,14 +65,18 @@ export class WalletController {
   @Get(WALLET_USER_ROUTES.buckets)
   async getBuckets(@Req() req: SessionReq) {
     const full = await this.buckets.getUserBuckets(this.sessionUserId(req));
+    const snap = await this.krwDisplay.latest();
     return {
       userId: full.userId,
       principalUsdt: full.principalUsdt,
       profitUsdt: full.profitUsdt,
       lockedUsdt: full.lockedUsdt,
       practiceUsdt: full.practiceUsdt,
+      trialPrincipalUsdt: full.trialPrincipalUsdt,
+      trialLockedUsdt: full.trialLockedUsdt,
       liabilityUsdt: full.liabilityUsdt,
       asOfLedgerEntryId: full.asOfLedgerEntryId,
+      ...this.krwDisplay.buckets(full, snap),
     };
   }
 

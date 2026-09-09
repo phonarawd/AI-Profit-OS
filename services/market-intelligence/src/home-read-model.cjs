@@ -77,7 +77,7 @@ function composeViewState(parts) {
 /**
  * @param {{
  *   sessionStatus: HomeSessionStatus,
- *   money?: { state?: string, principalUsdt?: string, settlementCompletedTodayCount?: number, asOf?: object, source?: object, reasonCode?: string } | null,
+ *   money?: { state?: string, displayPrimary?: string, displaySecondary?: string, principalUsdt?: string, principalKrwApprox?: string|null, settlementCompletedTodayCount?: number, asOf?: object, source?: object, reasonCode?: string } | null,
  *   opportunityItems?: unknown[],
  *   opportunityMeta?: {
  *     affordableCount?: number,
@@ -192,7 +192,13 @@ function mapHomeReadModelV1(input) {
     session: { status: /** @type {HomeSessionStatus} */ ("authenticated") },
     money: money
       ? {
+          displayPrimary: "KRW",
+          displaySecondary: "USDT",
           principalUsdt: String(money.principalUsdt ?? "0"),
+          principalKrwApprox:
+            money.principalKrwApprox == null || money.principalKrwApprox === ""
+              ? null
+              : String(money.principalKrwApprox),
           settlementCompletedTodayCount: settlementCount ?? 0,
           asOf: money.asOf || null,
           source: money.source || null,

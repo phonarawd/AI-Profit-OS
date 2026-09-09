@@ -86,6 +86,7 @@ This repo gate is backend-only. Legacy web/admin extras and next/opennext builds
 | release-manifest-identity-lock | `verify:release-manifest-identity-lock` | T0 path | live (manifest identity + deploy invariants fail closed) |
 | production-deploy-path-lock | `verify:production-deploy-path-lock` | T0 path | live (low-level prod helpers gated, acceptance required, rebuild/bundle forbidden) |
 | rel-508-current-fx-approx | `verify:rel-508-current-fx-approx` | T0 path + CI | live (REL-508 · Nest approx · null not 0 · STALE pending REL-502) |
+| user-money-display | `verify:user-money-display` | T0 path | live (user read KRW primary / USDT secondary / ledger SoT USDT / missing FX=null) |
 | rel-506-r8-infra-core | `verify:rel-506-r8-infra-core` | T0 path + CI | live (REL-506 · R8 Core · pages deploy 0 · Ads excluded · rum/tag deferred) |
 | rel-507-production-e2e | `verify:rel-507-production-e2e` | T0 path + CI | live (REL-507 · production-loop · isolation · invented success 0) |
 | rel-600-staging | `verify:rel-600-staging` | T0 path + CI | live (REL-600 staging preview workers) |
@@ -203,6 +204,7 @@ This repo gate is backend-only. Legacy web/admin extras and next/opennext builds
 | `apps/web/app/wallet/deposit/**` · `me/kyc` · `me/support` · `KycFlow` | stub-page-actions · usdt-deposit-closure · krw-deposit-closure |
 | money api-nest | pg-module-scan · bucket-invariant |
 | `schemas/home-money-read.v1.json` · `wallet/home-money-read*` · `packages/sdk/src/home-money-read/**` | home-money-read-contract |
+| money-display/** · trial-state · wallet buckets · current-fx display | user-money-display |
 | engine-rust · trade/opportunity api | match-success-rule · settlement-rule-parity · participate-http · execute-rule-loop · a3-same-poolclient-lock |
 | auth/jwt | auth-jwt-runtime · auth-flows · auth-session-cookie · auth-rate-limit · s3-32-user-auth |
 | `api-nest` wallet · kyc.controller | wallet-kyc-session-auth |
@@ -212,6 +214,7 @@ This repo gate is backend-only. Legacy web/admin extras and next/opennext builds
 | id | 도메인 |
 |----|--------|
 | bucket-invariant · withdraw-mode-default · principal-withdraw-reachable · principal-profit-abuse · balance-aware-feed · practice-non-withdrawable | Money §49/§51.7 — **live** (posting·ASC FOR UPDATE·idempotency·provision·recon · default mode=profit · 원금 CTA·시트·3CTA · Admin finance?tab=buckets · §49.9 P1~P24/E1~E12 risk queue·freeze·circuit · §49.2a suggest deeplink·principal Fact·Engine pointer · practice welcome 1회·7d expire·Banner·403) |
+| user-money-display | User read display — **live** (KRW primary / USDT secondary / ledger SoT USDT / missing FX=null) |
 | home-money-read-contract | Money v7.23 R1 — **live** (`schemas/home-money-read.v1.json` · `GET /api/v1/me/home-money-read` · principalUsdt+settlementCompletedTodayCount · per-field asOf/source/state · Engine todayPossibleProfitUsdt 0 · availableUsdt/todayPossible 0 · zero≠absent · mutation/DDL 0) |
 | home-state-truth | Engine v7.23 R1 — **live** (`schemas/home-read-model.v1.json` · `GET /api/v1/me/home-read` · Money+opportunity+growth+session mapper · todayPossible=server_derived affordable∧available∧compareReady · ledgerTotal=settlement COUNT · viewState · domainFsm null · App/React/CSS 0) |
 | no-fake-zero-status | Engine v7.23 R1 — retired reject-guard (Founder 2026-09-09 truth RELEASED · symbol kept) |
