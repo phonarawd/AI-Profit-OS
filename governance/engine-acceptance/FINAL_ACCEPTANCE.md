@@ -27,7 +27,7 @@ NEXT = QA1_DETERMINISTIC_TRUTH
 BASELINE_ID = ea-baseline-1292c584c81f-6e4af6f46fe5
 PREDECESSOR_BASELINE_ID = ea-baseline-e55a08433445-faae139c3115
 REBASE_ID = ea-rebase-b9308bb15bf6-6e4af6f46fe5
-LIVE_AGGREGATE = 471a80f297b46788604d24d66514532b8d35aa5a085e8be37db13d44d327454e
+LIVE_AGGREGATE = e830282d659901c220cd096489d17a017cc2571c748fe8d9a8aef447fefe170e
 BASELINE_AGGREGATE = 6e4af6f46fe5f5692617e10d1c1293f8aaa43d3ba613aab10ef1894fbe529721
 PATH_COUNT_LIVE = 576
 PATH_COUNT_BASELINE = 564
@@ -391,5 +391,5 @@ Desk trial capital (`d88689cb` · `4b940830`) and the REL-402 pin (`8c827f84`) c
 
 This recert does not change STATUS/CERT_ISSUED/PROTECTED_SCOPE_DRIFT/REBASE_REQUIRED. LIVE_AGGREGATE/PATH_COUNT_LIVE/CHANGED_PATHS/ADDED_PATHS/MUTATED_PATHS are current-HEAD values from `compareProtectedScope()`.
 
-live protected aggregate `471a80f297b46788604d24d66514532b8d35aa5a085e8be37db13d44d327454e` differs from baseline `6e4af6f46fe5f5692617e10d1c1293f8aaa43d3ba613aab10ef1894fbe529721` (added 12 · mutated 32 · missing 0 · changed 44). No issue. No fake QA.
+live protected aggregate `e830282d659901c220cd096489d17a017cc2571c748fe8d9a8aef447fefe170e` differs from baseline `6e4af6f46fe5f5692617e10d1c1293f8aaa43d3ba613aab10ef1894fbe529721` (added 12 · mutated 32 · missing 0 · changed 44). No issue. No fake QA.
 

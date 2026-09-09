@@ -68,7 +68,8 @@ $$;
 COMMENT ON FUNCTION public.provision_user_bucket_accounts(uuid) IS
   'Creates principal/profit/locked/practice/trial_principal/trial_locked accounts';
 
-CREATE OR REPLACE VIEW public.wallet_buckets
+DROP VIEW IF EXISTS public.wallet_buckets;
+CREATE VIEW public.wallet_buckets
 WITH (security_invoker = true)
 AS
 SELECT
