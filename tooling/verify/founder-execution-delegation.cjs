@@ -57,11 +57,22 @@ if (merge.ok) fails.push("merge must stay BLOCKED without RC required checks + C
 const preview = evaluate("preview");
 if (!preview.ok) fails.push("preview redeploy must be agent-executable without Founder wait");
 
+const webProd = evaluate("web");
+if (webProd.ok) fails.push("web production must stay BLOCKED until CERT+hardGatePassed are real PASS");
+const opsProd = evaluate("ops");
+if (opsProd.ok) fails.push("ops production must stay BLOCKED until CERT+hardGatePassed are real PASS");
+
 if (d.actions.api_prod_render !== "agent_backend_only") {
   fails.push("api_prod_render must be agent_backend_only");
 }
 if (d.actions.ops_auto !== "agent_backend_only") {
   fails.push("ops_auto must be agent_backend_only");
+}
+if (d.actions.web_prod !== "founder_one_word_then_agent_when_hard_gates_pass") {
+  fails.push("web_prod must wait for one-word Founder then hard gates");
+}
+if (d.actions.ops_prod !== "founder_one_word_then_agent_when_hard_gates_pass") {
+  fails.push("ops_prod must wait for one-word Founder then hard gates");
 }
 if (d.operator_clicks !== 0 || d.ask_founder !== 0) {
   fails.push("operator_clicks and ask_founder must be 0");
@@ -99,6 +110,20 @@ if (!src.includes("ops-auto-backend.cjs")) {
 }
 if (/action === ["']api-prod["'][\s\S]{0,400}deploy-cloudflare\.yml/.test(src)) {
   fails.push("api-prod must not dispatch Cloudflare production");
+}
+
+const backendOnly = JSON.parse(read("governance/recovery/founder-backend-only-api.v1.json") || "null");
+if (!backendOnly || backendOnly.repo_role !== "backend_only") {
+  fails.push("founder-backend-only-api repo_role must be backend_only");
+}
+if (!backendOnly || !backendOnly.track5_ownership || !Array.isArray(backendOnly.track5_ownership.inventory_do_not_delete_until_new_web_admin_verified)) {
+  fails.push("track5 ownership must keep legacy web/admin as inventory");
+}
+if (backendOnly && backendOnly.track5_ownership) {
+  const inv = backendOnly.track5_ownership.inventory_do_not_delete_until_new_web_admin_verified || [];
+  if (!inv.includes("apps/web") || !inv.includes("apps/admin")) {
+    fails.push("track5 inventory must list apps/web and apps/admin");
+  }
 }
 
 const resend = read("tooling/dev/provision-production-resend.cjs");

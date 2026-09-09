@@ -4,12 +4,33 @@
   "source": "Founder chat 2026-09-09: this repo is backend-only; consumer UI is PUTDUK_WEB; unlock Nest API deploy without REL-701 CF/CERT",
   "repo_role": "backend_only",
   "consumer_ui": "PUTDUK_WEB",
+  "admin_ui": "PUTDUK_ADMIN",
   "api_prod_render": "authorized",
   "cert_issued": false,
   "full_real_money_released": "NO",
   "rel_701_cloudflare_production": "still_gated",
   "remaining_migrations_apply": 0,
-  "note": "Nest Render production may deploy a GitHub SHA. Cloudflare apps/web production and CERT ISSUED stay fail-closed. This is not UNIQUE promotion and not money YES.",
+  "track5_ownership": {
+    "keep_in_this_repo": [
+      "services/api-nest",
+      "services/engine-rust",
+      "supabase",
+      "schemas",
+      "workers/api-stub"
+    ],
+    "inventory_do_not_delete_until_new_web_admin_verified": [
+      "apps/web",
+      "apps/admin",
+      "packages/ui"
+    ],
+    "move_later": {
+      "workers/web-proxy": "PUTDUK_WEB",
+      "workers/ops-proxy": "PUTDUK_ADMIN"
+    },
+    "rename_last": "putduk-backend"
+  },
+  "founder_says": ["web up", "ops up", "api up", "push"],
+  "note": "Nest Render production may deploy a GitHub SHA. Cloudflare apps/web production and CERT ISSUED stay fail-closed. This is not UNIQUE promotion and not money YES. Track C leftover 10 applied 2026-09-09.",
   "boot_blocker_unlocked": "RESEND_API_KEY + RESEND_FROM_EMAIL on production Render (single-key PUT, copied from staging). REL-701 remains gated.",
   "operator_clicks": 0,
   "ops_auto": "node tooling/release/agent-execute.cjs ops-auto --execute"

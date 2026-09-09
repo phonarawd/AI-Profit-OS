@@ -21,7 +21,9 @@
     "public_switch": "agent_after_canary_and_observation",
     "full_real_money_released_yes": "agent_after_public_switch_and_admin_auth_same_sha",
     "api_prod_render": "agent_backend_only",
-    "ops_auto": "agent_backend_only"
+    "ops_auto": "agent_backend_only",
+    "web_prod": "founder_one_word_then_agent_when_hard_gates_pass",
+    "ops_prod": "founder_one_word_then_agent_when_hard_gates_pass"
   },
   "operator_clicks": 0,
   "ask_founder": 0,

@@ -85,6 +85,20 @@ function evaluate(action) {
     };
   }
 
+  if (action === "web" || action === "ops") {
+    if (certStatus !== "ISSUED" || !certIssued) {
+      blocks.push("FINAL_ACCEPTANCE not ISSUED (CERT_ISSUED=" + field(acceptance, "CERT_ISSUED") + ")");
+    }
+    if (hard.hardGatePassed !== 1) {
+      blocks.push("HARD_GATE_LIVE.hardGatePassed=" + String(hard.hardGatePassed));
+    }
+    return {
+      ok: blocks.length === 0,
+      blocks,
+      dispatch: action,
+    };
+  }
+
   if (action === "rel-701") {
     if (certStatus !== "ISSUED" || !certIssued) {
       blocks.push("FINAL_ACCEPTANCE not ISSUED (CERT_ISSUED=" + field(acceptance, "CERT_ISSUED") + ")");
@@ -217,6 +231,22 @@ function execute(action, verdict) {
     process.stdout.write(deploy.stdout || "");
     return;
   }
+  if (action === "web" || action === "ops") {
+    runGh([
+      "workflow",
+      "run",
+      "deploy-cloudflare.yml",
+      "-f",
+      "target=production",
+      "-f",
+      "surface=" + action,
+      "-f",
+      "worker_set=phase0",
+      "--ref",
+      "main",
+    ]);
+    return;
+  }
   if (action === "rel-701") {
     runGh([
       "workflow",
@@ -247,7 +277,7 @@ function main() {
   const action = argv.find((a) => !a.startsWith("--"));
   if (!action) {
     console.error(
-      "usage: node tooling/release/agent-execute.cjs <ops-auto|api-prod|rel-701|rel-702|rel-703|rel-704|preview|merge|money-yes> [--execute]",
+      "usage: node tooling/release/agent-execute.cjs <ops-auto|api-prod|web|ops|rel-701|rel-702|rel-703|rel-704|preview|merge|money-yes> [--execute]",
     );
     process.exit(2);
   }

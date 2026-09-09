@@ -24,6 +24,8 @@ SSOT: `governance/recovery/founder-execution-delegation.v1.json`
 | 공개 스위치 · `FULL_REAL_MONEY_RELEASED=YES` | 카나리+관측+같은 SHA Admin auth PASS 뒤에만 `money-yes --execute` |
 | Nest 운영 API (`api-prod`) | 이 레포는 백엔드 전용. CERT/REL-701 CF와 분리. `api-prod --execute` |
 | 운영 유지 (`ops-auto`) | 운영자 클릭 0. health · Resend · 체험 SKU. `ops-auto --execute`. Render/대시보드를 Founder에게 묻지 않음 |
+| 손님 웹 운영 배포 (`web`) | Founder가 **「웹 올려」** 한 마디. 증거 게이트 PASS일 때만 `web --execute`. 지금 CERT/hard gate red면 fail-closed |
+| 관리자 운영 배포 (`ops`) | Founder가 **「관리자 올려」** 한 마디. 같은 게이트. `ops --execute` |
 
 ##  Delegation이 허용하지 않는 것
 
@@ -40,3 +42,10 @@ SSOT: `governance/recovery/founder-execution-delegation.v1.json`
 
 게이트가 안 닫혔으면 `--execute`는 fail-closed다. dry-run으로 막힌 이유만 남긴다.
 `FULL_REAL_MONEY_RELEASED`는 증거가 닫히기 전 **NO**.
+
+운영자(프로그래밍 0)가 하는 말만:
+
+- **웹 올려** → `web --execute` (지금 게이트 red면 안 올라감)
+- **관리자 올려** → `ops --execute` (같음)
+- **백엔드 다시 올려** → `api-prod --execute`
+- **푸시해** → T1 후 git push + CI watch
