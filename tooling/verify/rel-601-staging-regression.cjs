@@ -123,8 +123,8 @@ if (!pkg.includes("verify:rel-601-staging-regression")) {
 if (!catalog.includes("rel-601-staging-regression")) {
   fails.push("CATALOG missing rel-601-staging-regression");
 }
-if (!gate.includes("verify:rel-601-staging-regression")) {
-  fails.push("gate.yml must run verify:rel-601-staging-regression");
+if (gate.includes("verify:rel-601-staging-regression")) {
+  fails.push("backend gate.yml must not always-run leftover verify:rel-601-staging-regression");
 }
 if (!domain.includes("rel-601-staging-regression.cjs")) {
   fails.push("domain-by-path must trigger rel-601");

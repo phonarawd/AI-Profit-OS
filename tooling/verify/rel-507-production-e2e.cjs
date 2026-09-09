@@ -95,8 +95,8 @@ if (!pkg.includes("verify:rel-507-production-e2e")) {
 if (!catalog.includes("rel-507-production-e2e")) {
   fails.push("CATALOG missing rel-507-production-e2e");
 }
-if (!gate.includes("verify:rel-507-production-e2e")) {
-  fails.push("gate.yml must run verify:rel-507-production-e2e");
+if (gate.includes("verify:rel-507-production-e2e")) {
+  fails.push("backend gate.yml must not always-run leftover verify:rel-507-production-e2e");
 }
 if (!domain.includes("rel-507-production-e2e.cjs")) {
   fails.push("domain-by-path must trigger rel-507");

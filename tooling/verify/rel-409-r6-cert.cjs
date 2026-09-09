@@ -99,8 +99,8 @@ if (!pkg.includes("verify:rel-409-r6-cert")) {
 if (!catalog.includes("rel-409-r6-cert")) {
   fails.push("CATALOG missing rel-409-r6-cert");
 }
-if (!gate.includes("verify:rel-409-r6-cert")) {
-  fails.push("gate.yml must run verify:rel-409-r6-cert");
+if (gate.includes("verify:rel-409-r6-cert")) {
+  fails.push("backend gate.yml must not always-run leftover verify:rel-409-r6-cert");
 }
 for (const needle of [
   "STATUS = COMPLETED",

@@ -210,7 +210,9 @@ if (!prodWorkflow.includes("workflow_dispatch")) fails.push("production deploy w
 if (!pkg.includes("verify:rel-602-staging-rollback")) fails.push("package missing REL-602 verify script");
 if (!pkg.includes("cf:rollback:staging")) fails.push("package missing staging rollback script");
 if (!catalog.includes("rel-602-staging-rollback")) fails.push("catalog missing REL-602");
-if (!gate.includes("verify:rel-602-staging-rollback")) fails.push("gate missing REL-602");
+if (gate.includes("verify:rel-602-staging-rollback")) {
+  fails.push("backend gate.yml must not always-run leftover verify:rel-602-staging-rollback");
+}
 if (!domain.includes("rel-602-staging-rollback.cjs")) {
   fails.push("domain-by-path SSOT missing REL-602 T0 mapping");
 }

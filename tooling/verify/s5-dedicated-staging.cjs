@@ -261,14 +261,17 @@ if (!pkg.includes("cf:deploy:dedicated")) {
 if (!catalog.includes("s5-dedicated-staging")) {
   fails.push("CATALOG missing s5-dedicated-staging");
 }
-if (!gate.includes("verify:s5-dedicated-staging")) {
-  fails.push("gate.yml must run verify:s5-dedicated-staging");
+if (gate.includes("verify:s5-dedicated-staging")) {
+  fails.push("backend gate.yml must not always-run leftover verify:s5-dedicated-staging");
 }
 if (!domain.includes("s5-dedicated-staging.cjs")) {
   fails.push("domain-by-path must trigger s5-dedicated-staging");
 }
-if (!pkg.includes("verify:hard-gate-live") || !catalog.includes("hard-gate-live") || !gate.includes("verify:hard-gate-live")) {
-  fails.push("hard-gate-live must be wired next to S5");
+if (!pkg.includes("verify:hard-gate-live") || !catalog.includes("hard-gate-live")) {
+  fails.push("hard-gate-live must stay wired in package + catalog");
+}
+if (gate.includes("verify:hard-gate-live")) {
+  fails.push("backend gate.yml must not always-run leftover verify:hard-gate-live");
 }
 
 if (fails.length) {

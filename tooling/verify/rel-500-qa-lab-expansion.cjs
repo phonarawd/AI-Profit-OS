@@ -76,7 +76,9 @@ if (!doc.includes("카르테시안") || !doc.includes("MCP")) fails.push("expans
 if (!pw.includes("mcpOnlyEvidence") || !pw.includes("NOT_DONE")) fails.push("playwright config must keep mcpOnlyEvidence NOT_DONE");
 if (!pkg.includes("verify:rel-500-qa-lab-expansion")) fails.push("package.json missing verify:rel-500-qa-lab-expansion");
 if (!catalog.includes("rel-500-qa-lab-expansion")) fails.push("CATALOG missing rel-500-qa-lab-expansion");
-if (!gate.includes("verify:rel-500-qa-lab-expansion")) fails.push("gate.yml must run verify:rel-500-qa-lab-expansion");
+if (gate.includes("verify:rel-500-qa-lab-expansion")) {
+  fails.push("backend gate.yml must not always-run leftover verify:rel-500-qa-lab-expansion");
+}
 for (const needle of ["STATUS = COMPLETED","MCP_ONLY_DONE = 0","LOCAL_FULL_MATRIX = 0","HOME_GEOMETRY_PATCH = 0","CARTESIAN_REQUIRED = 0","ISOLATION_GUARD = 1"]) {
   if (!evidence.includes(needle)) fails.push("REL-500 evidence missing " + needle);
 }

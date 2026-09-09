@@ -245,8 +245,8 @@ if (!pkg.includes("cf:deploy:staging")) {
 if (!catalog.includes("rel-600-staging")) {
   fails.push("CATALOG missing rel-600-staging");
 }
-if (!gate.includes("verify:rel-600-staging")) {
-  fails.push("gate.yml must run verify:rel-600-staging");
+if (gate.includes("verify:rel-600-staging")) {
+  fails.push("backend gate.yml must not always-run leftover verify:rel-600-staging");
 }
 if (!domain.includes("rel-600-staging.cjs")) {
   fails.push("domain-by-path must trigger rel-600");

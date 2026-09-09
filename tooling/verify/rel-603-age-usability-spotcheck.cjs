@@ -177,8 +177,8 @@ if (!pkg.includes("verify:rel-603-age-usability-spotcheck")) {
 if (!catalog.includes("rel-603-age-usability-spotcheck")) {
   fails.push("CATALOG missing rel-603-age-usability-spotcheck");
 }
-if (!gate.includes("verify:rel-603-age-usability-spotcheck")) {
-  fails.push("gate.yml missing REL-603 verify step");
+if (gate.includes("verify:rel-603-age-usability-spotcheck")) {
+  fails.push("backend gate.yml must not always-run leftover verify:rel-603-age-usability-spotcheck");
 }
 if (!domain.includes("rel-603-age-usability-spotcheck.cjs")) {
   fails.push("domain-by-path missing REL-603");

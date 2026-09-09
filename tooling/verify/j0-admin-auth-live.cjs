@@ -63,7 +63,9 @@ const suite = read("tooling/e2e/j0-admin-auth-live.run.cjs") + read("tooling/e2e
 if (!pkg.includes("verify:j0-admin-auth-live")) fails.push("package.json missing verify:j0-admin-auth-live");
 if (!pkg.includes("e2e:j0-admin-auth-live")) fails.push("package.json missing e2e:j0-admin-auth-live");
 if (!catalog.includes("j0-admin-auth-live")) fails.push("CATALOG missing j0-admin-auth-live");
-if (!gate.includes("verify:j0-admin-auth-live")) fails.push("gate.yml must run static j0 lock");
+if (gate.includes("verify:j0-admin-auth-live")) {
+  fails.push("backend gate.yml must not always-run leftover verify:j0-admin-auth-live");
+}
 if (!domain.includes("j0-admin-auth-live.cjs")) fails.push("domain-by-path must trigger j0 lock");
 if (s5.j0 === "PASS") fails.push("S5 must not declare J0 PASS");
 if (s5.productionDeploy !== 0) fails.push("S5 productionDeploy must stay 0");

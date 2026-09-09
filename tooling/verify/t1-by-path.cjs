@@ -161,6 +161,25 @@ const workflow = read(".github/workflows/gate.yml");
 if (workflow.includes("pnpm --filter @aipo/web build:cf")) {
   fails.push("gate.yml must not build legacy web OpenNext");
 }
+const leftoverAlways = [
+  "verify:rel-404-lighthouse-budget",
+  "verify:rel-409-r6-cert",
+  "verify:rel-500-qa-lab-expansion",
+  "verify:rel-506-r8-infra-core",
+  "verify:rel-507-production-e2e",
+  "verify:rel-600-staging",
+  "verify:s5-dedicated-staging",
+  "verify:hard-gate-live",
+  "verify:j0-admin-auth-live",
+  "verify:rel-601-staging-regression",
+  "verify:rel-602-staging-rollback",
+  "verify:rel-603-age-usability-spotcheck",
+];
+for (const step of leftoverAlways) {
+  if (workflow.includes(step)) {
+    fails.push("backend gate.yml must not always-run leftover " + step);
+  }
+}
 
 const { stepsForTier } = require("./gate-tiers.cjs");
 const full = stepsForTier("full");

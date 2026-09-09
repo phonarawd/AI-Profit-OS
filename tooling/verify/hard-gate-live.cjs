@@ -152,7 +152,9 @@ if (trackCDone && pending.length !== 0) {
 
 if (!pkg.includes("verify:hard-gate-live")) fails.push("package.json missing verify:hard-gate-live");
 if (!catalog.includes("hard-gate-live")) fails.push("CATALOG missing hard-gate-live");
-if (!gate.includes("verify:hard-gate-live")) fails.push("gate.yml must run verify:hard-gate-live");
+if (gate.includes("verify:hard-gate-live")) {
+  fails.push("backend gate.yml must not always-run leftover verify:hard-gate-live");
+}
 if (!domain.includes("hard-gate-live.cjs")) fails.push("domain-by-path must trigger hard-gate-live");
 
 if (fails.length) {

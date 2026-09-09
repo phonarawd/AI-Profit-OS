@@ -112,8 +112,6 @@ jobs:
         run: pnpm verify:rel-402-dependency-audit
       - name: Adapter worker machine auth
         run: pnpm verify:adapter-worker-machine-auth
-      - name: REL-404 lighthouse budget
-        run: pnpm verify:rel-404-lighthouse-budget
       - name: REL-405 RBAC audit foundation
         run: pnpm verify:rel-405-rbac-audit
       - name: REL-406 kill switch 9
@@ -128,10 +126,6 @@ jobs:
         run: pnpm verify:rel-223-match-control
       - name: REL-224 source policy versions
         run: pnpm verify:rel-224-source-policy
-      - name: REL-409 admin R6 cert
-        run: pnpm verify:rel-409-r6-cert
-      - name: REL-500 QA lab expansion
-        run: pnpm verify:rel-500-qa-lab-expansion
       - name: REL-501 money red-team
         run: pnpm verify:rel-501-money-red-team
       - name: REL-502 final engine acceptance
@@ -144,26 +138,6 @@ jobs:
         run: pnpm verify:rel-505-r7-backend-alignment
       - name: REL-508 current-fx Nest wire
         run: pnpm verify:rel-508-current-fx-approx
-      - name: REL-506 R8 infra core
-        run: pnpm verify:rel-506-r8-infra-core
-      - name: REL-507 production E2E
-        run: pnpm verify:rel-507-production-e2e
-      - name: REL-600 staging
-        run: pnpm verify:rel-600-staging
-      - name: S5 dedicated staging lock
-        run: pnpm verify:s5-dedicated-staging
-      - name: Hard gate live recount
-        run: pnpm verify:hard-gate-live
-      - name: J0 admin auth live lock
-        run: pnpm verify:j0-admin-auth-live
-      - name: REL-601 staging regression
-        run: pnpm verify:rel-601-staging-regression
-      - name: REL-602 staging rollback
-        run: pnpm verify:rel-602-staging-rollback
-      - name: REL-603 automated age usability cohort
-        run: |
-          pnpm exec playwright install --with-deps chromium
-          pnpm verify:rel-603-age-usability-spotcheck
       - name: Stub .env for Docker-less stack-lock
         run: printf 'SUPABASE_URL=https://mgsytcetsiecllmhcyox.supabase.co\n' > .env
       - name: cargo test (services/engine-rust — Rule Engine R1-R10 golden unit tests)

@@ -263,8 +263,8 @@ if (!pkg.includes("verify:rel-506-r8-infra-core")) {
 if (!catalog.includes("rel-506-r8-infra-core")) {
   fails.push("CATALOG missing rel-506-r8-infra-core");
 }
-if (!gate.includes("verify:rel-506-r8-infra-core")) {
-  fails.push("gate.yml must run verify:rel-506-r8-infra-core");
+if (gate.includes("verify:rel-506-r8-infra-core")) {
+  fails.push("backend gate.yml must not always-run leftover verify:rel-506-r8-infra-core");
 }
 if (!domain.includes("rel-506-r8-infra-core.cjs")) {
   fails.push("domain-by-path must trigger rel-506");
