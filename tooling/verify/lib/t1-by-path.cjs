@@ -1,6 +1,7 @@
 /**
  * T1 추가 검사 경로 분류.
- * domainSteps()는 여기서 줄이지 않는다. 모르는 경로는 전체 T1_PUSH.
+ * 이 레포 게이트 = 백엔드. 레거시 웹/어드민 extras는 자동 실행하지 않는다.
+ * domainSteps()는 여기서 줄이지 않는다. 모르는 경로는 백엔드 T1_PUSH.
  */
 "use strict";
 
@@ -9,13 +10,10 @@ const path = require("path");
 
 const root = path.resolve(__dirname, "../../..");
 
-/** 로컬 푸시마다 항상 */
+/** 로컬 푸시마다 항상 (가벼운 백엔드 불변식만) */
 const T1_CORE_ALWAYS = [
-  "settlement-rule-parity.cjs",
   "pg-module-scan.cjs",
   "nest-production-provenance.cjs",
-  "db-recovery.cjs",
-  "privacy-purge.cjs",
 ];
 
 /** services / supabase / schemas / 백엔드 workers */
@@ -24,10 +22,9 @@ const T1_BACKEND = [
   "p0-ebay-secret-provisioning.cjs",
   "workers-types.cjs",
   "domain-clock.cjs",
-  "stubs/run-all.cjs",
 ];
 
-/** apps/web · apps/admin · packages/ui · packages/sdk */
+/** 레거시 프론트 extras — 목록만 유지, T1/T2 자동 실행 0 */
 const T1_FRONTEND = [
   "brand-assets.cjs",
   "next-major-pin.cjs",
@@ -43,14 +40,12 @@ const T1_FRONTEND = [
   "stubs/run-all.cjs",
 ];
 
-/** infra · 프록시 · 도메인 매니페스트 */
+/** infra · 도메인 매니페스트 */
 const T1_SHARED = [
   "cf-infra.cjs",
   "phase0-bootstrap.cjs",
   "root-domain-env.cjs",
   "domain-bootstrap.cjs",
-  "opennext-workers-origin.cjs",
-  "cf-deploy-packages.cjs",
   "workers-types.cjs",
 ];
 
@@ -58,31 +53,8 @@ function unique(list) {
   return [...new Set(list)];
 }
 
-/** T2 / fail-closed 전체 목록. 순서는 기존 T1_PUSH와 같게 유지 */
-const T1_PUSH = unique([
-  ...T1_CORE_ALWAYS.slice(0, 2),
-  "brand-assets.cjs",
-  "cf-infra.cjs",
-  ...T1_BACKEND.slice(0, 2),
-  T1_CORE_ALWAYS[2],
-  "workers-types.cjs",
-  "phase0-bootstrap.cjs",
-  "root-domain-env.cjs",
-  "domain-bootstrap.cjs",
-  "opennext-workers-origin.cjs",
-  "next-major-pin.cjs",
-  "tailwind-v4.cjs",
-  "lux-theme-sync.cjs",
-  "dark-leak-guard.cjs",
-  "cf-deploy-packages.cjs",
-  "no-admin-in-web.cjs",
-  "ia-tabs.cjs",
-  "admin-routes.cjs",
-  "admin-boundary.cjs",
-  "domain-clock.cjs",
-  ...T1_CORE_ALWAYS.slice(3),
-  "stubs/run-all.cjs",
-]);
+/** fail-closed / 백엔드 T1 전체. 프론트 extras · next-build 없음 */
+const T1_PUSH = unique([...T1_CORE_ALWAYS, ...T1_BACKEND, ...T1_SHARED]);
 
 const PRODUCT_TOP = new Set([
   "services",
@@ -191,13 +163,14 @@ function t1Plan(files, opts) {
   if (lanes.has("backend")) {
     for (const s of T1_BACKEND) scripts.add(s);
   }
-  if (lanes.has("frontend")) {
-    for (const s of T1_FRONTEND) scripts.add(s);
-  }
   if (lanes.has("shared")) {
     for (const s of T1_SHARED) scripts.add(s);
   }
-  const reason = [...lanes].sort().join("+") || "core";
+  const reasonParts = [...lanes].sort();
+  if (lanes.has("frontend") && !lanes.has("backend") && !lanes.has("shared")) {
+    return { scripts: [...T1_CORE_ALWAYS], reason: "frontend-inventory" };
+  }
+  const reason = reasonParts.join("+") || "core";
   return { scripts: unique([...scripts]), reason };
 }
 
@@ -221,10 +194,6 @@ function gitNames(args, cwd) {
   }
 }
 
-/**
- * 로컬 푸시 범위 = 미푸시 커밋 + 워킹트리.
- * upstream 없으면 null → 호출측이 전체 T1.
- */
 function collectLocalPushFiles(cwd) {
   const work = cwd || root;
   const upstream = gitNames(["rev-parse", "--abbrev-ref", "@{upstream}"], work);

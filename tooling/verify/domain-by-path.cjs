@@ -21,8 +21,15 @@ const RULES = [
       /^tooling\/verify\/lib\/(gate-stamp|run-verify-in-process|verify-input-cache|t1-by-path)\.cjs$/.test(
         f,
       ) ||
-      /^tooling\/verify\/stubs\/run-all\.cjs$/.test(f),
+      /^tooling\/verify\/stubs\/run-all\.cjs$/.test(f) ||
+      /^\.github\/workflows\/gate\.yml$/.test(f),
     scripts: ["gate-local-speed.cjs", "t1-by-path.cjs"],
+  },
+  {
+    test: (f) =>
+      /^packages\/ui\/brand\//.test(f) ||
+      /^tooling\/verify\/brand-consumer\.cjs$/.test(f),
+    scripts: ["brand-consumer.cjs"],
   },
   {
     test: (f) =>

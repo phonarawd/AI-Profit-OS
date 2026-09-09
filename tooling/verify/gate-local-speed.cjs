@@ -91,11 +91,14 @@ if (t1lib.T1_PUSH.includes("api-nest-build.cjs")) {
 if (!tiers.includes("t1PushPlan") || !tiers.includes("./lib/t1-by-path.cjs")) {
   fails.push("T1 push extras must be path-aware via t1-by-path");
 }
-if (!/tier === "full"[\s\S]*\.\.\.T1_PUSH/.test(tiers)) {
-  fails.push("T2 full must still spread complete T1_PUSH");
+if (tiers.includes("next-build.cjs") || tiers.includes("opennext-build.cjs")) {
+  fails.push("T2 must not keep next-build/opennext-build");
 }
-if (!gate.includes("api-nest-build.cjs")) {
-  fails.push("T2 gate.cjs must still run api-nest-build");
+if (!tiers.includes('T2_CI = ["api-nest-build.cjs"]')) {
+  fails.push("T2_CI must be api-nest-build only");
+}
+if (!gate.includes("api-nest-build.cjs") || !gate.includes('stepsForTier("full")')) {
+  fails.push("T2 gate.cjs must use stepsForTier full + api-nest-build");
 }
 if (!domain.includes("^services\\/api-nest\\/") && !domain.includes("^services\\\\/api-nest\\\\/")) {
   fails.push("domain-by-path must trigger api-nest-build for services/api-nest/**");

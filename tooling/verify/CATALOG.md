@@ -6,10 +6,11 @@
 |------|------|------|------|
 | **T0** | `pnpm verify:gate:fast` | commit · Husky pre-commit | `gate-fast.cjs` · `domain-by-path.cjs` |
 | **T1** | `pnpm verify:gate:push` | push · Husky pre-push | `gate-push.cjs` (= T0 + path-aware T1 extras) |
-| **T2** | `pnpm verify:gate` | CI · main merge | `gate.cjs` (= T1 + next-build + opennext-build) |
+| **T2** | `pnpm verify:gate` | CI · main merge | `gate.cjs` (= path-aware T1 + api-nest-build · next/opennext 0) |
 
 경로 기반 T0 도메인 = `tooling/verify/domain-by-path.cjs` (변경 파일 → 해당 `verify:*`만).
 T1 extras: lib/t1-by-path.cjs + verify:t1-by-path. domainSteps stays. T2 keeps full T1. backend:fast is local only, not husky pre-push.
+This repo gate is backend-only. Legacy web/admin extras and next/opennext builds are not T0/T1/T2 always. frontend inventory=CORE.
 
 로컬 가속(검사 목록 불변): stamp skip · stub in-process+cache · web-lint --cache · api-nest-build path+T2. CI/`AIPO_GATE_NO_STAMP=1` 실실행.
 
@@ -20,7 +21,7 @@ T1 extras: lib/t1-by-path.cjs + verify:t1-by-path. domainSteps stays. T2 keeps f
 | stack-lock | `verify:stack-lock` | T0 | ✅ live |
 | secrets | `verify:secrets` | T0 | ✅ live |
 | plans-ssot | `verify:plans-ssot` | T0 | ✅ live |
-| brand-consumer | `verify:brand-consumer` | T0 | ✅ live |
+| brand-consumer | `verify:brand-consumer` | T0 path | ✅ live |
 | pg-module-scan | `verify:pg-module-scan` | T1 | ✅ live |
 | brand-assets | `verify:brand-assets` | T1 | ✅ live (visual_kit_v1) |
 | cf-infra | `verify:cf-infra` | T1 | ✅ live |
@@ -111,8 +112,8 @@ T1 extras: lib/t1-by-path.cjs + verify:t1-by-path. domainSteps stays. T2 keeps f
 
 | id | 스크립트 | tier | 상태 |
 |----|----------|------|------|
-| next-build | `verify:next-build` | T2 | ✅ live (web + admin `next build`) |
-| opennext-build | `verify:opennext-build` | T2 | ✅ live (Windows=SKIP · CI ubuntu=full) |
+| next-build | `verify:next-build` | retired from T2 | ✅ live (web + admin `next build`) |
+| opennext-build | `verify:opennext-build` | retired from T2 | ✅ live (Windows=SKIP · CI ubuntu=full) |
 
 ## T0 path-trigger domain (변경 시에만)
 

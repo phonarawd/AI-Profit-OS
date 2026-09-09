@@ -1,8 +1,8 @@
 /**
  * 3-tier gate SSOT (ADR-016)
- * T0 fast  — commit (~10–30s · stamp hit면 재실행 0)
- * T1 push  — push / 슬라이스 품질 (추가 목록만 경로 단위 · domainSteps 불변)
- * T2 full  — CI / main 합격 (T1 전체 + next+opennext+api-nest-build · stamp 0)
+ * T0 fast  — commit (스택/시크릿/플랜 + domainSteps)
+ * T1 push  — 백엔드 extras만 경로 단위 · 레거시 프론트 extras 0
+ * T2 full  — CI · T1 경로 단위 + api-nest-build · next/opennext 0
  */
 const { scriptsForChangedFiles, getChangedFiles } = require("./domain-by-path.cjs");
 const {
@@ -17,11 +17,10 @@ const T0_ALWAYS = [
   "stack-lock.cjs",
   "secrets.cjs",
   "plans-ssot.cjs",
-  "brand-consumer.cjs",
 ];
 
 /** @type {string[]} */
-const T2_CI = ["api-nest-build.cjs", "next-build.cjs", "opennext-build.cjs"];
+const T2_CI = ["api-nest-build.cjs"];
 
 function domainSteps() {
   const files = getChangedFiles();
@@ -49,11 +48,8 @@ function stepsForTier(tier) {
   if (tier === "fast" || tier === "push" || tier === "full") {
     steps.push(...domainSteps());
   }
-  if (tier === "push") {
+  if (tier === "push" || tier === "full") {
     steps.push(...t1PushPlan().scripts);
-  }
-  if (tier === "full") {
-    steps.push(...T1_PUSH);
   }
   if (tier === "full") {
     steps.push(...T2_CI);
