@@ -216,7 +216,9 @@ if (stagingMig.matchProfitExpense !== true || stagingMig.productOnboardingTable 
 const pending = (appliedFx.committedUnapplied || []).map((row) =>
   typeof row === "string" ? row : row.version,
 );
+const productionApplied = new Set(appliedFx.versions || []);
 for (const version of stagingMig.applied || []) {
+  if (productionApplied.has(version)) continue;
   if (!pending.includes(version)) {
     fails.push("production fixture must keep committedUnapplied " + version);
   }

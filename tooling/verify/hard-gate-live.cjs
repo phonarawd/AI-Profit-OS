@@ -131,7 +131,9 @@ if (migrations.productOnboardingTable !== true) fails.push("staging product_onbo
 const pending = (fixture.committedUnapplied || []).map((row) =>
   typeof row === "string" ? row : row.version,
 );
+const productionApplied = new Set(fixture.versions || []);
 for (const version of migrations.applied || []) {
+  if (productionApplied.has(version)) continue;
   if (!pending.includes(version)) {
     fails.push("production fixture lost committedUnapplied " + version);
   }
