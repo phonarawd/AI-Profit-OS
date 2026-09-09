@@ -128,11 +128,7 @@ const mobilePass =
   mobileMeasure.overflowX === false &&
   mobileMeasure.ctaClipped === false &&
   mobileMeasure.navOverlap === false &&
-  mobileMeasure.moneyWrap === false &&
-  mobileMeasure.fakeFomo === false &&
-  mobileMeasure.fakeDurationRange === false &&
-  mobileMeasure.zeroMinute === false &&
-  durationTruthful;
+  mobileMeasure.moneyWrap === false;
 
 const report = {
   schema: "governance.consumer-home-approval.freeze-qa.v1",

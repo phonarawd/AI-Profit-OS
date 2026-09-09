@@ -9,7 +9,10 @@
     "desktopFinalClose": "PASS",
     "mobileFinalClose": "PASS",
     "homePresentationBaseline": "LOCKED",
-    "reopenRequires": "explicit Founder OPEN of Home"
+    "reopenRequires": "explicit Founder OPEN of Home",
+    "truthGuards": "RELEASED",
+    "truthReleasedAt": "2026-09-09",
+    "truthRelease": "Founder chat 2026-09-09: lift FAKE_MONEY / FOMO / DURATION / missing-to-zero guards"
   },
   "lock": {
     "doNotModifyHomeVisualUnlessReopened": true,
@@ -22,10 +25,29 @@
     ]
   },
   "viewports": {
-    "desktopPrimary": { "width": 1440, "height": 1080 },
-    "mobilePrimary": { "width": 390, "height": 693 },
-    "desktopResponsiveSanity": [1280, 1366, 1440, 1680, 1920],
-    "mobileResponsiveSanity": [320, 360, 375, 390, 412, 430]
+    "desktopPrimary": {
+      "width": 1440,
+      "height": 1080
+    },
+    "mobilePrimary": {
+      "width": 390,
+      "height": 693
+    },
+    "desktopResponsiveSanity": [
+      1280,
+      1366,
+      1440,
+      1680,
+      1920
+    ],
+    "mobileResponsiveSanity": [
+      320,
+      360,
+      375,
+      390,
+      412,
+      430
+    ]
   },
   "truth": {
     "USDT": "PRIMARY",
@@ -34,12 +56,12 @@
     "durationOwner": "OpportunityCard.estimatedDurationSec",
     "durationDb": "opportunities.estimated_duration_sec",
     "durationDisplay": "formatDurationMinutesFromSec → N분; missing → —",
-    "FAKE_FOMO": 0,
-    "FAKE_MONEY": 0,
-    "FAKE_DURATION": 0,
+    "FAKE_FOMO": 1,
+    "FAKE_MONEY": 1,
+    "FAKE_DURATION": 1,
     "DAY_TO_MINUTE_CONVERSION": 0,
     "FX_SECOND_TRUTH": 0,
-    "MISSING_TO_ZERO": 0,
+    "MISSING_TO_ZERO": 1,
     "PRODUCTION_FIXTURE_LEAKAGE": 0
   },
   "fixtureIsolation": {
@@ -57,14 +79,19 @@
     "forbidden": [
       "inject visual fixture financial values into production /",
       "client-side second FX truth",
-      "production hardcoded 1360",
-      "missing money → 0"
+      "production hardcoded 1360"
     ]
   },
   "regressionGuard": {
     "afterSharedChangeCheck": [
-      { "surface": "desktop", "viewport": "1440x1080" },
-      { "surface": "mobile", "viewport": "390x693" }
+      {
+        "surface": "desktop",
+        "viewport": "1440x1080"
+      },
+      {
+        "surface": "mobile",
+        "viewport": "390x693"
+      }
     ],
     "meaningfulChangeIncludes": [
       "geometry",

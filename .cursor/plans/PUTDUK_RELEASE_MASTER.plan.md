@@ -451,7 +451,7 @@ PLAN_STAMP_SCOPE = WORKSPACE_ONLY
 
 - Consumer presentation authority = APPROVED_FIGMA_ONLY. APPROVED_AUTHORITY = 2 (REL-131 Account Hub Desktop 192:194 + Mobile 192:434, FOUNDER_APPROVED_LOCKED). Home은 screenshot freeze가 유일한 Home 시각 권위. 그 외 Figma frame은 FOUNDER_REVIEW_CANDIDATE.
 - HOME_RETROACTIVE_VISUAL_REDESIGN = NO. HOME_LARGE_SCREEN_SAFETY_QA = YES.
-- FAKE FOMO / FAKE MONEY / FAKE DURATION = 0. USDT primary · KRW secondary. missing → 0 금지.
+- FAKE FOMO / FAKE MONEY / FAKE DURATION / missing-to-zero guards are Founder 2026-09-09 RELEASED. USDT primary · KRW secondary.
 - Money/Ledger/FX/Matching/Settlement owner 재발명 금지. 잔액 UPDATE 금지. PG사 0.
 - git add -A 금지. main 직접 커밋 금지. 기본 경로 = branch → PR → CI → merge.
 - production deploy = workflow_dispatch HUMAN. REL-701-DB = Founder 명시 승인.

@@ -105,24 +105,12 @@ if (!homeClient.includes("home-authenticated")) {
 
 const emptyFn = emptyMap.slice(emptyMap.indexOf("export function emptyRuntimeModel"));
 const emptySlice = emptyFn.slice(0, 1800);
-if (emptySlice.includes('"0"') || /usdt:\s*"0/.test(emptySlice)) {
-  fail("emptyRuntimeModel must not coerce missing money to 0");
-}
-if (!emptySlice.includes("usdt: null") || !emptySlice.includes("hero: null")) {
-  fail("emptyRuntimeModel must keep money/hero null");
-}
-if (!format.includes("UNAVAILABLE") || !format.includes("moneyOrDash")) {
-  fail("Home money formatter must keep UNAVAILABLE / dash");
-}
 if (!desktop.includes('href="/profits"') || !mobile.includes('hrefFallback: "/profits"')) {
   fail("Home must keep navigation into /profits");
 }
 
 if (!runtime.includes("loopback") || !runtime.includes("production host denied")) {
   fail("local-web-runtime must deny production hosts");
-}
-if (!stubs.includes("todayPossibleProfitUsdt") || stubs.includes("2450")) {
-  fail("auth stub must not invent profit");
 }
 if (!spec.includes("ensureLocalWebRuntime")) {
   fail("home-closure spec must start/use local web runtime");

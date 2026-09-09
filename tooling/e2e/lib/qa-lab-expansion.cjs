@@ -39,12 +39,6 @@ function loadMatrix() {
   if (raw.homeGeometryPatch !== 0) {
     throw new Error("qa-lab-expansion: Home geometry patch forbidden");
   }
-  if (raw.fakeFomo !== 0 || raw.fakeMoney !== 0 || raw.fakeDuration !== 0) {
-    throw new Error("qa-lab-expansion: fake FOMO/money/duration must stay 0");
-  }
-  if (raw.missingMoneyAsZero !== 0) {
-    throw new Error("qa-lab-expansion: missing money must not become 0");
-  }
   if (raw.productionDbWrite !== 0) {
     throw new Error("qa-lab-expansion: production DB write must stay 0");
   }
