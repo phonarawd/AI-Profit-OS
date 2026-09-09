@@ -17,6 +17,8 @@ export {
 } from "./trial-grant.service";
 export { TrialFundingService } from "./trial-funding.service";
 export type { FundingSource, FundingDecision } from "./trial-funding.service";
+export { TrialStateService } from "./trial-state.service";
+export type { TrialStateView } from "./trial-state.service";
 export { LEDGER_EVENTS } from "./ledger.events";
 export { LEDGER_ADMIN_ROUTES } from "./ledger.routes";
 export * from "./ledger.types";

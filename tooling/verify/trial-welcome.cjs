@@ -21,6 +21,9 @@ const files = [
   "services/api-nest/src/ledger/trial-grant.service.ts",
   "services/api-nest/src/ledger/trial-funding.service.ts",
   "services/api-nest/src/ledger/trial-fx.ts",
+  "services/api-nest/src/ledger/trial-state.service.ts",
+  "services/api-nest/src/ledger/trial-state.user.controller.ts",
+  "services/api-nest/src/opportunities/trial-eligible.admin.service.ts",
   "services/api-nest/src/referral/referral-slot.service.ts",
 ];
 for (const f of files) mustExist(f);
@@ -76,6 +79,34 @@ if (!types.includes("trial_principal") || !types.includes("trial_grant")) {
 const posting = read("services/api-nest/src/ledger/ledger.posting.service.ts");
 if (!posting.includes("TRIAL_PRINCIPAL_NOT_WITHDRAWABLE")) {
   fails.push("posting must block trial buckets on withdraw journals");
+}
+
+const trialState = read("services/api-nest/src/ledger/trial-state.service.ts");
+if (!trialState.includes("grantWelcome")) {
+  fails.push("trial-state must retry grantWelcome without inventing FX");
+}
+if (!trialState.includes("trialPrincipalWithdrawable: false")) {
+  fails.push("trial-state must lock trial principal as non-withdrawable");
+}
+
+const trialCtrl = read(
+  "services/api-nest/src/ledger/trial-state.user.controller.ts",
+);
+if (!trialCtrl.includes("me/trial-state") && !trialCtrl.includes("TRIAL_STATE_USER_ROUTES")) {
+  fails.push("trial-state controller must expose GET /me/trial-state");
+}
+if (!trialCtrl.includes("JwtAuthGuard")) {
+  fails.push("trial-state must use JwtAuthGuard");
+}
+if (trialCtrl.includes("@Query(\"userId\")") || trialCtrl.includes("body.userId")) {
+  fails.push("trial-state must not trust query/body userId");
+}
+
+const adminTrial = read(
+  "services/api-nest/src/opportunities/trial-eligible.admin.service.ts",
+);
+if (!adminTrial.includes("trial_eligible")) {
+  fails.push("admin must be able to set opportunities.trial_eligible");
 }
 
 if (fails.length) {

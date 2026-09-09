@@ -1388,7 +1388,7 @@ const RULES = [
   },
   {
     test: (f) =>
-      /trial-grant|trial-funding|trial-fx|trial_welcome|referral-slot|trial-welcome/.test(
+      /trial-grant|trial-funding|trial-fx|trial-state|trial-eligible|trial_welcome|referral-slot|trial-welcome/.test(
         f,
       ),
     scripts: ["trial-welcome.cjs"],

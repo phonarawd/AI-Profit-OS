@@ -12,9 +12,15 @@ import { PayoutReservationService } from "./payout-reservation.service";
 import { PracticeGrantService } from "./practice-grant.service";
 import { TrialFundingService } from "./trial-funding.service";
 import { TrialGrantService } from "./trial-grant.service";
+import { TrialStateService } from "./trial-state.service";
+import { TrialStateUserController } from "./trial-state.user.controller";
 
 @Module({
-  controllers: [LedgerAdminController, LedgerUserController],
+  controllers: [
+    LedgerAdminController,
+    LedgerUserController,
+    TrialStateUserController,
+  ],
   providers: [
     LedgerOutboxService,
     LedgerPostingService,
@@ -26,6 +32,7 @@ import { TrialGrantService } from "./trial-grant.service";
     PracticeGrantService,
     TrialGrantService,
     TrialFundingService,
+    TrialStateService,
     PayoutReservationService,
   ],
   exports: [
@@ -39,6 +46,7 @@ import { TrialGrantService } from "./trial-grant.service";
     PracticeGrantService,
     TrialGrantService,
     TrialFundingService,
+    TrialStateService,
     PayoutReservationService,
   ],
 })
