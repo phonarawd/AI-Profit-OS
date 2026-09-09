@@ -2,7 +2,7 @@
  * 3-tier gate SSOT (ADR-016)
  * T0 fast  — commit (스택/시크릿/플랜 + domainSteps)
  * T1 push  — 백엔드 extras만 경로 단위 · 레거시 프론트 extras 0
- * T2 full  — CI · T1 경로 단위 + api-nest-build · next/opennext 0
+ * T2 full  — CI · T0 + T1 extras + api-nest-build · domainSteps 없음 (T0/T1 담당)
  */
 const { scriptsForChangedFiles, getChangedFiles } = require("./domain-by-path.cjs");
 const {
@@ -45,7 +45,7 @@ function t1PushPlan() {
 function stepsForTier(tier) {
   const steps = [...T0_ALWAYS];
 
-  if (tier === "fast" || tier === "push" || tier === "full") {
+  if (tier === "fast" || tier === "push") {
     steps.push(...domainSteps());
   }
   if (tier === "push" || tier === "full") {

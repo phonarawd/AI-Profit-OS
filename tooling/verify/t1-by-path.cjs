@@ -118,6 +118,9 @@ const tiers = read("tooling/verify/gate-tiers.cjs");
 if (!tiers.includes("t1PushPlan")) {
   fails.push("gate-tiers must call t1PushPlan");
 }
+if (!tiers.includes('if (tier === "fast" || tier === "push")')) {
+  fails.push("T2 full must not re-run domainSteps");
+}
 if (tiers.includes("next-build.cjs") || tiers.includes("opennext-build.cjs")) {
   fails.push("gate-tiers must not keep next/opennext in T2");
 }
