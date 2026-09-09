@@ -94,6 +94,9 @@ export class TrialStateService {
          FROM public.opportunities
         WHERE COALESCE(trial_eligible, false) = true
           AND status = 'available'
+          AND execution_mode = 'orchestrate'
+          AND COALESCE((pricing->>'compareReady')::boolean, false) = true
+          AND stale_at > now()
         ORDER BY updated_at DESC`,
     );
 

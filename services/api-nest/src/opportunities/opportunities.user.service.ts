@@ -17,6 +17,8 @@ import { CLOCK, Inject, type Clock } from "../common/clock";
 import { KillSwitchService } from "../kill-switch/kill-switch.service";
 import { ExecutionPolicyAdminService } from "../execution-policy/execution-policy.admin.service";
 import { LedgerBucketsService } from "../ledger/ledger.buckets.service";
+import { TrialFundingService } from "../ledger/trial-funding.service";
+import { TrialGrantService } from "../ledger/trial-grant.service";
 import { PostgresService } from "../db/postgres";
 import {
   MatchingPolicyService,
@@ -78,6 +80,7 @@ type OppUserRow = {
   pricing: Record<string, unknown> | null;
   stale_at: Date;
   status: string;
+  trial_eligible: boolean;
   capital_band: string | null;
   sell_success_rate: string | null;
   sell_success_window_days: number | null;
@@ -119,6 +122,8 @@ export class OpportunitiesUserService {
   constructor(
     private readonly db: PostgresService,
     private readonly buckets: LedgerBucketsService,
+    private readonly trialGrant: TrialGrantService,
+    private readonly trialFunding: TrialFundingService,
     private readonly executionPolicy: ExecutionPolicyAdminService,
     private readonly killSwitch: KillSwitchService,
     private readonly matchingPolicy: MatchingPolicyService,
@@ -157,7 +162,9 @@ export class OpportunitiesUserService {
         items: [],
       };
     }
-    const principalUsdt = await this.readPrincipalUsdt(userId);
+    await this.trialGrant.grantWelcome(userId);
+    const wallet = await this.readWalletSpendable(userId);
+    const principalUsdt = wallet.principalUsdt;
     const { policy } = await this.executionPolicy.get();
     const allRows = await this.loadFeedCandidateRows();
     const freshRows = allRows.filter((r) => this.isRowFresh(r.stale_at));
@@ -168,13 +175,51 @@ export class OpportunitiesUserService {
       { platformHardStop: false },
     );
     const overridesByOpportunityId = await this.loadOverridesMap(userId);
+    const gate = await this.trialFunding.loadGate(userId);
+    const fxById = await this.loadUsdKrwBySnapshotId(
+      rows.map((r) => r.fx_snapshot_id),
+    );
+    const trialRows: OppUserRow[] = [];
+    const ownRows: OppUserRow[] = [];
+    for (const row of rows) {
+      if (
+        this.trialFunding.allowsTrial(gate, {
+          trialEligible: row.trial_eligible === true,
+          amountUsdt: row.required_capital_usdt,
+          trialPrincipalUsdt: wallet.trialPrincipalUsdt,
+          usdKrw: fxById.get(row.fx_snapshot_id) ?? null,
+        })
+      ) {
+        trialRows.push(row);
+      } else {
+        ownRows.push(row);
+      }
+    }
 
-    const feed = buildBalanceAwareFeedWithOverrides({
-      principalUsdt,
-      cards: rows.map((r) => this.toFeedCardInput(r)),
+    const trialFeed = buildBalanceAwareFeedWithOverrides({
+      principalUsdt: wallet.trialPrincipalUsdt,
+      cards: trialRows.map((r) => this.toFeedCardInput(r)),
       overridesByOpportunityId,
       executionPolicy: policy,
     });
+    const ownFeed = buildBalanceAwareFeedWithOverrides({
+      principalUsdt,
+      cards: ownRows.map((r) => this.toFeedCardInput(r)),
+      overridesByOpportunityId,
+      executionPolicy: policy,
+    });
+    const feed = {
+      principalUsdt,
+      nearMissCapUsdt: ownFeed.nearMissCapUsdt,
+      classificationOwner: ownFeed.classificationOwner,
+      items: [...trialFeed.items, ...ownFeed.items],
+      affordableCount: trialFeed.affordableCount + ownFeed.affordableCount,
+      nearMissCount: trialFeed.nearMissCount + ownFeed.nearMissCount,
+      lockedHighCount: trialFeed.lockedHighCount + ownFeed.lockedHighCount,
+      hiddenCount: trialFeed.hiddenCount + ownFeed.hiddenCount,
+      topSuggestDepositUsdt:
+        ownFeed.topSuggestDepositUsdt ?? trialFeed.topSuggestDepositUsdt,
+    };
 
     const byId = new Map(rows.map((r) => [r.id, r]));
     const items = (feed.items as ClassifiedSlice[])
@@ -208,7 +253,9 @@ export class OpportunitiesUserService {
       throw new NotFoundException("opportunity not found");
     }
 
-    const principalUsdt = await this.readPrincipalUsdt(userId);
+    await this.trialGrant.grantWelcome(userId);
+    const wallet = await this.readWalletSpendable(userId);
+    const principalUsdt = wallet.principalUsdt;
     const { policy } = await this.executionPolicy.get();
     const row = await this.loadRowById(opportunityId);
     if (!row) throw new NotFoundException("opportunity not found");
@@ -239,8 +286,19 @@ export class OpportunitiesUserService {
       throw new NotFoundException("opportunity not found");
     }
 
+    const gate = await this.trialFunding.loadGate(userId);
+    const fxById = await this.loadUsdKrwBySnapshotId([row.fx_snapshot_id]);
+    const classifyPrincipal = this.trialFunding.allowsTrial(gate, {
+      trialEligible: row.trial_eligible === true,
+      amountUsdt: row.required_capital_usdt,
+      trialPrincipalUsdt: wallet.trialPrincipalUsdt,
+      usdKrw: fxById.get(row.fx_snapshot_id) ?? null,
+    })
+      ? wallet.trialPrincipalUsdt
+      : principalUsdt;
+
     const feed = buildBalanceAwareFeedWithOverrides({
-      principalUsdt,
+      principalUsdt: classifyPrincipal,
       cards: [this.toFeedCardInput(row)],
       overridesByOpportunityId,
       executionPolicy: policy,
@@ -251,7 +309,7 @@ export class OpportunitiesUserService {
     }
 
     return {
-      principalUsdt: feed.principalUsdt,
+      principalUsdt,
       nearMissCapUsdt: feed.nearMissCapUsdt,
       classificationOwner: feed.classificationOwner,
       item: this.toUserCard(row, classified, {
@@ -272,13 +330,41 @@ export class OpportunitiesUserService {
   }
 
   private async readPrincipalUsdt(userId: string): Promise<string> {
+    const wallet = await this.readWalletSpendable(userId);
+    return wallet.principalUsdt;
+  }
+
+  private async readWalletSpendable(userId: string): Promise<{
+    principalUsdt: string;
+    trialPrincipalUsdt: string;
+  }> {
     try {
       const buckets = await this.buckets.getUserBuckets(userId);
-      return buckets.principalUsdt;
+      return {
+        principalUsdt: buckets.principalUsdt,
+        trialPrincipalUsdt: buckets.trialPrincipalUsdt,
+      };
     } catch (e) {
-      if (e instanceof NotFoundException) return "0";
+      if (e instanceof NotFoundException) {
+        return { principalUsdt: "0", trialPrincipalUsdt: "0" };
+      }
       throw e;
     }
+  }
+
+  private async loadUsdKrwBySnapshotId(
+    ids: string[],
+  ): Promise<Map<string, string>> {
+    const unique = [...new Set(ids.filter((id) => Boolean(id)))];
+    if (unique.length === 0) return new Map();
+    const { rows } = await this.db.query<{ id: string; usd_krw: string }>(
+      `SELECT id, usd_krw::text
+         FROM public.fx_snapshots
+        WHERE id = ANY($1::text[])
+          AND usd_krw > 0`,
+      [unique],
+    );
+    return new Map(rows.map((r) => [r.id, r.usd_krw]));
   }
 
   private async loadFeedCandidateRows(): Promise<OppUserRow[]> {
@@ -290,7 +376,9 @@ export class OpportunitiesUserService {
               required_capital_usdt::text, execution_mode, execution_platforms,
               category, asset_label, asset_image_url, asset_image_source,
               asset_image_alt_ko, arbitrage_type, arbitrage_type_ko,
-              pricing, stale_at, status, capital_band,
+              pricing, stale_at, status,
+              COALESCE(trial_eligible, false) AS trial_eligible,
+              capital_band,
               sell_success_rate::text, sell_success_window_days,
               sell_success_as_of, risk_score
          FROM public.opportunities
@@ -317,7 +405,9 @@ export class OpportunitiesUserService {
               required_capital_usdt::text, execution_mode, execution_platforms,
               category, asset_label, asset_image_url, asset_image_source,
               asset_image_alt_ko, arbitrage_type, arbitrage_type_ko,
-              pricing, stale_at, status, capital_band,
+              pricing, stale_at, status,
+              COALESCE(trial_eligible, false) AS trial_eligible,
+              capital_band,
               sell_success_rate::text, sell_success_window_days,
               sell_success_as_of, risk_score
          FROM public.opportunities

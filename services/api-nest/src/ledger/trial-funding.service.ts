@@ -18,6 +18,15 @@ export type FundingDecision = {
   toBucket: UserBucket;
 };
 
+export type TrialGate = {
+  profitCapKrw: number;
+  requiredCapitalKrwMin: number;
+  requiredCapitalKrwMax: number;
+  maxParticipations: number;
+  participationsUsed: number;
+  profitCreditedKrw: number;
+};
+
 type ProgramRow = {
   profit_cap_krw: number;
   required_capital_krw_min: number;
@@ -148,6 +157,50 @@ export class TrialFundingService {
     );
   }
 
+  async loadGate(userId: string): Promise<TrialGate | null> {
+    const program = await this.program();
+    const state = await this.db.query<StateRow>(
+      `SELECT max_participations, participations_used, profit_credited_krw::text
+         FROM public.trial_user_state
+        WHERE user_id = $1::uuid`,
+      [userId],
+    );
+    const row = state.rows[0];
+    if (!row) return null;
+    return {
+      profitCapKrw: program.profit_cap_krw,
+      requiredCapitalKrwMin: program.required_capital_krw_min,
+      requiredCapitalKrwMax: program.required_capital_krw_max,
+      maxParticipations: row.max_participations,
+      participationsUsed: row.participations_used,
+      profitCreditedKrw: Number(row.profit_credited_krw),
+    };
+  }
+
+  allowsTrial(
+    gate: TrialGate | null,
+    input: {
+      trialEligible: boolean;
+      amountUsdt: string;
+      trialPrincipalUsdt: string;
+      usdKrw?: string | null;
+    },
+  ): boolean {
+    if (!gate || !input.trialEligible) return false;
+    if (cmpAmount(input.amountUsdt, input.trialPrincipalUsdt) > 0) return false;
+    if (gate.participationsUsed >= gate.maxParticipations) return false;
+    if (gate.profitCreditedKrw >= gate.profitCapKrw) return false;
+    if (!input.usdKrw) return false;
+    const requiredKrw = usdtToKrwInt(input.amountUsdt, input.usdKrw);
+    if (
+      requiredKrw < gate.requiredCapitalKrwMin ||
+      requiredKrw > gate.requiredCapitalKrwMax
+    ) {
+      return false;
+    }
+    return true;
+  }
+
   private async canUseTrial(input: {
     userId: string;
     trialEligible: boolean;
@@ -155,29 +208,8 @@ export class TrialFundingService {
     trialPrincipalUsdt: string;
     usdKrw?: string | null;
   }): Promise<boolean> {
-    if (!input.trialEligible) return false;
-    if (cmpAmount(input.amountUsdt, input.trialPrincipalUsdt) > 0) return false;
-
-    const program = await this.program();
-    const state = await this.db.query<StateRow>(
-      `SELECT max_participations, participations_used, profit_credited_krw::text
-         FROM public.trial_user_state
-        WHERE user_id = $1::uuid`,
-      [input.userId],
-    );
-    const row = state.rows[0];
-    if (!row) return false;
-    if (row.participations_used >= row.max_participations) return false;
-    if (Number(row.profit_credited_krw) >= program.profit_cap_krw) return false;
-    if (!input.usdKrw) return false;
-    const requiredKrw = usdtToKrwInt(input.amountUsdt, input.usdKrw);
-    if (
-      requiredKrw < program.required_capital_krw_min ||
-      requiredKrw > program.required_capital_krw_max
-    ) {
-      return false;
-    }
-    return true;
+    const gate = await this.loadGate(input.userId);
+    return this.allowsTrial(gate, input);
   }
 
   private async program(client?: PoolClient): Promise<ProgramRow> {

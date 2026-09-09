@@ -88,6 +88,25 @@ if (!trialState.includes("grantWelcome")) {
 if (!trialState.includes("trialPrincipalWithdrawable: false")) {
   fails.push("trial-state must lock trial principal as non-withdrawable");
 }
+if (!trialState.includes("compareReady") || !trialState.includes("stale_at > now()")) {
+  fails.push("trial-state ids must be participable (compareReady + not stale)");
+}
+
+const userFeed = read(
+  "services/api-nest/src/opportunities/opportunities.user.service.ts",
+);
+if (!userFeed.includes("trialGrant.grantWelcome")) {
+  fails.push("user feed must grant welcome so first entry sees trial SKU");
+}
+if (!userFeed.includes("allowsTrial")) {
+  fails.push("user feed must classify trial SKU against trial principal");
+}
+if (!userFeed.includes("trial_eligible")) {
+  fails.push("user feed SQL must load trial_eligible");
+}
+if (!/trialFeed\.items,\s*\.\.\.ownFeed\.items/.test(userFeed.replace(/\s+/g, ""))) {
+  fails.push("user feed must pin trial-affordable cards before own-principal cards");
+}
 
 const trialCtrl = read(
   "services/api-nest/src/ledger/trial-state.user.controller.ts",
