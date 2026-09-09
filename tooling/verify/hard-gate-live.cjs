@@ -112,8 +112,13 @@ const byId = Object.fromEntries(gates.filter((g) => g && g.id).map((g) => [g.id,
 if (!byId["HG-A8"] || !["BLOCKED_EXTERNAL", "PARTIAL"].includes(byId["HG-A8"].status)) {
   fails.push("HG-A8 must stay BLOCKED_EXTERNAL or PARTIAL until J0 20/20");
 }
-if (!byId["HG-L8"] || byId["HG-L8"].status !== "NOT_READY") {
-  fails.push("HG-L8 must stay NOT_READY while production migrations are unapplied");
+const trackCDone = Boolean(fixture.trackC && fixture.trackC.status === "APPLIED");
+if (!trackCDone) {
+  if (!byId["HG-L8"] || byId["HG-L8"].status !== "NOT_READY") {
+    fails.push("HG-L8 must stay NOT_READY while production migrations are unapplied");
+  }
+} else if (byId["HG-L8"] && byId["HG-L8"].status === "PASS") {
+  fails.push("HG-L8 must not be PASS — schema apply is not a release SHA");
 }
 if (!byId["HG-M2"] || byId["HG-M2"].status === "PASS") {
   fails.push("HG-M2 must not be PASS before live payout E2E");
@@ -138,7 +143,12 @@ for (const version of migrations.applied || []) {
     fails.push("production fixture lost committedUnapplied " + version);
   }
 }
-if (pending.length < 9) fails.push("production committedUnapplied must stay 9 until production apply");
+if (!trackCDone && pending.length < 9) {
+  fails.push("production committedUnapplied must stay 9 until production apply");
+}
+if (trackCDone && pending.length !== 0) {
+  fails.push("trackC APPLIED but committedUnapplied still listed");
+}
 
 if (!pkg.includes("verify:hard-gate-live")) fails.push("package.json missing verify:hard-gate-live");
 if (!catalog.includes("hard-gate-live")) fails.push("CATALOG missing hard-gate-live");

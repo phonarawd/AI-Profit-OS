@@ -1,0 +1,28 @@
+Track C production apply (UTC): 2026-09-09
+Authorization: Founder chat 2026-09-09 install the 10 leftover production migrations and push
+Method: node tooling/dev/apply-production-unapplied.cjs
+Flag: APPLY_PRODUCTION_UNAPPLIED=YES
+Project: mgsytcetsiecllmhcyox
+Reapply forbidden: 20260906150000 s3_33 (remote alias 20260908052954) · 20260909060000 trial (remote alias 20260909040657)
+
+Applied:
+ • 20260904060000_krw_deposit_bank_snapshot
+ • 20260905110000_classic_signup_sessions_and_admin
+ • 20260906060000_payout_reservation_and_execution_confirm
+ • 20260906120000_admin_identity_sessions
+ • 20260906130000_user_matching_policy_b7
+ • 20260906140000_s3_32_consent_versions
+ • 20260906160000_s3_34_peotteok_history
+ • 20260906233000_product_onboarding_progress
+ • 20260908164000_global_source_unlock_observation_sources
+ • 20260908181000_fashionphile_image_source
+
+Skipped already: none
+schema_migrations raw: 58 → 68
+Live confirm: pending_registrations · trade_execution_confirmations · admin_credentials · matching_policy_versions · peotteok_conversations · product_onboarding · SYS:MATCH_PROFIT_EXPENSE · krw_deposit_requests.bank_name
+s3_33 local version row: 0 (alias kept)
+trial local version row: 0 (alias kept)
+Secrets: 0 printed
+REL-504 PRODUCTION_DB_APPLY: stays 0 (this apply is Track C / Founder, not REL-504)
+FULL_REAL_MONEY_RELEASED: NO
+exit=0

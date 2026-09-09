@@ -13,9 +13,9 @@ APPLY_LOG = 0
 APPLY_OWNER = REL-701-DB
 PROJECT_REF = mgsytcetsiecllmhcyox
 LOCAL_MIGRATION_FILES = 67
-REMOTE_APPLIED_SNAPSHOT = 57
-REMOTE_RAW_APPLIED = 58
-COMMITTED_UNAPPLIED = 10
+REMOTE_APPLIED_SNAPSHOT = 67
+REMOTE_RAW_APPLIED = 68
+COMMITTED_UNAPPLIED = 0
 TRACK_A_FILE_RESTORE = 3
 REL_408_BASELINE = 1
 REL_502_ISSUED = 0
@@ -147,3 +147,22 @@ Survey result: **10 / 10** = `LOCAL_ONLY_NOT_APPLIED` + `REQUIRES_FUTURE_APPLY`.
 | `20260908181000` | fashionphile_image_source | live `assets_image_source_check` / `opportunities_asset_image_source_check` = ebay, pokemontcg, ygoprodeck, admin_r2 only. `fashionphile` absent | `LOCAL_ONLY_NOT_APPLIED` | `REQUIRES_FUTURE_APPLY` |
 
 Track C (later, owner REL-701-DB / Founder): apply the 10 in version order with `supabase db push --include-all`. Do not batch-apply from this document. Do not reapply mapped s3_33 (`20260906150000`) or trial (`20260909060000`). Header counts stay 67 / 57 / 58 / 10.
+
+## 2026-09-09 TRACK C EXECUTED (Founder-authorized · apply 10 · REL-504 apply bit stays 0)
+
+Founder chat 2026-09-09: install the 10 leftover production migrations and push.
+Method: `tooling/dev/apply-production-unapplied.cjs` with `APPLY_PRODUCTION_UNAPPLIED=YES`. Production session 5432. Fixture `committedUnapplied` only, version order. Mapped s3_33 / trial were not in that list and were not reapplied. Evidence: `governance/recovery/evidence/track-c-apply-20260909.txt`.
+
+Live confirm after apply (read-only): raw **68**. Local versions of the 10 are now remote rows. Alias rows `20260908052954` and `20260909040657` kept. Objects present: bank snapshot columns, `pending_registrations`, `SYS:MATCH_PROFIT_EXPENSE`, `trade_execution_confirmations`, admin identity, matching policy, peotteok history, `product_onboarding`, source CHECK unlock, fashionphile image_source.
+
+```text
+LOCAL_MIGRATION_FILES = 67
+REMOTE_APPLIED_SNAPSHOT = 67
+REMOTE_RAW_APPLIED = 68
+HISTORICAL_MAPPINGS = 7
+COMMITTED_UNAPPLIED = 0
+PRODUCTION_DB_APPLY = 0
+TRACK_C_EXECUTED = 1
+```
+
+`68 − 67 = 1` remains the existing `idempotency_request_fingerprint` rawCountDelta. This REL still `PRODUCTION_DB_APPLY = 0`. Schema apply is not a money-release or CERT issue.

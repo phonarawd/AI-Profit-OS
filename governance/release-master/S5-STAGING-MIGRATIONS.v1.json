@@ -20,5 +20,5 @@
   "productOnboardingTable": true,
   "applicator": "tooling/dev/apply-staging-unapplied.cjs",
   "source": "Render staging service env-vars DATABASE_URL only. Local DATABASE_URL unused. Production service id refused.",
-  "note": "Staging schema only. Production committedUnapplied stays 9. CURRENT_RELEASE_PRODUCTION_DB_READY stays NO. J0 not implied."
+  "note": "Staging schema only. Staging apply did not move the production fixture. Production Track C later applied separately. CURRENT_RELEASE_PRODUCTION_DB_READY stays NO. J0 not implied."
 }

@@ -1,8 +1,8 @@
 {
   "projectRef": "mgsytcetsiecllmhcyox",
   "asOf": "2026-09-09",
-  "source": "Supabase MCP execute_sql read-only on supabase_migrations.schema_migrations after REL-701-DB apply (2026-09-04 02:35 UTC: raw applied 55 · head 20260902155632_withdraw_broadcast_tron · committedUnapplied 0) · 2026-09-06 push RLS apply 20260906170000 · 2026-09-09 trial welcome grant applied as remote 20260909040657 (canonical local 20260909060000) · 2026-09-09 live reconciliation mapped remote 20260908052954 s3_33_product_pipeline to local 20260906150000 (statements+objects match · reapply 0)",
-  "remoteRawAppliedCount": 58,
+  "source": "Supabase MCP execute_sql read-only on supabase_migrations.schema_migrations after REL-701-DB apply (2026-09-04 02:35 UTC: raw applied 55 · head 20260902155632_withdraw_broadcast_tron · committedUnapplied 0) · 2026-09-06 push RLS apply 20260906170000 · 2026-09-09 trial welcome grant applied as remote 20260909040657 (canonical local 20260909060000) · 2026-09-09 live reconciliation mapped remote 20260908052954 s3_33_product_pipeline to local 20260906150000 (statements+objects match · reapply 0) · 2026-09-09 Track C Founder apply of 10 committedUnapplied (local versions recorded · s3_33/trial aliases not reapplied · raw 58 → 68)",
+  "remoteRawAppliedCount": 68,
   "remoteHistoricalMappings": [
     {
       "remoteVersion": "20260810212231",
@@ -85,6 +85,28 @@
     "evidence": "governance/recovery/founder-gates-executed-20260904.md",
     "applyLog": "governance/recovery/evidence/rel-701-db-apply-20260904.txt"
   },
+  "trackC": {
+    "status": "APPLIED",
+    "appliedAtUtc": "2026-09-09T06:24:00Z",
+    "authorization": "Founder chat 2026-09-09: install the 10 leftover production migrations and push",
+    "method": "tooling/dev/apply-production-unapplied.cjs (APPLY_PRODUCTION_UNAPPLIED=YES · production DATABASE_URL session 5432 · fixture committedUnapplied only · mapped s3_33/trial never reapplied)",
+    "appliedVersions": [
+      "20260904060000",
+      "20260905110000",
+      "20260906060000",
+      "20260906120000",
+      "20260906130000",
+      "20260906140000",
+      "20260906160000",
+      "20260906233000",
+      "20260908164000",
+      "20260908181000"
+    ],
+    "rawRowsBefore": 58,
+    "rawRowsAfter": 68,
+    "skippedReapply": ["20260906150000", "20260909060000"],
+    "evidence": "governance/recovery/evidence/track-c-apply-20260909.txt"
+  },
   "versions": [
     "20260808205842",
     "20260808205844",
@@ -140,70 +162,19 @@
     "20260901224000",
     "20260902032000",
     "20260902155632",
+    "20260904060000",
+    "20260905110000",
+    "20260906060000",
+    "20260906120000",
+    "20260906130000",
+    "20260906140000",
     "20260906150000",
+    "20260906160000",
     "20260906170000",
+    "20260906233000",
+    "20260908164000",
+    "20260908181000",
     "20260909060000"
   ],
-  "committedUnapplied": [
-    {
-      "version": "20260904060000",
-      "name": "krw_deposit_bank_snapshot",
-      "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
-      "reason": "S4 unique: immutable bank snapshot on krw_deposit_requests. Additive ADD COLUMN IF NOT EXISTS. Does not rewrite deposit_config. Production apply after S5 staging. Do not apply to mgsytcetsiecllmhcyox from this commit."
-    },
-    {
-      "version": "20260905110000",
-      "name": "classic_signup_sessions_and_admin",
-      "status": "AWAITING_FOUNDER_APPROVAL",
-      "reason": "apply_migration to mgsytcetsiecllmhcyox was blocked by a Cursor safety hook (Blocked: Production migration apply). Migration is additive-only (ADD COLUMN IF NOT EXISTS / CREATE INDEX IF NOT EXISTS / new tables), reviewed read-only against live schema before writing (3 users, 0 case-variant duplicates, 1 phone value, exact constraint names confirmed via pg_constraint), and contains its own fail-loud DO-block duplicate checks. Apply via the same Founder-authorized supabase db push path used for REL-701-DB."
-    },
-    {
-      "version": "20260906060000",
-      "name": "payout_reservation_and_execution_confirm",
-      "status": "AWAITING_PRODUCTION_APPLY",
-      "reason": "Adds SYS:MATCH_PROFIT_EXPENSE and trade_execution_confirmations. Match profit stays in-app. compareReady cannot pay until an event is consumed. Not applied to production."
-    },
-    {
-      "version": "20260906120000",
-      "name": "admin_identity_sessions",
-      "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
-      "reason": "S3 B0 Admin identity: credentials/TOTP/sessions/approvals. Additive only. Production apply is blocked until S5 staging + CURRENT_RELEASE_PRODUCTION_DB_READY. Do not apply to mgsytcetsiecllmhcyox from this commit."
-    },
-    {
-      "version": "20260906130000",
-      "name": "user_matching_policy_b7",
-      "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
-      "reason": "S3 B7 versioned visibility policy. Additive. Does not change opportunity money columns. Production apply after S5 staging."
-    },
-    {
-      "version": "20260906140000",
-      "name": "s3_32_consent_versions",
-      "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
-      "reason": "S3/3.2 consent document versions and optional avatar_url. Additive ADD COLUMN. Production apply after S5 staging. Do not apply to mgsytcetsiecllmhcyox from this commit."
-    },
-    {
-      "version": "20260906160000",
-      "name": "s3_34_peotteok_history",
-      "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
-      "reason": "S3/3.4 peotteok conversation/message tables. Additive. Production apply after S5 staging. Do not apply to mgsytcetsiecllmhcyox from this commit."
-    },
-    {
-      "version": "20260906233000",
-      "name": "product_onboarding_progress",
-      "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
-      "reason": "Product onboarding server SoT. Additive table. Production apply after S5 staging. Do not apply to mgsytcetsiecllmhcyox from this commit."
-    },
-    {
-      "version": "20260908164000",
-      "name": "global_source_unlock_observation_sources",
-      "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
-      "reason": "Global source unlock: extend source_observations enum (feelway, coupang, reference/conditional sources). Additive CHECK only. Production apply after S5 staging."
-    },
-    {
-      "version": "20260908181000",
-      "name": "fashionphile_image_source",
-      "status": "AWAITING_STAGING_THEN_PRODUCTION_APPLY",
-      "reason": "Additive CHECK: assets/opportunities image_source includes fashionphile. Observation photo persist. Production apply after S5 staging."
-    }
-  ]
+  "committedUnapplied": []
 }
