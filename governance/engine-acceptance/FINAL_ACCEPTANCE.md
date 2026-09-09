@@ -27,15 +27,15 @@ NEXT = QA1_DETERMINISTIC_TRUTH
 BASELINE_ID = ea-baseline-1292c584c81f-6e4af6f46fe5
 PREDECESSOR_BASELINE_ID = ea-baseline-e55a08433445-faae139c3115
 REBASE_ID = ea-rebase-b9308bb15bf6-6e4af6f46fe5
-LIVE_AGGREGATE = 0519f0fa43bed62adb549f031bcdbd9b0977d4235f05524375f0bbba08c03ee8
+LIVE_AGGREGATE = f7c3782b2b5ad0a119aa765f28c0b44163ad965c70cf0e5e0b2db455eed06767
 BASELINE_AGGREGATE = 6e4af6f46fe5f5692617e10d1c1293f8aaa43d3ba613aab10ef1894fbe529721
 PATH_COUNT_LIVE = 576
 PATH_COUNT_BASELINE = 564
-CHANGED_PATHS = 45
+CHANGED_PATHS = 47
 ADDED_PATHS = 12
-MUTATED_PATHS = 33
+MUTATED_PATHS = 35
 MISSING_PATHS = 0
-EXIT_GATE = PUTDUK 2026-09-09 trial welcome feed pin · protected-scope drift 45 · NOT_ISSUED · rebase required
+EXIT_GATE = PUTDUK 2026-09-09 password min 8 · protected-scope drift 47 · NOT_ISSUED · rebase required
 ```
 
 ## 판정 (2026-09-07 J0 MFA rebase apply)
@@ -400,4 +400,12 @@ live protected aggregate `e830282d659901c220cd096489d17a017cc2571c748fe8d9a8aef4
 This recert does not change STATUS/CERT_ISSUED/PROTECTED_SCOPE_DRIFT/REBASE_REQUIRED. LIVE_AGGREGATE/PATH_COUNT_LIVE/CHANGED_PATHS/ADDED_PATHS/MUTATED_PATHS are current-HEAD values from `compareProtectedScope()`.
 
 live protected aggregate `0519f0fa43bed62adb549f031bcdbd9b0977d4235f05524375f0bbba08c03ee8` differs from baseline `6e4af6f46fe5f5692617e10d1c1293f8aaa43d3ba613aab10ef1894fbe529721` (added 12 · mutated 33 · missing 0 · changed 45). No issue. No fake QA.
+
+## 15th recert (2026-09-09)
+
+`1f773e92` lowered classic signup `PASSWORD_MIN_LEN` from 15 to 8 (`classic-signup.policy.ts` · `pwned-password.local-blocklist.ts`). STATUS stays NOT_ISSUED. CERT_ISSUED stays 0. REL-502 is not issued by this recert.
+
+This recert does not change STATUS/CERT_ISSUED/PROTECTED_SCOPE_DRIFT/REBASE_REQUIRED. LIVE_AGGREGATE/PATH_COUNT_LIVE/CHANGED_PATHS/ADDED_PATHS/MUTATED_PATHS are current-HEAD values from `compareProtectedScope()`.
+
+live protected aggregate `f7c3782b2b5ad0a119aa765f28c0b44163ad965c70cf0e5e0b2db455eed06767` differs from baseline `6e4af6f46fe5f5692617e10d1c1293f8aaa43d3ba613aab10ef1894fbe529721` (added 12 · mutated 35 · missing 0 · changed 47). No issue. No fake QA.
 
