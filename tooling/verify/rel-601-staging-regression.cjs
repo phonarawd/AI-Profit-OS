@@ -123,8 +123,8 @@ if (!pkg.includes("verify:rel-601-staging-regression")) {
 if (!catalog.includes("rel-601-staging-regression")) {
   fails.push("CATALOG missing rel-601-staging-regression");
 }
-if (!gate.includes("verify:rel-601-staging-regression")) {
-  fails.push("gate.yml must run verify:rel-601-staging-regression");
+if (gate.includes("verify:rel-601-staging-regression")) {
+  fails.push("backend gate.yml must not always-run leftover verify:rel-601-staging-regression");
 }
 if (!domain.includes("rel-601-staging-regression.cjs")) {
   fails.push("domain-by-path must trigger rel-601");
@@ -176,21 +176,31 @@ function sleep(ms) {
 
 async function fetchTransientSafe(url, options) {
   let lastError;
+  let lastRes;
   for (let attempt = 1; attempt <= LIVE_FETCH_ATTEMPTS; attempt += 1) {
     try {
-      return await fetch(url, {
+      const res = await fetch(url, {
         ...options,
         signal: AbortSignal.timeout(LIVE_FETCH_TIMEOUT_MS),
       });
+      // HTTP 5xx는 코호트 스킵이 아님. 네트워크 throw와 같은 LIVE_FETCH 바운드만 쓴다.
+      if (res.status < 500) return res;
+      lastRes = res;
+      lastError = new Error("preview HTTP " + res.status);
+      if (attempt === LIVE_FETCH_ATTEMPTS) return res;
+      console.warn(
+        `[verify:rel-601-staging-regression] transient HTTP ${res.status} retry ${attempt}/${LIVE_FETCH_ATTEMPTS - 1} ${url}`,
+      );
     } catch (e) {
       lastError = e;
       if (attempt === LIVE_FETCH_ATTEMPTS) break;
       console.warn(
         `[verify:rel-601-staging-regression] transient fetch retry ${attempt}/${LIVE_FETCH_ATTEMPTS - 1} ${url}`,
       );
-      await sleep(LIVE_FETCH_RETRY_DELAY_MS * attempt);
     }
+    await sleep(LIVE_FETCH_RETRY_DELAY_MS * attempt);
   }
+  if (lastRes) return lastRes;
   throw lastError || new Error("live fetch failed after bounded retries");
 }
 

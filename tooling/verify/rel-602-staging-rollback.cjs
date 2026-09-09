@@ -210,7 +210,9 @@ if (!prodWorkflow.includes("workflow_dispatch")) fails.push("production deploy w
 if (!pkg.includes("verify:rel-602-staging-rollback")) fails.push("package missing REL-602 verify script");
 if (!pkg.includes("cf:rollback:staging")) fails.push("package missing staging rollback script");
 if (!catalog.includes("rel-602-staging-rollback")) fails.push("catalog missing REL-602");
-if (!gate.includes("verify:rel-602-staging-rollback")) fails.push("gate missing REL-602");
+if (gate.includes("verify:rel-602-staging-rollback")) {
+  fails.push("backend gate.yml must not always-run leftover verify:rel-602-staging-rollback");
+}
 if (!domain.includes("rel-602-staging-rollback.cjs")) {
   fails.push("domain-by-path SSOT missing REL-602 T0 mapping");
 }
@@ -220,21 +222,31 @@ if (gateTiers.includes("isRel602Path")) {
 
 async function fetchTransientSafe(url, options) {
   let lastError;
+  let lastRes;
   for (let attempt = 1; attempt <= LIVE_FETCH_ATTEMPTS; attempt += 1) {
     try {
-      return await fetch(url, {
+      const res = await fetch(url, {
         ...options,
         signal: AbortSignal.timeout(LIVE_FETCH_TIMEOUT_MS),
       });
+      // HTTP 5xx는 extraVerify 스킵이 아님. 네트워크 throw와 같은 LIVE_FETCH 바운드만 쓴다.
+      if (res.status < 500) return res;
+      lastRes = res;
+      lastError = new Error("preview HTTP " + res.status);
+      if (attempt === LIVE_FETCH_ATTEMPTS) return res;
+      console.warn(
+        `[verify:rel-602-staging-rollback] transient HTTP ${res.status} retry ${attempt}/${LIVE_FETCH_ATTEMPTS - 1} ${url}`,
+      );
     } catch (e) {
       lastError = e;
       if (attempt === LIVE_FETCH_ATTEMPTS) break;
       console.warn(
         `[verify:rel-602-staging-rollback] transient fetch retry ${attempt}/${LIVE_FETCH_ATTEMPTS - 1} ${url}`,
       );
-      await sleep(LIVE_FETCH_RETRY_DELAY_MS * attempt);
     }
+    await sleep(LIVE_FETCH_RETRY_DELAY_MS * attempt);
   }
+  if (lastRes) return lastRes;
   throw lastError || new Error("live fetch failed after bounded retries");
 }
 
@@ -279,6 +291,38 @@ function runVerify(script) {
   return run;
 }
 
+function echoChildVerify(run) {
+  if (run.stdout) process.stdout.write(run.stdout);
+  if (run.stderr) process.stderr.write(run.stderr);
+}
+
+function childFailDetail(script, run) {
+  const combined = [
+    run.stdout,
+    run.stderr,
+    run.error && String(run.error.message),
+  ]
+    .filter(Boolean)
+    .join("\n");
+  const detail = combined
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(
+      (l) =>
+        l &&
+        /FAIL|error after|status=|missing x-opennext|timed? ?out/i.test(l),
+    )
+    .slice(0, 24);
+  return (
+    "re-run FAIL " +
+    script +
+    ": " +
+    (detail.join(" · ") ||
+      (run.error && run.error.code) ||
+      "exit=" + String(run.status))
+  );
+}
+
 (async function main() {
   if (fails.length === 0) {
     try {
@@ -293,8 +337,9 @@ function runVerify(script) {
   if (fails.length === 0) {
     for (const script of fixture.extraVerifies || []) {
       const run = runVerify(script);
+      echoChildVerify(run);
       if (run.status !== 0) {
-        fails.push("re-run FAIL " + script + ": " + String(run.stderr || run.stdout || "").split("\n")[0]);
+        fails.push(childFailDetail(script, run));
       }
     }
   }

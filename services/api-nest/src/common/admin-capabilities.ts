@@ -97,6 +97,7 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     list: read("all"),
     get: read("all"),
     patchPricing: write("all"),
+    patchTrialEligible: write("all"),
     getPriceLayers: read("all"),
     upsertAsset: write("all"),
     seedTradingCards: write("all"),
@@ -208,6 +209,31 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     publish: write("all"),
     rollback: write("all"),
     founderOverride: write("all"),
+  },
+  UsersAdminController: {
+    list: read("users"),
+    get: read("users"),
+    revealPii: write("users"),
+  },
+  TradesAdminController: {
+    reconcileTick: write("circuit"),
+  },
+  AdminApprovalsController: {
+    list: read("audit"),
+    submit: write("all"),
+    decide: write("all"),
+  },
+  MatchingPolicyAdminController: {
+    getEffective: read("userMatchPolicy"),
+    preview: read("userMatchPolicy"),
+    putVersion: write("userMatchPolicy"),
+    pause: write("userMatchPolicy"),
+    resume: write("userMatchPolicy"),
+    assign: write("userOpportunityOverride"),
+    exclude: write("userOpportunityOverride"),
+    bulkDryRun: write("userMatchPolicy"),
+    bulkApply: write("userMatchPolicy"),
+    listAudit: read("userMatchPolicy"),
   },
 });
 

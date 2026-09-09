@@ -45,6 +45,8 @@ export function normalizeCurrentFxApprox(
   raw: Partial<CurrentFxApproxResponse> & Record<string, unknown>,
 ): CurrentFxApproxResponse {
   return {
+    displayPrimary: "KRW",
+    displaySecondary: "USDT",
     fxSnapshotId: asNullableText(raw.fxSnapshotId),
     capturedAt: asNullableText(raw.capturedAt),
     principalKrwApprox: asNullableDecimal(raw.principalKrwApprox),

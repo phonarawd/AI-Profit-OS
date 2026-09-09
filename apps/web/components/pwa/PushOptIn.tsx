@@ -1,11 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import {
   canRequestPush,
+  fetchServerPushEnabled,
   registerPushSubscription,
 } from "@aipo/sdk/push";
 import { pwaCopy } from "./copy";
+import {
+  clientPushHintDisabled,
+  isPushOverlayAllowed,
+  shouldSuppressPwaChrome,
+} from "./suppress-pwa-chrome";
 
 const DISMISS_KEY = "putduk.push.dismissedAt";
 const COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
@@ -31,9 +38,37 @@ function markDismissed() {
 }
 
 export function PushOptIn() {
+  const pathname = usePathname() || "";
   const [visible, setVisible] = useState(false);
+  const [serverOn, setServerOn] = useState<boolean | null>(null);
+  const clientHintDisabled = clientPushHintDisabled({
+    NEXT_PUBLIC_PUSH_ENABLED: process.env.NEXT_PUBLIC_PUSH_ENABLED,
+  });
+  const allowed = isPushOverlayAllowed({
+    pathname,
+    serverPushEnabled: serverOn,
+    clientHintDisabled,
+  });
 
   useEffect(() => {
+    if (clientHintDisabled) {
+      setServerOn(false);
+      return;
+    }
+    let cancelled = false;
+    void fetchServerPushEnabled().then((on) => {
+      if (!cancelled) setServerOn(on);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [clientHintDisabled]);
+
+  useEffect(() => {
+    if (!allowed) {
+      setVisible(false);
+      return;
+    }
     const gate = canRequestPush();
     if (!gate.ok) return;
     if (typeof Notification !== "undefined" && Notification.permission === "granted") {
@@ -44,11 +79,23 @@ export function PushOptIn() {
       return;
     }
     if (dismissedRecently()) return;
-    const timer = window.setTimeout(() => setVisible(true), 8000);
+    const timer = window.setTimeout(() => {
+      if (shouldSuppressPwaChrome(pathname)) return;
+      if (
+        !isPushOverlayAllowed({
+          pathname,
+          serverPushEnabled: serverOn,
+          clientHintDisabled,
+        })
+      ) {
+        return;
+      }
+      setVisible(true);
+    }, 8000);
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [allowed, pathname, serverOn, clientHintDisabled]);
 
-  if (!visible) return null;
+  if (!visible || !allowed) return null;
 
   const hide = () => {
     markDismissed();

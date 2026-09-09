@@ -17,9 +17,19 @@ import { CLOCK, Inject, type Clock } from "../common/clock";
 import { KillSwitchService } from "../kill-switch/kill-switch.service";
 import { ExecutionPolicyAdminService } from "../execution-policy/execution-policy.admin.service";
 import { LedgerBucketsService } from "../ledger/ledger.buckets.service";
+import { TrialFundingService } from "../ledger/trial-funding.service";
+import { TrialGrantService } from "../ledger/trial-grant.service";
+import { KrwDisplayService } from "../money-display/krw-display.service";
+import { userMoneyDisplay } from "../money-display/user-money-display";
 import { PostgresService } from "../db/postgres";
-import { buildBalanceAwareFeedWithOverrides } from "./balance-aware-feed";
 import {
+  MatchingPolicyService,
+  opportunityRowToCandidate,
+} from "../matching-policy/matching-policy.service";
+import { buildBalanceAwareFeedWithOverrides } from "./balance-aware-feed";
+import { approxKrwOrNull } from "./current-fx-approx.map";
+import {
+  approxKrwFromSnapshot,
   assetIconForCategory,
   isV1FeedArbitrageType,
   projectCapitalProviderUserSurface,
@@ -74,6 +84,7 @@ type OppUserRow = {
   pricing: Record<string, unknown> | null;
   stale_at: Date;
   status: string;
+  trial_eligible: boolean;
   capital_band: string | null;
   sell_success_rate: string | null;
   sell_success_window_days: number | null;
@@ -115,8 +126,12 @@ export class OpportunitiesUserService {
   constructor(
     private readonly db: PostgresService,
     private readonly buckets: LedgerBucketsService,
+    private readonly trialGrant: TrialGrantService,
+    private readonly trialFunding: TrialFundingService,
     private readonly executionPolicy: ExecutionPolicyAdminService,
     private readonly killSwitch: KillSwitchService,
+    private readonly matchingPolicy: MatchingPolicyService,
+    private readonly krwDisplay: KrwDisplayService,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
@@ -140,6 +155,7 @@ export class OpportunitiesUserService {
     if (await this.killSwitch.isBlocked("opportunity")) {
       const principalUsdt = await this.readPrincipalUsdt(userId);
       return {
+        ...(await this.displayEnvelope(principalUsdt)),
         principalUsdt,
         nearMissCapUsdt: "0",
         classificationOwner: "engine:§0.0.5.1",
@@ -152,18 +168,64 @@ export class OpportunitiesUserService {
         items: [],
       };
     }
-    const principalUsdt = await this.readPrincipalUsdt(userId);
+    await this.trialGrant.grantWelcome(userId);
+    const wallet = await this.readWalletSpendable(userId);
+    const principalUsdt = wallet.principalUsdt;
     const { policy } = await this.executionPolicy.get();
     const allRows = await this.loadFeedCandidateRows();
-    const rows = allRows.filter((r) => this.isRowFresh(r.stale_at));
+    const freshRows = allRows.filter((r) => this.isRowFresh(r.stale_at));
+    const rows = await this.matchingPolicy.filterForUser(
+      userId,
+      freshRows,
+      (row) => opportunityRowToCandidate(row),
+      { platformHardStop: false },
+    );
     const overridesByOpportunityId = await this.loadOverridesMap(userId);
+    const gate = await this.trialFunding.loadGate(userId);
+    const fxById = await this.loadUsdKrwBySnapshotId(
+      rows.map((r) => r.fx_snapshot_id),
+    );
+    const trialRows: OppUserRow[] = [];
+    const ownRows: OppUserRow[] = [];
+    for (const row of rows) {
+      if (
+        this.trialFunding.allowsTrial(gate, {
+          trialEligible: row.trial_eligible === true,
+          amountUsdt: row.required_capital_usdt,
+          trialPrincipalUsdt: wallet.trialPrincipalUsdt,
+          usdKrw: fxById.get(row.fx_snapshot_id) ?? null,
+        })
+      ) {
+        trialRows.push(row);
+      } else {
+        ownRows.push(row);
+      }
+    }
 
-    const feed = buildBalanceAwareFeedWithOverrides({
-      principalUsdt,
-      cards: rows.map((r) => this.toFeedCardInput(r)),
+    const trialFeed = buildBalanceAwareFeedWithOverrides({
+      principalUsdt: wallet.trialPrincipalUsdt,
+      cards: trialRows.map((r) => this.toFeedCardInput(r)),
       overridesByOpportunityId,
       executionPolicy: policy,
     });
+    const ownFeed = buildBalanceAwareFeedWithOverrides({
+      principalUsdt,
+      cards: ownRows.map((r) => this.toFeedCardInput(r)),
+      overridesByOpportunityId,
+      executionPolicy: policy,
+    });
+    const feed = {
+      principalUsdt,
+      nearMissCapUsdt: ownFeed.nearMissCapUsdt,
+      classificationOwner: ownFeed.classificationOwner,
+      items: [...trialFeed.items, ...ownFeed.items],
+      affordableCount: trialFeed.affordableCount + ownFeed.affordableCount,
+      nearMissCount: trialFeed.nearMissCount + ownFeed.nearMissCount,
+      lockedHighCount: trialFeed.lockedHighCount + ownFeed.lockedHighCount,
+      hiddenCount: trialFeed.hiddenCount + ownFeed.hiddenCount,
+      topSuggestDepositUsdt:
+        ownFeed.topSuggestDepositUsdt ?? trialFeed.topSuggestDepositUsdt,
+    };
 
     const byId = new Map(rows.map((r) => [r.id, r]));
     const items = (feed.items as ClassifiedSlice[])
@@ -172,11 +234,13 @@ export class OpportunitiesUserService {
         if (!row) return null;
         return this.toUserCard(row, classified, {
           includePricing: false,
+          usdKrw: fxById.get(row.fx_snapshot_id) ?? null,
         });
       })
       .filter((x): x is Record<string, unknown> => x != null);
 
     return {
+      ...(await this.displayEnvelope(feed.principalUsdt)),
       principalUsdt: feed.principalUsdt,
       nearMissCapUsdt: feed.nearMissCapUsdt,
       classificationOwner: feed.classificationOwner,
@@ -197,7 +261,9 @@ export class OpportunitiesUserService {
       throw new NotFoundException("opportunity not found");
     }
 
-    const principalUsdt = await this.readPrincipalUsdt(userId);
+    await this.trialGrant.grantWelcome(userId);
+    const wallet = await this.readWalletSpendable(userId);
+    const principalUsdt = wallet.principalUsdt;
     const { policy } = await this.executionPolicy.get();
     const row = await this.loadRowById(opportunityId);
     if (!row) throw new NotFoundException("opportunity not found");
@@ -206,6 +272,18 @@ export class OpportunitiesUserService {
     // like a hidden override, rather than silently showing stale money data.
     if (!this.isRowFresh(row.stale_at)) {
       throw new NotFoundException("opportunity not found");
+    }
+    const policyDecision = await this.matchingPolicy.evaluateForUser(
+      userId,
+      opportunityRowToCandidate(row),
+    );
+    if (!policyDecision.visible) {
+      throw new NotFoundException({
+        code: "OPPORTUNITY_UNAVAILABLE_FOR_ACCOUNT",
+        toastCode: "OPPORTUNITY_UNAVAILABLE_FOR_ACCOUNT",
+        message: "현재 계정에서 이용할 수 없는 상품입니다.",
+        statusCode: 404,
+      });
     }
 
     const overridesByOpportunityId = await this.loadOverridesMap(userId, [
@@ -216,8 +294,19 @@ export class OpportunitiesUserService {
       throw new NotFoundException("opportunity not found");
     }
 
+    const gate = await this.trialFunding.loadGate(userId);
+    const fxById = await this.loadUsdKrwBySnapshotId([row.fx_snapshot_id]);
+    const classifyPrincipal = this.trialFunding.allowsTrial(gate, {
+      trialEligible: row.trial_eligible === true,
+      amountUsdt: row.required_capital_usdt,
+      trialPrincipalUsdt: wallet.trialPrincipalUsdt,
+      usdKrw: fxById.get(row.fx_snapshot_id) ?? null,
+    })
+      ? wallet.trialPrincipalUsdt
+      : principalUsdt;
+
     const feed = buildBalanceAwareFeedWithOverrides({
-      principalUsdt,
+      principalUsdt: classifyPrincipal,
       cards: [this.toFeedCardInput(row)],
       overridesByOpportunityId,
       executionPolicy: policy,
@@ -228,11 +317,13 @@ export class OpportunitiesUserService {
     }
 
     return {
-      principalUsdt: feed.principalUsdt,
+      ...(await this.displayEnvelope(principalUsdt)),
+      principalUsdt,
       nearMissCapUsdt: feed.nearMissCapUsdt,
       classificationOwner: feed.classificationOwner,
       item: this.toUserCard(row, classified, {
         includePricing: true,
+        usdKrw: fxById.get(row.fx_snapshot_id) ?? null,
       }),
     };
   }
@@ -249,13 +340,41 @@ export class OpportunitiesUserService {
   }
 
   private async readPrincipalUsdt(userId: string): Promise<string> {
+    const wallet = await this.readWalletSpendable(userId);
+    return wallet.principalUsdt;
+  }
+
+  private async readWalletSpendable(userId: string): Promise<{
+    principalUsdt: string;
+    trialPrincipalUsdt: string;
+  }> {
     try {
       const buckets = await this.buckets.getUserBuckets(userId);
-      return buckets.principalUsdt;
+      return {
+        principalUsdt: buckets.principalUsdt,
+        trialPrincipalUsdt: buckets.trialPrincipalUsdt,
+      };
     } catch (e) {
-      if (e instanceof NotFoundException) return "0";
+      if (e instanceof NotFoundException) {
+        return { principalUsdt: "0", trialPrincipalUsdt: "0" };
+      }
       throw e;
     }
+  }
+
+  private async loadUsdKrwBySnapshotId(
+    ids: string[],
+  ): Promise<Map<string, string>> {
+    const unique = [...new Set(ids.filter((id) => Boolean(id)))];
+    if (unique.length === 0) return new Map();
+    const { rows } = await this.db.query<{ id: string; usd_krw: string }>(
+      `SELECT id, usd_krw::text
+         FROM public.fx_snapshots
+        WHERE id = ANY($1::text[])
+          AND usd_krw > 0`,
+      [unique],
+    );
+    return new Map(rows.map((r) => [r.id, r.usd_krw]));
   }
 
   private async loadFeedCandidateRows(): Promise<OppUserRow[]> {
@@ -267,7 +386,9 @@ export class OpportunitiesUserService {
               required_capital_usdt::text, execution_mode, execution_platforms,
               category, asset_label, asset_image_url, asset_image_source,
               asset_image_alt_ko, arbitrage_type, arbitrage_type_ko,
-              pricing, stale_at, status, capital_band,
+              pricing, stale_at, status,
+              COALESCE(trial_eligible, false) AS trial_eligible,
+              capital_band,
               sell_success_rate::text, sell_success_window_days,
               sell_success_as_of, risk_score
          FROM public.opportunities
@@ -277,8 +398,9 @@ export class OpportunitiesUserService {
           AND arbitrage_type = ANY($1::text[])
           AND NULLIF(BTRIM(arbitrage_type_ko), '') IS NOT NULL
           AND NULLIF(BTRIM(asset_image_url), '') IS NOT NULL
-        ORDER BY updated_at DESC
-        LIMIT 200`,
+          AND NULLIF(BTRIM(asset_id), '') IS NOT NULL
+          AND asset_id NOT LIKE 'query:%'
+        ORDER BY updated_at DESC`,
       [[...V1_FEED_ARBITRAGE_TYPES]],
     );
     return rows.filter((r) => isV1FeedArbitrageType(r.arbitrage_type));
@@ -293,7 +415,9 @@ export class OpportunitiesUserService {
               required_capital_usdt::text, execution_mode, execution_platforms,
               category, asset_label, asset_image_url, asset_image_source,
               asset_image_alt_ko, arbitrage_type, arbitrage_type_ko,
-              pricing, stale_at, status, capital_band,
+              pricing, stale_at, status,
+              COALESCE(trial_eligible, false) AS trial_eligible,
+              capital_band,
               sell_success_rate::text, sell_success_window_days,
               sell_success_as_of, risk_score
          FROM public.opportunities
@@ -360,10 +484,15 @@ export class OpportunitiesUserService {
     };
   }
 
+  private async displayEnvelope(principalUsdt: string) {
+    const snap = await this.krwDisplay.latest();
+    return this.krwDisplay.envelope(principalUsdt, snap);
+  }
+
   private toUserCard(
     row: OppUserRow,
     classified: ClassifiedSlice,
-    opts: { includePricing: boolean },
+    opts: { includePricing: boolean; usdKrw: string | null },
   ): Record<string, unknown> {
     const pricing = row.pricing || {};
     const tags = withTimeSensitiveTag(row.tags, {
@@ -435,6 +564,12 @@ export class OpportunitiesUserService {
 
     return {
       ...userCard,
+      ...userMoneyDisplay(),
+      requiredCapitalKrwApprox: approxKrwOrNull(
+        classified.requiredCapitalUsdt,
+        opts.usdKrw ? { usdtKrw: opts.usdKrw } : null,
+        approxKrwFromSnapshot,
+      ),
       bucket: classified.bucket,
       suggestDepositUsdt: classified.suggestDepositUsdt,
       forceShowPromoted: classified.forceShowPromoted,

@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { APP_FILTER, APP_GUARD } from "@nestjs/core";
 import { AdminGuard } from "./common/admin.guard";
 import { CommonModule } from "./common/common.module";
+import { AdminIdentityModule } from "./common/admin-identity.module";
 import { AuthModule } from "./auth/auth.module";
 import { ComplianceModule } from "./compliance/compliance.module";
 import { EventsModule } from "./events/events.module";
@@ -12,8 +13,10 @@ import { ExecutionPolicyModule } from "./execution-policy/execution-policy.modul
 import { MembershipModule } from "./membership/membership.module";
 import { InboxModule } from "./inbox/inbox.module";
 import { UserUxPrefsModule } from "./ux-prefs/user-ux-prefs.module";
+import { ProductOnboardingModule } from "./product-onboarding/product-onboarding.module";
 import { PushModule } from "./push/push.module";
 import { LoopModule } from "./loop/loop.module";
+import { MatchingPolicyModule } from "./matching-policy/matching-policy.module";
 import { OpportunitiesModule } from "./opportunities/opportunities.module";
 import { MissionModule } from "./missions/mission.module";
 import { ReferralModule } from "./referral/referral.module";
@@ -29,12 +32,14 @@ import { KillSwitchModule } from "./kill-switch/kill-switch.module";
 import { AdminOpsModule } from "./admin-ops/admin-ops.module";
 import { MatchControlModule } from "./match-control/match-control.module";
 import { SourcePolicyModule } from "./source-policy/source-policy.module";
+import { UsersAdminModule } from "./users/users-admin.module";
 import { ObsExceptionFilter } from "./observability/obs.exception-filter";
 
 @Module({
   imports: [
     CommonModule,
     EventsModule,
+    AdminIdentityModule,
     LedgerModule,
     WalletModule,
     GrowthModule,
@@ -43,12 +48,14 @@ import { ObsExceptionFilter } from "./observability/obs.exception-filter";
     RiskModule,
     ReferralModule,
     MissionModule,
+    MatchingPolicyModule,
     OpportunitiesModule,
     TradesModule,
     ExecutionPolicyModule,
     MembershipModule,
     InboxModule,
     UserUxPrefsModule,
+    ProductOnboardingModule,
     PushModule,
     LoopModule,
     AdaptersModule,
@@ -60,6 +67,7 @@ import { ObsExceptionFilter } from "./observability/obs.exception-filter";
     AdminOpsModule,
     MatchControlModule,
     SourcePolicyModule,
+    UsersAdminModule,
   ],
   controllers: [HealthController],
   // Global admin boundary — an admin controller added without @UseGuards is

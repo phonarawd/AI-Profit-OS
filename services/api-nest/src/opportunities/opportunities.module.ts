@@ -1,6 +1,8 @@
 import { Module } from "@nestjs/common";
+import { MatchingPolicyModule } from "../matching-policy/matching-policy.module";
 import { ExecutionPolicyModule } from "../execution-policy/execution-policy.module";
 import { LedgerModule } from "../ledger/ledger.module";
+import { MoneyDisplayModule } from "../money-display/money-display.module";
 import { EventsModule } from "../events/events.module";
 import { LoopModule } from "../loop/loop.module";
 import { KillSwitchModule } from "../kill-switch/kill-switch.module";
@@ -17,13 +19,16 @@ import { CurrentFxApproxUserController } from "./current-fx-approx.user.controll
 import { OpportunitiesUserController } from "./opportunities.user.controller";
 import { OpportunitiesUserService } from "./opportunities.user.service";
 import { ParticipateService } from "./participate.service";
+import { TrialEligibleAdminService } from "./trial-eligible.admin.service";
 import { UserOpportunityOverrideAdminController } from "./user-opportunity-override.admin.controller";
 import { UserOpportunityOverrideAdminService } from "./user-opportunity-override.admin.service";
 
 @Module({
   imports: [
     EventsModule,
+    MatchingPolicyModule,
     LedgerModule,
+    MoneyDisplayModule,
     ExecutionPolicyModule,
     RiskModule,
     KillSwitchModule,
@@ -42,6 +47,7 @@ import { UserOpportunityOverrideAdminService } from "./user-opportunity-override
     OpportunitiesAdminService,
     OpportunitiesUserService,
     ParticipateService,
+    TrialEligibleAdminService,
     UserOpportunityOverrideAdminService,
     CatalogRuntimeSeedService,
     FxSnapshotService,

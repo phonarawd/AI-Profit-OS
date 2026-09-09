@@ -7,6 +7,7 @@ import { FontScaleApply } from "../components/FontScaleApply";
 import { ConsumerSparkRoot } from "../components/spark-shell/ConsumerSparkRoot";
 import { PwaRuntime } from "../components/pwa/PwaRuntime";
 import { ObsRuntime } from "../components/observability/ObsRuntime";
+import { SessionRefreshRuntime } from "../components/SessionRefreshRuntime";
 
 const PRETENDARD_CSS =
   "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css";
@@ -18,10 +19,23 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
+const APP_ORIGIN = "https://app.hiptk.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(APP_ORIGIN),
   title: "퍼뜩",
   description: "퍼뜩 — Global Opportunity Platform",
   applicationName: "퍼뜩",
+  alternates: { canonical: APP_ORIGIN },
+  openGraph: {
+    type: "website",
+    locale: "ko_KR",
+    url: APP_ORIGIN,
+    siteName: "퍼뜩",
+    title: "퍼뜩",
+    description: "퍼뜩 — Global Opportunity Platform",
+  },
+  robots: { index: true, follow: true },
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
@@ -53,6 +67,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               '(function(){try{var s=localStorage.getItem("peotteok_ux_font_scale");if(s==="md"||s==="lg"||s==="xl"){document.documentElement.setAttribute("data-font-scale",s);}}catch(e){}})();',
           }}
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "Organization",
+                  name: "퍼뜩",
+                  alternateName: "PUTDUK",
+                  url: APP_ORIGIN,
+                },
+                {
+                  "@type": "WebSite",
+                  name: "퍼뜩",
+                  url: APP_ORIGIN,
+                },
+              ],
+            }),
+          }}
+        />
       </head>
       <body className="min-h-dvh bg-lux-bg text-lux-text">
         <DeviceTierApply />
@@ -62,6 +97,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </ConsumerSparkRoot>
         <PwaRuntime />
         <ObsRuntime />
+        <SessionRefreshRuntime />
       </body>
     </html>
   );

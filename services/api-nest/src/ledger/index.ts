@@ -11,6 +11,14 @@ export {
   PRACTICE_GRANT_KEY_WELCOME,
 } from "./practice-grant.service";
 export type { PracticeGrantV1 } from "./practice-grant.service";
+export {
+  TrialGrantService,
+  TRIAL_GRANT_KEY_WELCOME,
+} from "./trial-grant.service";
+export { TrialFundingService } from "./trial-funding.service";
+export type { FundingSource, FundingDecision } from "./trial-funding.service";
+export { TrialStateService } from "./trial-state.service";
+export type { TrialStateView } from "./trial-state.service";
 export { LEDGER_EVENTS } from "./ledger.events";
 export { LEDGER_ADMIN_ROUTES } from "./ledger.routes";
 export * from "./ledger.types";

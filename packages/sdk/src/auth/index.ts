@@ -14,6 +14,24 @@ export {
   startKakaoOAuth,
 } from "./fetch";
 export { finishOauth, verifyMagicLink } from "./proof";
+export {
+  changePassword,
+  completePasswordReset,
+  findId,
+  listSessions,
+  loginClassic,
+  logoutAllDevices,
+  refreshSession,
+  requestMagicLinkWithConsent,
+  requestPasswordReset,
+  resendSignupVerification,
+  revokeSessionFamily,
+  signupClassicActivate,
+  signupClassicRequest,
+  type ClassicSignupInput,
+  type MagicLinkConsent,
+  type SessionFamilySummary,
+} from "./classic";
 export { isKakaoOAuthReady, type KakaoReadyEnv } from "./kakao-ready";
 export {
   DELETE_ACCOUNT_CONFIRM_PHRASE,

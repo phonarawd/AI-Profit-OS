@@ -48,7 +48,11 @@ function documentConnectSrc(spec, production) {
 
 function documentCsp(spec, production) {
   const h = spec.hosts;
-  const script = ["'self'", "'unsafe-inline'"];
+  const turnstileWild = (spec.allowedHostWildcard || []).find((x) =>
+    String(x).includes("challenges.cloudflare.com"),
+  );
+  const turnstile = [h.turnstile, turnstileWild].filter(Boolean);
+  const script = ["'self'", "'unsafe-inline'", ...turnstile];
   if (!production) {
     // next dest webpack/turbopack hydrate uses eval(). Production CSP stays fail-closed.
     script.push("'unsafe-eval'");
@@ -56,6 +60,7 @@ function documentCsp(spec, production) {
   const directives = {
     "default-src": ["'self'"],
     "script-src": script,
+    "frame-src": turnstile,
     "style-src": ["'self'", "'unsafe-inline'", h.pretendard],
     "img-src": [
       "'self'",
@@ -67,7 +72,7 @@ function documentCsp(spec, production) {
       h.r2Dev,
       spec.allowedHostWildcard[0],
     ],
-    "connect-src": documentConnectSrc(spec, production),
+    "connect-src": unique([...documentConnectSrc(spec, production), ...turnstile]),
     "font-src": ["'self'", "data:", h.pretendard],
     "worker-src": ["'self'"],
     "manifest-src": ["'self'"],
@@ -113,7 +118,10 @@ function assertNoWildcardAbuse(csp) {
   if (csp.includes("'unsafe-eval'")) banned.push("unsafe-eval");
   const wildcards = csp.match(/https:\/\/\*\.[^\s;]+/g) || [];
   for (const w of wildcards) {
-    if (w !== "https://*.r2.cloudflarestorage.com") {
+    if (
+      w !== "https://*.r2.cloudflarestorage.com" &&
+      w !== "https://*.challenges.cloudflare.com"
+    ) {
       banned.push("host wildcard " + w);
     }
   }

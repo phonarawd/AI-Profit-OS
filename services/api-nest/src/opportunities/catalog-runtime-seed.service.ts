@@ -15,6 +15,7 @@ import {
   FORBIDDEN_INGEST_ADAPTERS,
   normalizeIngestListingsForPersist,
   normalizeNativeToUsdt,
+  isFashionphileImageHost,
 } from "./opportunities.mi";
 
 export type CatalogRuntimeSeedResult = {
@@ -198,6 +199,61 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
       [assetId, imageUrl],
     );
     return { ok: true };
+  }
+
+  /**
+   * Observation match → fashionphile image. Listing persist 0.
+   * 23514 = image_source CHECK not yet applied.
+   */
+  async applyObservationImageProvenance(input: {
+    assetId: string;
+    imageUrl: string;
+  }): Promise<{ ok: boolean; reason?: string }> {
+    if (!this.db.configured()) return { ok: false, reason: "DATABASE_URL unset" };
+    const assetId = String(input.assetId || "").trim();
+    const imageUrl = String(input.imageUrl || "").trim();
+    if (!assetId || assetId.startsWith("query:")) {
+      return { ok: false, reason: "invalid assetId" };
+    }
+    if (!isFashionphileImageHost(imageUrl)) {
+      return { ok: false, reason: "image host must be fashionphile shopify path" };
+    }
+    try {
+      await this.db.query(
+        `UPDATE public.assets SET
+           image_url = $2,
+           image_source = 'fashionphile',
+           image_fetched_at = now(),
+           updated_at = now()
+         WHERE asset_id = $1`,
+        [assetId, imageUrl],
+      );
+      await this.db.query(
+        `UPDATE public.opportunities SET
+           asset_image_url = $2,
+           asset_image_source = 'fashionphile',
+           image_missing = false,
+           updated_at = now()
+         WHERE asset_id = $1`,
+        [assetId, imageUrl],
+      );
+      return { ok: true };
+    } catch (err) {
+      const code =
+        err && typeof err === "object" && "code" in err
+          ? String((err as { code?: string }).code || "")
+          : "";
+      if (code === "23514") {
+        return { ok: false, reason: "IMAGE_SOURCE_CHECK_MISSING" };
+      }
+      return {
+        ok: false,
+        reason:
+          err instanceof Error
+            ? err.message.slice(0, 160)
+            : "OBSERVATION_IMAGE_PROVENANCE_FAILED",
+      };
+    }
   }
 
   /**

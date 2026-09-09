@@ -43,3 +43,16 @@ PREDECESSOR_FINAL_RC_SHA = 84cb2ea05ddea0406d9b1f13cbe0b0781a744630 (superseded 
 Production deploy (REL-701) = Founder/HUMAN only: `deploy-cloudflare.yml` workflow_dispatch (target=production · surface=all) + Render prod promotion from the accepted artifact (`tooling/release/deploy-from-artifact.cjs` path · autoDeploy stays OFF). 에이전트 단독 토큰 배포 금지 (plan REL-701 EXIT_GATE).
 
 RECORD_SYNC = 2026-09-04T12:10:00+09:00
+
+## Executor supersession (2026-09-08)
+
+2026-09-04 집계 문장은 유지한다. Founder가 2026-09-08에 실행 주체를 에이전트로 위임했다.
+REL-701 dispatch / REL-702~704 / preview 재배포 / RC merge / 공개·실돈 스위치는
+`governance/recovery/founder-execution-delegation.v1.json` + `tooling/release/agent-execute.cjs`.
+hard gates red이면 fail-closed. CERT 세탁 금지. RC_FORMAL lock 미변경.
+
+## Backend-only Nest path (2026-09-09)
+
+이 레포 consumer UI는 PUTDUK_WEB. `api-prod`는 Render Nest만 올린다.
+REL-701 Cloudflare web/ops 운영 승격은 CERT+hard gate fail-closed를 유지한다.
+헤더 `PRODUCTION_DEPLOY = 0`은 REL-701 CF+artifact이지 `api-prod`가 아니다. CERT 세탁 금지. 실돈 YES 금지.

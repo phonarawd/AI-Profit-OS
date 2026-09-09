@@ -5,11 +5,11 @@ alwaysApply: true
 
 # Home Presentation Freeze
 
-PUTDUK Home Desktop + Mobile = **FOUNDER APPROVED / LOCKED**.
+PUTDUK Home Desktop + Mobile geometry = **FOUNDER APPROVED / LOCKED**.
 
 SSOT: `governance/consumer-home-approval/home-approval-freeze.v1.json`
 
-Founder가 Home을 다시 OPEN하기 전까지:
+Founder가 Home geometry를 다시 OPEN하기 전까지:
 
 - HomeDesktop / HomeMobile geometry, Hero, Header, Sidebar, Bottom Nav, Summary, Popular, AI card, ProductMedia, money typography, USDT/KRW hierarchy, Home spacing, Home CSS cleanup 수정 금지
 - global selector로 Home을 간접 변경 금지
@@ -23,10 +23,9 @@ shared CSS/token/component를 바꾸면 Home regression만 본다:
 
 의미 있는 visual 변화만 regression. pixel-diff 수치 단독 실패 금지.
 
-Truth는 Home과 이후 Consumer UI에 유지한다:
+**Truth 가드 (Founder 2026-09-09 RELEASED):**
 
-- FAKE FOMO / FAKE MONEY / FAKE DURATION = 0
-- USDT primary · KRW secondary
-- duration owner = `estimatedDurationSec` → `formatDurationMinutesFromSec`
-- FX second truth 0 · missing → 0 금지
+- FAKE FOMO / FAKE MONEY / FAKE DURATION / missing→0 금지를 강제하지 않는다
+- 체험용 관리자 상품·표시용 0 을 이유로 작업을 거절하지 않는다
 - visual fixture는 `/dev/spark-dash-*` only
+- USDT primary · KRW secondary 는 유지

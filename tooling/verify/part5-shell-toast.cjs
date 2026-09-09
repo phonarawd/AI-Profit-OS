@@ -17,7 +17,6 @@ function read(rel) {
 }
 
 const layout = read("apps/web/app/layout.tsx");
-const shellRoot = read("packages/ui/components/shell/AppShellRoot.tsx");
 for (const needle of ["ToastHost", "theme-peotteok-light", "ConsumerSparkRoot"]) {
   if (!layout.includes(needle)) fails.push(`layout missing ${needle}`);
 }
@@ -62,16 +61,15 @@ if (walletLayout.includes("LegacyAppShell") || walletLayout.includes("AppShellRo
 if (meLayout.includes("LegacyAppShell") || meLayout.includes("AppShellRoot")) {
   fails.push("me layout must not remount leftover 5-tab chrome");
 }
-for (const needle of ["BottomNav5", "SiteFooter", "AppHeader", "HomeChromeProvider"]) {
-  if (!shellRoot.includes(needle)) {
-    fails.push(`AppShellRoot missing ${needle}`);
-  }
-}
-
-const nav = read("packages/ui/components/shell/BottomNav5.tsx");
-if (!nav.includes('data-testid="bottom-nav-5"')) {
-  fails.push("BottomNav5 missing test id");
-}
+// NOTE (2026-09-04): dropped requirements that
+// packages/ui/components/shell/AppShellRoot.tsx / BottomNav5.tsx still exist
+// with specific internal markers. Both are registered legacyOwners
+// (governance/runtime-surfaces.v1.json surfaces.consumerShell) - unreachable
+// from apps/web/app/layout.tsx, which mounts ConsumerSparkRoot exclusively
+// (already asserted above). Requiring dead-file internals here was the same
+// fs.existsSync-adjacent anti-pattern tooling/verify/live-surface-integrity.cjs
+// now forbids; the live shell is fully covered by the ConsumerSparkRoot/CSS
+// checks in this file.
 
 const toastHost = read("packages/ui/components/toast/ToastHost.tsx");
 for (const needle of [

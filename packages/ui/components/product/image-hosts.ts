@@ -8,6 +8,7 @@ export const ASSET_IMAGE_SOURCES = [
   "pokemontcg",
   "ygoprodeck",
   "admin_r2",
+  "fashionphile",
 ] as const;
 
 export type AssetImageSource = (typeof ASSET_IMAGE_SOURCES)[number];
@@ -44,6 +45,7 @@ export const PRODUCT_IMAGE_USED_HOSTS = [
   "images.pokemontcg.io",
   "images.ygoprodeck.com",
   "asset-images.r2.dev",
+  "cdn.shopify.com",
 ] as const;
 
 /** `{bucket}.{account}.r2.cloudflarestorage.com` 만. 그 외 ** 와일드카드 금지. */
@@ -72,5 +74,10 @@ export const PRODUCT_IMAGE_REMOTE_PATTERNS = [
     protocol: "https" as const,
     hostname: "**.r2.cloudflarestorage.com",
     pathname: "/**",
+  },
+  {
+    protocol: "https" as const,
+    hostname: "cdn.shopify.com",
+    pathname: "/s/files/1/0894/3186/7695/**",
   },
 ];

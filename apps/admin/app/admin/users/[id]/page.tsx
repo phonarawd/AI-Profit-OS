@@ -7,17 +7,19 @@ import { T } from "@aipo/ui/copy/ko";
 import { adminGet, adminSend, type AdminResult } from "../../../../lib/admin-api";
 import { readStatusLabel, readText } from "../../../../lib/admin-truth";
 import { AdminFetchNote, AdminTruth } from "../../../../components/AdminTruth";
+import { User360OpsPanel } from "../../../../components/User360OpsPanel";
 
 /**
  * Admin §9.8 · 유저360
  * §9.8.9 opportunities tab = override contract
  * §9.8.10 membership · matchStrictnessOverride (Engine §0.0.7)
  */
-type Tab = "summary" | "opportunities" | "membership";
+type Tab = "summary" | "opportunities" | "membership" | "policy";
 
 function resolveTab(raw: string | null): Tab {
   if (raw === "opportunities") return "opportunities";
   if (raw === "membership") return "membership";
+  if (raw === "policy") return "policy";
   return "summary";
 }
 
@@ -38,6 +40,46 @@ type RiskPayload = {
   status?: unknown;
   reason?: unknown;
 };
+
+type UserIdentity = {
+  id?: unknown;
+  username?: unknown;
+  email?: unknown;
+  phoneE164?: unknown;
+  displayName?: unknown;
+  declaredName?: unknown;
+  status?: unknown;
+  signupMethod?: unknown;
+  emailVerified?: unknown;
+  phoneVerified?: unknown;
+  createdAt?: unknown;
+  updatedAt?: unknown;
+};
+
+function maskEmail(raw: unknown): string | null {
+  const s = typeof raw === "string" ? raw : "";
+  const at = s.indexOf("@");
+  if (!s) return null;
+  if (at < 1) return s;
+  return `${s.slice(0, 1)}***${s.slice(at)}`;
+}
+
+function signupLabel(raw: unknown): string | null {
+  const map = T.admin.usersList;
+  if (raw === "classic") return map.signupClassic;
+  if (raw === "kakao") return map.signupKakao;
+  if (raw === "google") return map.signupGoogle;
+  if (raw === "passkey") return map.signupPasskey;
+  if (raw === "email_magic") return map.signupEmailMagic;
+  return typeof raw === "string" && raw ? raw : null;
+}
+
+function maskPhone(raw: unknown): string | null {
+  const s = typeof raw === "string" ? raw : "";
+  if (!s) return null;
+  if (s.length < 6) return s;
+  return `${s.slice(0, 3)}****${s.slice(-2)}`;
+}
 
 type OverrideItem = {
   opportunityId?: unknown;
@@ -62,22 +104,37 @@ function UserDetailInner() {
   const [forceReason, setForceReason] = useState("");
   const [forceTarget, setForceTarget] = useState("sprout");
   const [forceNote, setForceNote] = useState<string | null>(null);
+  const [identity, setIdentity] = useState<AdminResult<UserIdentity> | null>(null);
+  const [policy, setPolicy] = useState<AdminResult<Record<string, unknown>> | null>(null);
+  const [policyMin, setPolicyMin] = useState("10");
+  const [policyMax, setPolicyMax] = useState("50");
+  const [policyReason, setPolicyReason] = useState("");
+  const [policyNote, setPolicyNote] = useState<string | null>(null);
+  const [assignOpp, setAssignOpp] = useState("");
+  const [assignReason, setAssignReason] = useState("");
+  const [piiRevealed, setPiiRevealed] = useState(false);
 
   useEffect(() => {
     if (!userId) return;
     let cancelled = false;
     void (async () => {
-      const [m, r, o] = await Promise.all([
+      const [m, r, o, u, p] = await Promise.all([
         adminGet<MembershipPayload>(`/api/v1/admin/users/${userId}/membership`),
         adminGet<RiskPayload>(`/api/v1/admin/risk/users/${userId}/state`),
         adminGet<{ items?: OverrideItem[] }>(
           `/api/v1/admin/users/${userId}/opportunity-overrides`,
+        ),
+        adminGet<UserIdentity>(`/api/v1/admin/users/${userId}`),
+        adminGet<Record<string, unknown>>(
+          `/api/v1/admin/users/${userId}/matching-policy`,
         ),
       ]);
       if (cancelled) return;
       setMembership(m);
       setRisk(r);
       setOverrides(o);
+      setIdentity(u);
+      setPolicy(p);
     })();
     return () => {
       cancelled = true;
@@ -142,6 +199,55 @@ function UserDetailInner() {
     }
   }
 
+  async function onPolicySave(event: FormEvent) {
+    event.preventDefault();
+    if (policyReason.trim().length < 8) {
+      setPolicyNote("사유는 8자 이상이어야 합니다.");
+      return;
+    }
+    const res = await adminSend(
+      `/api/v1/admin/users/${userId}/matching-policy`,
+      "PUT",
+      {
+        visibilityMinUsdt: policyMin,
+        visibilityMaxUsdt: policyMax,
+        reason: policyReason.trim(),
+      },
+    );
+    setPolicyNote(res.ok ? "반영했습니다." : "반영하지 못했습니다.");
+    if (res.ok) {
+      setPolicy(await adminGet(`/api/v1/admin/users/${userId}/matching-policy`));
+    }
+  }
+
+  async function onPolicyPause(paused: boolean) {
+    if (policyReason.trim().length < 8) {
+      setPolicyNote("사유는 8자 이상이어야 합니다.");
+      return;
+    }
+    const path = paused
+      ? `/api/v1/admin/users/${userId}/matching-policy/pause`
+      : `/api/v1/admin/users/${userId}/matching-policy/resume`;
+    const res = await adminSend(path, "POST", { reason: policyReason.trim() });
+    setPolicyNote(res.ok ? "반영했습니다." : "반영하지 못했습니다.");
+    if (res.ok) {
+      setPolicy(await adminGet(`/api/v1/admin/users/${userId}/matching-policy`));
+    }
+  }
+
+  async function onAssign(kind: "assign" | "exclude") {
+    if (assignReason.trim().length < 8 || !assignOpp.trim()) {
+      setPolicyNote("상품과 사유가 필요합니다.");
+      return;
+    }
+    const res = await adminSend(
+      `/api/v1/admin/users/${userId}/matching-policy/${kind}`,
+      "POST",
+      { opportunityId: assignOpp.trim(), reason: assignReason.trim() },
+    );
+    setPolicyNote(res.ok ? "반영했습니다." : "반영하지 못했습니다.");
+  }
+
   return (
     <main className="p-6 text-lux-text" data-testid="admin-user-detail">
       <h1 className="text-xl font-semibold">회원 정보</h1>
@@ -179,9 +285,125 @@ function UserDetailInner() {
         >
           등급·맞춤 기준
         </a>
+        <a
+          href={`/admin/users/${userId}?tab=policy`}
+          className={tab === "policy" ? "font-semibold" : "text-lux-text-muted"}
+          data-tab="policy"
+        >
+          보여 줄 상품 기준
+        </a>
       </div>
 
-      {tab === "opportunities" ? (
+      {tab === "policy" ? (
+        <section className="mt-6 space-y-3" data-surface="user-matching-policy">
+          <h2 className="text-base font-medium">이 회원에게 보여 줄 상품 기준</h2>
+          <p className="text-sm text-lux-text-muted" data-lock="ledger-immutable">
+            금액 범위만 바뀝니다. 상품 가격이나 돈의 기록은 바뀌지 않습니다.
+          </p>
+          {!policy ? (
+            <p className="text-sm text-lux-text-muted">{T.admin.state.loading}</p>
+          ) : policy.ok ? (
+            <p className="text-sm" data-preview="matching-policy">
+              지금 적용 기준{" "}
+              <AdminTruth value={readText(policy.data.source)} />
+            </p>
+          ) : (
+            <AdminFetchNote failure={policy.failure} />
+          )}
+          <form className="space-y-2" onSubmit={onPolicySave}>
+            <label className="block text-sm" htmlFor="policy-min">
+              최소 금액
+            </label>
+            <input
+              id="policy-min"
+              value={policyMin}
+              onChange={(e) => setPolicyMin(e.target.value)}
+              className="rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
+            />
+            <label className="block text-sm" htmlFor="policy-max">
+              최대 금액
+            </label>
+            <input
+              id="policy-max"
+              value={policyMax}
+              onChange={(e) => setPolicyMax(e.target.value)}
+              className="rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
+            />
+            <label className="block text-sm" htmlFor="policy-reason">
+              사유
+            </label>
+            <textarea
+              id="policy-reason"
+              value={policyReason}
+              onChange={(e) => setPolicyReason(e.target.value)}
+              className="w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
+            />
+            <button type="submit" className="rounded bg-lux-elevated px-3 py-1 text-sm">
+              기준 저장
+            </button>
+          </form>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              className="rounded bg-lux-elevated px-3 py-1 text-sm"
+              onClick={() => void onPolicyPause(true)}
+            >
+              잠시 멈추기
+            </button>
+            <button
+              type="button"
+              className="rounded bg-lux-elevated px-3 py-1 text-sm"
+              onClick={() => void onPolicyPause(false)}
+            >
+              다시 시작
+            </button>
+          </div>
+          <div className="space-y-2">
+            <label className="block text-sm" htmlFor="assign-opp">
+              특정 상품
+            </label>
+            <input
+              id="assign-opp"
+              value={assignOpp}
+              onChange={(e) => setAssignOpp(e.target.value)}
+              className="w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
+            />
+            <label className="block text-sm" htmlFor="assign-reason">
+              사유
+            </label>
+            <textarea
+              id="assign-reason"
+              value={assignReason}
+              onChange={(e) => setAssignReason(e.target.value)}
+              className="w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
+            />
+            <div className="flex gap-2">
+              <button
+                type="button"
+                className="rounded bg-lux-elevated px-3 py-1 text-sm"
+                onClick={() => void onAssign("assign")}
+              >
+                이 상품만 보여 주기
+              </button>
+              <button
+                type="button"
+                className="rounded bg-lux-elevated px-3 py-1 text-sm"
+                onClick={() => void onAssign("exclude")}
+              >
+                이 상품 숨기기
+              </button>
+            </div>
+          </div>
+          {policyNote ? (
+            <p className="text-sm text-lux-text-muted" role="status">
+              {policyNote}
+            </p>
+          ) : null}
+          <p className="text-sm text-lux-text-muted" data-rbac="userMatchPolicy">
+            허용된 관리자만 바꿀 수 있습니다.
+          </p>
+        </section>
+      ) : tab === "opportunities" ? (
         <section className="mt-6 space-y-3" data-surface="user-opportunity-override">
           <h2 className="text-base font-medium">이 회원에게 보여 줄 수익 기회</h2>
           <p
@@ -392,6 +614,67 @@ function UserDetailInner() {
         </section>
       ) : (
         <section className="mt-6 space-y-3 text-sm">
+          <div data-testid="admin-user-identity">
+            {!identity ? (
+              <p className="text-lux-text-muted">{T.admin.state.loading}</p>
+            ) : identity.ok ? (
+              <dl className="grid gap-2" data-pii={piiRevealed ? "revealed" : "masked"}>
+                <div>
+                  {T.admin.usersList.identityId}{" "}
+                  <AdminTruth value={readText(identity.data.id)} />
+                </div>
+                <div>
+                  {T.admin.usersList.identityUsername}{" "}
+                  <AdminTruth value={readText(identity.data.username)} />
+                </div>
+                <div>
+                  {T.admin.usersList.identityDisplayName}{" "}
+                  <AdminTruth value={readText(identity.data.displayName)} />
+                </div>
+                <div>
+                  {T.admin.usersList.identityEmail}{" "}
+                  <AdminTruth value={piiRevealed ? readText(identity.data.email) : maskEmail(identity.data.email)} />
+                  {identity.data.emailVerified === true
+                    ? T.admin.usersList.emailVerifiedYes
+                    : T.admin.usersList.emailVerifiedNo}
+                </div>
+                <div>
+                  {T.admin.usersList.identityPhone}{" "}
+                  <AdminTruth value={piiRevealed ? readText(identity.data.phoneE164) : maskPhone(identity.data.phoneE164)} />
+                  {identity.data.phoneVerified === true
+                    ? T.admin.usersList.emailVerifiedYes
+                    : T.admin.usersList.identityPhoneUnverified}
+                </div>
+                <div>
+                  {T.admin.usersList.signupMethodLabel}{" "}
+                  <AdminTruth value={signupLabel(identity.data.signupMethod)} />
+                </div>
+                <div>
+                  {T.admin.usersList.statusLabel}{" "}
+                  <AdminTruth value={readStatusLabel(identity.data.status)} />
+                </div>
+                <div>
+                  {T.admin.usersList.identityCreatedAt}{" "}
+                  <AdminTruth value={readText(identity.data.createdAt)} />
+                </div>
+              </dl>
+            ) : (
+              <AdminFetchNote failure={identity.failure} />
+            )}
+          </div>
+          <User360OpsPanel
+            userId={userId}
+            updatedAt={identity?.ok ? identity.data.updatedAt : undefined}
+            revealed={piiRevealed}
+            onReveal={async (reason) => {
+              const res = await adminSend(`/api/v1/admin/users/${userId}/pii-reveal`, "POST", { reason });
+              if (res.ok) {
+                setPiiRevealed(true);
+                setIdentity(await adminGet(`/api/v1/admin/users/${userId}`));
+              }
+              return res.ok;
+            }}
+          />
           <p className="text-lux-text-muted">
             위 메뉴에서 이 회원에게 보여 줄 수익 기회와 회원 등급을 확인할 수 있습니다.
           </p>

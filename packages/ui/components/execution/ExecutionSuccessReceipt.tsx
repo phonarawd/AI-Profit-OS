@@ -3,7 +3,7 @@
 import { T } from "../../copy/ko";
 import { Badge } from "../lux/Badge";
 import { CountUpNumber } from "../lux/CountUpNumber";
-import { PriceCompareMargin } from "../opportunity/PriceCompareMargin";
+import { PriceCompareMargin } from "./PriceCompareMargin";
 import { ParticipateProofPanel } from "../trust/ParticipateProofPanel";
 import type { ParticipateProofModel } from "../trust/trust-types";
 import {

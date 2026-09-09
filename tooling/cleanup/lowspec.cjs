@@ -27,7 +27,7 @@ for (const base of ["apps", "packages", "services", "workers"]) {
   const b = path.join(root, base);
   if (!fs.existsSync(b)) continue;
   for (const name of fs.readdirSync(b)) {
-    for (const junk of [".next", "dist", ".open-next", ".wrangler"]) {
+    for (const junk of [".next", "dist", "dist-selftest", ".open-next", ".wrangler"]) {
       const p = path.join(b, name, junk);
       if (rmrf(p)) removed.push(path.relative(root, p));
     }

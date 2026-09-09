@@ -271,16 +271,27 @@ if (!stubs.includes("home-state-truth.cjs")) {
   fails.push("stubs/run-all.cjs must include home-state-truth.cjs");
 }
 
-// App/React/CSS 변경 0 — this todo must not rewrite HomeExperience/CSS
-const homeClient = read("apps/web/app/HomePageClient.tsx");
-if (!homeClient.includes("HomeExperience")) {
-  fails.push("HomePageClient HomeExperience must remain (React rewrite 0)");
+// Live Home client must consume the server-derived value, never re-derive it
+// client-side. REWRITTEN 2026-09-04: previously checked
+// apps/web/app/HomePageClient.tsx (dead - unreachable from any live route,
+// see governance/runtime-surfaces.v1.json surfaces.home) and required it to
+// keep importing HomeExperience, which no longer applies to the live "/"
+// implementation. The underlying invariant (consume fetchHomeReadModel,
+// never client-sum todayPossibleProfitUsdt) is unchanged and still checked,
+// now against the real live client.
+let registry;
+try {
+  registry = JSON.parse(read("governance/runtime-surfaces.v1.json") || "{}");
+} catch {
+  registry = { surfaces: {} };
 }
+const homeClientRel = registry.surfaces?.home?.client || "apps/web/app/HomeDesktopClient.tsx";
+const homeClient = read(homeClientRel);
 if (!homeClient.includes("fetchHomeReadModel")) {
-  fails.push("HomePageClient must consume fetchHomeReadModel");
+  fails.push(`${homeClientRel} must consume fetchHomeReadModel`);
 }
-if (homeClient.includes("sumAffordableExpectedProfitUsdt")) {
-  fails.push("HomePageClient must not client-sum todayPossibleProfitUsdt");
+if (/sumAffordableExpectedProfitUsdt|\.reduce\([^)]*expectedProfitUsdt/.test(homeClient)) {
+  fails.push(`${homeClientRel} must not client-sum todayPossibleProfitUsdt`);
 }
 
 if (fails.length) {

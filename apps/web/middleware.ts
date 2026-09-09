@@ -38,6 +38,9 @@ export function middleware(req: NextRequest) {
   }
   const path = req.nextUrl.pathname;
   const authenticated = req.headers.get("x-aipo-qa-session") === "authenticated";
+  if (path === "/api/v1/push/enabled") {
+    return NextResponse.json({ pushEnabled: false });
+  }
   if (path === "/api/v1/me/home-read") {
     return NextResponse.json(
       authenticated ? AUTH_HOME_READ : GUEST_HOME_READ,

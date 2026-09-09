@@ -1,10 +1,8 @@
 /**
  * verify:listing-legs-day1 — Engine §0.0.1a (v7.22.41)
  * Day-1 auto-publish listing = ebay 멀티 marketplace | admin only
- * amazon/yahoo_jp = official partners · Phase1+ adapters (verify:market-partner-adapters)
- * KR C2C / Chrono24 as listing adapters = FORBIDDEN
- * UI §38.10 supersede: Yahoo/야후 partner label copy is REQUIRED (not banned) —
- *   adapter Day-1 auto-publish yahoo_jp remains FORBIDDEN (below)
+ * amazon/yahoo_jp = official partners · Phase1+ adapters
+ * Web-parser observation sources = AUTHORIZED (global-source-unlock 2026-09-08)
  */
 const fs = require("fs");
 const path = require("path");
@@ -35,10 +33,12 @@ for (const name of requiredAdapters) {
     fails.push(`missing workers/${name}`);
   }
 }
-for (const banned of ["rolex-adapter", "chrono24-adapter", "tcgplayer-adapter"]) {
-  if (fs.existsSync(path.join(workersDir, banned))) {
-    fails.push(`workers/${banned} FORBIDDEN on Day-1`);
-  }
+
+const unlockDoc = read(
+  "governance/global-product/global-source-unlock-authorization.v1.md",
+);
+if (!unlockDoc || !/GLOBAL_SOURCE_UNLOCK = AUTHORIZED/.test(unlockDoc)) {
+  fails.push("missing global-source-unlock-authorization.v1.md AUTHORIZED verdict");
 }
 
 const workersReadme = read("workers/README.md");
@@ -138,8 +138,14 @@ const pipeline = require(path.join(
   root,
   "services/market-intelligence/src/pipeline.cjs",
 ));
-if (!pipeline.PUBLISH_GUARDS.yahooJpForbidden) {
-  fails.push("PUBLISH_GUARDS.yahooJpForbidden must be true for Day-1 auto-publish");
+if (pipeline.PUBLISH_GUARDS.yahooJpForbidden === true) {
+  fails.push("PUBLISH_GUARDS.yahooJpForbidden must be false after global-source-unlock");
+}
+if (
+  !Array.isArray(pipeline.OBSERVATION_SOURCES_ALLOWED) ||
+  pipeline.OBSERVATION_SOURCES_ALLOWED.length < 8
+) {
+  fails.push("OBSERVATION_SOURCES_ALLOWED must list web-parser sources");
 }
 if (
   !Array.isArray(pipeline.PUBLISH_GUARDS.listingLegsOnly) ||
@@ -154,5 +160,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:listing-legs-day1] PASS (ebay 멀티|admin Day-1 · yahoo_jp auto-publish 0 · partner label §38.10 OK)",
+  "[verify:listing-legs-day1] PASS (ebay|admin settlement · observation sources AUTHORIZED · partner §38.10 OK)",
 );

@@ -40,6 +40,8 @@ export type ProvenOauthIdentity = {
   provider: OauthProvider;
   providerSubject: string;
   email?: string;
+  nickname?: string;
+  profileImageUrl?: string;
 };
 
 export type OauthHttp = {
@@ -57,6 +59,8 @@ export type OauthHttp = {
     email?: string;
     emailVerified?: boolean;
     issuer: string;
+    nickname?: string;
+    profileImageUrl?: string;
   }>;
 };
 
@@ -114,7 +118,17 @@ export function defaultOauthHttp(): OauthHttp {
         if (!res.ok) throw new Error("oauth_profile_failed");
         const json = (await res.json()) as {
           id?: unknown;
-          kakao_account?: { email?: unknown; is_email_valid?: unknown; is_email_verified?: unknown };
+          properties?: { nickname?: unknown; profile_image?: unknown };
+          kakao_account?: {
+            email?: unknown;
+            is_email_valid?: unknown;
+            is_email_verified?: unknown;
+            profile?: {
+              nickname?: unknown;
+              profile_image_url?: unknown;
+              is_default_image?: unknown;
+            };
+          };
         };
         const subject = json.id != null ? String(json.id) : "";
         if (!subject) throw new Error("oauth_profile_failed");
@@ -125,11 +139,27 @@ export function defaultOauthHttp(): OauthHttp {
         const verified =
           json.kakao_account?.is_email_verified === true &&
           json.kakao_account?.is_email_valid === true;
+        const nicknameRaw =
+          typeof json.kakao_account?.profile?.nickname === "string"
+            ? json.kakao_account.profile.nickname
+            : typeof json.properties?.nickname === "string"
+              ? json.properties.nickname
+              : undefined;
+        const imageRaw =
+          json.kakao_account?.profile?.is_default_image === true
+            ? undefined
+            : typeof json.kakao_account?.profile?.profile_image_url === "string"
+              ? json.kakao_account.profile.profile_image_url
+              : typeof json.properties?.profile_image === "string"
+                ? json.properties.profile_image
+                : undefined;
         return {
           subject,
           email: verified ? email : undefined,
           emailVerified: verified,
           issuer: "https://kauth.kakao.com",
+          nickname: nicknameRaw?.trim() || undefined,
+          profileImageUrl: imageRaw?.trim() || undefined,
         };
       }
       const res = await fetch("https://openidconnect.googleapis.com/v1/userinfo", {
@@ -195,6 +225,7 @@ export class OauthIdentityService {
       u.searchParams.set("client_id", env.oauthKakaoClientId!);
       u.searchParams.set("redirect_uri", redirectUri);
       u.searchParams.set("response_type", "code");
+      u.searchParams.set("scope", "profile_nickname,profile_image,account_email");
       u.searchParams.set("state", state);
       return {
         ok: true,
@@ -267,6 +298,8 @@ export class OauthIdentityService {
       provider,
       providerSubject: profile.subject,
       email: profile.emailVerified === true ? profile.email : undefined,
+      nickname: profile.nickname,
+      profileImageUrl: profile.profileImageUrl,
     };
   }
 }

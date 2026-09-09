@@ -139,8 +139,8 @@ if (manifest.openNext.ops.workersDev !== "ai-profit-ops.ebay-adapter.workers.dev
 if (manifest.env.APP_HOST !== "app.hiptk.app") fails.push("APP_HOST must stay app.hiptk.app");
 if (manifest.env.OPS_HOST !== "ops.hiptk.app") fails.push("OPS_HOST must stay ops.hiptk.app");
 if (manifest.env.API_HOST !== "api.hiptk.app") fails.push("API_HOST must stay api.hiptk.app");
-if (manifest.bridgeWorkers["web-proxy"].target !== "https://ai-profit-web.ebay-adapter.workers.dev") {
-  fails.push("web-proxy target must stay production origin");
+if (manifest.bridgeWorkers["web-proxy"].target !== "https://putduk-web.ebay-adapter.workers.dev") {
+  fails.push("web-proxy target must be PUTDUK_WEB live origin");
 }
 if (manifest.bridgeWorkers["ops-proxy"].target !== "https://ai-profit-ops.ebay-adapter.workers.dev") {
   fails.push("ops-proxy target must stay production origin");
@@ -245,8 +245,8 @@ if (!pkg.includes("cf:deploy:staging")) {
 if (!catalog.includes("rel-600-staging")) {
   fails.push("CATALOG missing rel-600-staging");
 }
-if (!gate.includes("verify:rel-600-staging")) {
-  fails.push("gate.yml must run verify:rel-600-staging");
+if (gate.includes("verify:rel-600-staging")) {
+  fails.push("backend gate.yml must not always-run leftover verify:rel-600-staging");
 }
 if (!domain.includes("rel-600-staging.cjs")) {
   fails.push("domain-by-path must trigger rel-600");

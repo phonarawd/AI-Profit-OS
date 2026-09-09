@@ -12,6 +12,7 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  Optional,
   ServiceUnavailableException,
   UnauthorizedException,
 } from "@nestjs/common";
@@ -34,6 +35,10 @@ import {
   participateSemantic,
 } from "../ledger/idempotency-fingerprint";
 import { LedgerPostingService } from "../ledger/ledger.posting.service";
+import {
+  TrialFundingService,
+  type FundingDecision,
+} from "../ledger/trial-funding.service";
 import { PostgresService } from "../db/postgres";
 import { PreflightService } from "../loop/preflight.service";
 import { RiskService } from "../risk/risk.service";
@@ -42,6 +47,10 @@ import {
   membershipDefaults,
   mergeEffectivePolicy,
 } from "../membership/membership.mi";
+import {
+  MatchingPolicyService,
+  opportunityRowToCandidate,
+} from "../matching-policy/matching-policy.service";
 import { OPPORTUNITY_EVENTS } from "./opportunities.events";
 
 const req = createRequire(__filename);
@@ -111,6 +120,8 @@ type OppRow = {
   category: string;
   fx_snapshot_id: string;
   execution_mode: string;
+  trial_eligible: boolean;
+  usd_krw: string | null;
 };
 
 type ExistingParticipate = {
@@ -143,6 +154,8 @@ export class ParticipateService {
     private readonly bus: InProcessEventBus,
     private readonly preflight: PreflightService,
     @Inject(CLOCK) private readonly clock: Clock,
+    @Optional() private readonly matchingPolicy?: MatchingPolicyService,
+    @Optional() private readonly trialFunding?: TrialFundingService,
   ) {}
 
   async participate(
@@ -181,6 +194,32 @@ export class ParticipateService {
 
     const hidden = await this.isHiddenForUser(userId, pathOpportunityId);
     if (hidden) throw new NotFoundException("opportunity not found");
+    if (!this.matchingPolicy) {
+      throw new ServiceUnavailableException("MATCHING_POLICY_UNAVAILABLE");
+    }
+    let matchingSnapshot: {
+      policyId: string;
+      policyVersion: number;
+      source: string;
+      requiredCapitalUsdt: string;
+    };
+    try {
+      const decision = await this.matchingPolicy.assertParticipable(
+        userId,
+        opportunityRowToCandidate(opp),
+      );
+      matchingSnapshot = {
+        policyId: decision.policyId,
+        policyVersion: decision.policyVersion,
+        source: decision.source,
+        requiredCapitalUsdt: opp.required_capital_usdt,
+      };
+    } catch (err) {
+      if (err instanceof Error && err.message === "OPPORTUNITY_UNAVAILABLE_FOR_ACCOUNT") {
+        throw new NotFoundException("opportunity not found");
+      }
+      throw err;
+    }
 
     const expectedProfitUsdt = await this.resolveExpectedProfit(
       userId,
@@ -261,19 +300,36 @@ export class ParticipateService {
         statusCode: 400,
       });
     }
-    if (cmpAmount(amountUsdt, buckets.principalUsdt) > 0) {
-      throw new ForbiddenException({
-        code: "INSUFFICIENT_PRINCIPAL",
-        toastCode: "INSUFFICIENT_PRINCIPAL",
-        statusCode: 403,
-      });
-    }
-    if (cmpAmount(buckets.principalUsdt, "0") <= 0) {
-      throw new ForbiddenException({
-        code: "INSUFFICIENT_BALANCE",
-        toastCode: "INSUFFICIENT_BALANCE",
-        statusCode: 403,
-      });
+    const funding = this.trialFunding
+      ? await this.trialFunding.decide({
+          userId,
+          trialEligible: opp.trial_eligible === true,
+          amountUsdt,
+          trialPrincipalUsdt: buckets.trialPrincipalUsdt,
+          principalUsdt: buckets.principalUsdt,
+          usdKrw: opp.usd_krw,
+        })
+      : ({
+          source: "own_principal" as const,
+          fromBucket: "principal" as const,
+          toBucket: "locked" as const,
+        } satisfies FundingDecision);
+
+    if (funding.source === "own_principal") {
+      if (cmpAmount(amountUsdt, buckets.principalUsdt) > 0) {
+        throw new ForbiddenException({
+          code: "INSUFFICIENT_PRINCIPAL",
+          toastCode: "INSUFFICIENT_PRINCIPAL",
+          statusCode: 403,
+        });
+      }
+      if (cmpAmount(buckets.principalUsdt, "0") <= 0) {
+        throw new ForbiddenException({
+          code: "INSUFFICIENT_BALANCE",
+          toastCode: "INSUFFICIENT_BALANCE",
+          statusCode: 403,
+        });
+      }
     }
 
     const requestFingerprint = fingerprintPayload(
@@ -295,8 +351,10 @@ export class ParticipateService {
 
     const { policy } = await this.executionPolicy.get();
 
-    // Membership daily/band guards (§0.0.7) — slots = real per-opportunity count (P2-1)
-    await this.assertMembershipGuards(userId, opp.id, opp.capital_band, policy);
+    // Trial matches do not consume the general daily cap.
+    if (funding.source !== "trial") {
+      await this.assertMembershipGuards(userId, opp.id, opp.capital_band, policy);
+    }
 
     // P4 — priceSoftAccept (§43 · ≠ Soft60)
     const versionOk = validated.pricingVersion === opp.pricing_version;
@@ -357,6 +415,8 @@ export class ParticipateService {
           category: opp.category,
           fxSnapshotId: opp.fx_snapshot_id,
         },
+        matchingSnapshot,
+        funding,
       });
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : String(e);
@@ -447,12 +507,15 @@ export class ParticipateService {
 
   private async loadOpportunity(id: string): Promise<OppRow | null> {
     const { rows } = await this.db.query<OppRow>(
-      `SELECT id::text, pricing_version, expected_profit_usdt::text,
-              required_capital_usdt::text, pricing, stale_at, status,
-              capital_band, asset_id, asset_label, category,
-              fx_snapshot_id, execution_mode
-         FROM public.opportunities
-        WHERE id = $1::uuid`,
+      `SELECT o.id::text, o.pricing_version, o.expected_profit_usdt::text,
+              o.required_capital_usdt::text, o.pricing, o.stale_at, o.status,
+              o.capital_band, o.asset_id, o.asset_label, o.category,
+              o.fx_snapshot_id, o.execution_mode,
+              COALESCE(o.trial_eligible, false) AS trial_eligible,
+              fx.usd_krw::text AS usd_krw
+         FROM public.opportunities o
+         LEFT JOIN public.fx_snapshots fx ON fx.id = o.fx_snapshot_id
+        WHERE o.id = $1::uuid`,
       [id],
     );
     return rows[0] ?? null;
@@ -721,39 +784,78 @@ export class ParticipateService {
       category: string;
       fxSnapshotId: string;
     };
+    matchingSnapshot?: {
+      policyId: string;
+      policyVersion: number;
+      source: string;
+      requiredCapitalUsdt: string;
+    };
+    funding: FundingDecision;
   }): Promise<ParticipateResult> {
-    // Lock capital principal → locked (§49) before trade rows
-    const lockJournal = await this.posting.postJournal({
-      idempotencyKey: `participate_lock:${input.idempotencyKey}`,
-      journalType: "participate_lock",
-      referenceType: "participate_request",
-      referenceId: input.idempotencyKey,
-      memo: "participate principal→locked",
-      fxSnapshotId: input.asset.fxSnapshotId,
-      createdBy: input.userId,
-      lines: [
-        {
-          account: { userId: input.userId, bucket: "principal" },
-          direction: "debit",
-          amountUsdt: input.amountUsdt,
-        },
-        {
-          account: { userId: input.userId, bucket: "locked" },
-          direction: "credit",
-          amountUsdt: input.amountUsdt,
-        },
-      ],
-    });
-
+    // Money-safety fix (PUTDUK continuation session, Step 7.1): the
+    // participate_lock journal (principal -> locked, posted below via
+    // postJournalInTransaction) and the trade_executions/participate_
+    // requests rows that account for that lock now commit as ONE atomic
+    // transaction. The previous design posted the lock journal in its own,
+    // already-committed transaction and only THEN opened a second,
+    // separate transaction for the trade/participate_request insert - if
+    // that second transaction failed for any reason (DB error, dropped
+    // connection, process crash), the user's principal stayed orphaned in
+    // "locked" forever with no trade to ever unlock it, and nothing in
+    // this codebase reconciled that. Now either everything below commits
+    // together, or a failure at any point (including the lock journal
+    // itself) rolls the entire thing back and principal never left
+    // "principal" in the first place - there is no window where locked
+    // capital can exist without a matching trade row.
+    //
+    // Idempotent-replay contract: if this exact idempotencyKey is retried
+    // concurrently (duplicate submit / client retry racing the original
+    // in-flight request), postJournalInTransaction's own INSERT on
+    // ledger_journals.idempotency_key hits a unique-violation and aborts
+    // THIS transaction (ROLLBACK, nothing partially applied) - the error
+    // propagates to participate()'s existing catch block, which already
+    // detects "idempotency_key|unique" in the message and returns the
+    // winner's row via findByIdempotency instead of a hard failure. That
+    // catch was written for the participate_requests-level idempotency key
+    // and works unchanged for this ledger-level one too - same contract,
+    // same recovery path.
     const created = await this.db.withTransaction(async (client) => {
+      if (input.funding.source === "trial" && this.trialFunding) {
+        await this.trialFunding.consumeParticipation(client, input.userId);
+      }
+      const lockJournal = await this.posting.postJournalInTransaction(client, {
+        idempotencyKey: `participate_lock:${input.idempotencyKey}`,
+        journalType: "participate_lock",
+        referenceType: "participate_request",
+        referenceId: input.idempotencyKey,
+        memo:
+          input.funding.source === "trial"
+            ? "participate trial_principal→trial_locked"
+            : "participate principal→locked",
+        fxSnapshotId: input.asset.fxSnapshotId,
+        createdBy: input.userId,
+        lines: [
+          {
+            account: { userId: input.userId, bucket: input.funding.fromBucket },
+            direction: "debit",
+            amountUsdt: input.amountUsdt,
+          },
+          {
+            account: { userId: input.userId, bucket: input.funding.toBucket },
+            direction: "credit",
+            amountUsdt: input.amountUsdt,
+          },
+        ],
+      });
+
       const capturedAt = new Date().toISOString();
       const tradeIns = await client.query<{ id: string }>(
         `INSERT INTO public.trade_executions (
            user_id, opportunity_id, pricing_version, status,
-           expected_profit_usdt, idempotency_key, asset
+           expected_profit_usdt, idempotency_key, asset, funding_source
          ) VALUES (
            $1::uuid, $2::uuid, $3, 'running',
-           $4::numeric, $5, $6::jsonb
+           $4::numeric, $5, $6::jsonb, $7
          )
          RETURNING id::text`,
         [
@@ -768,7 +870,9 @@ export class ParticipateService {
             category: input.asset.category,
             priceSoftAccept: input.priceSoftAccept,
             lockJournalId: lockJournal.id,
+            matchingPolicySnapshot: input.matchingSnapshot ?? null,
           }),
+          input.funding.source,
         ],
       );
       const tradeId = tradeIns.rows[0]?.id;
@@ -786,21 +890,30 @@ export class ParticipateService {
       });
       await client.query(
         `UPDATE public.trade_executions
-            SET asset = COALESCE(asset, '{}'::jsonb) || $2::jsonb
+            SET asset = COALESCE(asset, '{}'::jsonb) || $2::jsonb,
+                matching_policy_id = $3,
+                matching_policy_version = $4,
+                matching_policy_source = $5,
+                required_capital_usdt_snapshot = $6
           WHERE id = $1::uuid`,
         [
           tradeId,
           JSON.stringify({ participateProof: proof, proofHash: proof.proofHash }),
+          input.matchingSnapshot?.policyId ?? null,
+          input.matchingSnapshot?.policyVersion ?? null,
+          input.matchingSnapshot?.source ?? null,
+          input.matchingSnapshot?.requiredCapitalUsdt ?? null,
         ],
       );
 
       const prIns = await client.query<{ id: string }>(
         `INSERT INTO public.participate_requests (
            user_id, opportunity_id, pricing_version, min_profit_usdt,
-           capital_usdt, status, trade_id, idempotency_key, request_fingerprint
+           capital_usdt, status, trade_id, idempotency_key, request_fingerprint,
+           funding_source
          ) VALUES (
            $1::uuid, $2::uuid, $3, $4::numeric,
-           $5::numeric, 'accepted', $6::uuid, $7, $8
+           $5::numeric, 'accepted', $6::uuid, $7, $8, $9
          )
          RETURNING id::text`,
         [
@@ -812,6 +925,7 @@ export class ParticipateService {
           tradeId,
           input.idempotencyKey,
           input.requestFingerprint,
+          input.funding.source,
         ],
       );
       const participateRequestId = prIns.rows[0]?.id;
@@ -819,7 +933,7 @@ export class ParticipateService {
         throw new ConflictException("participate_request insert failed");
       }
 
-      if (!lockJournal.reused) {
+      if (!lockJournal.reused && input.funding.source !== "trial") {
         await client.query(
           `UPDATE public.user_membership
               SET daily_matches_used = daily_matches_used + 1,
@@ -829,10 +943,21 @@ export class ParticipateService {
         );
       }
 
-      return { tradeId, participateRequestId, proof };
+      return {
+        tradeId,
+        participateRequestId,
+        proof,
+        lockReused: lockJournal.reused === true,
+      };
     });
 
-    if (!lockJournal.reused) {
+    if (!created.lockReused) {
+      // Mirrors postJournal's own outbox-drain-after-commit contract:
+      // postJournalInTransaction deliberately does not drain (the caller's
+      // transaction may not have committed yet when it returns) - this
+      // point, after this.db.withTransaction has already returned
+      // successfully, is the first moment the commit is actually durable.
+      await this.posting.drainOutboxAfterCommit();
       this.bus.emit(OPPORTUNITY_EVENTS.participateConfirmed, {
         userId: input.userId,
         opportunityId: input.opportunityId,
@@ -855,7 +980,7 @@ export class ParticipateService {
       amountUsdt: input.amountUsdt,
       status: "accepted",
       tradeStatus: "running",
-      reused: Boolean(lockJournal.reused),
+      reused: created.lockReused,
       priceSoftAccept: input.priceSoftAccept,
       proof: created.proof,
     };

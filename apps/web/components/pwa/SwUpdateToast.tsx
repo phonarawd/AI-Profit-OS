@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { pwaCopy } from "./copy";
+import { shouldSuppressPwaChrome } from "./suppress-pwa-chrome";
 
 const RELOAD_GUARD = "putduk.sw.reload";
 
 export function SwUpdateToast() {
+  const pathname = usePathname() || "";
   const [registration, setRegistration] =
     useState<ServiceWorkerRegistration | null>(null);
   const [waiting, setWaiting] = useState(false);
@@ -38,6 +41,7 @@ export function SwUpdateToast() {
     });
 
     const onControllerChange = () => {
+      if (shouldSuppressPwaChrome(window.location.pathname)) return;
       try {
         if (sessionStorage.getItem(RELOAD_GUARD) === "1") return;
         sessionStorage.setItem(RELOAD_GUARD, "1");
@@ -63,6 +67,7 @@ export function SwUpdateToast() {
   if (!waiting || !registration) return null;
 
   const refresh = () => {
+    if (shouldSuppressPwaChrome(pathname)) return;
     registration.waiting?.postMessage("SKIP_WAITING");
   };
 

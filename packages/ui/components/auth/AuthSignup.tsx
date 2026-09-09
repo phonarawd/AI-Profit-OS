@@ -5,6 +5,8 @@ import { T } from "../../copy/ko";
 import { BrandMark } from "../brand/BrandMark";
 import { TouchButton } from "../lux/TouchButton";
 import { isKakaoOAuthReady, kakaoStartHref } from "./kakao-ready";
+import { TurnstileField } from "./TurnstileField";
+import { isTurnstileReady } from "./turnstile-ready";
 
 export type AuthSignupRuntimeInput = {
   termsAcceptedAt: string;
@@ -12,6 +14,7 @@ export type AuthSignupRuntimeInput = {
   marketingConsent: boolean;
   referralCode: string;
   email?: string;
+  turnstileToken?: string;
 };
 
 export type AuthSignupProps = {
@@ -38,6 +41,8 @@ export function AuthSignup({
   const [referral, setReferral] = useState("");
   const [showEmail, setShowEmail] = useState(false);
   const [email, setEmail] = useState("");
+  const [magicToken, setMagicToken] = useState("");
+  const turnstileReady = isTurnstileReady();
 
   function accepted(): AuthSignupRuntimeInput {
     const at = new Date().toISOString();
@@ -47,6 +52,7 @@ export function AuthSignup({
       marketingConsent: marketing,
       referralCode: referral,
       email,
+      turnstileToken: magicToken,
     };
   }
 
@@ -62,6 +68,7 @@ export function AuthSignup({
   function submitMagic(e: React.FormEvent) {
     e.preventDefault();
     if (!terms || busy) return;
+    if (!turnstileReady || !magicToken) return;
     if (onMagic) {
       void onMagic(accepted());
     }
@@ -125,6 +132,17 @@ export function AuthSignup({
           </div>
         )}
 
+        <TouchButton
+          variant="secondary"
+          className="w-full"
+          data-testid="auth-classic-signup"
+          disabled={busy}
+          onClick={() => {
+            window.location.href = "/auth/signup/classic";
+          }}
+        >
+          {T.authClassic.classicSignupStart}
+        </TouchButton>
         <TouchButton variant="secondary" className="w-full" disabled>
           {T.auth.googleStart}
         </TouchButton>
@@ -164,12 +182,13 @@ export function AuthSignup({
               className="touch-target rounded-lux-md border border-lux-border bg-lux-surface px-3 text-lux-text"
             />
           </label>
+          <TurnstileField action="magic-link" onToken={setMagicToken} />
           <TouchButton
             type="submit"
             variant="secondary"
             className="w-full"
             data-testid="auth-email-submit"
-            disabled={busy || !terms}
+            disabled={busy || !terms || !turnstileReady || !magicToken}
           >
             {busy ? T.auth.sending : T.auth.emailSignup}
           </TouchButton>

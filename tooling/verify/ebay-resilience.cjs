@@ -16,6 +16,10 @@
 const { spawnSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
+const {
+  hasExactDomainToken,
+  hasExactHostPathToken,
+} = require("./lib/domain-token-scan.cjs");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
@@ -48,6 +52,17 @@ const files = [
   "supabase/migrations/20260814140000_ptf00c_r1_provider_tick_ledger.sql",
 ];
 for (const f of files) mustExist(f);
+const harnessSrc = read("tooling/ebay-resilience/run-fault-injection.cjs");
+if (!harnessSrc.includes("seedAdminSessionsForQa8")) {
+  fails.push(
+    "ebay fault harness must seed admin_sessions for AdminGuard (do not weaken the guard)",
+  );
+}
+if (!harnessSrc.includes("process.env.ADAPTER_INGEST_TOKEN || crypto.randomBytes")) {
+  fails.push(
+    "ebay ingest token must be one value shared by Nest extraEnv and x-adapter-token",
+  );
+}
 if (fails.length) {
   console.error("[verify:ebay-resilience] FAIL\n- " + fails.join("\n- "));
   process.exit(1);
@@ -335,8 +350,19 @@ function walk(dir, out) {
   walk(apiNestSrc, allTs);
   const offenders = [];
   for (const file of allTs) {
-    const code = stripComments(fs.readFileSync(file, "utf8"));
-    if (/api\.ebay\.com|ebay\.com\/buy\/browse/i.test(code)) {
+    const code = stripComments(fs.readFileSync(file, "utf8")).toLowerCase();
+    // D1-S1E/PUTDUK-FULL-RELEASE remediation (2026-09-05, CodeQL
+    // js/regex/missing-regexp-anchor residual alert #82, descending from the
+    // already-closed #55): the prior \b-anchored regex was still flagged
+    // because CodeQL classifies these two literals as URL-like and does not
+    // accept any anchor flavor as sufficient. Structural fix: exact-token
+    // comparison via tooling/verify/lib/domain-token-scan.cjs instead of a
+    // regex `.test()` against the whole file's text — see that module's own
+    // doc comment for why this is strictly safer, not just re-anchored.
+    if (
+      hasExactDomainToken(code, "api.ebay.com") ||
+      hasExactHostPathToken(code, "ebay.com/buy/browse")
+    ) {
       offenders.push(path.relative(root, file));
     }
   }
@@ -394,12 +420,17 @@ if (fails.length === 0) {
     try {
       fs.copyFileSync(
         path.join(root, "workers/ebay-adapter/src/retry-policy.cjs"),
-        path.join(distSelftest, "retry-policy.cjs"),
+        path.join(distSelftest, "ebay-adapter", "src", "retry-policy.cjs"),
       );
     } catch (e) {
       fails.push(`could not stage retry-policy.cjs into dist-selftest: ${e.message}`);
     }
-    const selftestJs = path.join(distSelftest, "fault-injection.selftest.js");
+    const selftestJs = path.join(
+      distSelftest,
+      "ebay-adapter",
+      "src",
+      "fault-injection.selftest.js",
+    );
     if (fails.length === 0) {
       if (!fs.existsSync(selftestJs)) {
         fails.push(`missing compiled selftest: ${selftestJs}`);

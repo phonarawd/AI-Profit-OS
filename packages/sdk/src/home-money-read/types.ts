@@ -12,7 +12,10 @@ export type HomeMoneyReadState =
   | "unauthorized";
 
 export type HomeMoneyReadResponse = {
+  displayPrimary?: "KRW";
+  displaySecondary?: "USDT";
   principalUsdt: string;
+  principalKrwApprox?: string | null;
   settlementCompletedTodayCount: number;
   asOf: {
     principalUsdt: string;

@@ -14,6 +14,7 @@ const IMAGE_SOURCES = Object.freeze([
   "pokemontcg",
   "ygoprodeck",
   "admin_r2",
+  "fashionphile",
 ]);
 
 const IMAGE_RIGHTS_NOTE_KO = "시세 참고용";
@@ -24,7 +25,7 @@ const IMAGE_RIGHTS_NOTE_KO = "시세 참고용";
  * @property {'watch'|'trading_card'|'luxury_bag'} category
  * @property {string} assetLabel
  * @property {string} imageUrl
- * @property {'ebay'|'pokemontcg'|'ygoprodeck'|'admin_r2'} imageSource
+ * @property {'ebay'|'pokemontcg'|'ygoprodeck'|'admin_r2'|'fashionphile'} imageSource
  * @property {string} [imageAltKo]
  * @property {string} [imageFetchedAt]
  * @property {object} [meta]

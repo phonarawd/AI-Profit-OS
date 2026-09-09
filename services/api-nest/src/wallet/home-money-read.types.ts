@@ -13,7 +13,10 @@ export type HomeMoneyReadState = [
 ][number];
 
 export type HomeMoneyReadV1 = {
+  displayPrimary?: "KRW";
+  displaySecondary?: "USDT";
   principalUsdt: string;
+  principalKrwApprox?: string | null;
   settlementCompletedTodayCount: number;
   asOf: {
     principalUsdt: string;

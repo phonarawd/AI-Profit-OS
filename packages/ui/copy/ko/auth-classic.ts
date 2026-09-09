@@ -1,0 +1,43 @@
+/**
+ * T.authClassic.*
+ */
+export const authClassic = {
+  classicSignupStart: "아이디로 가입하기",
+  classicLoginToggle: "아이디로 로그인",
+  username: "아이디",
+  usernamePlaceholder: "영문 소문자로 시작, 4~20자",
+  usernameHelp: "첫 글자는 영문 소문자, 나머지는 영문 소문자·숫자·밑줄만 쓸 수 있어요.",
+  password: "비밀번호",
+  passwordPlaceholder: "8자 이상",
+  passwordHelp: "8자 이상이면 돼요. 특별한 조합은 없어도 됩니다.",
+  passwordConfirm: "비밀번호 확인",
+  declaredNameLabel: "이름",
+  declaredNameHelp: "본인확인된 실명이 아니에요. 서비스에서 불러 줄 이름이에요.",
+  birthDateLabel: "생년월일",
+  phoneOptionalLabel: "휴대폰 번호 (선택)",
+  phoneOptionalHelp: "선택이에요. 번호 소유 확인이나 본인확인으로 쓰이지 않아요.",
+  classicSignupSubmit: "가입하기",
+  classicSignupSuccessTitle: "인증 메일을 보냈어요",
+  classicSignupSuccessBody: "메일함에서 링크를 눌러 가입을 끝내 주세요. 링크는 한 번만 쓸 수 있어요.",
+  classicLoginIdentifierLabel: "아이디 또는 이메일",
+  classicLoginSubmit: "로그인",
+  findIdLink: "아이디 찾기",
+  resetPasswordLink: "비밀번호 재설정",
+  findIdSubmit: "아이디 찾기",
+  findIdSentBody: "가입된 메일이면 아이디를 보내 드렸어요.",
+  resetPasswordRequestSubmit: "재설정 링크 받기",
+  resetPasswordRequestSentBody: "가입된 메일이면 재설정 링크를 보내 드렸어요.",
+  resetPasswordCompleteSubmit: "비밀번호 바꾸기",
+  resetPasswordCompleteDoneBody: "비밀번호를 바꿌어요. 다시 로그인해 주세요.",
+  usernameTaken: "이미 쓰는 아이디예요.",
+  emailTaken: "이미 가입된 이메일이에요.",
+  passwordMismatch: "비밀번호가 서로 달라요.",
+  passwordPwned: "유출된 적이 있는 비밀번호예요. 다른 비밀번호를 써 주세요.",
+  invalidCredentials: "아이디·이메일 또는 비밀번호를 확인해 주세요.",
+  emailNotVerified: "이메일 인증이 아직 끝나지 않았어요. 메일함을 확인해 주세요.",
+  newPassword: "새 비밀번호",
+  turnstileNeeded: "사람인지 확인하는 절차가 아직 준비되지 않았어요.",
+  turnstileHelp: "확인이 끝나면 이어서 진행할 수 있어요.",
+} as const;
+
+export type AuthClassicCopy = typeof authClassic;

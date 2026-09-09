@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { T } from "@aipo/ui/copy/ko";
 import { ADMIN_MODULES } from "../routes";
+import { AdminCommandSearch } from "./AdminCommandSearch";
 import { AdminSessionBar } from "./AdminSessionBar";
 
 const topLevel = ADMIN_MODULES.filter(
@@ -162,7 +163,12 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-        <AdminSessionBar />
+        {pathname === "/admin/login" ? null : (
+          <>
+            <AdminSessionBar />
+            <AdminCommandSearch />
+          </>
+        )}
         <div id="admin-content" className="admin-content" tabIndex={-1}>
           {children}
         </div>

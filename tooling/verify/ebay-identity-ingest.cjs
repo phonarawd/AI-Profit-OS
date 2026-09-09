@@ -199,8 +199,8 @@ if (
   );
 }
 
-// --- 7/8) Day-1 amazon/yahoo INSERT 0 ---
-for (const forbidden of ["amazon", "yahoo_jp"]) {
+// --- 7/8) Day-1 catalog persist remains ebay|admin only (partner/observation = separate path) ---
+for (const nonDay1 of ["amazon", "yahoo_jp"]) {
   let threw = false;
   try {
     catalog.normalizeIngestListingsForPersist(
@@ -208,24 +208,21 @@ for (const forbidden of ["amazon", "yahoo_jp"]) {
         {
           assetId: "w_rolex_sub_126610ln",
           marketId: "ebay_us",
-          adapterId: forbidden,
+          adapterId: nonDay1,
           priceUsdt: "1",
         },
       ],
-      forbidden,
+      nonDay1,
     );
   } catch {
     threw = true;
   }
   if (!threw) {
-    fails.push(`normalizeIngest must throw for ${forbidden}`);
+    fails.push(`normalizeIngest must throw for Day-1 non-ebay adapter ${nonDay1}`);
   }
 }
-if (!catalog.FORBIDDEN_INGEST_ADAPTERS.includes("amazon")) {
-  fails.push("FORBIDDEN_INGEST_ADAPTERS must include amazon");
-}
-if (!catalog.FORBIDDEN_INGEST_ADAPTERS.includes("yahoo_jp")) {
-  fails.push("FORBIDDEN_INGEST_ADAPTERS must include yahoo_jp");
+if (catalog.FORBIDDEN_INGEST_ADAPTERS.length !== 0) {
+  fails.push("FORBIDDEN_INGEST_ADAPTERS must be [] after global-source-unlock");
 }
 
 // bag + card exact paths

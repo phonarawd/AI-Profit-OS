@@ -1,51 +1,26 @@
 /**
  * 3-tier gate SSOT (ADR-016)
- * T0 fast  — commit (~10–30s)
- * T1 push  — push / 슬라이스 품질 (~1–3min)
- * T2 full  — CI / main 합격 (next+opennext 포함)
+ * T0 fast  — commit (스택/시크릿/플랜 + domainSteps)
+ * T1 push  — 백엔드 extras만 경로 단위 · 레거시 프론트 extras 0
+ * T2 full  — CI · T0 + T1 extras + api-nest-build · domainSteps 없음 (T0/T1 담당)
  */
 const { scriptsForChangedFiles, getChangedFiles } = require("./domain-by-path.cjs");
+const {
+  T1_CORE_ALWAYS,
+  T1_PUSH,
+  t1Plan,
+  collectLocalPushFiles,
+} = require("./lib/t1-by-path.cjs");
 
 /** @type {string[]} */
 const T0_ALWAYS = [
   "stack-lock.cjs",
   "secrets.cjs",
   "plans-ssot.cjs",
-  "brand-consumer.cjs",
 ];
 
 /** @type {string[]} */
-const T1_PUSH = [
-  "settlement-rule-parity.cjs",
-  "pg-module-scan.cjs",
-  "brand-assets.cjs",
-  "cf-infra.cjs",
-  "ebay-worker-deploy-path.cjs",
-  "p0-ebay-secret-provisioning.cjs",
-  "nest-production-provenance.cjs",
-  "workers-types.cjs",
-  "phase0-bootstrap.cjs",
-  "root-domain-env.cjs",
-  "domain-bootstrap.cjs",
-  "opennext-workers-origin.cjs",
-  "next-major-pin.cjs",
-  "tailwind-v4.cjs",
-  "lux-theme-sync.cjs",
-  "dark-leak-guard.cjs",
-  "cf-deploy-packages.cjs",
-  "no-admin-in-web.cjs",
-  "ia-tabs.cjs",
-  "admin-routes.cjs",
-  "admin-boundary.cjs",
-  "domain-clock.cjs",
-  "db-recovery.cjs",
-  "privacy-purge.cjs",
-  "api-nest-build.cjs",
-  "stubs/run-all.cjs",
-];
-
-/** @type {string[]} */
-const T2_CI = ["next-build.cjs", "opennext-build.cjs"];
+const T2_CI = ["api-nest-build.cjs"];
 
 function domainSteps() {
   const files = getChangedFiles();
@@ -53,15 +28,28 @@ function domainSteps() {
   return scriptsForChangedFiles(files);
 }
 
+function t1PushPlan() {
+  if (String(process.env.GITHUB_ACTIONS || "") === "true") {
+    try {
+      return t1Plan(getChangedFiles());
+    } catch {
+      return t1Plan([], { failClosed: true });
+    }
+  }
+  const files = collectLocalPushFiles();
+  if (files === null) return t1Plan([], { failClosed: true });
+  return t1Plan(files);
+}
+
 /** @param {"fast"|"push"|"full"} tier */
 function stepsForTier(tier) {
   const steps = [...T0_ALWAYS];
 
-  if (tier === "fast" || tier === "push" || tier === "full") {
+  if (tier === "fast" || tier === "push") {
     steps.push(...domainSteps());
   }
   if (tier === "push" || tier === "full") {
-    steps.push(...T1_PUSH);
+    steps.push(...t1PushPlan().scripts);
   }
   if (tier === "full") {
     steps.push(...T2_CI);
@@ -72,8 +60,10 @@ function stepsForTier(tier) {
 
 module.exports = {
   T0_ALWAYS,
+  T1_CORE_ALWAYS,
   T1_PUSH,
   T2_CI,
   stepsForTier,
   domainSteps,
+  t1PushPlan,
 };

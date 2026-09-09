@@ -91,6 +91,17 @@
       "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
       "description": "Decimal as string (no float money)"
     },
+    "requiredCapitalKrwApprox": {
+      "type": ["string", "null"],
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "DISPLAY_ONLY · missing FX → null · NEVER fabricate 0"
+    },
+    "displayPrimary": {
+      "const": "KRW"
+    },
+    "displaySecondary": {
+      "const": "USDT"
+    },
     "pricing": {
       "$ref": "https://ai-profit-os.local/schemas/opportunity-pricing.v1.json"
     },
@@ -151,7 +162,8 @@
         "ebay",
         "pokemontcg",
         "ygoprodeck",
-        "admin_r2"
+        "admin_r2",
+        "fashionphile"
       ]
     },
     "assetImageAltKo": {

@@ -7,7 +7,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const http = require("node:http");
-const { ROOT } = require("./lib/hash-scope.cjs");
+const { ROOT, isScopeExcluded, parsePorcelainLine } = require("./lib/hash-scope.cjs");
 const catalog = require("./k6/route-catalog.cjs");
 const ident = require("./lib/synthetic-identity.cjs");
 const { evaluateKillSwitch, evaluateDbTarget, assemblePostgresUrl } = require("./kill-switch.cjs");
@@ -35,6 +35,34 @@ function run() {
   };
 
   console.log("[selftest-pre-rebase-harness] start");
+
+  check("build_dist_is_not_protected_dirty", () => {
+    const scope = JSON.parse(
+      fs.readFileSync(
+        path.join(ROOT, "governance/engine-acceptance/protected-scope.v1.json"),
+        "utf8",
+      ),
+    );
+    assert.equal(
+      isScopeExcluded("services/api-nest/dist/main.js", scope.excludeGlobs),
+      true,
+    );
+    assert.equal(
+      isScopeExcluded("services/api-nest/src/common/admin-auth.flow.ts", scope.excludeGlobs),
+      false,
+    );
+  });
+
+  check("porcelain_keeps_unstaged_leading_space", () => {
+    const guard = "services/api-nest/src/auth/auth-rate-limit.guard.ts";
+    assert.equal(parsePorcelainLine(` M ${guard}`), guard);
+    assert.equal(parsePorcelainLine(`M  ${guard}`), guard);
+    assert.equal(parsePorcelainLine(`?? ${guard}`), guard);
+    assert.equal(
+      parsePorcelainLine(`R  services/api-nest/src/auth/old.ts -> ${guard}`),
+      guard,
+    );
+  });
 
   check("k6_routes_match_catalog", () => {
     const src = fs.readFileSync(
@@ -96,6 +124,8 @@ function run() {
     const red = ident.redactAuthorization(matrix.user_a.authorization);
     assert.ok(red.startsWith("Bearer sha256:"));
     assert.equal(red.includes(token.slice(0, 20)), false);
+    assert.equal(matrix.admin_insufficient.userId, ident.SYNTH_ADMIN_INSUFFICIENT);
+    assert.notEqual(matrix.admin_insufficient.userId, ident.SYNTH_ADMIN);
   });
 
   check("db_target_denies_production_and_supabase", () => {

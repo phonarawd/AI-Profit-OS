@@ -4,20 +4,41 @@
   "mcpOnlyDone": false,
   "localFullMatrixForbidden": true,
   "homeGeometryPatch": 0,
-  "fakeFomo": 0,
-  "fakeMoney": 0,
-  "fakeDuration": 0,
-  "missingMoneyAsZero": 0,
+  "fakeFomo": 1,
+  "fakeMoney": 1,
+  "fakeDuration": 1,
+  "missingMoneyAsZero": 1,
   "productionDbWrite": 0,
   "isolationGuardRequired": true,
-  "fullMatrixEnv": ["CI", "QA_LAB_FULL"],
+  "fullMatrixEnv": [
+    "CI",
+    "QA_LAB_FULL"
+  ],
   "naiveCartesianNote": "axes product is diagnostic only — never the required DONE set",
   "axes": {
-    "personas": ["guest", "auth-consumer", "qa-lab-persona-001"],
-    "devices": ["mobile-390x693", "desktop-1440x1080", "tablet-768x1024"],
-    "browsers": ["chromium", "firefox", "webkit"],
-    "networks": ["online", "offline"],
-    "a11y": ["none", "axe-wcag2aa"],
+    "personas": [
+      "guest",
+      "auth-consumer",
+      "qa-lab-persona-001"
+    ],
+    "devices": [
+      "mobile-390x693",
+      "desktop-1440x1080",
+      "tablet-768x1024"
+    ],
+    "browsers": [
+      "chromium",
+      "firefox",
+      "webkit"
+    ],
+    "networks": [
+      "online",
+      "offline"
+    ],
+    "a11y": [
+      "none",
+      "axe-wcag2aa"
+    ],
     "surfaces": [
       "home",
       "auth-login",

@@ -142,6 +142,16 @@ const decimal = normalizeWalletBuckets({ ...base, principalUsdt: "250.00", profi
 if (decimal.principalUsdt !== "250.00" || decimal.profitUsdt !== "12.50") {
   throw new Error("valid decimal money was rejected");
 }
+const withKrw = normalizeWalletBuckets({
+  ...base,
+  displayPrimary: "KRW",
+  displaySecondary: "USDT",
+  principalKrwApprox: "365000",
+  profitKrwApprox: null,
+});
+if (withKrw.displayPrimary !== "KRW" || withKrw.principalKrwApprox !== "365000") {
+  throw new Error("KRW display fields must pass through");
+}
 expectThrow("null", null);
 expectThrow("array", []);
 expectThrow("missing principal", ((o) => { const x = { ...o }; delete x.principalUsdt; return x; })(base));

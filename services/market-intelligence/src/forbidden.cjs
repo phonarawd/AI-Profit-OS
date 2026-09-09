@@ -1,39 +1,18 @@
 /**
- * Engine §0.0.2 — FORBIDDEN market sources (v1 code path 0).
- * v7.22.41: yahoo_jp / amazon_* = official partners (Phase1+ adapters) — NOT forbidden.
- * Day-1 auto-publish still ebay|admin only (pipeline PUBLISH_GUARDS).
+ * Engine §0.0.2 — market source policy (2026-09-08 unlock).
+ * SSOT: governance/global-product/global-source-unlock-authorization.v1.md
+ *
+ * Web-parser / KR domestic / global observation sources = AUTHORIZED.
+ * Only legacy scrape aliases remain blocked (use official adapters).
+ * Day-1 money settlement auto-publish = pipeline PUBLISH_GUARDS.listingLegsOnly.
  */
 
-const FORBIDDEN_ADAPTER_IDS = Object.freeze([
-  "yahoo_auction", // legacy scrape alias — use yahoo_jp official adapter
-  "tcgplayer",
-  "justtcg",
-  "pricecharting",
-  "chrono24",
-  "cardmarket",
-  "scryfall",
-  "rolex-adapter",
-  "bunjang",
-  "joonggonara",
-  "daangn",
-  "cream",
-  "feelway",
-]);
+/** Legacy Yahoo scrape alias — use yahoo_jp official partner adapter instead */
+const FORBIDDEN_ADAPTER_IDS = Object.freeze(["yahoo_auction"]);
 
-/** Day-1 KR C2C / non-partner markets — yahoo_jp removed (v7.22.41 partner restore) */
-const FORBIDDEN_MARKET_IDS = Object.freeze([
-  "bunjang",
-  "joonggonara",
-  "daangn",
-  "chrono24",
-]);
+const FORBIDDEN_MARKET_IDS = Object.freeze([]);
 
-/** Scraping / non-partner env prefixes (official YAHOO_AUCTION_* partner keys allowed) */
-const FORBIDDEN_ENV_PREFIXES = Object.freeze([
-  "CHRONO24_",
-  "TCGPLAYER_",
-  "BUNJANG_",
-]);
+const FORBIDDEN_ENV_PREFIXES = Object.freeze([]);
 
 /**
  * @param {string | null | undefined} id
@@ -42,8 +21,12 @@ const FORBIDDEN_ENV_PREFIXES = Object.freeze([
 function isForbiddenAdapterId(id) {
   if (id == null || id === "") return false;
   const n = String(id).trim().toLowerCase().replace(/_/g, "-");
-  // official partner adapters are never forbidden
-  if (n === "yahoo-jp" || n === "yahoo-jp-adapter" || n === "amazon" || n === "amazon-adapter") {
+  if (
+    n === "yahoo-jp" ||
+    n === "yahoo-jp-adapter" ||
+    n === "amazon" ||
+    n === "amazon-adapter"
+  ) {
     return false;
   }
   return FORBIDDEN_ADAPTER_IDS.some((f) => {

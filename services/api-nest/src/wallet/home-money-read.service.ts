@@ -6,6 +6,8 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { DayPulseService } from "../loop/day-pulse.service";
 import { LedgerBucketsService } from "../ledger/ledger.buckets.service";
+import { KrwDisplayService } from "../money-display/krw-display.service";
+import { userMoneyDisplay } from "../money-display/user-money-display";
 import { PostgresService } from "../db/postgres";
 import { mapHomeMoneyReadV1 } from "./home-money-read.map";
 import type { HomeMoneyReadV1 } from "./home-money-read.types";
@@ -16,6 +18,7 @@ export class HomeMoneyReadService {
     private readonly buckets: LedgerBucketsService,
     private readonly dayPulse: DayPulseService,
     private readonly db: PostgresService,
+    private readonly krwDisplay: KrwDisplayService,
   ) {}
 
   async getForUser(userId: string): Promise<HomeMoneyReadV1> {
@@ -27,27 +30,43 @@ export class HomeMoneyReadService {
       const asOfPrincipalIso = await this.resolvePrincipalAsOfIso(
         buckets.asOfLedgerEntryId,
       );
-      return mapHomeMoneyReadV1({
-        principalUsdt: buckets.principalUsdt,
-        settlementCompletedTodayCount: pulse.settlementCompletedToday,
-        asOfPrincipalIso,
-        asOfSettlementIso,
-      });
+      return this.withKrwDisplay(
+        mapHomeMoneyReadV1({
+          principalUsdt: buckets.principalUsdt,
+          settlementCompletedTodayCount: pulse.settlementCompletedToday,
+          asOfPrincipalIso,
+          asOfSettlementIso,
+        }),
+      );
     } catch (err) {
       if (err instanceof NotFoundException) {
         // zero≠absent — values are not Fact when state=recoverable_error
         const now = new Date().toISOString();
-        return mapHomeMoneyReadV1({
-          principalUsdt: "0",
-          settlementCompletedTodayCount: pulse.settlementCompletedToday,
-          asOfPrincipalIso: now,
-          asOfSettlementIso,
-          forceState: "recoverable_error",
-          reasonCode: "money.home.buckets_missing",
-        });
+        return this.withKrwDisplay(
+          mapHomeMoneyReadV1({
+            principalUsdt: "0",
+            settlementCompletedTodayCount: pulse.settlementCompletedToday,
+            asOfPrincipalIso: now,
+            asOfSettlementIso,
+            forceState: "recoverable_error",
+            reasonCode: "money.home.buckets_missing",
+          }),
+        );
       }
       throw err;
     }
+  }
+
+  private async withKrwDisplay(dto: HomeMoneyReadV1): Promise<HomeMoneyReadV1> {
+    const snap = await this.krwDisplay.latest();
+    return {
+      ...dto,
+      ...userMoneyDisplay(),
+      principalKrwApprox:
+        dto.state === "recoverable_error"
+          ? null
+          : this.krwDisplay.approxAmount(dto.principalUsdt, snap),
+    };
   }
 
   /** Per-field ISO asOf · ledger entry created_at or projection clock */

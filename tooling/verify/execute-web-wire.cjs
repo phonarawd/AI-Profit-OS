@@ -141,6 +141,9 @@ if (/progressPct|stepIndex/.test(client)) {
 if (/role=["']progressbar["']|width:\s*.*progressPct/.test(client + css)) {
   fail("execute must not render a percent bar");
 }
+if (!client.includes("matching-indeterminate") || !client.includes("matching-wait-status")) {
+  fail("execute must expose honest indeterminate matching status");
+}
 if (client.includes("12.50") || client.includes("Math.random")) {
   fail("execute must not invent money or RNG");
 }

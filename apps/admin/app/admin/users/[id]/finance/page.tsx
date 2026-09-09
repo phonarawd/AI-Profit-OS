@@ -216,6 +216,37 @@ function FinanceContent() {
             <AdminTruth value={null} />
           )}
         </section>
+      ) : tab === "deposits" || tab === "withdrawals" ? (
+        <section className="mt-6 space-y-2" data-testid={tab === "deposits" ? "finance-deposits-from-journal" : "finance-withdrawals-from-journal"}>
+          {!journals ? (
+            <p className="text-sm text-lux-text-muted">{T.admin.state.loading}</p>
+          ) : !journals.ok ? (
+            <AdminFetchNote failure={journals.failure} />
+          ) : (() => {
+              const rows = (Array.isArray(journals.data.items) ? journals.data.items : []).filter((row) => {
+                const t = String(row.journalType ?? "");
+                return tab === "deposits"
+                  ? t === "deposit_usdt" || t === "deposit_krw"
+                  : t === "withdraw" || t === "withdraw_refund";
+              });
+              if (rows.length === 0) {
+                return (
+                  <p className="text-sm text-lux-text-muted" data-testid="finance-journal-empty">
+                    {T.admin.state.empty}
+                  </p>
+                );
+              }
+              return (
+                <ul className="space-y-2 text-sm">
+                  {rows.map((row, idx) => (
+                    <li key={String(row.id ?? idx)} className="rounded border border-lux-border p-2">
+                      <AdminTruth value={readMoneyRecordLabel(row.journalType)} />
+                    </li>
+                  ))}
+                </ul>
+              );
+            })()}
+        </section>
       ) : tab === "summary" ? (
         <section className="mt-6 text-sm">
           {!buckets ? (

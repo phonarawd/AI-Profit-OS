@@ -12,17 +12,47 @@ APPLY_MIGRATION = 0
 APPLY_LOG = 0
 APPLY_OWNER = REL-701-DB
 PROJECT_REF = mgsytcetsiecllmhcyox
-LOCAL_MIGRATION_FILES = 54
-REMOTE_APPLIED_SNAPSHOT = 54
-REMOTE_RAW_APPLIED = 55
+LOCAL_MIGRATION_FILES = 67
+REMOTE_APPLIED_SNAPSHOT = 67
+REMOTE_RAW_APPLIED = 68
 COMMITTED_UNAPPLIED = 0
 TRACK_A_FILE_RESTORE = 3
 REL_408_BASELINE = 1
-REL_502_ISSUED = 1
+REL_502_ISSUED = 0
 REL_701_DB_EXECUTED = 1
 ```
 
 이 문서는 migration-plan READY 신호다. Production release authorization 이 아니다. REL-502 ISSUED는 migration readiness 선행조건 충족만 의미하며 Production release authorization은 아니다. REL-504 자체는 원격 스키마 변경 명령이 아니며 이 REL의 production DDL = 0. apply owner 는 REL-701-DB 그대로이며, REL-701-DB 는 2026-09-04 에 별도 Founder 승인으로 **실행 완료**됐다(아래 절).
+
+**D1-S1E 정정 (2026-09-05):** REL-701-DB 실행 자체와 이 문서의 migration 카운트(로컬 54 ·
+원격 canonical 54 · raw 55)는 변경되지 않았다. 다만 그 이후 같은 D1 audit lineage의 commit
+`a1d5c151`이 `services/api-nest/clock.core.cjs`(protected-scope root)를 변경해 REL-502가
+`NOT_ISSUED`로 되돌아갔다(`governance/engine-acceptance/FINAL_ACCEPTANCE.md`). 위
+`REL_502_ISSUED`를 그 사실대로 `0`으로 정정한다 — REL-504 자신의 migration readiness 판정
+(READY=1)은 이 정정으로 바뀌지 않는다(migration 계열 protected-scope 변경 없음).
+
+**S1F 정정 (2026-09-05):** S1F Founder 프로덕션 출시 지시서(일반 회원가입·세션 rotation·관리자
+회원목록)에 필요한 신규 컬럼/테이블을 위해 `supabase/migrations/20260905110000_classic_signup_
+sessions_and_admin.sql`을 추가했다(로컬 54 → 55). 이 마이그레이션은 추가형(ADD COLUMN IF NOT
+EXISTS · CREATE INDEX IF NOT EXISTS · 신규 테이블만)이고 적용 전 live schema를 read-only로
+확인했지만(기존 사용자 3명 · 대소문자 변형 중복 0 · 전화번호 값 1건 · 제약 이름 실측), 실제
+`apply_migration`은 이 세션에서 Cursor safety hook에 의해 차단됐다(`Blocked: Production migration
+apply`) — REL-701-DB와 같은 Founder 승인 경로로 나중에 적용해야 한다. 그 결과 `COMMITTED_
+UNAPPLIED`는 `0`에서 `1`로 정직하게 바뀐다(파일이 존재하고 커밋됐지만 원격에는 아직 적용되지
+않았다는 뜻 — 은폐가 아니라 정확한 카운트). `REMOTE_APPLIED_SNAPSHOT`/`REMOTE_RAW_APPLIED`는
+원격 상태를 가리키므로 변경되지 않는다(원격에 아무것도 적용하지 않았다).
+
+**2026-09-06:** `20260906060000_payout_reservation_and_execution_confirm.sql` 추가
+(로컬 55 → 56 · `COMMITTED_UNAPPLIED` 1 → 2). `SYS:MATCH_PROFIT_EXPENSE` seed only.
+Production apply 0. 원격 카운트 불변.
+
+**2026-09-06 S3 continuation:** Admin identity / B7 / consent / product unique / peotteok history
+migrations landed in-repo (`20260906120000` … `20260906160000`). Local 56 → 61.
+`COMMITTED_UNAPPLIED` 2 → 7. Production apply 0. Remote snapshot/raw counts unchanged.
+
+**2026-09-06 S4:** `20260904060000_krw_deposit_bank_snapshot.sql` UNIQUE port. Local 61 → 62.
+`COMMITTED_UNAPPLIED` 7 → 8. Additive ADD COLUMN IF NOT EXISTS. Production apply 0.
+Remote snapshot/raw counts unchanged.
 
 ## 2026-09-04 REL-701-DB EXECUTED (Founder-authorized · owner REL-701-DB · not this REL)
 
@@ -43,22 +73,96 @@ REL_701_DB_EXECUTED = 1
 
 ## REVIEW
 
-- 로컬 `supabase/migrations/*.sql` 54 · filename `YYYYMMDDHHMMSS_*.sql`
-- 원격 applied canonical snapshot `tooling/verify/fixtures/migrations-applied.v1.json` versions = 54 (asOf 2026-09-04 post REL-701-DB, ref `mgsytcetsiecllmhcyox`)
+- 로컬 `supabase/migrations/*.sql` 55 (D1-S1E 시점 54 + S1F `20260905110000_classic_signup_sessions_and_admin.sql` 1) · filename `YYYYMMDDHHMMSS_*.sql`
+- 원격 applied canonical snapshot `tooling/verify/fixtures/migrations-applied.v1.json` versions = 54 (asOf 2026-09-04 post REL-701-DB, ref `mgsytcetsiecllmhcyox`) — S1F 마이그레이션은 원격 미적용이므로 여기 포함되지 않는다
 - 실제 remote raw applied rows = 55; alias/duplicate history 5건을 fixture `remoteHistoricalMappings` 에 명시해 숨기지 않는다
-- file-only `committedUnapplied` 0 — REL-701-DB 실행으로 12 → 0 (REL-504 단계에서 옮긴 것이 아니라 REL-701-DB 실행 기록)
+- file-only `committedUnapplied` 1 — REL-701-DB 실행으로 12 → 0이 됐던 뒤, S1F가 신규 마이그레이션 1건을 추가해 다시 0 → 1 (Founder 승인 대기, 은폐 없이 정확히 카운트)
 - Track A (REL-003) file restore 3: `20260819210000` · `20260819220000` · `20260820013000` + `opportunity-reprice.service.ts` 존재
 - REL-408 `SECURITY_BASELINE.md` · `REL-408-SECURITY-BASELINE.md` COMPLETED · APPLY_MIGRATION = 0
-- REL-502 `FINAL_ACCEPTANCE.md` STATUS = ISSUED · REBASE_REQUIRED = 0 · ACK_RECEIVED = 1
+- REL-502 `FINAL_ACCEPTANCE.md` STATUS = NOT_ISSUED · REBASE_REQUIRED = 1 · ACK_RECEIVED = 0 (D1-S1E 2026-09-05 정정 — services/api-nest/clock.core.cjs drift)
 
 ## VERIFY
 
 | command | expected |
 |---|---|
-| `pnpm verify:migrations-applied-parity` | PASS (54 local · 54 canonical applied · 55 raw remote rows · 0 pending) |
+| `pnpm verify:migrations-applied-parity` | PASS (55 local · 54 canonical applied · 55 raw remote rows · 1 pending) |
 | `pnpm verify:rel-408-security-baseline` | PASS |
 | `pnpm verify:rel-504-migration-readiness` | PASS |
 
 ## EXIT_GATE
 
 이 REL(REL-504) 자체 산출물에 production DB apply 실행이 있으면 FAIL — REL-701-DB 실행 기록(위 절)은 owner REL-701-DB 의 것이며 REL-504 의 apply 가 아니다. Remote history와 repo migration source가 다시 불일치하면 READY를 release 근거로 사용하지 않는다.
+
+## 2026-09-06 S5 count
+
+`65ab999b` added+applied `20260906170000` on production. Local 62 -> 63. REMOTE_APPLIED_SNAPSHOT 54 -> 55. REMOTE_RAW_APPLIED 55 -> 56. COMMITTED_UNAPPLIED stays 8 (the S3/S4 files). This REL still PRODUCTION_DB_APPLY = 0.
+
+**2026-09-06 product onboarding (parallel, unapplied):** `20260906233000_product_onboarding_progress.sql` additive table. Local 63 → 64. `COMMITTED_UNAPPLIED` 8 → 9. Production apply 0. Do not apply to `mgsytcetsiecllmhcyox` from this commit.
+
+**2026-09-09 desk trial capital (applied):** `20260909060000_trial_welcome_grant.sql` additive trial buckets/tables. Remote alias `20260909040657`. `REMOTE_APPLIED_SNAPSHOT` 55 → 56. `REMOTE_RAW_APPLIED` 56 → 57. `COMMITTED_UNAPPLIED` 12 → 11. This REL still `PRODUCTION_DB_APPLY = 0`. Remote-only `20260908052954` (s3_33) remains unmapped.
+
+## 2026-09-09 LIVE RECONCILIATION (s3_33 alias · apply 0)
+
+Read-only `schema_migrations` + object check on `mgsytcetsiecllmhcyox`. Remote `20260908052954_s3_33_product_pipeline` statements match local `20260906150000_s3_33_product_pipeline.sql` executable SQL. Live objects present: `listings_asset_market_external_uq`, `identity_review_queue`, `identity_review_queue_queued_idx`, `identity_review_queue_identity_key_uq`. Classified `APPLIED_EQUIVALENT_TIMESTAMP_DIFFERENT`. Do not reapply the local version. Actor of the remote apply is not recorded here.
+
+Current truth after this mapping (trial alias already recorded above):
+
+```text
+LOCAL_MIGRATION_FILES = 67
+REMOTE_APPLIED_SNAPSHOT = 57
+REMOTE_RAW_APPLIED = 58
+HISTORICAL_MAPPINGS = 7
+COMMITTED_UNAPPLIED = 10
+PRODUCTION_DB_APPLY = 0
+```
+
+`58 − 57 = 1` remains the existing `idempotency_request_fingerprint` rawCountDelta. Remaining 10 committedUnapplied are history-unmapped only — not a batch apply list. Effect-level survey = next section. Migration SQL source files were not edited.
+
+## 2026-09-09 TRACK A2 EFFECT SURVEY (apply 0)
+
+Read-only on `mgsytcetsiecllmhcyox` (2026-09-09). `schema_migrations` raw_count still **58**. None of the 10 versions have a remote history row. No alias mapping: object-exists without a matching remote row is not `versions[]` / `remoteHistoricalMappings`. SQL files were not edited. `PRODUCTION_DB_APPLY` stays **0**.
+
+Labels used (never `SCHEMA_ALREADY_PRESENT`):
+
+| label | meaning |
+|---|---|
+| `LOCAL_ONLY_NOT_APPLIED` | repo file present; remote history row 0; intended full effect absent |
+| `PARTIALLY_PRESENT` | some intended effects exist, not all |
+| `EFFECT_ALREADY_PRESENT` | full effect present, still no history row (not an alias) |
+| `REQUIRES_FUTURE_APPLY` | Track C candidate — authorized apply later, not this REL |
+
+Survey result: **10 / 10** = `LOCAL_ONLY_NOT_APPLIED` + `REQUIRES_FUTURE_APPLY`. `PARTIALLY_PRESENT` = 0. `EFFECT_ALREADY_PRESENT` = 0. Staging evidence is not production truth.
+
+| version | name | live miss (full effect) | class | Track C |
+|---|---|---|---|---|
+| `20260904060000` | krw_deposit_bank_snapshot | `krw_deposit_requests` columns `bank_name` / `account_number` / `account_holder` absent | `LOCAL_ONLY_NOT_APPLIED` | `REQUIRES_FUTURE_APPLY` |
+| `20260905110000` | classic_signup_sessions_and_admin | `pending_registrations` table absent; `users` username/email_canonical/verified columns absent; `users_phone_e164_key` still UNIQUE(all phones); magic-link purpose CHECK still `login`/`signup` only; session family indexes absent | `LOCAL_ONLY_NOT_APPLIED` | `REQUIRES_FUTURE_APPLY` |
+| `20260906060000` | payout_reservation_and_execution_confirm | `ledger_accounts` row `SYS:MATCH_PROFIT_EXPENSE` absent; `trade_execution_confirmations` table absent | `LOCAL_ONLY_NOT_APPLIED` | `REQUIRES_FUTURE_APPLY` |
+| `20260906120000` | admin_identity_sessions | 7 admin identity tables absent (`admin_credentials` … `admin_approval_requests`) | `LOCAL_ONLY_NOT_APPLIED` | `REQUIRES_FUTURE_APPLY` |
+| `20260906130000` | user_matching_policy_b7 | 4 `matching_policy_*` tables absent; `trade_executions` snapshot columns absent | `LOCAL_ONLY_NOT_APPLIED` | `REQUIRES_FUTURE_APPLY` |
+| `20260906140000` | s3_32_consent_versions | `pending_registrations` absent so consent columns cannot exist; `user_profiles.terms_version` / `privacy_version` / `avatar_url` absent. Depends on `20260905110000` | `LOCAL_ONLY_NOT_APPLIED` | `REQUIRES_FUTURE_APPLY` |
+| `20260906160000` | s3_34_peotteok_history | `peotteok_conversations` / `peotteok_messages` absent | `LOCAL_ONLY_NOT_APPLIED` | `REQUIRES_FUTURE_APPLY` |
+| `20260906233000` | product_onboarding_progress | `product_onboarding` table absent (staging table-true is not this project) | `LOCAL_ONLY_NOT_APPLIED` | `REQUIRES_FUTURE_APPLY` |
+| `20260908164000` | global_source_unlock_observation_sources | live `source_observations_source_check` is the old 10-source list. Missing additive members: feelway, coupang, cardpick, pokahub, snkrdunk, the_realreal, cardmarket, pokard. Overlap (`fashionphile` already in the old list) is prior apply, not a partial apply of this file | `LOCAL_ONLY_NOT_APPLIED` | `REQUIRES_FUTURE_APPLY` |
+| `20260908181000` | fashionphile_image_source | live `assets_image_source_check` / `opportunities_asset_image_source_check` = ebay, pokemontcg, ygoprodeck, admin_r2 only. `fashionphile` absent | `LOCAL_ONLY_NOT_APPLIED` | `REQUIRES_FUTURE_APPLY` |
+
+Track C (later, owner REL-701-DB / Founder): apply the 10 in version order with `supabase db push --include-all`. Do not batch-apply from this document. Do not reapply mapped s3_33 (`20260906150000`) or trial (`20260909060000`). Header counts stay 67 / 57 / 58 / 10.
+
+## 2026-09-09 TRACK C EXECUTED (Founder-authorized · apply 10 · REL-504 apply bit stays 0)
+
+Founder chat 2026-09-09: install the 10 leftover production migrations and push.
+Method: `tooling/dev/apply-production-unapplied.cjs` with `APPLY_PRODUCTION_UNAPPLIED=YES`. Production session 5432. Fixture `committedUnapplied` only, version order. Mapped s3_33 / trial were not in that list and were not reapplied. Evidence: `governance/recovery/evidence/track-c-apply-20260909.txt`.
+
+Live confirm after apply (read-only): raw **68**. Local versions of the 10 are now remote rows. Alias rows `20260908052954` and `20260909040657` kept. Objects present: bank snapshot columns, `pending_registrations`, `SYS:MATCH_PROFIT_EXPENSE`, `trade_execution_confirmations`, admin identity, matching policy, peotteok history, `product_onboarding`, source CHECK unlock, fashionphile image_source.
+
+```text
+LOCAL_MIGRATION_FILES = 67
+REMOTE_APPLIED_SNAPSHOT = 67
+REMOTE_RAW_APPLIED = 68
+HISTORICAL_MAPPINGS = 7
+COMMITTED_UNAPPLIED = 0
+PRODUCTION_DB_APPLY = 0
+TRACK_C_EXECUTED = 1
+```
+
+`68 − 67 = 1` remains the existing `idempotency_request_fingerprint` rawCountDelta. This REL still `PRODUCTION_DB_APPLY = 0`. Schema apply is not a money-release or CERT issue.

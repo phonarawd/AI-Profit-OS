@@ -13,7 +13,6 @@ export { GetUsdtGuide } from "./GetUsdtGuide";
 export { ParticipateProofPanel } from "./ParticipateProofPanel";
 export { SafeStopTrustMetric } from "./SafeStopTrustMetric";
 export { CapitalBandJourney } from "./CapitalBandJourney";
-export { AdapterHealthChip } from "./AdapterHealthChip";
 export { WeeklyMarketBriefing } from "./WeeklyMarketBriefing";
 export { DepositConsult } from "./DepositConsult";
 export type {

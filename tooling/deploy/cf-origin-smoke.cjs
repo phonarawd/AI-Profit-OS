@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
  * Post-deploy / CI smoke for OpenNext Workers origin HTTP.
- * Usage: node tooling/deploy/cf-origin-smoke.cjs [web|ops|all] [production|staging|preview]
+ * Usage: node tooling/deploy/cf-origin-smoke.cjs [web|ops|all] [production|staging|preview|dedicated]
  */
 const fs = require("fs");
 const path = require("path");
-const { root, isStagingSlot } = require("./lib/env.cjs");
+const { root, isStagingSlot, isDedicatedSlot } = require("./lib/env.cjs");
 
 const surface = process.argv[2] || "all";
 const slotArg = process.argv[3] || "production";
@@ -14,6 +14,15 @@ const manifest = JSON.parse(
 );
 
 function hostFor(key) {
+  if (isDedicatedSlot(slotArg)) {
+    const dedicated = manifest.openNext && manifest.openNext.dedicated
+      ? manifest.openNext.dedicated[key]
+      : null;
+    if (!dedicated || !dedicated.workersDev) {
+      throw new Error("domain.manifest openNext.dedicated." + key + ".workersDev missing");
+    }
+    return dedicated.workersDev;
+  }
   if (isStagingSlot(slotArg)) {
     const staging = manifest.openNext && manifest.openNext.staging
       ? manifest.openNext.staging[key]
@@ -52,6 +61,13 @@ if (surface === "ops" || surface === "all") {
     key: "ops",
     host: hostFor("ops"),
     ok: function (status, headers) {
+      if (isDedicatedSlot(slotArg)) {
+        if (status === 401 || status === 403 || status === 503) return true;
+        const loc = headers.get("location") || "";
+        if (status === 302 && /cloudflareaccess\.com|cdn-cgi\/access/i.test(loc)) {
+          return true;
+        }
+      }
       return (
         (status === 200 || status === 307 || status === 308) &&
         (headers.get("x-opennext") === "1" || status === 307 || status === 308)
@@ -68,7 +84,7 @@ function sleep(ms) {
 
 async function smokeOne(check) {
   const url = "https://" + check.host + "/";
-  const attempts = isStagingSlot(slotArg) ? 10 : 3;
+  const attempts = isStagingSlot(slotArg) || isDedicatedSlot(slotArg) ? 10 : 3;
   let lastErr = "";
   for (let i = 1; i <= attempts; i++) {
     const res = await fetch(url, {

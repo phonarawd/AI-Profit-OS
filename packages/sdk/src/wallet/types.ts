@@ -9,8 +9,19 @@ export type WalletBucketsResponse = {
   profitUsdt: string;
   lockedUsdt: string;
   practiceUsdt: string;
+  trialPrincipalUsdt?: string;
+  trialLockedUsdt?: string;
   liabilityUsdt: string;
   asOfLedgerEntryId: string;
+  displayPrimary?: "KRW";
+  displaySecondary?: "USDT";
+  principalKrwApprox?: string | null;
+  profitKrwApprox?: string | null;
+  lockedKrwApprox?: string | null;
+  practiceKrwApprox?: string | null;
+  liabilityKrwApprox?: string | null;
+  trialPrincipalKrwApprox?: string | null;
+  trialLockedKrwApprox?: string | null;
 };
 
 export type WalletRequestOpts = {

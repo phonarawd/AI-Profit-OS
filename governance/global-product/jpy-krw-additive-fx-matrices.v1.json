@@ -6,13 +6,13 @@
   "contractPath": "governance/global-product/jpy-krw-additive-fx-contract.v1.md",
   "owner": "Engine §0.0.2d",
   "verdict": "JPY_KRW_ADDITIVE_FX_CONTRACT=PASS",
-  "runtimeImplementation": 0,
+  "runtimeImplementation": 1,
   "secondFxTruth": 0,
   "clientGuessedFx": 0,
   "parserResponsibilityUnchanged": true,
   "moneyLedgerUnchanged": true,
-  "listingLegAuthorization": false,
-  "yahooJapan": "PERMANENTLY_FORBIDDEN",
+  "listingLegAuthorization": true,
+  "yahooJapan": "PARTNER_ADAPTER_AUTHORIZED",
   "formulaReuse": {
     "normalizeNativeToUsdt": "USD|GBP|EUR|AUD|USDT READY",
     "approxKrwFromSnapshot": "READY",
@@ -24,23 +24,23 @@
   "currencySupportMatrix": [
     {
       "currency": "KRW",
-      "currentSupport": "PARTIAL",
-      "nativePersist": "NO_ENUM",
+      "currentSupport": "YES",
+      "nativePersist": "YES",
       "krwNormalize": "identity_required",
-      "usdtSecondary": "NOT_READY",
+      "usdtSecondary": "AUTHORIZED",
       "requiredFutureChange": "enum+CHECK += KRW · normalizeNativeToUsdt chain=krw_usdt via existing usdtKrw · primary identity",
       "owner": "Engine §0.0.4.2 additive",
-      "runtimeNeededLater": true
+      "runtimeNeededLater": false
     },
     {
       "currency": "JPY",
-      "currentSupport": "NO",
-      "nativePersist": "NO_ENUM",
-      "krwNormalize": "NOT_READY",
-      "usdtSecondary": "NOT_READY",
+      "currentSupport": "YES",
+      "nativePersist": "YES",
+      "krwNormalize": "AUTHORIZED",
+      "usdtSecondary": "AUTHORIZED",
       "requiredFutureChange": "Frankfurter usdJpy · jpy_usd column · FIAT_USD_RATE_FIELD.JPY · enum+CHECK += JPY",
       "owner": "Engine §0.0.4.2 additive",
-      "runtimeNeededLater": true
+      "runtimeNeededLater": false
     },
     {
       "currency": "USD",
@@ -216,5 +216,6 @@
     }
   ],
   "nextGlobalDataStep": "vestiaire-1st-party-image-url-lock",
-  "fileSerial03Untouched": "redesign-r1-home-visual-asset-production"
+  "fileSerial03Untouched": "redesign-r1-home-visual-asset-production",
+  "unlockPath": "governance/global-product/global-source-unlock-authorization.v1.md"
 }

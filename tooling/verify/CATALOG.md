@@ -1,14 +1,18 @@
-﻿# verify:* Catalog (ADR-016 · §19 pointer)
+# verify:* Catalog (ADR-016 · §19 pointer)
 
 **3-tier gate** — commit/push/CI 분리.
 
 | tier | 명령 | 시점 | SSOT |
 |------|------|------|------|
 | **T0** | `pnpm verify:gate:fast` | commit · Husky pre-commit | `gate-fast.cjs` · `domain-by-path.cjs` |
-| **T1** | `pnpm verify:gate:push` | push · Husky pre-push | `gate-push.cjs` (= T0 + infra + stubs) |
-| **T2** | `pnpm verify:gate` | CI · main merge | `gate.cjs` (= T1 + next-build + opennext-build) |
+| **T1** | `pnpm verify:gate:push` | push · Husky pre-push | `gate-push.cjs` (= T0 + path-aware T1 extras) |
+| **T2** | `pnpm verify:gate` | CI · main merge | `gate.cjs` (= path-aware T1 + api-nest-build · next/opennext 0) |
 
 경로 기반 T0 도메인 = `tooling/verify/domain-by-path.cjs` (변경 파일 → 해당 `verify:*`만).
+T1 extras: lib/t1-by-path.cjs + verify:t1-by-path. domainSteps stays. T2 keeps full T1. backend:fast is local only, not husky pre-push.
+This repo gate is backend-only. Legacy web/admin extras and next/opennext builds are not T0/T1/T2 always. frontend inventory=CORE.
+
+로컬 가속(검사 목록 불변): stamp skip · stub in-process+cache · web-lint --cache · api-nest-build path+T2. CI/`AIPO_GATE_NO_STAMP=1` 실실행.
 
 ## T1 push tier (infra · domain stubs)
 
@@ -17,7 +21,7 @@
 | stack-lock | `verify:stack-lock` | T0 | ✅ live |
 | secrets | `verify:secrets` | T0 | ✅ live |
 | plans-ssot | `verify:plans-ssot` | T0 | ✅ live |
-| brand-consumer | `verify:brand-consumer` | T0 | ✅ live |
+| brand-consumer | `verify:brand-consumer` | T0 path | ✅ live |
 | pg-module-scan | `verify:pg-module-scan` | T1 | ✅ live |
 | brand-assets | `verify:brand-assets` | T1 | ✅ live (visual_kit_v1) |
 | cf-infra | `verify:cf-infra` | T1 | ✅ live |
@@ -38,7 +42,8 @@
 | ia-tabs | `verify:ia-tabs` | T1 | ✅ live |
 | admin-routes | `verify:admin-routes` | T1 | ✅ live |
 | admin-novice-ui | `verify:admin-novice-ui` | T0 path | ✅ live (초보 관리자용 한국어 · 반응형 셸 · 접근성 · 상태 진실성) |
-| api-nest-build | `verify:api-nest-build` | T1 | ✅ live |
+| api-nest-build | `verify:api-nest-build` | T0 path + T2 always | ✅ live |
+| packages-ui-typecheck | `verify:packages-ui-typecheck` | T0 path (packages/ui/**) | ✅ live (D1-BLK-004 · standalone tsc · negative fixture · 기존 앱별 typecheck과 중복/충돌 0) |
 | stubs/run-all | domain stubs | T1 | ✅ live |
 | settlement-rule-parity | `verify:settlement-rule-parity` | T0 path + T1 always | ✅ live (REL-008 · rust==cjs golden vectors · REL-502 대체 0) |
 | web-lint | `verify:web-lint` | T0 path | ✅ live (REL-011 · apps/web eslint 실검사 · no-op echo 0 · 구문 오류 FAIL) |
@@ -69,13 +74,25 @@
 | api-runtime-qa-canonical | `verify:api-runtime-qa-canonical` | T0 path | live (HTTP decision-only, canonical evidence persist) |
 | production-release-decision | `verify:production-release-decision` | T0 path | live (acceptance is necessary-not-sufficient, current NO_GO) |
 | admin-csrf-double-submit | `verify:admin-csrf-double-submit` | T0 path | live (session HttpOnly, CSRF readable, dismiss 0) |
+| admin-identity-b0 | `verify:admin-identity-b0` | T0 path | live (S3 B0 admin identity) |
+| admin-s3-31-full | `verify:admin-s3-31-full` | T0 path | live (S3/3.1 B1-B6 · LIVE_E2E=NOT_RUN) |
+| s3-32-user-auth | `verify:s3-32-user-auth` | T0 path | live (S3/3.2 C1-C3 code · LIVE_E2E=NOT_RUN) |
+| s3-33-products | `verify:s3-33-products` | T0 path | live (S3/3.3 Phase D code · LIVE_E2E=NOT_RUN) |
+| s3-34-peotteok | `verify:s3-34-peotteok` | T0 path | live (S3/3.4 history/citation/IME/IDOR · LIVE_E2E=NOT_RUN) |
+| s3-35-pwa | `verify:s3-35-pwa` | T0 path | live (S3/3.5 F1-F3 code · LIVE_E2E=NOT_RUN) |
+| s3-36-observability | `verify:s3-36-observability` | T0 path | live (S3/3.6 H1-H3 code · LIVE_ALERT/CodeQL open/restore=NOT_RUN) |
+| s3-37-merge-rules | `verify:s3-37-merge-rules` | T0 path | live (S3/3.7 RC checks>verify-gate · live apply=NOT_RUN) |
 | coach-sse-error-canonical | `verify:coach-sse-error-canonical` | T0 path | live (SSE error is constant coach_error; raw exception 0) |
 | release-manifest-identity-lock | `verify:release-manifest-identity-lock` | T0 path | live (manifest identity + deploy invariants fail closed) |
 | production-deploy-path-lock | `verify:production-deploy-path-lock` | T0 path | live (low-level prod helpers gated, acceptance required, rebuild/bundle forbidden) |
 | rel-508-current-fx-approx | `verify:rel-508-current-fx-approx` | T0 path + CI | live (REL-508 · Nest approx · null not 0 · STALE pending REL-502) |
+| user-money-display | `verify:user-money-display` | T0 path | live (user read KRW primary / USDT secondary / ledger SoT USDT / missing FX=null) |
 | rel-506-r8-infra-core | `verify:rel-506-r8-infra-core` | T0 path + CI | live (REL-506 · R8 Core · pages deploy 0 · Ads excluded · rum/tag deferred) |
 | rel-507-production-e2e | `verify:rel-507-production-e2e` | T0 path + CI | live (REL-507 · production-loop · isolation · invented success 0) |
 | rel-600-staging | `verify:rel-600-staging` | T0 path + CI | live (REL-600 staging preview workers) |
+| s5-dedicated-staging | `verify:s5-dedicated-staging` | T0 path + CI | live (S5 dedicated host lock, J0 NOT_RUN) |
+| hard-gate-live | `verify:hard-gate-live` | T0 path + CI | live (HARD_GATE recount, stale 0/10 discarded, PASS allowlist empty) |
+| j0-admin-auth-live | `verify:j0-admin-auth-live` | T0 path + CI | live (J0 suite lock; live run is e2e:j0-admin-auth-live; static is not PASS) |
 | rel-601-staging-regression | `verify:rel-601-staging-regression` | T0 path + CI | live (REL-601 Surface Matrix staging preview · Home redesign 0 · local full 0) |
 | rel-602-staging-rollback | `verify:rel-602-staging-rollback` | T0 path + CI | live (REL-602 real preview rollback + read-only regression + forward deploy · production/DB/money 0) |
 | rel-603-age-usability-spotcheck | `verify:rel-603-age-usability-spotcheck` | T0 path + CI | live (REL-603 automated 9 cohort x 4 staging Playwright · human 0 · production/money 0) |
@@ -96,8 +113,8 @@
 
 | id | 스크립트 | tier | 상태 |
 |----|----------|------|------|
-| next-build | `verify:next-build` | T2 | ✅ live (web + admin `next build`) |
-| opennext-build | `verify:opennext-build` | T2 | ✅ live (Windows=SKIP · CI ubuntu=full) |
+| next-build | `verify:next-build` | retired from T2 | ✅ live (web + admin `next build`) |
+| opennext-build | `verify:opennext-build` | retired from T2 | ✅ live (Windows=SKIP · CI ubuntu=full) |
 
 ## T0 path-trigger domain (변경 시에만)
 
@@ -108,6 +125,8 @@
 | `governance/figma/**` · `tooling/verify/figma-project-registry.cjs` | figma-project-registry |
 | `governance/visual-reconciliation/**` · `tooling/verify/locked-visual-reconciliation.cjs` · locked Account Hub `/me` | locked-visual-reconciliation |
 | `tooling/verify/domain-by-path.cjs` · `tooling/verify/domain-by-path.selftest.cjs` · `tooling/verify/domain-by-path-ci.cjs` · `.github/workflows/gate.yml` | domain-by-path-ci |
+| `tooling/verify/gate-runner.cjs` · `gate-tiers.cjs` · `gate-local-speed.cjs` · `t1-by-path.cjs` · `lib/t1-by-path.cjs` · `lib/gate-stamp.cjs` · `stubs/run-all.cjs` · `web-lint.cjs` | gate-local-speed · t1-by-path |
+| `services/api-nest/**` · `tooling/verify/api-nest-build.cjs` | api-nest-build |
 | `.cursor/hooks/**` · `.cursor/hooks.json` · `scripts/verify-night-guard.mjs` · `tooling/verify/night-guard.cjs` · `scripts/verify-project-boundary.mjs` | night-guard · project-boundary |
 | `tooling/e2e/**` · `tooling/verify/qa-env-isolation-guard.cjs` | qa-env-isolation-guard |
 | `governance/db-recon/**` · b1-push-rls-design · b2-ownership-design · `tooling/verify/db-recon-inventory.cjs` · `tooling/verify/live-schema-forensic.cjs` | db-recon-inventory · live-schema-forensic |
@@ -152,6 +171,14 @@
 | `tooling/verify/api-runtime-qa-canonical.cjs` | api-runtime-qa-canonical |
 | `tooling/release/production-release-decision.cjs` · `tooling/verify/production-release-decision.cjs` | production-release-decision |
 | `tooling/verify/admin-csrf-double-submit.cjs` | admin-csrf-double-submit |
+| `tooling/verify/admin-identity-b0.cjs` | admin-identity-b0 |
+| `governance/admin/s3-31-connection-matrix.v1.json` · `tooling/verify/admin-s3-31-full.cjs` | admin-s3-31-full |
+| `governance/auth/**` · `packages/ui/components/auth/**` · `apps/web/app/auth/**` · `tooling/verify/s3-32-user-auth.cjs` | s3-32-user-auth |
+| `governance/products/**` · `tooling/verify/s3-33-products.cjs` · `supabase/migrations/20260906150000_s3_33_product_pipeline.sql` | s3-33-products |
+| `governance/peotteok/**` · `tooling/verify/s3-34-peotteok.cjs` · `supabase/migrations/20260906160000_s3_34_peotteok_history.sql` | s3-34-peotteok |
+| `governance/pwa/s3-35-connection-matrix.v1.json` · `tooling/verify/s3-35-pwa.cjs` · `apps/web/public/offline.html` | s3-35-pwa |
+| `governance/observability/s3-36-connection-matrix.v1.json` · `tooling/verify/s3-36-observability.cjs` | s3-36-observability |
+| `governance/github/**` · `tooling/github/rc-production-merge*` · `tooling/verify/s3-37-merge-rules.cjs` | s3-37-merge-rules |
 | `tooling/verify/coach-sse-error-canonical.cjs` | coach-sse-error-canonical |
 | `tooling/verify/release-manifest-identity-lock.cjs` | release-manifest-identity-lock |
 | `tooling/verify/production-deploy-path-lock.cjs` · `tooling/deploy/lib/accepted-artifact-authority.cjs` | production-deploy-path-lock |
@@ -159,6 +186,9 @@
 | `governance/release-master/R8_INFRA_CORE.md` · `governance/release-master/r8-cache-inventory.v1.json` · `tooling/verify/rel-506-r8-infra-core.cjs` | rel-506-r8-infra-core |
 | `tooling/e2e/specs/production-loop.spec.cjs` · `tooling/e2e/lib/production-loop.cjs` · `tooling/verify/rel-507-production-e2e.cjs` | rel-507-production-e2e |
 | `governance/release-master/REL-600-STAGING.md` · staging origin · `tooling/verify/rel-600-staging.cjs` | rel-600-staging |
+| `governance/release-master/S5-DEDICATED-STAGING.v1.json` · dedicated wrangler · admin proxy · `tooling/verify/s5-dedicated-staging.cjs` | s5-dedicated-staging |
+| `governance/release-master/HARD_GATE_LIVE.v1.json` · `tooling/verify/hard-gate-live.cjs` | hard-gate-live |
+| `tooling/e2e/j0-admin-auth-live*.cjs` · `governance/release-master/J0-LIVE.v1.json` · `tooling/verify/j0-admin-auth-live.cjs` | j0-admin-auth-live |
 | `governance/release-master/REL-601-STAGING-REGRESSION.md` · Surface Matrix · `tooling/verify/rel-601-staging-regression.cjs` | rel-601-staging-regression |
 | `governance/release-master/REL-602-STAGING-ROLLBACK.md` · `tooling/deploy/cf-rollback-staging.cjs` · `tooling/verify/rel-602-staging-rollback.cjs` | rel-602-staging-rollback |
 | `governance/release-master/AGE_SPOTCHECK.md` · `tooling/e2e/specs/rel-603-age-usability-spotcheck.spec.cjs` · `tooling/verify/rel-603-age-usability-spotcheck.cjs` | rel-603-age-usability-spotcheck |
@@ -174,8 +204,9 @@
 | `apps/web/app/wallet/deposit/**` · `me/kyc` · `me/support` · `KycFlow` | stub-page-actions · usdt-deposit-closure · krw-deposit-closure |
 | money api-nest | pg-module-scan · bucket-invariant |
 | `schemas/home-money-read.v1.json` · `wallet/home-money-read*` · `packages/sdk/src/home-money-read/**` | home-money-read-contract |
-| engine-rust · trade/opportunity api | match-success-rule · settlement-rule-parity · participate-http · execute-rule-loop |
-| auth/jwt | auth-jwt-runtime · auth-flows · auth-session-cookie · auth-rate-limit |
+| money-display/** · trial-state · wallet buckets · current-fx display | user-money-display |
+| engine-rust · trade/opportunity api | match-success-rule · settlement-rule-parity · participate-http · execute-rule-loop · a3-same-poolclient-lock |
+| auth/jwt | auth-jwt-runtime · auth-flows · auth-session-cookie · auth-rate-limit · s3-32-user-auth |
 | `api-nest` wallet · kyc.controller | wallet-kyc-session-auth |
 
 ## Domain gates (T1 `stubs/run-all` · 구현되면 hard)
@@ -183,9 +214,10 @@
 | id | 도메인 |
 |----|--------|
 | bucket-invariant · withdraw-mode-default · principal-withdraw-reachable · principal-profit-abuse · balance-aware-feed · practice-non-withdrawable | Money §49/§51.7 — **live** (posting·ASC FOR UPDATE·idempotency·provision·recon · default mode=profit · 원금 CTA·시트·3CTA · Admin finance?tab=buckets · §49.9 P1~P24/E1~E12 risk queue·freeze·circuit · §49.2a suggest deeplink·principal Fact·Engine pointer · practice welcome 1회·7d expire·Banner·403) |
+| user-money-display | User read display — **live** (KRW primary / USDT secondary / ledger SoT USDT / missing FX=null) |
 | home-money-read-contract | Money v7.23 R1 — **live** (`schemas/home-money-read.v1.json` · `GET /api/v1/me/home-money-read` · principalUsdt+settlementCompletedTodayCount · per-field asOf/source/state · Engine todayPossibleProfitUsdt 0 · availableUsdt/todayPossible 0 · zero≠absent · mutation/DDL 0) |
 | home-state-truth | Engine v7.23 R1 — **live** (`schemas/home-read-model.v1.json` · `GET /api/v1/me/home-read` · Money+opportunity+growth+session mapper · todayPossible=server_derived affordable∧available∧compareReady · ledgerTotal=settlement COUNT · viewState · domainFsm null · App/React/CSS 0) |
-| no-fake-zero-status | Engine v7.23 R1 — **live** (unauthorized/guest/expired → Fact null · ready_data requires authenticated · deny availableUsdt/staticScanClaim · recoverable_error not coerced to ready_*) |
+| no-fake-zero-status | Engine v7.23 R1 — retired reject-guard (Founder 2026-09-09 truth RELEASED · symbol kept) |
 | idempotency-conflict-detection | Money post-r0 — **live** (same key+different payload → 409 · fingerprint · ledger+participate · mig request_fingerprint) |
 | committed-event-publication-durability | Money post-r0 — **live** (ledger TX outbox intent · emit≠ack · poller replay · Phase0 Postgres) |
 | money-wallet-auth-remediation | Money post-r0 Finding A+B — **live** (practiceWelcome JWT+sessionUserId · practiceExpireTick fail-closed machine-auth · Adapters fail-open 복제0) |
@@ -234,6 +266,7 @@
 | usdt-deposit-closure | REL-114 — `/wallet/deposit` USDT address owner · credit 0 · happy+deny — **live** |
 | krw-deposit-closure | REL-115 — `/wallet/deposit?tab=krw` pending≠credit · PG 0 · happy+deny — **live** |
 | withdraw-flow-wire | UI PART9f2 — WithdrawAmountPanel + step-up challenge/verify + POST `/wallet/withdraw` idempotencyKey · PrincipalConfirmSheet client token pointer — **live** |
+| withdraw-treasury-solvency | withdraw broadcast treasury unknown/stale/short and unbound signer fail-closed — **live** |
 | withdraw-stepup-security | Money 43.6 -- no fake WebAuthn proof, server verified email only, expiring HMAC token, atomic consume, proven PIN enrollment -- **live** |
 | adapter-ingest-fail-closed | Adapters ingest -- token unset 503, wrong token 401, fail-open removed -- **live** |
 | usdt-ingest-machine-auth | Money 43.1 -- machine-auth observe/tick/sweeper, address-index owner only, body.userId ignored -- **live** |
@@ -269,7 +302,7 @@
 | platform-change-control | Index v7.23 R0-3 — `change-control.v1.md` · L1/L2/L3+version bump · ADR-017 Light+Purple·IA 새 라벨·OpenNext Workers before/after/영향/rollback/승인 증거 · d903eef7 REFERENCE ONLY 흡수 crosswalk · 구현코드0 · path-trigger — **live** |
 | governance-observation-registry | Index v7.23 R0-4 + post-r0 — schema+registry · status enum · currentlyOccurring⊥reviewTrigger · R0 AtR0 locks=0 불변 · post-r0 Money wave1 promote4/materialize3 · Engine observed2 · Change Control `cc.money.r0-obs-promote-wave1` · path-trigger — **live** |
 | domain-by-path-ci | T0 path — **live** (LOCAL staged/unstaged · CI PR merge-base→HEAD · CI PUSH before→HEAD · missing base fail-closed · silent SKIP 0) |
-| night-guard | Cursor preToolUse Night Guard — **live** (OPERATION deny: Production DDL/DML/migration/repair/deploy/secret · GitHub ruleset/environment/protection · main/release/force push · `--no-verify` · fixture-only selftest · project_ref allow != write allow) |
+| night-guard | Cursor Night Guard policy library — retired / not wired (OPERATION deny: Production DDL/DML/migration/repair/deploy/secret · GitHub ruleset/environment/protection · main/release/force push · `--no-verify` · fixture-only selftest · project_ref allow != write allow) |
 | qa-env-isolation-guard | REL-006 QA Lab — **live** (production ref `mgsytcetsiecllmhcyox` throw · money mutation fail-closed · committed Playwright spec · MCP-only DONE 0) |
 | money-unavailable | REL-007 — **live** (missing money → UNAVAILABLE · 실제 0 유지 · Home geometry 0) |
 | figma-project-registry | REL-009 + REL-131 — **live** (fileKey locked · REL-131 Desktop 192:194 + Mobile 192:434 FOUNDER_APPROVED_LOCKED · approvedAuthority=2 · V1/V2 SUPERSEDED preserved · other frames candidate · Home 46:2 BACKUP · Code Connect candidate-only · REL-131 apply 0) |
@@ -311,8 +344,10 @@
 | cta-earn-profit · user-trader-jargon-0 | Index §20.2 · UI §48 · Engine §4.2b — 유저 CTA=`수익 벌기` · domain=`participate` · `이 상품으로…`/구매/판매/유저메인`매칭 참여`/판매성공률/executionPlatforms·expectedSellDays 유저0 · 대기Fact 소스가드 · INTERNAL↔USER 맵 · 면책+배지 (v7.22.28) · 구명 `cta-match-participate`=alias · **both live** |
 | soft-hard-requeue-sla | Index §20.2 · Engine §48.13 · UI §48 — Soft60/Hard90 · `MATCH_TIMEOUT` · 카피3줄(보통1분/다시맞추는중/시간지나안전정지) · presentation≠SLA (v7.22.29) · Audit A4 · **copy/Canon live** |
 | match-tension-surface | Index §20.2 · UI §48.3b — Soft/Hard전등급동일 · 긴장감=과정Fact · 등급≠대기특권 · slaAlmost/priceNearMiss · 난수틱·가짜대기·당첨게이지0 (v7.22.30) · Audit A6 · **copy/Canon live** |
-| listing-legs-day1 | Engine §0.0.1a/§0.0.2 — ebay 멀티marketplace\|admin only · yahoo_jp Day-1 auto-publish FORBIDDEN · §38.10 partner 표기 OK(카피금지 supersede) · KR/Chrono24대체0 — **live** — **live** |
+| listing-legs-day1 | Engine §0.0.1a · ebay|admin settlement · observation sources AUTHORIZED (global-source-unlock) · §38.10 partner OK — **live** |
+| fashionphile-parser | Engine §0.0.2c — FASHIONPHILE products.json observation · exact/unique-size Asset Master match · listing-leg 0 — **live** |
 | signup-ready-adapters | Engine §0.0 — ebay 멀티marketplaceId · pokemontcg+ygoprodeck · coingecko+frankfurter · yahoo-jp경로0 · Phase1 deploy (phase0 0) · Admin `/admin/adapters` health — **live** |
+| adapter-worker-machine-auth | Adapter Workers — public manual `/tick` requires x-adapter-token · Nest ingest token optional-spread forbidden · missing token fail-closed — **live** |
 | adapter-matching-kpi | Engine §51.12+§51.15 — 등급매칭·SKU실패율 KPI(>15%/24h 알림·자동공개축소) · compareReady false>40% 시드점검 · stale>TTL 적색 · Admin `/admin/adapters` KPI·알림 · yahoo0 · Simulation S4 `adapterMatchFailureRate` 선행 — **live** |
 | kyc-withdraw-only · kyc-redirect · kyc-r2-only | Money §42 — **live** (출금1회게이트 · toast→/me/kyc@800ms · R2 kyc-docs private) |
 | krw-admin-decide | Money §41.3·§43.3 — **live** approve credit1 / reject0 · TRC20 address · PG사0 · CSV=L2+ (v7.22.12) |

@@ -1,35 +1,11 @@
 "use client";
 
-import {
-  continuePathAfterAuth,
-  verifyMagicLink,
-} from "@aipo/sdk/auth";
+import { verifyMagicLink } from "@aipo/sdk/auth";
+import { continueAfterAuth } from "@aipo/sdk/product-onboarding";
 import { GuestChrome } from "../../components/GuestChrome";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { authUserMessage } from "../auth-messages";
-
-function readStoredTerms(): {
-  termsAcceptedAt?: string;
-  privacyAcceptedAt?: string;
-  marketingConsent?: boolean;
-  referralCode?: string;
-} {
-  try {
-    const raw = sessionStorage.getItem("aipo.magic.terms");
-    if (!raw) return {};
-    const o = JSON.parse(raw) as Record<string, unknown>;
-    return {
-      termsAcceptedAt: typeof o.termsAcceptedAt === "string" ? o.termsAcceptedAt : undefined,
-      privacyAcceptedAt:
-        typeof o.privacyAcceptedAt === "string" ? o.privacyAcceptedAt : undefined,
-      marketingConsent: o.marketingConsent === true,
-      referralCode: typeof o.referralCode === "string" ? o.referralCode : undefined,
-    };
-  } catch {
-    return {};
-  }
-}
 
 export function MagicRuntime() {
   const router = useRouter();
@@ -42,15 +18,18 @@ export function MagicRuntime() {
       return;
     }
     let cancelled = false;
-    void verifyMagicLink(token, readStoredTerms(), { apiBase: "" })
-      .then((session) => {
+    // S1F Section 6.2 fix: consent was already captured server-side at
+    // request() time (see SignupRuntime.tsx) - this call no longer needs
+    // to read/send anything from sessionStorage, which is exactly what
+    // makes opening this link on a different device/tab/browser work.
+    void verifyMagicLink(token, {}, { apiBase: "" })
+      .then(async (session) => {
         if (cancelled) return;
-        try {
-          sessionStorage.removeItem("aipo.magic.terms");
-        } catch {
-          /* ignore */
-        }
-        router.replace(continuePathAfterAuth(session.onboardingStage));
+        const next = await continueAfterAuth(session.onboardingStage, {
+          apiBase: "",
+        });
+        if (cancelled) return;
+        router.replace(next);
       })
       .catch((err: unknown) => {
         if (!cancelled) setNote(authUserMessage(err));

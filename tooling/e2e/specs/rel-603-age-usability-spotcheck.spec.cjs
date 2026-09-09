@@ -34,6 +34,7 @@ const baseUrl =
 
 const DESKTOP_BREAKPOINT = 1280;
 const GOTO_ATTEMPTS = 3;
+const DETAIL_NAV_ATTEMPTS = 5;
 const GOTO_TIMEOUT_MS = 30_000;
 const GOTO_RETRY_DELAY_MS = 1000;
 
@@ -94,7 +95,8 @@ function isTransientNavigationError(error) {
     /frame was detached/i.test(msg) ||
     /Target closed/i.test(msg) ||
     /Cannot find context/i.test(msg) ||
-    /Execution context was destroyed/i.test(msg)
+    /Execution context was destroyed/i.test(msg) ||
+    /REL-603 preview HTTP 5\d\d/i.test(msg)
   );
 }
 
@@ -135,7 +137,14 @@ async function gotoOnce(page, cohort, scenario) {
     timeout: GOTO_TIMEOUT_MS,
   });
   expect(res, cohort.id + " " + scenario.id + " response").not.toBeNull();
-  expect(scenario.expectStatus).toContain(res.status());
+  const status = res.status();
+  // Same GOTO_ATTEMPTS bound as network throw — HTTP 5xx/530 retry is not a skip.
+  if (status >= 500) {
+    throw new Error(
+      "REL-603 preview HTTP " + status + " " + url,
+    );
+  }
+  expect(scenario.expectStatus).toContain(status);
   await hideNextDevChrome(page);
   await stabilizePage(page);
   return res;
@@ -206,7 +215,17 @@ async function assertNoHorizontalOverflow(page, label) {
 }
 
 async function assertSurfaceSafety(page, cohort, scenario) {
-  const html = await page.content();
+  await stabilizePage(page);
+  let html;
+  try {
+    html = await page.content();
+  } catch (error) {
+    const msg = String(error?.message || error);
+    if (!/navigating and changing the content/i.test(msg)) throw error;
+    await page.waitForLoadState("domcontentloaded").catch(() => {});
+    await stabilizePage(page);
+    html = await page.content();
+  }
   const bad = forbiddenHit(html);
   expect(bad, cohort.id + " " + scenario.id + " forbidden token").toBeNull();
   expect(
@@ -271,9 +290,23 @@ async function openEmailSignupForm(page, cohort, scenario) {
   }
 }
 
+async function stubTurnstileWidget(page) {
+  await page.addInitScript(() => {
+    globalThis.turnstile = {
+      render(_el, opts) {
+        const cb = opts && opts.callback;
+        if (typeof cb === "function") queueMicrotask(() => cb("rel603-turnstile-qa"));
+        return "rel603";
+      },
+      remove() {},
+    };
+  });
+}
+
 async function runSignup(page, cohort, scenario) {
   await page.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
   await stubGuestApis(page);
+  await stubTurnstileWidget(page);
   await gotoStaging(page, cohort, scenario);
 
   await waitForScenarioRoot(page, cohort, scenario, async () => {
@@ -291,7 +324,12 @@ async function runSignup(page, cohort, scenario) {
     .locator('input[type="checkbox"]');
   await termsCheckbox.check({ force: true });
   await expect(termsCheckbox).toBeChecked({ timeout: 20_000 });
-  await expect(emailSubmit).toBeEnabled({ timeout: 20_000 });
+  const turnstileMissing = page.getByTestId("turnstile-unavailable");
+  if (await turnstileMissing.isVisible().catch(() => false)) {
+    await expect(emailSubmit).toBeDisabled();
+  } else {
+    await expect(emailSubmit).toBeEnabled({ timeout: 20_000 });
+  }
 
   const html = await assertSurfaceSafety(page, cohort, scenario);
   const axe = await runAxeOnHtml(html);
@@ -334,7 +372,7 @@ async function runParticipateEntry(page, cohort, scenario) {
   });
 
   await page.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
-  await stubCoreOpportunityJourney(page);
+  await rebindJourney(page);
   await gotoStaging(page, cohort, scenario);
 
   await waitForScenarioRoot(page, cohort, scenario, async () => {
@@ -346,22 +384,31 @@ async function runParticipateEntry(page, cohort, scenario) {
   });
   const card = profitsCard(page, cohort.viewport.width);
   await expect(card).toBeVisible({ timeout: 20_000 });
-  const detailPath = "/profits/" + TEST_OPPORTUNITY_ITEM.id;
   const detailUrl = new RegExp("/profits/" + TEST_OPPORTUNITY_ITEM.id + "$");
   const href = await card.getAttribute("href");
   expect(href, cohort.id + " card href").toMatch(detailUrl);
-  await Promise.all([
-    page.waitForURL(detailUrl, { timeout: GOTO_TIMEOUT_MS }),
-    card.click(),
-  ]);
+  const dest = new URL(href, baseUrl).toString();
+  for (let attempt = 0; attempt < DETAIL_NAV_ATTEMPTS; attempt += 1) {
+    if (detailUrl.test(currentPathname(page))) break;
+    // Cross-document nav drops handlers — re-bind before every click/goto.
+    await bindJourney(page);
+    const liveCard = profitsCard(page, cohort.viewport.width);
+    const cardReady = await liveCard.isVisible().catch(() => false);
+    if (cardReady) {
+      await expect(liveCard).toHaveAttribute("href", `/profits/${TEST_OPPORTUNITY_ITEM.id}`);
+      await liveCard.scrollIntoViewIfNeeded().catch(() => {});
+      await Promise.all([
+        page.waitForURL(detailUrl, { timeout: 8_000 }).catch(() => {}),
+        liveCard.click({ timeout: 8_000 }).catch(() => {}),
+      ]);
+    }
+    if (detailUrl.test(currentPathname(page))) break;
+    // Hung /profits document blocks the next goto — blank, rebind, then detail URL.
+    await page.goto("about:blank", { timeout: 10_000 }).catch(() => {});
+    await gotoBound(page, dest);
+  }
   await expect(page).toHaveURL(detailUrl);
-  // Re-bind stubs after navigation (handlers can drop on cross-document nav).
-  await stubCoreOpportunityJourney(page);
-  await expect(page.getByTestId("opportunity-detail")).toHaveAttribute(
-    "data-detail-state",
-    "ready",
-    { timeout: 30_000 },
-  );
+  await waitDetailReady(page, dest, detailUrl);
 
   const detailCta = page
     .locator("[data-requires-preflight='true']")
@@ -402,9 +449,92 @@ async function runWallet(page, cohort, scenario) {
   await assertSurfaceSafety(page, cohort, scenario);
 }
 
+async function bindJourney(page) {
+  // Context route survives a new document. Do not unroute after the first bind —
+  // unroute during detail fetch lets the live API 401 win (unauthorized).
+  const ctx = page.context();
+  if (ctx._rel603JourneyBound) return;
+  await stubCoreOpportunityJourney(ctx);
+  ctx._rel603JourneyBound = true;
+}
+
+async function rebindJourney(page) {
+  // Only after unrouteAll / about:blank. Cross-document nav drops page.route.
+  const ctx = page.context();
+  ctx._rel603JourneyBound = false;
+  await ctx.unroute("**/api/v1/**").catch(() => {});
+  await page.unroute("**/api/v1/**").catch(() => {});
+  await bindJourney(page);
+}
+
+async function waitDetailReady(page, dest, detailUrl) {
+  for (let attempt = 0; attempt < DETAIL_NAV_ATTEMPTS; attempt += 1) {
+    await bindJourney(page);
+    if (!detailUrl.test(currentPathname(page))) {
+      await page.goto("about:blank", { timeout: 10_000 }).catch(() => {});
+      await gotoBound(page, dest);
+    }
+    const detail = page.getByTestId("opportunity-detail");
+    const state = await detail.getAttribute("data-detail-state").catch(() => null);
+    if (state === "ready") return;
+    await bindJourney(page);
+    await page.reload({
+      waitUntil: "domcontentloaded",
+      timeout: GOTO_TIMEOUT_MS,
+    });
+    await hideNextDevChrome(page);
+    await stabilizePage(page);
+  }
+  await expect(page.getByTestId("opportunity-detail")).toHaveAttribute(
+    "data-detail-state",
+    "ready",
+    { timeout: 30_000 },
+  );
+}
+
+function currentPathname(page) {
+  try {
+    return new URL(page.url()).pathname;
+  } catch {
+    return "";
+  }
+}
+
+async function gotoBound(page, url) {
+  let lastError;
+  for (let attempt = 1; attempt <= GOTO_ATTEMPTS; attempt += 1) {
+    try {
+      await bindJourney(page);
+      const res = await page.goto(url, {
+        waitUntil: "domcontentloaded",
+        timeout: GOTO_TIMEOUT_MS,
+      });
+      expect(res, "REL-603 goto " + url).not.toBeNull();
+      const status = res.status();
+      if (status >= 500) {
+        throw new Error("REL-603 preview HTTP " + status + " " + url);
+      }
+      await hideNextDevChrome(page);
+      await stabilizePage(page);
+      return res;
+    } catch (error) {
+      lastError = error;
+      if (!isTransientNavigationError(error) || attempt === GOTO_ATTEMPTS) {
+        throw error;
+      }
+      console.warn(
+        `[REL-603] transient goto retry ${attempt}/${GOTO_ATTEMPTS - 1} ${url}`,
+      );
+      await page.goto("about:blank", { timeout: 10_000 }).catch(() => {});
+      await sleep(GOTO_RETRY_DELAY_MS * attempt);
+    }
+  }
+  throw lastError;
+}
+
 for (const cohort of fixture.cohorts || []) {
   test.describe(`REL-603 cohort ${cohort.id} (${cohort.ageBand})`, () => {
-    test.use({ viewport: cohort.viewport });
+    test.use({ viewport: cohort.viewport, serviceWorkers: "block" });
 
     for (const scenario of fixture.scenarios || []) {
       test(`${scenario.id} ${scenario.title} @ ${scenario.path}`, async ({ page }) => {

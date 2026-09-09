@@ -1,12 +1,16 @@
 /**
  * POST /api/v1/me/peotteok/chat · GET /api/v1/me/peotteok/chips
+ * GET/PATCH/DELETE /api/v1/me/peotteok/conversations
  * SSE contract · JWT audience peotteok-user
  */
 
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
+  Patch,
   Post,
   Req,
   Res,
@@ -16,6 +20,7 @@ import {
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { CoachOrchestrator } from "./coach.orchestrator";
 import { COACH_USER_ROUTES } from "./coach.routes";
+import { PeotteokHistoryService } from "./peotteok-history.service";
 
 type SessionReq = {
   user?: { userId?: string; sub?: string };
@@ -34,11 +39,43 @@ type SseRes = {
 @UseGuards(JwtAuthGuard)
 @Controller()
 export class CoachController {
-  constructor(private readonly coach: CoachOrchestrator) {}
+  constructor(
+    private readonly coach: CoachOrchestrator,
+    private readonly history: PeotteokHistoryService,
+  ) {}
 
   @Get(COACH_USER_ROUTES.chips)
   chips(@Req() req: SessionReq) {
     return this.coach.chips(this.sessionUserId(req));
+  }
+
+  @Get(COACH_USER_ROUTES.conversations)
+  async listConversations(@Req() req: SessionReq) {
+    const conversations = await this.history.list(this.sessionUserId(req));
+    return { conversations };
+  }
+
+  @Get(COACH_USER_ROUTES.conversation)
+  getConversation(@Req() req: SessionReq, @Param("id") id: string) {
+    return this.history.get(this.sessionUserId(req), String(id || ""));
+  }
+
+  @Patch(COACH_USER_ROUTES.conversation)
+  renameConversation(
+    @Req() req: SessionReq,
+    @Param("id") id: string,
+    @Body() body: Record<string, unknown> = {},
+  ) {
+    return this.history.rename(
+      this.sessionUserId(req),
+      String(id || ""),
+      String(body.title ?? ""),
+    );
+  }
+
+  @Delete(COACH_USER_ROUTES.conversation)
+  removeConversation(@Req() req: SessionReq, @Param("id") id: string) {
+    return this.history.remove(this.sessionUserId(req), String(id || ""));
   }
 
   @Post(COACH_USER_ROUTES.chat)

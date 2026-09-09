@@ -331,7 +331,9 @@ export class LedgerAdminService {
 
   private validateAdjust(input: AdminAdjustInput): void {
     if (!input.userId) throw new BadRequestException("userId required");
-    if (!(USER_BUCKETS as readonly string[]).includes(input.bucket)) {
+    if (
+      !["principal", "profit", "locked", "practice"].includes(input.bucket)
+    ) {
       throw new BadRequestException("bucket required (principal|profit|locked|practice)");
     }
     if (!["credit", "debit", "correct"].includes(input.kind)) {

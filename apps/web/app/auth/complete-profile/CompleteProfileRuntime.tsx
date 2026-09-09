@@ -1,6 +1,7 @@
 "use client";
 
 import { fetchAuthSession, patchAuthProfile } from "@aipo/sdk/auth";
+import { continueAfterAuth } from "@aipo/sdk/product-onboarding";
 import { AuthCompleteProfile } from "@aipo/ui/components/auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -14,13 +15,17 @@ export function CompleteProfileRuntime() {
   useEffect(() => {
     const ac = new AbortController();
     void fetchAuthSession({ apiBase: "", signal: ac.signal })
-      .then((session) => {
+      .then(async (session) => {
         if (!session) {
           router.replace("/auth/login");
           return;
         }
         if (session.onboardingStage === "B_complete") {
-          router.replace("/onboarding");
+          const next = await continueAfterAuth("B_complete", {
+            apiBase: "",
+            signal: ac.signal,
+          });
+          if (!ac.signal.aborted) router.replace(next);
         }
       })
       .catch(() => {
@@ -47,7 +52,7 @@ export function CompleteProfileRuntime() {
             },
             { apiBase: "" },
           );
-          router.replace("/onboarding");
+          router.replace(await continueAfterAuth("B_complete", { apiBase: "" }));
         } catch (caught) {
           setError(authUserMessage(caught));
         } finally {

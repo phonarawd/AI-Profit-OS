@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { MatchingPolicyModule } from "../matching-policy/matching-policy.module";
 import { ComplianceModule } from "../compliance/compliance.module";
 import { EventsModule } from "../events/events.module";
 import { LedgerModule } from "../ledger/ledger.module";
@@ -13,6 +14,7 @@ import { AssistantService } from "./assistant.service";
 import { CoachController } from "./coach.controller";
 import { CoachOrchestrator } from "./coach.orchestrator";
 import { ConversationStateService } from "./conversation-state.service";
+import { PeotteokHistoryService } from "./peotteok-history.service";
 import { FactToolService } from "./fact-tool.service";
 import { HelpRagService } from "./help-rag.service";
 import { LlmAdapterService } from "./llm.adapter.service";
@@ -29,6 +31,7 @@ import { UserTwinService } from "./user-twin.service";
 @Module({
   imports: [
     EventsModule,
+    MatchingPolicyModule,
     LedgerModule,
     WalletModule,
     ComplianceModule,
@@ -52,6 +55,7 @@ import { UserTwinService } from "./user-twin.service";
     HelpRagService,
     FactToolService,
     ConversationStateService,
+    PeotteokHistoryService,
     CoachOrchestrator,
   ],
   exports: [
@@ -65,6 +69,7 @@ import { UserTwinService } from "./user-twin.service";
     HelpRagService,
     FactToolService,
     ConversationStateService,
+    PeotteokHistoryService,
     CoachOrchestrator,
   ],
 })

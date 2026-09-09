@@ -37,22 +37,31 @@ const WITHDRAW_TERMINAL_STATUSES = [
  * non-retention class from §20/§21.
  */
 const PURGE_TABLES: readonly [table: string, column: string][] = [
+  // trial_settlements.trade_id → trade_executions 보다 먼저
+  ["trial_settlements", "user_id"],
   // participate/trade — participate_requests.trade_id -> trade_executions
   ["participate_requests", "user_id"],
   ["trade_executions", "user_id"],
   // practice + mission accrual (explicit §21 purge set)
   ["practice_grants", "user_id"],
+  ["trial_grants", "user_id"],
+  ["trial_user_state", "user_id"],
+  ["referral_slot_grants", "user_id"],
   ["mission_accruals", "user_id"],
   // AI memory/profile — memory_embeddings.memory_id -> ai_memory (child first)
   ["memory_embeddings", "user_id"],
   ["ai_memory", "user_id"],
   ["ai_user_profile", "user_id"],
+  ["peotteok_messages", "user_id"],
+  ["peotteok_conversations", "user_id"],
   // admin-authored content about/to this user (not an audit-of-admin-decision table)
   ["tendency_memos", "user_id"],
   ["ops_inbox_messages", "user_id"],
   // per-user override/business-config/risk-state — only meaningful for an active account
   ["user_opportunity_overrides", "user_id"],
   ["user_match_policy_overrides", "user_id"],
+  ["matching_policy_group_members", "user_id"],
+  ["matching_policy_assignments", "user_id"],
   ["user_membership", "user_id"],
   ["user_risk_state", "user_id"],
   // marketing attribution / profile / notification / ux preference state
@@ -61,6 +70,7 @@ const PURGE_TABLES: readonly [table: string, column: string][] = [
   ["push_subscriptions", "user_id"],
   ["user_profiles", "user_id"],
   ["user_ux_prefs", "user_id"],
+  ["product_onboarding", "user_id"],
   // referral spam-counter (pure usage state, zero financial value)
   ["referral_share_daily", "user_id"],
   // auth/security material — meaningless once the account is gone
@@ -96,8 +106,9 @@ const ANONYMIZE_TABLES: readonly string[] = [
  * user_deposit_addresses (financial/AML transaction trail),
  * withdraw_credentials_audit, risk_signals, risk_signal_actions,
  * user_membership_audit, user_opportunity_override_audit,
- * user_match_policy_override_audit (admin-action audit trail — proves what an
- * admin did, independent of whether the user's account still exists),
+ * user_match_policy_override_audit, matching_policy_audit
+ * (admin-action audit trail — proves what an admin did, independent of
+ * whether the user's account still exists),
  * referral_payout_queue (financial payout ledger),
  * referral_edges (retained — see REFERRAL_EDGES_RETAINED_REASON),
  * support_tickets (retained, de-referenced from purged trade_executions below).
@@ -132,9 +143,9 @@ export class PrivacyAccountService {
     const view = await this.buckets.getUserBuckets(userId);
     const pendingWithdrawCount = await this.countPendingWithdraws(userId);
     return {
-      lockedUsdt: Number(view.lockedUsdt),
+      lockedUsdt: Number(view.lockedUsdt) + Number(view.trialLockedUsdt),
       pendingWithdrawCount,
-      principalUsdt: Number(view.principalUsdt),
+      principalUsdt: Number(view.principalUsdt) + Number(view.trialPrincipalUsdt),
       profitUsdt: Number(view.profitUsdt),
       practiceUsdt: Number(view.practiceUsdt),
     };
@@ -168,6 +179,12 @@ export class PrivacyAccountService {
         );
         purged[table] = r.rowCount ?? 0;
       }
+      const versionDel = await client.query(
+        `DELETE FROM public.matching_policy_versions
+          WHERE scope = 'user' AND subject_id = $1::uuid`,
+        [userId],
+      );
+      purged.matching_policy_versions = versionDel.rowCount ?? 0;
 
       const anonymized: Record<string, number> = {};
       for (const table of ANONYMIZE_TABLES) {

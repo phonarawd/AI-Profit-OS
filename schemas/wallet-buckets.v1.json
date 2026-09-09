@@ -39,6 +39,14 @@
       "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
       "description": "Decimal as string (no float money)"
     },
+    "trialPrincipalUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+    },
+    "trialLockedUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+    },
     "liabilityUsdt": {
       "type": "string",
       "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
@@ -47,6 +55,41 @@
     "asOfLedgerEntryId": {
       "type": "string",
       "minLength": 1
+    },
+    "displayPrimary": {
+      "const": "KRW",
+      "description": "유저 화면 주력 숫자. 장부 SoT는 USDT 필드."
+    },
+    "displaySecondary": {
+      "const": "USDT"
+    },
+    "principalKrwApprox": {
+      "type": ["string", "null"],
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+    },
+    "profitKrwApprox": {
+      "type": ["string", "null"],
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+    },
+    "lockedKrwApprox": {
+      "type": ["string", "null"],
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+    },
+    "practiceKrwApprox": {
+      "type": ["string", "null"],
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+    },
+    "liabilityKrwApprox": {
+      "type": ["string", "null"],
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+    },
+    "trialPrincipalKrwApprox": {
+      "type": ["string", "null"],
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+    },
+    "trialLockedKrwApprox": {
+      "type": ["string", "null"],
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
     }
   }
 }

@@ -1,12 +1,13 @@
 "use client";
 
 import {
-  continuePathAfterAuth,
   fetchAuthSession,
   isKakaoOAuthReady,
+  loginClassic,
   requestMagicLink,
   startKakaoOAuth,
 } from "@aipo/sdk/auth";
+import { continueAfterAuth } from "@aipo/sdk/product-onboarding";
 import { AuthLogin } from "@aipo/ui/components/auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -21,9 +22,14 @@ export function LoginRuntime() {
   useEffect(() => {
     const ac = new AbortController();
     void fetchAuthSession({ apiBase: "", signal: ac.signal })
-      .then((session) => {
+      .then(async (session) => {
         if (!session) return;
-        router.replace(continuePathAfterAuth(session.onboardingStage));
+        const next = await continueAfterAuth(session.onboardingStage, {
+          apiBase: "",
+          signal: ac.signal,
+        });
+        if (ac.signal.aborted) return;
+        router.replace(next);
       })
       .catch(() => {
         /* 게스트 유지 */
@@ -53,13 +59,36 @@ export function LoginRuntime() {
     }
   }
 
-  async function onMagic(email: string) {
+  async function onMagic(email: string, turnstileToken?: string) {
     setError(null);
     setNote(null);
     setBusy(true);
     try {
-      await requestMagicLink(email, { apiBase: "" });
+      await requestMagicLink(email, { apiBase: "", turnstileToken });
       setNote("메일함을 확인해 주세요.");
+    } catch (caught) {
+      setError(authUserMessage(caught));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onClassic(
+    identifier: string,
+    password: string,
+    turnstileToken?: string,
+  ) {
+    setError(null);
+    setNote(null);
+    setBusy(true);
+    try {
+      const session = await loginClassic(identifier, password, {
+        apiBase: "",
+        turnstileToken,
+      });
+      router.replace(
+        await continueAfterAuth(session.onboardingStage, { apiBase: "" }),
+      );
     } catch (caught) {
       setError(authUserMessage(caught));
     } finally {
@@ -74,6 +103,7 @@ export function LoginRuntime() {
       note={note}
       onKakao={onKakao}
       onMagic={onMagic}
+      onClassic={onClassic}
     />
   );
 }

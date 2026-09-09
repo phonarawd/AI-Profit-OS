@@ -1,0 +1,115 @@
+{
+  "schema": "j0-live.v1",
+  "verdict": "PASS",
+  "recordedAt": "2026-09-07T12:18:58.791Z",
+  "shaAligned": true,
+  "stagingSha": "d92445e8",
+  "workspaceHead": "d92445e8",
+  "migrationHead": "20260906233000",
+  "counts": {
+    "PASS": 20
+  },
+  "items": [
+    {
+      "id": 1,
+      "status": "PASS",
+      "why": "status=201"
+    },
+    {
+      "id": 2,
+      "status": "PASS",
+      "why": "status=401"
+    },
+    {
+      "id": 3,
+      "status": "PASS",
+      "why": "wrong=401 ok=201"
+    },
+    {
+      "id": 4,
+      "status": "PASS",
+      "why": "first=201 reuse=401"
+    },
+    {
+      "id": 5,
+      "status": "PASS",
+      "why": "status=200"
+    },
+    {
+      "id": 6,
+      "status": "PASS",
+      "why": "connected=false"
+    },
+    {
+      "id": 7,
+      "status": "PASS",
+      "why": "other-device connected=false"
+    },
+    {
+      "id": 8,
+      "status": "PASS",
+      "why": "durable revoke on ops+api"
+    },
+    {
+      "id": 9,
+      "status": "PASS",
+      "why": "same revoke on two origins"
+    },
+    {
+      "id": 10,
+      "status": "PASS",
+      "why": "status=401"
+    },
+    {
+      "id": 11,
+      "status": "PASS",
+      "why": "status=403"
+    },
+    {
+      "id": 12,
+      "status": "PASS",
+      "why": "step-up/start=200 mutation=201"
+    },
+    {
+      "id": 13,
+      "status": "PASS",
+      "why": "self=403 checker=201"
+    },
+    {
+      "id": 14,
+      "status": "PASS",
+      "why": "status=403"
+    },
+    {
+      "id": 15,
+      "status": "PASS",
+      "why": "no token in url/error"
+    },
+    {
+      "id": 16,
+      "status": "PASS",
+      "why": "csrf=401"
+    },
+    {
+      "id": 17,
+      "status": "PASS",
+      "why": "status=302"
+    },
+    {
+      "id": 18,
+      "status": "PASS",
+      "why": "production/direct origin did not mint human admin session"
+    },
+    {
+      "id": 19,
+      "status": "PASS",
+      "why": "status=400"
+    },
+    {
+      "id": 20,
+      "status": "PASS",
+      "why": "service token reaches origin login"
+    }
+  ],
+  "note": "Human one-time login is not J0 PASS. Static verify is not live PASS."
+}

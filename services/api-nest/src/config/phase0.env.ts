@@ -38,6 +38,10 @@ export type Phase0Env = {
   /** Money §43.6 Day-1 SMTP SSOT = Resend */
   resendApiKey: string | null;
   resendFromEmail: string | null;
+  /** Infra §51.9.1 Section 6.3 - Cloudflare Turnstile server-side siteverify secret */
+  turnstileSecretKey: string | null;
+  /** staging 전용 호스트 허용. production 에 staging 을 넣으면 안 된다. */
+  turnstileSurface: string | null;
   /** Engine §47.13 LLM Adapter — Nest only · NEXT_PUBLIC 0 */
   llmProvider: LlmProviderId;
   llmApiKey: string | null;
@@ -117,6 +121,8 @@ export function loadPhase0Env(): Phase0Env {
     r2KycEncryptionKey: read("R2_KYC_ENCRYPTION_KEY"),
     resendApiKey: read("RESEND_API_KEY"),
     resendFromEmail: read("RESEND_FROM_EMAIL"),
+    turnstileSecretKey: read("TURNSTILE_SECRET_KEY"),
+    turnstileSurface: read("TURNSTILE_SURFACE"),
     llmProvider: readLlmProvider(),
     llmApiKey: read("LLM_API_KEY"),
     geminiApiKey: read("GEMINI_API_KEY"),

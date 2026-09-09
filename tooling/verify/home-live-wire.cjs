@@ -1,16 +1,29 @@
 /**
- * verify:home-live-wire — UI PART9b 등재 · PASS 조건 Owns=PART9c
- * page ↔ @aipo/sdk/user-feed ↔ DayPulse · 401 graceful · nearMissExtraCount
+ * verify:home-live-wire - UI PART9b/9c
+ * page <-> @aipo/sdk/user-feed <-> HomeDesktopClient live wiring.
+ *
+ * SURFACE = /
+ * RUNTIME_OWNER = apps/web/app/HomeDesktopClient.tsx
+ * PRESENTATION_OWNER = apps/web/components/spark-dash-home/{HomeDesktop,HomeMobile}.tsx
+ * MAPPER_OWNER = apps/web/components/spark-dash-home/map-runtime.ts
+ * LEGACY_OWNER = apps/web/app/HomePageClient.tsx + packages/ui/components/home/HomeExperience.tsx
+ *   (unreachable from any live route - see governance/runtime-surfaces.v1.json
+ *   surfaces.home.legacyOwners. Never treat their existence as proof of wiring.)
+ *
+ * REWRITTEN 2026-09-04: the previous version of this file inferred live wiring
+ * from `fs.existsSync("apps/web/app/HomePageClient.tsx")`. Since page.tsx
+ * actually mounts HomeDesktopClient, that check was always true for the wrong
+ * reason and this gate never actually inspected the real live source. See
+ * tooling/verify/live-surface-integrity.cjs, which now forbids this pattern
+ * repo-wide.
  */
+"use strict";
+
 const fs = require("fs");
 const path = require("path");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
-
-function mustExist(rel) {
-  if (!fs.existsSync(path.join(root, rel))) fails.push(`missing: ${rel}`);
-}
 
 function read(rel) {
   const p = path.join(root, rel);
@@ -21,144 +34,159 @@ function read(rel) {
   return fs.readFileSync(p, "utf8");
 }
 
-const files = [
-  "apps/web/app/page.tsx",
-  "packages/sdk/src/user-feed/fetch.ts",
-  "packages/sdk/package.json",
-  "packages/ui/components/opportunity/BalanceAwareHome.tsx",
-  "packages/ui/components/loop/DayPulse.tsx",
+// ---------------------------------------------------------------------------
+// Pure assertion function. Takes ONLY the live entry+client source text - by
+// construction it has no parameter through which legacy/dead source could
+// influence the result. This is what makes the dead-code-immunity proof
+// below meaningful rather than incidental.
+// ---------------------------------------------------------------------------
+const REQUIRED_HOOKS = [
+  "fetchHomeReadModel",
+  "fetchWalletBuckets",
+  "fetchCurrentFxApprox",
+  "fetchOpportunityFeed",
 ];
-for (const f of files) mustExist(f);
 
-const page = read("apps/web/app/page.tsx");
+function assertHomeLiveWireChain({ entrySrc, clientSrc }) {
+  const reasons = [];
+  if (!entrySrc.includes("HomeDesktopClient")) {
+    reasons.push("entry (page.tsx) does not mount HomeDesktopClient");
+  }
+  for (const hook of REQUIRED_HOOKS) {
+    if (!clientSrc.includes(hook)) {
+      reasons.push(`client does not call ${hook}`);
+    }
+  }
+  if (!clientSrc.includes("HomeDesktop") || !clientSrc.includes("HomeMobile")) {
+    reasons.push("client does not mount both HomeDesktop and HomeMobile presentation");
+  }
+  return { ok: reasons.length === 0, reasons };
+}
+
+// ---------------------------------------------------------------------------
+// 1) Registry-driven reachability against the REAL files.
+// ---------------------------------------------------------------------------
+let registry;
+try {
+  registry = JSON.parse(read("governance/runtime-surfaces.v1.json") || "{}");
+} catch (e) {
+  fails.push(`governance/runtime-surfaces.v1.json invalid JSON: ${e.message}`);
+  registry = { surfaces: {} };
+}
+const homeSurface = (registry.surfaces || {}).home;
+if (!homeSurface) {
+  fails.push("governance/runtime-surfaces.v1.json missing surfaces.home");
+}
+
+const entryRel = homeSurface?.entry || "apps/web/app/page.tsx";
+const clientRel = homeSurface?.client || "apps/web/app/HomeDesktopClient.tsx";
+
+const entrySrc = read(entryRel);
+const clientSrc = read(clientRel);
+
+const liveResult = assertHomeLiveWireChain({ entrySrc, clientSrc });
+if (!liveResult.ok) {
+  for (const reason of liveResult.reasons) {
+    fails.push(`live home wiring: ${reason} (${entryRel} -> ${clientRel})`);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 2) SDK contract (PART9a) - shared infra, independent of which UI renders it.
+// ---------------------------------------------------------------------------
 const sdkPkg = read("packages/sdk/package.json");
 const feed = read("packages/sdk/src/user-feed/fetch.ts");
-const home = read("packages/ui/components/opportunity/BalanceAwareHome.tsx");
 
-// --- SDK contract (PART9a · 재정의 금지) ---
 if (!sdkPkg.includes('"./user-feed"')) {
   fails.push("@aipo/sdk must export ./user-feed (PART9a)");
 }
-for (const name of [
-  "fetchOpportunityFeed",
-  "fetchDayPulse",
-  "nearMissExtraCount",
-]) {
+for (const name of ["fetchOpportunityFeed", "fetchDayPulse"]) {
   if (!feed.includes(name)) {
     fails.push(`user-feed must provide ${name}`);
   }
 }
-if (!home.includes("nearMissExtraCount")) {
-  fails.push("BalanceAwareHome must accept nearMissExtraCount prop");
-}
 
-// --- Home live wire (PART9c) ---
-const wiredViaSdk =
-  page.includes("@aipo/sdk/user-feed") ||
-  page.includes("fetchOpportunityFeed") ||
-  page.includes("fetchDayPulse");
-const wiredViaClient =
-  /HomePageClient/.test(page) ||
-  fs.existsSync(path.join(root, "apps/web/app/HomePageClient.tsx")) ||
-  fs.existsSync(
-    path.join(root, "apps/web/app/_components/HomePageClient.tsx"),
-  ) ||
-  fs.existsSync(
-    path.join(root, "apps/web/components/HomePageClient.tsx"),
-  );
+// ---------------------------------------------------------------------------
+// 3) Three proofs (regression contract for this gate itself).
+// ---------------------------------------------------------------------------
+const FIXTURE_GOOD_ENTRY = `
+import { HomeDesktopClient } from "@/app/HomeDesktopClient";
+export default function Page() { return <HomeDesktopClient />; }
+`;
+const FIXTURE_GOOD_CLIENT = `
+import { fetchHomeReadModel } from "@aipo/sdk/home-read-model";
+import { fetchWalletBuckets } from "@aipo/sdk/wallet";
+import { fetchCurrentFxApprox } from "@aipo/sdk/current-fx";
+import { fetchOpportunityFeed } from "@aipo/sdk/user-feed";
+import { HomeDesktop } from "../components/spark-dash-home/HomeDesktop";
+import { HomeMobile } from "../components/spark-dash-home/HomeMobile";
+export function HomeDesktopClient() { return null; }
+`;
 
-let clientSrc = "";
-for (const rel of [
-  "apps/web/app/HomePageClient.tsx",
-  "apps/web/app/_components/HomePageClient.tsx",
-  "apps/web/components/HomePageClient.tsx",
-]) {
-  if (fs.existsSync(path.join(root, rel))) {
-    clientSrc = read(rel);
-    break;
-  }
-}
-
-const liveSrc = wiredViaSdk ? page : clientSrc;
-if (!wiredViaSdk && !wiredViaClient) {
+// --- Positive: a correct fixture must PASS ---
+const positive = assertHomeLiveWireChain({
+  entrySrc: FIXTURE_GOOD_ENTRY,
+  clientSrc: FIXTURE_GOOD_CLIENT,
+});
+if (!positive.ok) {
   fails.push(
-    "home must wire via @aipo/sdk/user-feed or HomePageClient (PART9c)",
+    `PROOF(positive) failed - a known-good fixture was rejected: ${positive.reasons.join("; ")}`,
   );
-} else {
-  if (
-    !liveSrc.includes("fetchOpportunityFeed") &&
-    !liveSrc.includes("@aipo/sdk/user-feed")
-  ) {
-    fails.push("home live must call fetchOpportunityFeed / @aipo/sdk/user-feed");
-  }
-  if (!liveSrc.includes("fetchDayPulse") && !liveSrc.includes("DayPulse")) {
-    fails.push("home live must wire DayPulse (fetchDayPulse or DayPulse data)");
-  }
-  // PART9h — ticker/counter server-driven (default off via API)
-  if (
-    !liveSrc.includes("fetchGrowthPublicSurface") &&
-    !liveSrc.includes("@aipo/sdk/growth")
-  ) {
-    fails.push(
-      "home must wire fetchGrowthPublicSurface (@aipo/sdk/growth) for ticker/counter · PART9h",
-    );
-  }
-  if (
-    /LivePayoutTicker\s+mode=["']off["']/.test(liveSrc) &&
-    !liveSrc.includes("fetchGrowthPublicSurface")
-  ) {
-    fails.push("home ticker mode must not stay hard-coded off without growth API");
-  }
-  if (
-    !liveSrc.includes("nearMissExtraCount") &&
-    !page.includes("nearMissExtraCount")
-  ) {
-    fails.push("home must map feed.nearMissExtraCount → BalanceAwareHome");
-  }
-  const graceful401 =
-    /401/.test(liveSrc) ||
-    /status\s*===\s*401/.test(liveSrc) ||
-    /opportunity_feed_401/.test(liveSrc) ||
-    /unauthorized/i.test(liveSrc) ||
-    /graceful/i.test(liveSrc);
-  if (!graceful401) {
-    fails.push("home live must handle 401 gracefully (PART9c · 9-pre2 session)");
-  }
-
-  // C01 — ledgerTotal is settlement COUNT · never bind as USDT amount
-  if (
-    /ledgerTotal\s*>\s*0\s*\?\s*[`'"]\$\{[^}]*ledgerTotal[^}]*\}\s*USDT/.test(
-      liveSrc,
-    ) ||
-    /\$\{[^}]*ledgerTotal[^}]*\}\s*USDT/.test(liveSrc)
-  ) {
-    fails.push(
-      "C01: Home must not render ledgerTotal as USDT (count semantic only)",
-    );
-  }
 }
 
-const counterSrc = read("packages/ui/components/lux/HomePayoutCounter.tsx");
-if (
-  counterSrc &&
-  /T\.ticker\.usdtSuffix/.test(counterSrc) &&
-  /ledgerTotal/.test(counterSrc)
-) {
+// --- Negative mutation: remove one required invariant, must FAIL ---
+const mutatedClient = FIXTURE_GOOD_CLIENT.replace(
+  'import { fetchOpportunityFeed } from "@aipo/sdk/user-feed";',
+  "",
+);
+const negative = assertHomeLiveWireChain({
+  entrySrc: FIXTURE_GOOD_ENTRY,
+  clientSrc: mutatedClient,
+});
+if (negative.ok) {
   fails.push(
-    "C01: HomePayoutCounter must not suffix ledgerTotal with T.ticker.usdtSuffix",
+    "PROOF(negative-mutation) failed - removing fetchOpportunityFeed from the client fixture should FAIL but PASSed",
   );
 }
-if (counterSrc && !/data-ledger-unit="count"/.test(counterSrc)) {
-  fails.push('C01: HomePayoutCounter must declare data-ledger-unit="count"');
+
+// --- Dead-code immunity: the exact 2026-09-04 regression shape.
+// A "legacy" blob that still has every marker must NOT be able to rescue a
+// broken live client. We never pass the legacy blob into the function at
+// all (there is no parameter for it) - this proof exists so that if a future
+// edit ever adds such a fallback parameter/behavior, it fails loudly here.
+const LEGACY_DECOY_WITH_ALL_MARKERS = `
+// apps/web/app/HomePageClient.tsx (legacy, unreachable from any live route)
+import { fetchHomeReadModel } from "@aipo/sdk/home-read-model";
+import { fetchWalletBuckets } from "@aipo/sdk/wallet";
+import { fetchCurrentFxApprox } from "@aipo/sdk/current-fx";
+import { fetchOpportunityFeed } from "@aipo/sdk/user-feed";
+import { HomeDesktop } from "../components/spark-dash-home/HomeDesktop";
+import { HomeMobile } from "../components/spark-dash-home/HomeMobile";
+export function HomeDesktopClient() { return null; }
+`;
+void LEGACY_DECOY_WITH_ALL_MARKERS; // intentionally never passed to the assertion below
+const brokenLiveClient = FIXTURE_GOOD_CLIENT.replace(
+  'import { fetchOpportunityFeed } from "@aipo/sdk/user-feed";',
+  "",
+);
+const deadCodeImmunity = assertHomeLiveWireChain({
+  entrySrc: FIXTURE_GOOD_ENTRY,
+  clientSrc: brokenLiveClient, // the REAL live client for this test - broken
+});
+if (deadCodeImmunity.ok) {
+  fails.push(
+    "REGRESSION(dead-code-immunity) - assertHomeLiveWireChain PASSed on a broken live client. " +
+      "This is the exact 2026-09-04 home-live-wire bug shape: a legacy file elsewhere containing " +
+      "the right markers must never substitute for the live client actually having them.",
+  );
 }
 
-// stub-only lock (PART9c supersede)
-if (
-  /BalanceAwareHome\s[^>]*items=\{\[\]\}/.test(page) &&
-  !wiredViaSdk &&
-  !wiredViaClient
-) {
-  fails.push("home still stub items={[]} — live feed required (PART9c)");
+// ---------------------------------------------------------------------------
+// 4) Registration
+// ---------------------------------------------------------------------------
+const rootPkg = read("package.json");
+if (!rootPkg.includes('"verify:home-live-wire"')) {
+  fails.push("package.json missing verify:home-live-wire script");
 }
 
 if (fails.length) {
@@ -166,5 +194,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:home-live-wire] PASS — page↔SDK user-feed↔DayPulse · 401 graceful",
+  "[verify:home-live-wire] PASS (registry-driven / -> HomeDesktopClient -> HomeDesktop+HomeMobile live · 3 proofs incl. dead-code-immunity)",
 );

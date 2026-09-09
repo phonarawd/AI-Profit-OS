@@ -19,6 +19,16 @@ export { extractBearerToken };
 const requireCjs = createRequire(__filename);
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const jwtCore = requireCjs(join(__dirname, "..", "..", "jwt.core.cjs")) as {
+  sign: (
+    payload: Record<string, unknown>,
+    secret: string,
+    opts: {
+      issuer: string;
+      audience: string;
+      expiresInSec: number;
+      jti?: string;
+    },
+  ) => string;
   verify: (
     token: string,
     secret: string,
@@ -33,6 +43,9 @@ export type AdminPrincipal = {
   tokenId: string;
   issuedAt: string;
   expiresAt: string;
+  sessionKind?: "password_mfa" | "code_exchange_emergency";
+  sessionId?: string;
+  stepUpAt?: string | null;
 };
 
 export type AdminTokenFailure =
@@ -57,6 +70,24 @@ function isoFromEpochSeconds(value: unknown): string | null {
  * Authentication time stays REAL (`Date.now()` inside jwt.core.cjs) — the QA
  * domain Clock seam must never be able to resurrect an expired admin token.
  */
+export function signAdminAccessToken(input: {
+  adminId: string;
+  role: string;
+  jti: string;
+  expiresInSec?: number;
+}): string {
+  const secret = loadPhase0Env().jwtAdminSecret;
+  if (!secret) {
+    throw new AdminTokenError("ADMIN_AUTH_NOT_CONFIGURED");
+  }
+  return jwtCore.sign({ sub: input.adminId, role: input.role }, secret, {
+    issuer: ADMIN_JWT_ISSUER,
+    audience: ADMIN_JWT_AUDIENCE,
+    expiresInSec: input.expiresInSec ?? 15 * 60,
+    jti: input.jti,
+  });
+}
+
 export function verifyAdminAccessToken(token: string): AdminPrincipal {
   const secret = loadPhase0Env().jwtAdminSecret;
   if (!secret) {

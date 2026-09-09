@@ -1,0 +1,27 @@
+{
+  "schema": "s5-dedicated-staging.v1",
+  "status": "LIVE_PARTIAL",
+  "previewIsNotJ0": true,
+  "rel600Unchanged": true,
+  "productionDeploy": 0,
+  "j0": "NOT_RUN",
+  "accessLive": true,
+  "shaAlignedLive": false,
+  "shaAlignedDedicatedWorkers": true,
+  "shaAlignedRenderStaging": true,
+  "hosts": {
+    "web": "ai-profit-web-dedicated.ebay-adapter.workers.dev",
+    "ops": "ai-profit-ops-dedicated.ebay-adapter.workers.dev"
+  },
+  "stagingApi": "https://ai-profit-os-staging.onrender.com",
+  "deployedSha": "a23d2fa6629a31426934c3ace42c3f50e3c46a92",
+  "dedicatedDeployRun": "34055189466",
+  "previewDeployRun": "34047490120",
+  "renderStagingDeploy": "dep-daesekgu01pc73frub2g",
+  "renderLiveConfirmed": true,
+  "stagingMigrationsApplied": true,
+  "stagingMigrationHead": "20260906233000",
+  "accessBlocker": "CLOUDFLARE_API_TOKEN authenticates Workers deploy but Access Apps API returns Authentication error. STAGING_ACCESS_ALLOWED_EMAILS is empty so deny-everyone is required even after Access is created.",
+  "note": "Dedicated web/ops + Render staging API live on a23d2fa6. Staging DB applied 9 committedUnapplied versions. Health migrationHead 20260906233000 · db/redis ok. Production fixture unchanged. Access still BLOCKED_EXTERNAL. J0 NOT_RUN. Production deploy 0. REL-600 preview untouched.",
+  "t2GateRun": "34055505276"
+}

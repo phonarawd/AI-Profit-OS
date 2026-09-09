@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "slice": "S3/3.4",
+  "liveE2e": "NOT_RUN",
+  "productionDbApply": false,
+  "stagingBrowser": "NOT_RUN",
+  "launchYes": false,
+  "checks": {
+    "E_history_persist": "code",
+    "E_history_idor": "code",
+    "E_citation_cards": "code",
+    "E_ime_keycode_229": "code",
+    "E_money_tool_autonomy": "code",
+    "E_kakao_unlink": "NOT_IMPLEMENTED",
+    "E_live_sse_e2e": "NOT_RUN",
+    "E_staging_browser": "NOT_RUN",
+    "E_visual_diff_390_768_1440": "NOT_RUN"
+  }
+}

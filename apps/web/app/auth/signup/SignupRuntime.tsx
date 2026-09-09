@@ -1,12 +1,12 @@
 "use client";
 
 import {
-  continuePathAfterAuth,
   fetchAuthSession,
   isKakaoOAuthReady,
-  requestMagicLink,
+  requestMagicLinkWithConsent,
   startKakaoOAuth,
 } from "@aipo/sdk/auth";
+import { continueAfterAuth } from "@aipo/sdk/product-onboarding";
 import {
   AuthSignup,
   type AuthSignupRuntimeInput,
@@ -24,9 +24,14 @@ export function SignupRuntime() {
   useEffect(() => {
     const ac = new AbortController();
     void fetchAuthSession({ apiBase: "", signal: ac.signal })
-      .then((session) => {
+      .then(async (session) => {
         if (!session) return;
-        router.replace(continuePathAfterAuth(session.onboardingStage));
+        const next = await continueAfterAuth(session.onboardingStage, {
+          apiBase: "",
+          signal: ac.signal,
+        });
+        if (ac.signal.aborted) return;
+        router.replace(next);
       })
       .catch(() => {
         /* 게스트 유지 */
@@ -82,20 +87,20 @@ export function SignupRuntime() {
     setNote(null);
     setBusy(true);
     try {
-      await requestMagicLink(input.email ?? "", { apiBase: "" });
-      try {
-        sessionStorage.setItem(
-          "aipo.magic.terms",
-          JSON.stringify({
-            termsAcceptedAt: input.termsAcceptedAt,
-            privacyAcceptedAt: input.privacyAcceptedAt,
-            marketingConsent: input.marketingConsent,
-            referralCode: input.referralCode,
-          }),
-        );
-      } catch {
-        /* sessionStorage 없어도 요청은 접수됨 */
-      }
+      // S1F Section 6.2 fix: consent now travels with the request itself
+      // (stored server-side), not via sessionStorage - this is what makes
+      // opening the link on a different device/tab/browser work, since
+      // there is no longer anything that needs to be read back locally.
+      await requestMagicLinkWithConsent(
+        input.email ?? "",
+        {
+          termsAcceptedAt: input.termsAcceptedAt,
+          privacyAcceptedAt: input.privacyAcceptedAt,
+          marketingConsent: input.marketingConsent,
+          referralCode: input.referralCode,
+        },
+        { apiBase: "", turnstileToken: input.turnstileToken },
+      );
       setNote("메일함을 확인해 주세요.");
     } catch (caught) {
       setError(authUserMessage(caught));

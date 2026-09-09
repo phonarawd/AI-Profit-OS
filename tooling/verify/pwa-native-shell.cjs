@@ -113,6 +113,50 @@ if (!install.includes("beforeinstallprompt")) {
 if (!install.includes("display-mode: standalone")) {
   fails.push("InstallPrompt must hide when installed");
 }
+if (!install.includes("shouldSuppressPwaChrome") || !install.includes("isInstallOverlayAllowed")) {
+  fails.push("InstallPrompt must suppress overlay during onboarding/money flows");
+}
+if (!install.includes("usePathname")) {
+  fails.push("InstallPrompt must re-evaluate suppress on path change");
+}
+const push = read("apps/web/components/pwa/PushOptIn.tsx");
+if (!push.includes("shouldSuppressPwaChrome") || !push.includes("isPushOverlayAllowed")) {
+  fails.push("PushOptIn must suppress overlay during onboarding/money flows");
+}
+if (!push.includes("NEXT_PUBLIC_PUSH_ENABLED")) {
+  fails.push("PushOptIn must not promise alerts when NEXT_PUBLIC_PUSH_ENABLED=false");
+}
+if (!push.includes("fetchServerPushEnabled") || !push.includes("usePathname")) {
+  fails.push("PushOptIn must consult server PUSH_ENABLED and re-evaluate on path change");
+}
+
+const publicCtl = read("services/api-nest/src/push/push.public.controller.ts");
+if (!publicCtl.includes("getEnabled") || !publicCtl.includes("PUSH_PUBLIC_ROUTES")) {
+  fails.push("public GET /api/v1/push/enabled must expose PushKillService.getEnabled");
+}
+if (publicCtl.includes("JwtAuthGuard")) {
+  fails.push("push enabled probe must stay public (no JwtAuthGuard)");
+}
+const sdkPush = read("packages/sdk/src/push/subscribe.ts");
+if (!sdkPush.includes("/api/v1/push/enabled") || !sdkPush.includes("fetchServerPushEnabled")) {
+  fails.push("sdk must fetch /api/v1/push/enabled and fail-closed");
+}
+
+const { spawnSync } = require("child_process");
+const overlayTest = spawnSync(
+  process.execPath,
+  [
+    "--test",
+    "--experimental-strip-types",
+    "apps/web/components/pwa/pwa-overlay-gate.runtime.test.ts",
+  ],
+  { cwd: root, encoding: "utf8", timeout: 30_000 },
+);
+process.stdout.write(overlayTest.stdout || "");
+process.stderr.write(overlayTest.stderr || "");
+if (overlayTest.status !== 0) {
+  fails.push("pwa-overlay-gate runtime tests failed");
+}
 
 const update = read("apps/web/components/pwa/SwUpdateToast.tsx");
 if (!update.includes("SKIP_WAITING")) {
@@ -162,11 +206,37 @@ for (const needle of storeNeedles) {
   }
 }
 
-const homeForbidden = [
-  "packages/ui/components/home/HomeExperience.tsx",
-  "packages/ui/components/home/HomeHero.tsx",
-  "apps/web/app/page.tsx",
+// NOTE (2026-09-04): this Home-freeze mutation guard originally watched only
+// the dead Canon Home tree (packages/ui/components/home,
+// apps/web/app/HomePageClient.tsx and friends) - unreachable from the live
+// route (see governance/runtime-surfaces.v1.json surfaces.home). A real
+// change to the Founder-approved-and-frozen live Home
+// (apps/web/app/HomeDesktopClient.tsx, apps/web/components/spark-dash-home/*)
+// would have passed this guard silently. Both trees are now watched: the
+// live one because it is the actual freeze surface
+// (governance/consumer-home-approval/home-approval-freeze.v1.json), the dead
+// one kept as a harmless no-op once those files are removed.
+let registry;
+try {
+  registry = JSON.parse(read("governance/runtime-surfaces.v1.json") || "{}");
+} catch {
+  registry = { surfaces: {} };
+}
+const homeSurface = registry.surfaces?.home || {};
+const liveHomePaths = [
+  homeSurface.entry,
+  homeSurface.client,
+  homeSurface.mapper,
+  ...(homeSurface.presentation || []),
+].filter(Boolean);
+const legacyHomePaths = [
+  "packages/ui/components/home",
+  "apps/web/app/HomePageClient.tsx",
+  "apps/web/app/_components/HomePageClient.tsx",
+  "apps/web/components/HomePageClient.tsx",
 ];
+const homeForbidden = [...liveHomePaths, ...legacyHomePaths];
+const watchPathsArg = homeForbidden.join(" ");
 try {
   const { execSync } = require("child_process");
   const gitEnv = { ...process.env, GIT_PAGER: "cat", PAGER: "cat" };
@@ -176,18 +246,44 @@ try {
     timeout: 20_000,
     env: gitEnv,
   };
+  // --name-status (not --name-only): a legacy path showing status "D"
+  // (deleted) is the *expected end state* once a confirmed-dead file is
+  // removed (2026-09-04 cleanup) - not a Home mutation. Legacy paths are
+  // only a violation if they show up with any other status (still being
+  // edited instead of deleted). Live paths stay strict: any status at all
+  // is a real Home mutation regardless of legacy/live.
   const diff = execSync(
-    "git --no-pager diff --name-only HEAD -- packages/ui/components/home apps/web/app/page.tsx apps/web/app/HomePageClient.tsx apps/web/app/_components/HomePageClient.tsx apps/web/components/HomePageClient.tsx",
+    `git --no-pager diff --name-status HEAD -- ${watchPathsArg}`,
     gitOpts,
   );
   const staged = execSync(
-    "git --no-pager diff --cached --name-only -- packages/ui/components/home apps/web/app/page.tsx apps/web/app/HomePageClient.tsx apps/web/app/_components/HomePageClient.tsx apps/web/components/HomePageClient.tsx",
+    `git --no-pager diff --cached --name-status HEAD -- ${watchPathsArg}`,
     gitOpts,
   );
-  const changed = `${diff}\n${staged}`.replace(/\\/g, "/");
-  for (const rel of homeForbidden) {
-    if (changed.includes(rel)) {
-      fails.push(`Home freeze mutation: ${rel}`);
+  const statusLines = `${diff}\n${staged}`
+    .replace(/\\/g, "/")
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean);
+  const legacySet = new Set(legacyHomePaths);
+  for (const line of statusLines) {
+    const m = line.match(/^([A-Z])\d*\s+(.+)$/);
+    if (!m) continue;
+    const [, status, filePath] = m;
+    const matchedLegacy = [...legacySet].find(
+      (rel) => filePath === rel || filePath.startsWith(rel + "/"),
+    );
+    if (matchedLegacy) {
+      if (status !== "D") {
+        fails.push(`Home freeze mutation (legacy, non-delete): ${filePath}`);
+      }
+      continue;
+    }
+    const matchedLive = liveHomePaths.find(
+      (rel) => filePath === rel || filePath.startsWith(rel + "/"),
+    );
+    if (matchedLive) {
+      fails.push(`Home freeze mutation (live): ${filePath}`);
     }
   }
 } catch {

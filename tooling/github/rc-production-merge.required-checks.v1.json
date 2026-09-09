@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "scope": "RC_OR_PRODUCTION_MERGE",
+  "dailyMainGateIsNotSufficient": true,
+  "liveRulesetApply": "NOT_RUN",
+  "paidPlanPurchase": false,
+  "required_status_checks": [
+    { "context": "gate / verify-gate" },
+    { "context": "codeql / analyze" },
+    { "context": "engine-acceptance / aggregator" },
+    { "context": "engine-evidence-refresh-check / evidence-only" }
+  ]
+}

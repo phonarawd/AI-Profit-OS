@@ -3,6 +3,7 @@
  * Deploy Admin Ops to CF Workers (OpenNext).
  * Filename cf-pages-ops is legacy; actual path is Workers deploy.
  * staging/preview = env preview (ai-profit-ops-preview, REL-600)
+ * dedicated = env dedicated (ai-profit-ops-dedicated, S5 J0 host)
  * production = env production (ai-profit-ops)
  */
 const { spawnSync } = require("child_process");
@@ -43,7 +44,8 @@ mustExist("apps/admin/package.json", "apps/admin");
 const appDir = path.join(root, "apps/admin");
 const configPath = path.join(root, "infra/ops/wrangler.toml");
 const envFlag = resolveWranglerEnv(target);
-const smokeSlot = envFlag === "production" ? "production" : "staging";
+const smokeSlot =
+  envFlag === "production" ? "production" : envFlag === "dedicated" ? "dedicated" : "staging";
 
 if (noRebuild) {
   mustExist("apps/admin/.open-next/worker.js", "apps/admin OpenNext worker");
@@ -60,7 +62,8 @@ if (noRebuild) {
 }
 
 const deployArgs = noRebuild
-  ? ["exec", "wrangler", "deploy", "--no-bundle", "--config", configPath, "--env=" + envFlag]
+  // REL-701 2026-09-04: apps/web과 동일한 이유로 --no-bundle 제거 (code 10021 회피).
+  ? ["exec", "wrangler", "deploy", "--config", configPath, "--env=" + envFlag]
   : [
       "exec",
       "opennextjs-cloudflare",

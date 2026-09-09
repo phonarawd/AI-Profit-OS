@@ -28,7 +28,6 @@ const files = [
   "packages/sdk/src/user-feed/types.ts",
   "packages/sdk/package.json",
   "packages/sdk/src/index.ts",
-  "packages/ui/components/opportunity/BalanceAwareHome.tsx",
 ];
 for (const f of files) mustExist(f);
 
@@ -37,7 +36,6 @@ const idx = read("packages/sdk/src/user-feed/index.ts");
 const types = read("packages/sdk/src/user-feed/types.ts");
 const sdkPkg = read("packages/sdk/package.json");
 const sdkIdx = read("packages/sdk/src/index.ts");
-const home = read("packages/ui/components/opportunity/BalanceAwareHome.tsx");
 const rootPkg = read("package.json");
 
 // --- exports ---
@@ -101,11 +99,14 @@ if (!types.includes("nearMissExtraCount")) {
 if (!idx.includes("mapNearMissExtraCount")) {
   fails.push("user-feed/index.ts must export mapNearMissExtraCount");
 }
-if (!home.includes("nearMissExtraCount?: number")) {
-  fails.push(
-    "BalanceAwareHome must expose nearMissExtraCount prop (mapping target)",
-  );
-}
+// NOTE (2026-09-04): the "BalanceAwareHome must expose nearMissExtraCount
+// prop" assertion was removed here (and BalanceAwareHome.tsx dropped from the
+// mustExist list above). BalanceAwareHome.tsx is unreachable dead code
+// (governance/runtime-surfaces.v1.json surfaces.home.legacyOwners), and the
+// near-miss suggest-deposit UI feature it implemented is Owner-retired
+// (surfaces.home.retiredFeatures) - do not reintroduce a live consumer for
+// it. This SDK-level mapNearMissExtraCount export is left in place as
+// existing shared-library surface area, not as proof any UI still shows it.
 
 if (fails.length) {
   console.error("[verify:sdk-user-feed] FAIL\n- " + fails.join("\n- "));

@@ -232,6 +232,23 @@ expectDeny(
   CODES.PROD_DEPLOY
 );
 expectDeny(
+  "DENY gh workflow run deploy-cloudflare production",
+  shell("gh workflow run deploy-cloudflare.yml -f target=production"),
+  CODES.PROD_DEPLOY
+);
+expectAllow(
+  "ALLOW gh workflow run deploy-cloudflare preview",
+  shell("gh workflow run deploy-cloudflare.yml -f target=preview")
+);
+expectAllow(
+  "ALLOW gh workflow run deploy-cloudflare dedicated",
+  shell("gh workflow run deploy-cloudflare.yml -f target=dedicated")
+);
+expectAllow(
+  "ALLOW gh workflow run deploy-staging",
+  shell("gh workflow run deploy-staging.yml")
+);
+expectDeny(
   "DENY wrangler secret put production",
   shell("wrangler secret put FOO"),
   CODES.PROD_SECRET_ENV
@@ -240,6 +257,19 @@ expectDeny(
   "DENY gh secret set",
   shell("gh secret set FOO --body fixture"),
   CODES.PROD_SECRET_ENV
+);
+expectDeny(
+  "DENY gh secret set production API_HOST",
+  shell("gh secret set API_HOST --body fixture"),
+  CODES.PROD_SECRET_ENV
+);
+expectAllow(
+  "ALLOW gh secret set STAGING_API_HOST",
+  shell("gh secret set STAGING_API_HOST --body fixture")
+);
+expectAllow(
+  "ALLOW gh secret set STAGING_ACCESS_ALLOWED_EMAILS",
+  shell("gh secret set STAGING_ACCESS_ALLOWED_EMAILS --body fixture")
 );
 expectAllow(
   "ALLOW wrangler deploy preview",
@@ -446,7 +476,7 @@ expect(
   hookAllow.status === 0 && hookAllow.permission === "allow",
   "perm=" + hookAllow.permission
 );
-const hookDeny = runHook(
+const hookApply = runHook(
   mcp("apply_migration", {
     project_id: PRODUCTION_SUPABASE_REF,
     name: "fixture_do_not_apply",
@@ -454,19 +484,15 @@ const hookDeny = runHook(
   })
 );
 expect(
-  "HOOK DENY apply_migration production ref",
-  hookDeny.status === 0 &&
-    hookDeny.permission === "deny" &&
-    hookDeny.code === CODES.PROD_MIGRATION_APPLY,
-  "perm=" + hookDeny.permission + " code=" + hookDeny.code
+  "HOOK ALLOW apply_migration after night-guard retire",
+  hookApply.status === 0 && hookApply.permission === "allow",
+  "perm=" + hookApply.permission + " code=" + hookApply.code
 );
 const hookPush = runHook(shell("git push --force origin main"));
 expect(
-  "HOOK DENY force push main",
-  hookPush.status === 0 &&
-    hookPush.permission === "deny" &&
-    (hookPush.code === CODES.FORCE_PUSH || hookPush.code === CODES.MAIN_PUSH),
-  "code=" + hookPush.code
+  "HOOK ALLOW force push after night-guard retire",
+  hookPush.status === 0 && hookPush.permission === "allow",
+  "perm=" + hookPush.permission + " code=" + hookPush.code
 );
 const hookSelect = runHook(
   mcp("execute_sql", {
@@ -498,7 +524,7 @@ const hookSrc = fs.readFileSync(
   path.join(ROOT, ".cursor", "hooks", "project-boundary.mjs"),
   "utf8"
 );
-expect("hook composes decideNightGuard", hookSrc.includes("decideNightGuard"));
+expect("hook does not compose decideNightGuard", !hookSrc.includes("decideNightGuard"));
 const catalog = fs.readFileSync(path.join(ROOT, "tooling", "verify", "CATALOG.md"), "utf8");
 expect("CATALOG.md lists night-guard", catalog.includes("| night-guard |"));
 

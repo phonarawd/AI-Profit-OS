@@ -47,6 +47,7 @@ function basePass() {
     security: {
       exact_head_sha: SHA,
       codeql_workflow: "success",
+      codeql_open_untriaged: 0,
       unresolved_p0: 0,
       unresolved_p1: 0,
       release_blocking_p2: 0,
@@ -157,6 +158,21 @@ expectNoGo("release_acceptance_alone_is_insufficient", acceptanceOnly, [
     "render_not_ready",
     "render_blockers_present",
   ]);
+}
+
+{
+  const x = basePass();
+  delete x.security.codeql_open_untriaged;
+  expectNoGo("codeql_workflow_green_is_not_open_alert_zero", x, [
+    "codeql_open_untriaged",
+  ]);
+}
+
+{
+  const x = basePass();
+  x.security.codeql_workflow = "success";
+  x.security.codeql_open_untriaged = 3;
+  expectNoGo("open_codeql_alerts_block_go", x, ["codeql_open_untriaged"]);
 }
 
 {

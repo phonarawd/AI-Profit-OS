@@ -210,3 +210,39 @@ test("detail a11y has no new critical/serious axe violations", async ({
   const blocking = blockingViolations(results);
   expect(blocking, JSON.stringify(blocking.map((v) => v.id))).toEqual([]);
 });
+
+test("ready detail shows no-buy/no-sell badges and result disclaimer (desktop)", async ({
+  page,
+}) => {
+  await openDetail(page, "ready", 1440, 1080);
+  const badges = page.locator(
+    ".sd-desktop-only [data-testid='execution-no-buy-sell-badges']",
+  );
+  await expect(badges).toBeVisible();
+  await expect(badges).toContainText("직접 사지 않아요");
+  await expect(badges).toContainText("직접 팔지 않아요");
+  const disclaimer = page.locator(
+    ".sd-desktop-only [data-testid='execution-disclaimer-result']",
+  );
+  await expect(disclaimer).toContainText(
+    "예상 결과는 시장 상황에 따라 달라질 수 있습니다.",
+  );
+});
+
+test("ready detail shows no-buy/no-sell badges and result disclaimer (mobile)", async ({
+  page,
+}) => {
+  await openDetail(page, "ready", 390, 693);
+  const badges = page.locator(
+    ".sd-mobile-placeholder [data-testid='execution-no-buy-sell-badges']",
+  );
+  await expect(badges).toBeVisible();
+  await expect(badges).toContainText("직접 사지 않아요");
+  await expect(badges).toContainText("직접 팔지 않아요");
+  const disclaimer = page.locator(
+    ".sd-mobile-placeholder [data-testid='execution-disclaimer-result']",
+  );
+  await expect(disclaimer).toContainText(
+    "예상 결과는 시장 상황에 따라 달라질 수 있습니다.",
+  );
+});

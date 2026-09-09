@@ -9,4 +9,5 @@ export const LEDGER_EVENTS = {
   /** §51.7 practice welcome / referee */
   practiceGranted: "ledger.practice.granted",
   practiceExpired: "ledger.practice.expired",
+  trialGranted: "ledger.trial.granted",
 } as const;

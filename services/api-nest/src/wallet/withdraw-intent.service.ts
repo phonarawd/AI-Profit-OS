@@ -2,6 +2,8 @@
  * Money §49.3 — WithdrawIntent create with fixed guard order.
  * Guard #1 withdrawApplyBlocked · #2 KYC · #3 step-up · mode/confirm checks.
  * Ledger posting (auth_ok → ledger_posted) = principal-profit-withdraw follow-up.
+ * 매칭 수익은 내부 장부 잔액이다. 실USDT/실KRW는 이 출금 경로의 broadcast에서만 나간다.
+ * broadcast 전에 hot wallet/treasury 실잔액이 출금액보다 부족하면 fail-closed.
  */
 
 import {
@@ -10,6 +12,7 @@ import {
   ForbiddenException,
   Injectable,
 } from "@nestjs/common";
+import type { PoolClient } from "pg";
 import { InProcessEventBus } from "../events/in-process.bus";
 import { PostgresService } from "../db/postgres";
 import {
@@ -30,6 +33,16 @@ import { WithdrawKycGuard } from "./withdraw-kyc.guard";
 import { WithdrawStepUpService } from "./withdraw-stepup.service";
 import type { WithdrawAsset, WithdrawMode } from "./wallet.types";
 import type { WithdrawStepUpMethod } from "./withdraw-stepup.policy";
+import {
+  assertCanBroadcast,
+  type TreasurySolvencyInput,
+} from "./withdraw-treasury-solvency";
+import {
+  WITHDRAW_IN_FLIGHT_STATUSES,
+  WITHDRAW_RESERVE_LOCK_KEY,
+  evaluateWithdrawReservation,
+  readTreasuryObservation,
+} from "./withdraw-coverage";
 
 type CapabilityRow = {
   withdraw_apply_blocked: boolean;
@@ -100,6 +113,13 @@ export class WithdrawIntentService {
     private readonly bus: InProcessEventBus,
   ) {}
 
+  /** 실자금 전송 직전. 잔액 미관측·스테일·부족·서명기 미바인딩이면 전송 0. */
+  evaluateBroadcastReadiness(
+    input: TreasurySolvencyInput & { signerBound: boolean },
+  ) {
+    return assertCanBroadcast(input);
+  }
+
   /**
    * §49.3 server guards (order fixed):
    * 1 withdrawApplyBlocked · 2 KYC · 3 step-up · §49.9 risk · minHolding · insert
@@ -123,6 +143,13 @@ export class WithdrawIntentService {
     }
     if (input.asset !== "USDT" && input.asset !== "KRW") {
       throw new BadRequestException("invalid asset");
+    }
+    if (mode !== "profit" || input.asset !== "USDT") {
+      throw new ForbiddenException({
+        code: "WITHDRAW_PROFIT_USDT_ONLY",
+        toastCode: "WITHDRAW_PROFIT_USDT_ONLY",
+        statusCode: 403,
+      });
     }
 
     const amountUsdt = assertAmountUsdt(input.amountUsdt, "amountUsdt");
@@ -215,47 +242,85 @@ export class WithdrawIntentService {
     });
 
     try {
-      const ins = await this.db.query<IntentRow>(
-        `INSERT INTO public.withdraw_intents (
-           user_id, mode, amount_usdt, asset,
-           debit_profit_usdt, debit_principal_usdt,
-           require_principal_confirm, principal_confirm_token,
-           status, destination, idempotency_key, withdraw_fee_usdt,
-           step_up_method, step_up_verified_at
-         ) VALUES (
-           $1::uuid, $2, $3::numeric, $4,
-           $5::numeric, $6::numeric,
-           $7, $8,
-           'auth_ok', $9, $10, $11::numeric,
-           $12, now()
-         )
-         RETURNING ${this.columns()}`,
-        [
-          input.userId,
-          mode,
-          amountUsdt,
-          input.asset,
-          debitProfitUsdt,
-          debitPrincipalUsdt,
-          requirePrincipalConfirm,
-          input.principalConfirmToken ?? null,
-          input.destination ?? null,
-          input.idempotencyKey,
-          feeQuote.withdrawFeeUsdt,
-          step.method,
-        ],
-      );
-      const row = ins.rows[0]!;
-      const v1 = this.toV1(row, feeQuote.withdrawFeeUsdt);
-      this.bus.emit(WALLET_EVENTS.withdrawIntentCreated, {
-        id: v1.id,
-        userId: v1.userId,
-        mode: v1.mode,
-        amountUsdt: v1.amountUsdt,
-        stepUpMethod: step.method,
-        toastCode: "WITHDRAW_SUBMITTED" as const,
-        auditAction: "wallet.withdraw_intent.created",
+      const { row, reserved } = await this.db.withTransaction(async (client) => {
+        await client.query("SELECT pg_advisory_xact_lock($1)", [
+          WITHDRAW_RESERVE_LOCK_KEY,
+        ]);
+        const raced = await client.query<IntentRow>(
+          `SELECT ${this.columns()}
+             FROM public.withdraw_intents
+            WHERE idempotency_key = $1`,
+          [input.idempotencyKey],
+        );
+        if (raced.rows[0]) {
+          return { row: raced.rows[0], reserved: false };
+        }
+        const snapshot = await this.loadCoverageSnapshot(client);
+        const decision = evaluateWithdrawReservation({
+          ...snapshot,
+          requestAmountUsdt: amountUsdt,
+          requestFeeUsdt: feeQuote.withdrawFeeUsdt,
+        });
+        if (!decision.ok) {
+          throw new ForbiddenException({
+            code: decision.code,
+            toastCode: decision.code,
+            statusCode: 403,
+          });
+        }
+        const ins = await client.query<IntentRow>(
+          `INSERT INTO public.withdraw_intents (
+             user_id, mode, amount_usdt, asset,
+             debit_profit_usdt, debit_principal_usdt,
+             require_principal_confirm, principal_confirm_token,
+             status, destination, idempotency_key, withdraw_fee_usdt,
+             step_up_method, step_up_verified_at
+           ) VALUES (
+             $1::uuid, $2, $3::numeric, $4,
+             $5::numeric, $6::numeric,
+             $7, $8,
+             'auth_ok', $9, $10, $11::numeric,
+             $12, now()
+           )
+           RETURNING ${this.columns()}`,
+          [
+            input.userId,
+            mode,
+            amountUsdt,
+            input.asset,
+            debitProfitUsdt,
+            debitPrincipalUsdt,
+            requirePrincipalConfirm,
+            input.principalConfirmToken ?? null,
+            input.destination ?? null,
+            input.idempotencyKey,
+            feeQuote.withdrawFeeUsdt,
+            step.method,
+          ],
+        );
+        return { row: ins.rows[0]!, reserved: true };
       });
+      this.assertSameWithdrawIntent(row, {
+        userId: input.userId,
+        mode,
+        asset: input.asset,
+        amountUsdt,
+        destination: input.destination ?? null,
+        debitProfitUsdt,
+        debitPrincipalUsdt,
+      });
+      const v1 = this.toV1(row, feeQuote.withdrawFeeUsdt);
+      if (reserved) {
+        this.bus.emit(WALLET_EVENTS.withdrawIntentCreated, {
+          id: v1.id,
+          userId: v1.userId,
+          mode: v1.mode,
+          amountUsdt: v1.amountUsdt,
+          stepUpMethod: step.method,
+          toastCode: "WITHDRAW_SUBMITTED" as const,
+          auditAction: "wallet.withdraw_intent.created",
+        });
+      }
       return v1;
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : String(e);
@@ -353,6 +418,69 @@ export class WithdrawIntentService {
       debitProfitUsdt: profit,
       debitPrincipalUsdt: principal,
       requirePrincipalConfirm: true,
+    };
+  }
+
+  private async loadCoverageSnapshot(
+    client: PoolClient,
+  ): Promise<{
+    principalUsdt: string;
+    profitUsdt: string;
+    lockedUsdt: string;
+    pendingRefundUsdt: string;
+    otherReturnableUsdt: string;
+    reservedWithdrawalUsdt: string;
+    treasurySpendableUsdt: string | null;
+    treasurySourceFresh: boolean;
+    worstCaseFeeUsdt: string;
+    safetyBufferUsdt: string;
+  }> {
+    const observed = readTreasuryObservation();
+    let principalUsdt = "0";
+    let profitUsdt = "0";
+    let lockedUsdt = "0";
+    try {
+      const buckets = await client.query<{
+        principal: string;
+        profit: string;
+        locked: string;
+      }>(
+        `SELECT COALESCE(SUM(principal_usdt), 0)::text AS principal,
+                COALESCE(SUM(profit_usdt), 0)::text AS profit,
+                COALESCE(SUM(locked_usdt), 0)::text AS locked
+           FROM public.wallet_buckets`,
+      );
+      principalUsdt = buckets.rows[0]?.principal ?? "0";
+      profitUsdt = buckets.rows[0]?.profit ?? "0";
+      lockedUsdt = buckets.rows[0]?.locked ?? "0";
+    } catch {
+      throw new ForbiddenException({
+        code: "TREASURY_BALANCE_UNKNOWN",
+        toastCode: "TREASURY_BALANCE_UNKNOWN",
+        statusCode: 403,
+      });
+    }
+    const reserved = await client.query<{
+      amt: string;
+      fee: string;
+    }>(
+      `SELECT COALESCE(SUM(amount_usdt), 0)::text AS amt,
+              COALESCE(SUM(withdraw_fee_usdt), 0)::text AS fee
+         FROM public.withdraw_intents
+        WHERE status = ANY($1::text[])`,
+      [WITHDRAW_IN_FLIGHT_STATUSES],
+    );
+    return {
+      principalUsdt,
+      profitUsdt,
+      lockedUsdt,
+      pendingRefundUsdt: "0",
+      otherReturnableUsdt: "0",
+      reservedWithdrawalUsdt: reserved.rows[0]?.amt ?? "0",
+      treasurySpendableUsdt: observed.treasurySpendableUsdt,
+      treasurySourceFresh: observed.treasurySourceFresh,
+      worstCaseFeeUsdt: reserved.rows[0]?.fee ?? "0",
+      safetyBufferUsdt: observed.safetyBufferUsdt,
     };
   }
 

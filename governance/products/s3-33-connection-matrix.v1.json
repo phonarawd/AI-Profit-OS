@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "slice": "S3/3.3",
+  "liveE2e": "NOT_RUN",
+  "productionDbApply": false,
+  "stagingBrowser": "NOT_RUN",
+  "launchYes": false,
+  "checks": {
+    "D_ebay_ingest_identity_exact": "code",
+    "D_title_only_auto_publish": "code",
+    "D_query_asset_persist": "code",
+    "D_unmatched_review_queue": "code",
+    "D_unmatched_review_durable": "code",
+    "D_listing_reprocess_dedup": "code",
+    "D_display_amount_required_capital": "code",
+    "D_client_amount_rejected": "code",
+    "D_price_fx_stale_fail_closed": "code",
+    "D_circuit_open_fail_closed": "code",
+    "D_b7_list_detail_participate": "code",
+    "D_b7_ai_same_engine": "code",
+    "D_feed_no_pre_policy_limit": "code",
+    "D_viewport_reveals_policy_set": "code",
+    "D_empty_copy_retry": "code",
+    "D_live_ebay_ingest": "NOT_RUN",
+    "D_live_fx_stale": "NOT_RUN",
+    "D_visual_diff_390_768_1440": "NOT_RUN"
+  },
+  "pipeline": [
+    "ebay listing",
+    "nest ingest",
+    "asset master exact identity",
+    "unmatched review queue",
+    "listing upsert",
+    "opportunity reprice",
+    "requiredCapitalUsdt display",
+    "B7 filter",
+    "participate amount lock"
+  ]
+}

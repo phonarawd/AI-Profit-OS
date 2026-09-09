@@ -1,0 +1,109 @@
+{
+  "schema": "s5-staging-origin-probe.v1",
+  "recordedAt": "2026-09-07T12:25:09.269Z",
+  "productionDeploy": 0,
+  "j0": "NOT_RUN",
+  "j1": "NOT_RUN",
+  "j2": "NOT_RUN",
+  "j3": "NOT_RUN",
+  "note": "HTTP origin probe only. Not auth E2E. Not J0. Dedicated web 200 is not Access/J0. Empty-token login 400/503 is fail-closed, not J1 PASS.",
+  "stagingApi": {
+    "gitSha": "d92445e89c14558a79397c1b8195736ac60cdf3b",
+    "environment": "staging",
+    "migrationHead": "20260906233000",
+    "dbOk": true,
+    "redisOk": true
+  },
+  "turnstileConfigured": true,
+  "accessEdgeOnDedicatedOps": true,
+  "probes": [
+    {
+      "id": "staging-api-health",
+      "status": 200,
+      "locationHost": null,
+      "accessRedirect": false,
+      "xOpenNext": false,
+      "ms": 1543,
+      "ok": true,
+      "gitSha": "d92445e89c14558a79397c1b8195736ac60cdf3b",
+      "environment": "staging",
+      "migrationHead": "20260906233000",
+      "dbOk": true,
+      "redisOk": true
+    },
+    {
+      "id": "dedicated-web-home",
+      "status": 200,
+      "locationHost": null,
+      "accessRedirect": false,
+      "xOpenNext": true,
+      "ms": 1205,
+      "ok": true
+    },
+    {
+      "id": "dedicated-web-login",
+      "status": 200,
+      "locationHost": null,
+      "accessRedirect": false,
+      "xOpenNext": true,
+      "ms": 217,
+      "ok": true
+    },
+    {
+      "id": "dedicated-web-signup",
+      "status": 200,
+      "locationHost": null,
+      "accessRedirect": false,
+      "xOpenNext": true,
+      "ms": 206,
+      "ok": true
+    },
+    {
+      "id": "dedicated-web-onboarding",
+      "status": 200,
+      "locationHost": null,
+      "accessRedirect": false,
+      "xOpenNext": true,
+      "ms": 177,
+      "ok": true
+    },
+    {
+      "id": "dedicated-web-complete-profile",
+      "status": 200,
+      "locationHost": null,
+      "accessRedirect": false,
+      "xOpenNext": true,
+      "ms": 198,
+      "ok": true
+    },
+    {
+      "id": "dedicated-ops-admin",
+      "status": 302,
+      "locationHost": "snowy-glade-4d88.cloudflareaccess.com",
+      "accessRedirect": true,
+      "xOpenNext": false,
+      "ms": 545,
+      "ok": true,
+      "reachedHtml": false
+    },
+    {
+      "id": "staging-auth-login-unauth",
+      "status": 400,
+      "locationHost": null,
+      "accessRedirect": false,
+      "xOpenNext": false,
+      "ms": 161,
+      "ok": true,
+      "turnstileFailedClosed": true
+    },
+    {
+      "id": "staging-onboarding-unauth",
+      "status": 401,
+      "locationHost": null,
+      "accessRedirect": false,
+      "xOpenNext": false,
+      "ms": 141,
+      "ok": true
+    }
+  ]
+}

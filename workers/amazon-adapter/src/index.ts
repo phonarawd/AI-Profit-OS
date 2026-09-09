@@ -4,6 +4,10 @@
  * Day-1 auto-publish Opportunity = ebay|admin only (this worker does not publish).
  */
 
+import {
+  authorizeManualAdapterTick,
+  requireAdapterIngestHeaders,
+} from "../../_shared/adapter-machine-auth";
 import { searchItems } from "./paapi";
 import {
   ADAPTER_ID,
@@ -36,6 +40,8 @@ export default {
     }
 
     if (url.pathname === "/tick" && request.method === "POST") {
+      const denied = authorizeManualAdapterTick(request, env);
+      if (denied) return denied;
       const result = await runTick(env);
       return Response.json(result);
     }
@@ -135,12 +141,7 @@ async function runTick(env: Env) {
   if (ingestUrl && (listings.length > 0 || dryRun)) {
     const res = await fetch(ingestUrl, {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        ...(env.ADAPTER_INGEST_TOKEN
-          ? { "x-adapter-token": env.ADAPTER_INGEST_TOKEN }
-          : {}),
-      },
+      headers: requireAdapterIngestHeaders(env),
       body: JSON.stringify({
         adapterId: ADAPTER_ID,
         worker: SERVICE,

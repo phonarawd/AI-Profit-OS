@@ -1,5 +1,5 @@
 ---
-description: Cursor Autonomous Ops는 계획만 · Skill/Agent/Automation/Cloud/Bugbot enable 금지 · production deploy는 기존 workflow_dispatch · non-prod A3 허용
+description: Cursor Autonomous Ops는 계획만 · Skill/Agent/Automation/Cloud/Bugbot enable 금지 · production deploy는 hard gate PASS 후 에이전트 workflow_dispatch · non-prod A3 허용
 globs: ".cursor/skills/**,.cursor/agents/**,.github/workflows/**,.cursor/plans/ai_profit_os_06_infra_a7b8c9d0.plan.md"
 alwaysApply: false
 ---
@@ -21,16 +21,18 @@ NON_PRODUCTION_A3 = ALLOWED
   - branch / PR / required CI
   - staging deploy + verification (자격·경로가 있을 때)
 
-PRODUCTION_HUMAN_GATE = REQUIRED
-  - production deploy = .github/workflows/deploy-cloudflare.yml workflow_dispatch HUMAN
-  - production deploy token = Agent 보유 0
-  - ads live 연결 = HUMAN
-  - production DB mutation = REL-701-DB Founder 명시 승인만
+PRODUCTION_AGENT_GATE_WHEN_HARD_GATES_PASS = REQUIRED
+  - production deploy = .github/workflows/deploy-cloudflare.yml workflow_dispatch
+  - executor = agent (`tooling/release/agent-execute.cjs`)
+  - hard gates red 이면 dispatch 금지 (스킵 아님)
+  - ads live 연결 = HUMAN (Phase2 POST-008+)
+  - production DB mutation = REL-701-DB 이미 APPLIED. 추가 apply는 별도 증거
 ```
 
 에이전트는 non-production(dev/QA/PR/CI/staging)을 A3로 진행할 수 있다.
-production auto-deploy 문장·권한·토큰을 이 파일에 넣지 않는다.
-Standing Authorization HIGH/HUMAN 목록은 이 개정으로 약화하지 않는다.
+Founder 2026-09-08 위임: REL-701/702/703/704 · preview 재배포 · RC merge · 공개/실돈 스위치는 증거 PASS 뒤 에이전트가 실행한다.
+Founder 2026-09-09: 이 레포 consumer UI는 PUTDUK_WEB. Nest 운영 Render는 `api-prod`(CERT/REL-701 CF와 분리). CERT 세탁 금지. 실돈 YES 금지.
+무제한 auto-deploy가 아니다. CERT 세탁 금지.
 
 ## 흐름
 
@@ -40,17 +42,16 @@ OpsEvent / GitHub / cron / webhook
   → readonly specialist Subagents
   → External outage? YES → 코드 수정 0 + 상태 보고
   → NO → fix → tests → PR → Bugbot → CI → staging
-  → existing production approval (workflow_dispatch HUMAN)
+  → agent production dispatch after hard gates (`agent-execute.cjs rel-701`)
 ```
 
-Production deployment 자동화를 이 패치에서 확대하지 않는다.
-기존 `.github/workflows/deploy-cloudflare.yml` `workflow_dispatch` + Human 유지.
+Production dispatch는 인간 클릭이 아니라 증거 게이트다. 게이트 red면 실행하지 않는다.
 
 ## Agent에게 주지 않는 권한
 
 - production ad secret
 - unrestricted provider spend
-- production deploy token
+- hard-gate 우회 production deploy
 - legal mutation
 - unrestricted database mutation
 

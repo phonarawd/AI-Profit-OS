@@ -1,6 +1,24 @@
 /**
- * Magic link — raw email 만으로는 세션을 만들지 않는다.
- * 일회용 hash·만료·원자적 consume.
+ * Magic link - raw email alone never mints a session. One-time hash,
+ * expiry, atomic consume.
+ *
+ * S1F Section 6.2 fixes (both were real, reproduced-before-fix bugs):
+ *
+ * 1. Consent (terms/privacy/marketing/referral) is now captured and
+ *    persisted server-side at REQUEST time (identity-proof.store.ts writes
+ *    it straight into auth_magic_link_challenges), and read back from the
+ *    stored proof record at prove() time - never from the verify request's
+ *    own body. Previously the caller (SignupRuntime.tsx) only kept consent
+ *    in browser sessionStorage, which is empty when the link is opened on
+ *    a different device/tab/browser, causing TERMS_REQUIRED for a
+ *    perfectly legitimate signup.
+ * 2. request() no longer returns {ok:true,status:"accepted"} when the
+ *    underlying Resend send genuinely failed (as opposed to the explicit
+ *    accepted_dev dev-only bypass) - it now throws a ServiceUnavailable so
+ *    the caller can show an honest "can't send right now, try again"
+ *    message, without ever revealing whether the target email has an
+ *    account (the message is identical either way - it is about transport
+ *    failure, not account existence).
  */
 
 import {
@@ -27,6 +45,14 @@ export type ProvenMagicEmail = {
   email: string;
 };
 
+export type MagicLinkRequestInput = {
+  email: string;
+  termsAcceptedAt?: string;
+  privacyAcceptedAt?: string;
+  marketingConsent?: boolean;
+  referralCode?: string;
+};
+
 export class MagicLinkService {
   constructor(
     private readonly store: ProofChallengeStore,
@@ -42,18 +68,41 @@ export class MagicLinkService {
     const token = randomProofSecret();
     const hash = hashProofSecret(token);
     const now = this.nowMs();
+    const termsAcceptedAt =
+      typeof body.termsAcceptedAt === "string" && body.termsAcceptedAt.trim()
+        ? body.termsAcceptedAt.trim()
+        : undefined;
+    const privacyAcceptedAt =
+      typeof body.privacyAcceptedAt === "string" && body.privacyAcceptedAt.trim()
+        ? body.privacyAcceptedAt.trim()
+        : undefined;
+    const marketingConsent = body.marketingConsent === true;
+    const referralCode =
+      typeof body.referralCode === "string" && body.referralCode.trim()
+        ? body.referralCode.trim()
+        : undefined;
     await this.store.put({
       kind: "magic_link",
       hash,
       expiresAtMs: now + MAGIC_LINK_TTL_MS,
       consumedAtMs: null,
-      payload: { email },
+      payload: {
+        email,
+        ...(termsAcceptedAt ? { termsAcceptedAt } : {}),
+        ...(privacyAcceptedAt ? { privacyAcceptedAt } : {}),
+        ...(marketingConsent ? { marketingConsent } : {}),
+        ...(referralCode ? { referralCode } : {}),
+      },
     });
     const url = `${consumerOrigin()}/auth/magic?token=${token}`;
     const sent = await this.resend.sendMagicLink({ to: email, url });
     if (!sent.ok) {
-      // 전송 실패여도 세션은 발급하지 않음. raw token 은 응답에 없음.
-      return { ok: true, delivery: "resend", status: "accepted" };
+      // A genuine transport failure must never be reported as success -
+      // the previous version of this method returned {ok:true} on BOTH
+      // branches here, which is the exact bug this fixes. The thrown
+      // message is identical regardless of whether `email` has an account
+      // (it is about Resend being unreachable, not about the account).
+      throw new ServiceUnavailableException("EMAIL_SEND_UNAVAILABLE");
     }
     return { ok: true, delivery: "resend", status: "accepted" };
   }
@@ -70,8 +119,10 @@ export class MagicLinkService {
   }
 
   /**
-   * token 이 없으면 실패. email-only 는 여기서 즉시 거부.
-   * 신규 유저 + 약관 없음 → TERMS_REQUIRED (consume 하지 않음).
+   * Fails if there is no token. Email-only is rejected immediately.
+   * New user + no stored consent -> TERMS_REQUIRED (does not consume the
+   * token - the caller can re-request with consent, or the same session
+   * elsewhere may still complete it before it expires).
    */
   async prove(body: Record<string, unknown>, opts: { userExists: boolean }): Promise<ProvenMagicEmail> {
     const token = typeof body.token === "string" ? body.token.trim() : "";
@@ -92,10 +143,14 @@ export class MagicLinkService {
       throw new BadRequestException("magic link invalid");
     }
     if (!opts.userExists) {
+      // Server-owned consent, captured at request() time - never read from
+      // this call's own body (see this file's top-of-file doc comment).
       const terms =
-        typeof body.termsAcceptedAt === "string" && body.termsAcceptedAt.trim();
+        typeof fresh.payload.termsAcceptedAt === "string" &&
+        fresh.payload.termsAcceptedAt.trim();
       const privacy =
-        typeof body.privacyAcceptedAt === "string" && body.privacyAcceptedAt.trim();
+        typeof fresh.payload.privacyAcceptedAt === "string" &&
+        fresh.payload.privacyAcceptedAt.trim();
       if (!terms || !privacy) {
         throw new BadRequestException("TERMS_REQUIRED");
       }

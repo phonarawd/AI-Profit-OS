@@ -65,7 +65,12 @@ for (const key of ["web", "ops"]) {
   }
   const bridgeKey = key === "web" ? "web-proxy" : "ops-proxy";
   const bridgeTarget = manifest.bridgeWorkers?.[bridgeKey]?.target;
-  if (bridgeTarget !== `https://${slot.workersDev}`) {
+  const liveWeb = "https://putduk-web.ebay-adapter.workers.dev";
+  if (key === "web") {
+    if (bridgeTarget !== liveWeb) {
+      fails.push(`bridgeWorkers.web-proxy.target must be ${liveWeb}`);
+    }
+  } else if (bridgeTarget !== `https://${slot.workersDev}`) {
     fails.push(
       `bridgeWorkers.${bridgeKey}.target must be https://${slot.workersDev}`
     );
@@ -127,8 +132,8 @@ for (const key of ["web", "ops"]) {
 
 const shared = read("workers/_shared/opennext-origin.ts");
 if (shared && openNext) {
-  if (!shared.includes(`https://${openNext.web.workersDev}`)) {
-    fails.push("workers/_shared/opennext-origin.ts missing OPENNEXT_WEB_ORIGIN SSOT URL");
+  if (!shared.includes("https://putduk-web.ebay-adapter.workers.dev")) {
+    fails.push("workers/_shared/opennext-origin.ts must point OPENNEXT_WEB_ORIGIN at PUTDUK_WEB");
   }
   if (!shared.includes(`https://${openNext.ops.workersDev}`)) {
     fails.push("workers/_shared/opennext-origin.ts missing OPENNEXT_OPS_ORIGIN SSOT URL");

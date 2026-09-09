@@ -47,6 +47,7 @@
   width: 2px;
   background: var(--color-lux-accent);
   opacity: 0;
+  transform: translateX(8%);
 }
 
 .acq-scan.is-on {
@@ -108,11 +109,11 @@
 @keyframes acq-scan {
   0% {
     opacity: 0.9;
-    left: 8%;
+    transform: translateX(8%);
   }
   100% {
     opacity: 0;
-    left: 92%;
+    transform: translateX(92%);
   }
 }
 

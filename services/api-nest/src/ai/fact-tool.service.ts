@@ -22,6 +22,10 @@ import {
 import { HelpRagService } from "./help-rag.service";
 import type { FactToolLoadResult, FactToolName } from "./fact-tool.types";
 import { UserTwinService } from "./user-twin.service";
+import {
+  MatchingPolicyService,
+  opportunityRowToCandidate,
+} from "../matching-policy/matching-policy.service";
 
 const TTL_LEDGER_SEC = 30;
 const TTL_OPP_SEC = 60;
@@ -40,6 +44,7 @@ export class FactToolService {
     private readonly missions: MissionProgramService,
     private readonly help: HelpRagService,
     private readonly twin: UserTwinService,
+    private readonly matchingPolicy: MatchingPolicyService,
   ) {}
 
   catalog(): readonly string[] {
@@ -264,21 +269,40 @@ export class FactToolService {
     try {
       const r = await this.db.query<{
         id: string;
+        required_capital_usdt: string;
+        category: string;
+        asset_id: string | null;
+        status: string;
+        pricing: Record<string, unknown> | null;
         expected_profit_usdt: string;
-        pricing: { compareReady?: boolean } | null;
+        stale_at: Date | null;
       }>(
         `SELECT id::text,
+                required_capital_usdt::text,
+                category,
+                asset_id,
+                status,
+                pricing,
                 expected_profit_usdt::text,
-                pricing
+                stale_at
            FROM public.opportunities
           WHERE status = 'available'
             AND COALESCE((pricing->>'compareReady')::boolean, false) = true
-          ORDER BY updated_at DESC NULLS LAST
-          LIMIT 5`,
+            AND NULLIF(BTRIM(asset_id), '') IS NOT NULL
+            AND asset_id NOT LIKE 'query:%'
+          ORDER BY updated_at DESC NULLS LAST`,
       );
-      const count = r.rows.length;
-      const top = r.rows[0];
-      const opportunityIds = r.rows.map((row) => row.id);
+      const visible = userId
+        ? await this.matchingPolicy.filterForUser(
+            userId,
+            r.rows,
+            (row) => opportunityRowToCandidate(row),
+          )
+        : [];
+      const shown = visible.slice(0, 5);
+      const count = visible.length;
+      const top = shown[0];
+      const opportunityIds = shown.map((row) => row.id);
       return {
         tool: "getOpportunity",
         facts: [

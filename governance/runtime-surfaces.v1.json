@@ -1,0 +1,134 @@
+{
+  "schema": "governance.runtime-surfaces.v1",
+  "version": "1.0.0",
+  "purpose": "verify script reachability SSOT. fs.existsSync(legacyPath) must not be used to infer live wiring; only this registry is authoritative.",
+  "surfaces": {
+    "home": {
+      "route": "/",
+      "entry": "apps/web/app/page.tsx",
+      "client": "apps/web/app/HomeDesktopClient.tsx",
+      "mapper": "apps/web/components/spark-dash-home/map-runtime.ts",
+      "presentation": [
+        "apps/web/components/spark-dash-home/HomeDesktop.tsx",
+        "apps/web/components/spark-dash-home/HomeMobile.tsx"
+      ],
+      "dataHooks": [
+        "fetchHomeReadModel",
+        "fetchWalletBuckets",
+        "fetchCurrentFxApprox",
+        "fetchOpportunityFeed"
+      ],
+      "runtimeStatus": "live",
+      "approvedBy": "governance/consumer-home-approval/home-approval-freeze.v1.json",
+      "legacyOwners": [
+        "apps/web/app/HomePageClient.tsx",
+        "apps/web/app/_components/HomePageClient.tsx",
+        "apps/web/components/HomePageClient.tsx",
+        "packages/ui/components/home/HomeExperience.tsx",
+        "packages/ui/components/home/HomeHero.tsx",
+        "packages/ui/components/home/HomeHeroIllustration.tsx",
+        "packages/ui/components/home/HomeRightRail.tsx",
+        "packages/ui/components/home/HomeMoneySurface.tsx",
+        "packages/ui/components/opportunity/BalanceAwareHome.tsx",
+        "packages/ui/components/opportunity/HomePrincipalRail.tsx",
+        "packages/ui/components/opportunity/OpportunityCard.tsx",
+        "packages/ui/components/opportunity/CategoryFilterChips.tsx",
+        "packages/ui/components/opportunity/OpportunityScanBadge.tsx",
+        "apps/web/lib/opportunity-card-map.ts"
+      ],
+      "legacyStatus": "DEAD_UNREACHABLE: page.tsx mounts HomeDesktopClient only; legacyOwners are unreachable from any live import graph (verified 2026-09-04)",
+      "retiredFeatures": [
+        {
+          "feature": "DayPulse strip (today settlement count / safe-stop status)",
+          "formerOwner": "packages/ui/components/loop/DayPulse.tsx via HomeExperience.tsx",
+          "decision": "RETIRE",
+          "decidedBy": "Owner 2026-09-04",
+          "note": "Do not reintroduce into Spark Dash Home. Verify must drop the 'home must mount DayPulse' assertion."
+        },
+        {
+          "feature": "LivePayoutTicker + HomePayoutCounter (live settlement ticker / cumulative counter)",
+          "formerOwner": "packages/ui/components/lux/LivePayoutTicker.tsx, HomePayoutCounter.tsx via HomeExperience.tsx",
+          "decision": "RETIRE",
+          "decidedBy": "Owner 2026-09-04",
+          "note": "Do not reintroduce into Spark Dash Home."
+        },
+        {
+          "feature": "near-miss suggest-deposit CTA (nearMissExtraCount based 'deposit a bit more to qualify')",
+          "formerOwner": "packages/ui/components/opportunity/BalanceAwareHome.tsx",
+          "decision": "RETIRE",
+          "decidedBy": "Owner 2026-09-04",
+          "note": "Do not reintroduce into Spark Dash Home/Profits."
+        },
+        {
+          "feature": "arbitrageTypeKo scan badge / AdapterHealthChip / PriceCompareMargin (3 trust signals)",
+          "formerOwner": "packages/ui/components/opportunity/OpportunityCard.tsx(old), OpportunityScanBadge.tsx, AdapterHealthChip.tsx, PriceCompareMargin.tsx",
+          "decision": "RETIRE",
+          "decidedBy": "Owner 2026-09-04",
+          "note": "Current Spark Dash card level (partner/status pill/AI-recommend badge) judged sufficient. Do not reintroduce badge overload."
+        }
+      ]
+    },
+    "profits": {
+      "route": "/profits",
+      "entry": "apps/web/app/profits/page.tsx",
+      "client": "apps/web/app/ProfitsDesktopClient.tsx",
+      "mapper": "apps/web/components/spark-dash-profits/map-runtime.ts",
+      "presentation": [
+        "apps/web/components/spark-dash-profits/ProfitsShell.tsx",
+        "apps/web/components/spark-dash-profits/ProfitsDesktop.tsx",
+        "apps/web/components/spark-dash-profits/ProfitsMobile.tsx",
+        "apps/web/components/spark-dash-profits/OpportunityGrid.tsx",
+        "apps/web/components/spark-dash-profits/OpportunityCard.tsx",
+        "apps/web/components/spark-dash-profits/OpportunityMetrics.tsx",
+        "apps/web/components/spark-dash-profits/OpportunityMedia.tsx",
+        "apps/web/components/spark-dash-profits/OpportunityToolbar.tsx",
+        "apps/web/components/spark-dash-profits/ProfitsDiscoveryHeader.tsx"
+      ],
+      "dataHooks": [
+        "fetchHomeReadModel",
+        "fetchWalletBuckets",
+        "fetchCurrentFxApprox",
+        "fetchOpportunityFeed"
+      ],
+      "runtimeStatus": "live",
+      "legacyOwners": [
+        "apps/web/app/profits/ProfitsPageClient.tsx",
+        "apps/web/lib/opportunity-card-map.ts",
+        "packages/ui/components/opportunity/OpportunityCard.tsx",
+        "packages/ui/components/opportunity/CategoryFilterChips.tsx",
+        "packages/ui/components/opportunity/VirtualOpportunityList.tsx"
+      ],
+      "legacyStatus": "DEAD_UNREACHABLE: page.tsx mounts ProfitsDesktopClient only (verified 2026-09-04)",
+      "knownGaps": [
+        {
+          "gap": "VirtualOpportunityList (windowing) is absent from live OpportunityGrid.tsx; large lists may degrade performance",
+          "decision": "RESTORE",
+          "decidedBy": "Owner 2026-09-04",
+          "note": "Classified as a performance defect, not a retired feature. Windowing must be added to Spark Dash OpportunityGrid.tsx in a follow-up slice."
+        }
+      ]
+    },
+    "profitsDetail": {
+      "route": "/profits/[id]",
+      "entry": "apps/web/app/profits/[id]/page.tsx",
+      "client": "apps/web/app/profits/[id]/OpportunityDetailClient.tsx",
+      "dataHooks": ["fetchOpportunityDetail"],
+      "runtimeStatus": "live",
+      "legacyOwners": [],
+      "note": "Existence confirmed 2026-09-04; internal wiring not yet audited (UNVERIFIABLE)"
+    },
+    "consumerShell": {
+      "route": "*",
+      "entry": "apps/web/app/layout.tsx",
+      "client": "apps/web/components/spark-shell/ConsumerSparkRoot.tsx",
+      "presentation": ["apps/web/components/spark-shell/consumer-spark-shell.css"],
+      "runtimeStatus": "live",
+      "legacyOwners": [
+        "packages/ui/components/shell/AppShellRoot.tsx",
+        "packages/ui/components/shell/BottomNav5.tsx"
+      ],
+      "legacyStatus": "DEAD_UNREACHABLE: layout.tsx mounts ConsumerSparkRoot only; AppShellRoot/BottomNav5 only reference each other (verified 2026-09-04)",
+      "note": "Home/Profits/Me routes render their own sidebar and bypass ConsumerSparkRoot via isNativeSparkSurface() — this is intentional, not a bug."
+    }
+  }
+}

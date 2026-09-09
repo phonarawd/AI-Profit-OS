@@ -36,22 +36,19 @@ runChild("day-pulse-live-only.cjs");
 runChild("preflight-may-stop.cjs");
 
 const dayPulse = read("packages/ui/components/loop/DayPulse.tsx");
-const precta = read("packages/ui/components/loop/PreCTA.tsx");
+// NOTE (2026-09-04): packages/ui/components/loop/PreCTA.tsx is deleted (dead,
+// unreachable - superseded by the live confirm-before-participate surface).
+// `precta` keeps its name (used below as a concatenated safety scan target)
+// but now reads the live replacement instead.
+const precta =
+  read("apps/web/components/spark-dash-room/ParticipateConfirmSheet.tsx") +
+  read("apps/web/app/profits/[id]/OpportunityDetailClient.tsx");
 const loopCopy = read("packages/ui/copy/ko/loop.ts");
 const daySvc = read("services/api-nest/src/loop/day-pulse.service.ts");
 const ticker = read("packages/ui/components/lux/LivePayoutTicker.tsx");
-/** PART9c — home slots may live in HomePageClient */
-let home = read("apps/web/app/page.tsx");
-for (const rel of [
-  "apps/web/app/HomePageClient.tsx",
-  "apps/web/app/_components/HomePageClient.tsx",
-  "apps/web/components/HomePageClient.tsx",
-]) {
-  if (fs.existsSync(path.join(root, rel))) {
-    home = `${home}\n${read(rel)}`;
-    break;
-  }
-}
+/** PART9c - home slots live in HomeDesktopClient (Spark Dash) */
+const home =
+  read("apps/web/app/page.tsx") + read("apps/web/app/HomeDesktopClient.tsx");
 const dayWire = JSON.parse(
   read("packages/ui/canon/surfaces/day-pulse.wire.json") || "{}",
 );
@@ -67,12 +64,13 @@ if (/Math\.random|seedPresence|fakeWaiters/i.test(daySvc + dayPulse)) {
   fails.push("L3/L5: random/seed presence forbidden");
 }
 
-// L4 — fake queue UI 금지
+// L4 - fake queue UI forbidden
 for (const rel of [
   "packages/ui/components/loop/DayPulse.tsx",
-  "packages/ui/components/loop/PreCTA.tsx",
+  "apps/web/components/spark-dash-room/ParticipateConfirmSheet.tsx",
+  "apps/web/app/profits/[id]/OpportunityDetailClient.tsx",
   "apps/web/app/page.tsx",
-  "apps/web/app/HomePageClient.tsx",
+  "apps/web/app/HomeDesktopClient.tsx",
 ]) {
   if (!fs.existsSync(path.join(root, rel))) continue;
   const t = read(rel);
@@ -141,8 +139,12 @@ if (!(dayWire.forbidden || []).includes("gender_branch")) {
   fails.push("L23: day-pulse.wire must forbid gender_branch");
 }
 
-// L24 — english code exposure
-if (/PREFLIGHT_REQUIRED|COMPARE_NOT_READY/.test(dayPulse + precta)) {
+// L24 - english code exposure. Match the raw code but not when it is only
+// part of an identifier like CODE_PREFLIGHT_REQUIRED (a comparison constant,
+// not user-facing render text - apps/web/app/profits/[id]/OpportunityDetailClient.tsx
+// compares err.code === CODE_PREFLIGHT_REQUIRED then routes through the
+// Korean toast copy map, verified separately below).
+if (/(?<!CODE_)PREFLIGHT_REQUIRED|(?<!CODE_)COMPARE_NOT_READY/.test(dayPulse + precta)) {
   fails.push("L24: problem codes must not render in Pulse/PreCTA UI");
 }
 

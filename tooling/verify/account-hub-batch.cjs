@@ -61,8 +61,17 @@ if (!profile.includes("fetchAuthSession")) fail("profile must use fetchAuthSessi
 if (profile.includes("SafeStopTrustMetric") || profile.includes("depositUsdt")) {
   fail("profile must not invent money zeros");
 }
-if (!profile.includes("/me/benefits") || !profile.includes("/me/settings")) {
-  fail("profile must keep benefits + settings links");
+// D1 remediation note (2026-09-04, REM-D1-6E / S1 REM-008): ProfileClient.tsx was
+// refactored to delegate its whole view to apps/web/app/me/AccountHub.tsx; the
+// benefits/settings navigation links live in that child component now, not in
+// ProfileClient.tsx's own text (confirmed: AccountHub.tsx has /me/settings at
+// line ~33/63 and /me/benefits at line ~71). This check used to read only
+// ProfileClient.tsx and false-failed on every run since that refactor. Fixed by
+// checking the union of both files so the assertion keeps its original strength.
+const accountHub = read("apps/web/app/me/AccountHub.tsx");
+const profileAndHub = profile + "\n" + accountHub;
+if (!profileAndHub.includes("/me/benefits") || !profileAndHub.includes("/me/settings")) {
+  fail("profile (or its AccountHub view) must keep benefits + settings links");
 }
 
 const inbox = read("apps/web/app/me/inbox/InboxClient.tsx");

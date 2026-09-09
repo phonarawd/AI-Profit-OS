@@ -7,6 +7,7 @@ import { T } from "@aipo/ui/copy/ko";
 import { adminGet, type AdminResult } from "../../../lib/admin-api";
 import { readAmount, readStatusLabel, readText } from "../../../lib/admin-truth";
 import { AdminFetchNote, AdminTruth } from "../../../components/AdminTruth";
+import { DASH_COPY, ReadOnlyAdminApiPanel } from "../../../components/AdminLivePanels";
 
 /**
  * Admin §9.1.1 / Engine §0.0 + §36 + §51.12 — opportunities contract surface.
@@ -57,7 +58,7 @@ function asItems<T>(data: unknown): T[] | null {
 
 function OpportunitiesInner() {
   const sp = useSearchParams();
-  const tab = sp.get("tab") === "assets" ? "assets" : "pricing";
+  const tab = sp.get("tab") === "assets" ? "assets" : sp.get("tab") === "match" ? "match" : "pricing";
   const activeBand = sp.get("capitalBand") ?? "";
   const activeCategory = sp.get("category") ?? "";
   const imageMissing = sp.get("image_missing") === "true";
@@ -145,7 +146,21 @@ function OpportunitiesInner() {
         >
           상품·사진
         </a>
+        <a
+          href="/admin/opportunities?tab=match"
+          className={tab === "match" ? "font-semibold" : "text-lux-text-muted"}
+          data-tab="match"
+        >
+          {DASH_COPY.match}
+        </a>
       </div>
+      {tab === "match" ? (
+        <ReadOnlyAdminApiPanel
+          api="/api/v1/admin/match-controls/verbs"
+          title={DASH_COPY.match}
+          testId="admin-match-control-panel"
+        />
+      ) : null}
 
       <section className="mt-4" data-filter="category">
         <h2 className="text-sm font-medium">상품 종류</h2>

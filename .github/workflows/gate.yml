@@ -14,6 +14,76 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  a3-advisory-lock:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: A3 same-PoolClient advisory lock on real PostgreSQL
+        env:
+          AIPO_A3_LOCK_DATABASE_URL: postgresql://postgres@127.0.0.1:5432/postgres
+          PGPASSWORD: postgres
+        run: node tooling/verify/a3-same-poolclient-lock.cjs
+
+  a4-withdraw-reserve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: A4 withdraw 60+60 vs 100 on real PostgreSQL
+        env:
+          AIPO_A4_RESERVE_DATABASE_URL: postgresql://postgres@127.0.0.1:5432/postgres
+          PGPASSWORD: postgres
+        run: node tooling/verify/a4-withdraw-reserve-race.cjs
+      - name: A4 12+1 concurrency on real PostgreSQL
+        env:
+          AIPO_A4_DATABASE_URL: postgresql://postgres@127.0.0.1:5432/postgres
+          AIPO_A4_RESERVE_DATABASE_URL: postgresql://postgres@127.0.0.1:5432/postgres
+          PGPASSWORD: postgres
+        run: node tooling/verify/a4-pg-concurrency.cjs
+
   verify-gate:
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -36,9 +106,12 @@ jobs:
       - name: REL-402 dependency audit
         env:
           AIPO_AUDIT: "1"
+          npm_config_fetch_retries: "5"
+          npm_config_fetch_timeout: "120000"
+          npm_config_fetch_retry_maxtimeout: "120000"
         run: pnpm verify:rel-402-dependency-audit
-      - name: REL-404 lighthouse budget
-        run: pnpm verify:rel-404-lighthouse-budget
+      - name: Adapter worker machine auth
+        run: pnpm verify:adapter-worker-machine-auth
       - name: REL-405 RBAC audit foundation
         run: pnpm verify:rel-405-rbac-audit
       - name: REL-406 kill switch 9
@@ -53,10 +126,6 @@ jobs:
         run: pnpm verify:rel-223-match-control
       - name: REL-224 source policy versions
         run: pnpm verify:rel-224-source-policy
-      - name: REL-409 admin R6 cert
-        run: pnpm verify:rel-409-r6-cert
-      - name: REL-500 QA lab expansion
-        run: pnpm verify:rel-500-qa-lab-expansion
       - name: REL-501 money red-team
         run: pnpm verify:rel-501-money-red-team
       - name: REL-502 final engine acceptance
@@ -69,20 +138,6 @@ jobs:
         run: pnpm verify:rel-505-r7-backend-alignment
       - name: REL-508 current-fx Nest wire
         run: pnpm verify:rel-508-current-fx-approx
-      - name: REL-506 R8 infra core
-        run: pnpm verify:rel-506-r8-infra-core
-      - name: REL-507 production E2E
-        run: pnpm verify:rel-507-production-e2e
-      - name: REL-600 staging
-        run: pnpm verify:rel-600-staging
-      - name: REL-601 staging regression
-        run: pnpm verify:rel-601-staging-regression
-      - name: REL-602 staging rollback
-        run: pnpm verify:rel-602-staging-rollback
-      - name: REL-603 automated age usability cohort
-        run: |
-          pnpm exec playwright install --with-deps chromium
-          pnpm verify:rel-603-age-usability-spotcheck
       - name: Stub .env for Docker-less stack-lock
         run: printf 'SUPABASE_URL=https://mgsytcetsiecllmhcyox.supabase.co\n' > .env
       - name: cargo test (services/engine-rust — Rule Engine R1-R10 golden unit tests)
@@ -95,12 +150,4 @@ jobs:
           AIPO_PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           AIPO_PUSH_BEFORE_SHA: ${{ github.event.before }}
         run: pnpm verify:gate
-      - name: OpenNext build:cf (Linux — Workers deploy output SSOT)
-        run: |
-          pnpm --filter @aipo/web build:cf
-          pnpm --filter @aipo/admin build:cf
-          test -f apps/web/.open-next/worker.js
-          test -d apps/web/.open-next/assets
-          test -f apps/admin/.open-next/worker.js
-          test -d apps/admin/.open-next/assets
 

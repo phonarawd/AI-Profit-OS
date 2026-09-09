@@ -35,6 +35,9 @@ const files = [
   "packages/ui/components/auth/index.ts",
   "apps/web/app/auth/login/page.tsx",
   "apps/web/app/auth/signup/page.tsx",
+  "apps/web/app/auth/signup/classic/page.tsx",
+  "apps/web/app/auth/find-id/page.tsx",
+  "apps/web/app/auth/reset-password/page.tsx",
   "apps/web/app/auth/complete-profile/page.tsx",
   "apps/web/app/components/GuestChrome.tsx",
 ];
@@ -163,6 +166,9 @@ if (kakao) {
 for (const rel of [
   "apps/web/app/auth/login/page.tsx",
   "apps/web/app/auth/signup/page.tsx",
+  "apps/web/app/auth/signup/classic/page.tsx",
+  "apps/web/app/auth/find-id/page.tsx",
+  "apps/web/app/auth/reset-password/page.tsx",
   "apps/web/app/auth/complete-profile/page.tsx",
 ]) {
   const page = read(rel);

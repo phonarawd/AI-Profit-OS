@@ -1,6 +1,13 @@
 /** Money §11 · §43.5 · §49 — ledger posting contracts */
 
-export const USER_BUCKETS = ["principal", "profit", "locked", "practice"] as const;
+export const USER_BUCKETS = [
+  "principal",
+  "profit",
+  "locked",
+  "practice",
+  "trial_principal",
+  "trial_locked",
+] as const;
 export type UserBucket = (typeof USER_BUCKETS)[number];
 
 export const JOURNAL_TYPES = [
@@ -17,6 +24,7 @@ export const JOURNAL_TYPES = [
   "referral_clawback",
   "practice_grant",
   "practice_expire",
+  "trial_grant",
   "mission_reward",
   "mission_clawback",
   "fee",
@@ -26,6 +34,11 @@ export type JournalType = (typeof JOURNAL_TYPES)[number];
 
 export const SYSTEM_ACCOUNT_CODES = {
   OPPORTUNITY_POOL: "SYS:OPPORTUNITY_POOL",
+  /**
+   * 매칭 수익 가상 지급 원천(비용). debit-normal ops_pool.
+   * 온체인 잔액과 무관 · 실자금은 출금 broadcast에서만 나간다.
+   */
+  MATCH_PROFIT_EXPENSE: "SYS:MATCH_PROFIT_EXPENSE",
   OPS_POOL: "SYS:OPS_POOL",
   /** Engine §0.0.4.3 · S2 input · ops.platform_reserve_usdt */
   PLATFORM_RESERVE: "ops.platform_reserve_usdt",
@@ -50,6 +63,24 @@ export const CREDIT_NORMAL_KINDS = new Set([
   "opportunity_pool",
   "promo_pool",
   "fee_revenue",
+]);
+
+/** 음수 금지 · posting + DB CHECK 공동 강제 */
+export const SOLVENCY_CONSTRAINED_KINDS = new Set([
+  "user_bucket",
+  "opportunity_pool",
+]);
+
+/** Withdraw/deposit/merge must never touch trial principal/lock. */
+export const TRIAL_FORBIDDEN_JOURNAL_TYPES = new Set<JournalType>([
+  "deposit_usdt",
+  "deposit_krw",
+  "withdraw",
+  "withdraw_refund",
+  "merge_profit_to_principal",
+  "fee",
+  "referral_reward",
+  "referral_clawback",
 ]);
 
 /** Journal types that must never touch practice bucket (§49). */
@@ -118,6 +149,8 @@ export type WalletBucketsView = {
   profitUsdt: string;
   lockedUsdt: string;
   practiceUsdt: string;
+  trialPrincipalUsdt: string;
+  trialLockedUsdt: string;
   liabilityUsdt: string;
   asOfLedgerEntryId: string;
 };

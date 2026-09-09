@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "slice": "S3/3.7",
+  "liveE2e": "NOT_RUN",
+  "productionDbApply": false,
+  "stagingBrowser": "NOT_RUN",
+  "launchYes": false,
+  "liveRulesetApply": "NOT_RUN",
+  "paidPlanPurchase": false,
+  "notes": [
+    "verify-gate alone is not RC/production mergeable",
+    "daily main-gate.ruleset.json is not the RC required-check SSOT",
+    "do not purchase a paid GitHub plan in this slice"
+  ],
+  "checks": {
+    "RC_required_checks_source": "code",
+    "verify_gate_alone_not_mergeable": "code",
+    "engine_acceptance_included": "code",
+    "engine_evidence_included": "code",
+    "codeql_included": "code",
+    "live_github_ruleset_apply": "NOT_RUN",
+    "paid_plan_purchase": "NOT_RUN"
+  }
+}

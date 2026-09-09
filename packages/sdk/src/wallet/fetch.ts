@@ -42,6 +42,23 @@ const WALLET_BUCKET_KEYS = [
   "liabilityUsdt",
   "asOfLedgerEntryId",
 ] as const;
+const WALLET_OPTIONAL_KEYS = [
+  "trialPrincipalUsdt",
+  "trialLockedUsdt",
+  "displayPrimary",
+  "displaySecondary",
+  "principalKrwApprox",
+  "profitKrwApprox",
+  "lockedKrwApprox",
+  "practiceKrwApprox",
+  "liabilityKrwApprox",
+  "trialPrincipalKrwApprox",
+  "trialLockedKrwApprox",
+] as const;
+const WALLET_ALLOWED_KEYS = new Set<string>([
+  ...WALLET_BUCKET_KEYS,
+  ...WALLET_OPTIONAL_KEYS,
+]);
 
 function walletShapeError(): Error {
   return new Error("wallet_buckets_shape");
@@ -61,6 +78,27 @@ function requiredMoney(raw: Record<string, unknown>, key: string): string {
   return value;
 }
 
+function optionalMoney(
+  raw: Record<string, unknown>,
+  key: string,
+): string | undefined {
+  if (!Object.prototype.hasOwnProperty.call(raw, key)) return undefined;
+  return requiredMoney(raw, key);
+}
+
+function optionalNullableMoney(
+  raw: Record<string, unknown>,
+  key: string,
+): string | null | undefined {
+  if (!Object.prototype.hasOwnProperty.call(raw, key)) return undefined;
+  const value = raw[key];
+  if (value === null) return null;
+  if (typeof value !== "string" || !MONEY_RE.test(value)) {
+    throw walletShapeError();
+  }
+  return value;
+}
+
 export function normalizeWalletBuckets(raw: unknown): WalletBucketsResponse {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
     throw walletShapeError();
@@ -68,18 +106,13 @@ export function normalizeWalletBuckets(raw: unknown): WalletBucketsResponse {
   const value = raw as Record<string, unknown>;
   const keys = Object.keys(value);
   if (
-    keys.length !== WALLET_BUCKET_KEYS.length ||
-    keys.some(
-      (key) =>
-        !WALLET_BUCKET_KEYS.includes(
-          key as (typeof WALLET_BUCKET_KEYS)[number],
-        ),
-    )
+    WALLET_BUCKET_KEYS.some((key) => !Object.prototype.hasOwnProperty.call(value, key)) ||
+    keys.some((key) => !WALLET_ALLOWED_KEYS.has(key))
   ) {
     throw walletShapeError();
   }
 
-  return {
+  const dto: WalletBucketsResponse = {
     userId: requiredText(value, "userId"),
     principalUsdt: requiredMoney(value, "principalUsdt"),
     profitUsdt: requiredMoney(value, "profitUsdt"),
@@ -88,6 +121,32 @@ export function normalizeWalletBuckets(raw: unknown): WalletBucketsResponse {
     liabilityUsdt: requiredMoney(value, "liabilityUsdt"),
     asOfLedgerEntryId: requiredText(value, "asOfLedgerEntryId"),
   };
+  const trialPrincipalUsdt = optionalMoney(value, "trialPrincipalUsdt");
+  const trialLockedUsdt = optionalMoney(value, "trialLockedUsdt");
+  if (trialPrincipalUsdt !== undefined) dto.trialPrincipalUsdt = trialPrincipalUsdt;
+  if (trialLockedUsdt !== undefined) dto.trialLockedUsdt = trialLockedUsdt;
+  if (value.displayPrimary === "KRW") dto.displayPrimary = "KRW";
+  else if (Object.prototype.hasOwnProperty.call(value, "displayPrimary")) {
+    throw walletShapeError();
+  }
+  if (value.displaySecondary === "USDT") dto.displaySecondary = "USDT";
+  else if (Object.prototype.hasOwnProperty.call(value, "displaySecondary")) {
+    throw walletShapeError();
+  }
+  const krwKeys = [
+    "principalKrwApprox",
+    "profitKrwApprox",
+    "lockedKrwApprox",
+    "practiceKrwApprox",
+    "liabilityKrwApprox",
+    "trialPrincipalKrwApprox",
+    "trialLockedKrwApprox",
+  ] as const;
+  for (const key of krwKeys) {
+    const approx = optionalNullableMoney(value, key);
+    if (approx !== undefined) dto[key] = approx;
+  }
+  return dto;
 }
 
 export async function fetchWalletBuckets(

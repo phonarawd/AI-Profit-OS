@@ -45,15 +45,7 @@ async function upsertAsset(client, asset) {
        asset_id, category, asset_label, image_url, image_source,
        image_alt_ko, image_rights_note_ko, image_fetched_at, meta
      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9::jsonb)
-     ON CONFLICT (asset_id) DO UPDATE SET
-       category = EXCLUDED.category,
-       asset_label = EXCLUDED.asset_label,
-       image_url = EXCLUDED.image_url,
-       image_source = EXCLUDED.image_source,
-       image_alt_ko = EXCLUDED.image_alt_ko,
-       image_fetched_at = EXCLUDED.image_fetched_at,
-       meta = EXCLUDED.meta,
-       updated_at = now()`,
+       ON CONFLICT (asset_id) DO NOTHING`,
     [
       asset.assetId,
       asset.category,
@@ -89,6 +81,16 @@ async function upsertListing(client, L) {
       LIMIT 1`,
     [row.assetId, row.marketId, row.externalItemId],
   );
+  if (!existing.rows[0]) {
+    // 같은 레그에 실 이베이 호가가 있으면 시드 행을 추가하지 않음 (reprice extra-leg fail-closed)
+    const sameLeg = await client.query(
+      `SELECT 1 FROM public.listings
+        WHERE asset_id = $1 AND market_id = $2
+        LIMIT 1`,
+      [row.assetId, row.marketId],
+    );
+    if (sameLeg.rows[0]) return false;
+  }
   if (existing.rows[0]) {
     await client.query(
       `UPDATE public.listings SET

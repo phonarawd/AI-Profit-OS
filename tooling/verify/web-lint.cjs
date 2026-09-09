@@ -93,12 +93,17 @@ function resolveEslintBin() {
   return "";
 }
 
-function runLint() {
+function runLint(targets) {
   const bin = resolveEslintBin();
   if (!bin) {
     return { status: 1, stdout: "", stderr: "eslint binary not resolved" };
   }
-  return spawnSync(process.execPath, [bin, "."], {
+  const args = Array.isArray(targets) && targets.length ? targets : ["."];
+  const cacheArgs =
+    args.length === 1 && args[0] === "."
+      ? ["--cache", "--cache-location", path.join(root, ".cache", "eslint-web")]
+      : [];
+  return spawnSync(process.execPath, [bin, ...args, ...cacheArgs], {
     cwd: webRoot,
     encoding: "utf8",
     timeout: 120_000,
@@ -110,17 +115,18 @@ function runLint() {
 }
 
 if (fails.length === 0) {
-  const clean = runLint();
+  const clean = runLint(["."]);
   process.stdout.write(clean.stdout || "");
   process.stderr.write(clean.stderr || "");
   if (clean.status !== 0) {
     fails.push("clean lint must PASS (see eslint output)");
   }
 
-  const probe = path.join(webRoot, "_rel011_intentional_syntax_error.tsx");
+  const probeName = "_rel011_intentional_syntax_error.tsx";
+  const probe = path.join(webRoot, probeName);
   try {
     fs.writeFileSync(probe, "export const REL011_PROBE = (\n", "utf8");
-    const broken = runLint();
+    const broken = runLint([probeName]);
     if (broken.status === 0) {
       fails.push(
         "intentional syntax error did not make lint FAIL (no-op residual)",

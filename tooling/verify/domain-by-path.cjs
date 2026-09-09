@@ -15,6 +15,30 @@ const root = path.resolve(__dirname, "../..");
 const RULES = [
   {
     test: (f) =>
+      /^tooling\/verify\/(gate-runner|gate-tiers|gate-fast|gate-push|gate|web-lint|api-nest-build|gate-local-speed|t1-by-path|backend-fast)\.cjs$/.test(
+        f,
+      ) ||
+      /^tooling\/verify\/lib\/(gate-stamp|run-verify-in-process|verify-input-cache|t1-by-path)\.cjs$/.test(
+        f,
+      ) ||
+      /^tooling\/verify\/stubs\/run-all\.cjs$/.test(f) ||
+      /^\.github\/workflows\/gate\.yml$/.test(f),
+    scripts: ["gate-local-speed.cjs", "t1-by-path.cjs"],
+  },
+  {
+    test: (f) =>
+      /^packages\/ui\/brand\//.test(f) ||
+      /^tooling\/verify\/brand-consumer\.cjs$/.test(f),
+    scripts: ["brand-consumer.cjs"],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\//.test(f) ||
+      /^tooling\/verify\/api-nest-build\.cjs$/.test(f),
+    scripts: ["api-nest-build.cjs"],
+  },
+  {
+    test: (f) =>
       /^\.cursor\/hooks(\/|$)/.test(f) ||
       /^\.cursor\/hooks\.json$/.test(f) ||
       /^\.cursor\/rules\/project-isolation/.test(f) ||
@@ -84,6 +108,21 @@ const RULES = [
       /^governance\/release-master\/rc-formal\.v1\.json$/.test(f) ||
       /^tooling\/verify\/rc-formal\.cjs$/.test(f),
     scripts: ["rc-formal.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/recovery\/founder-execution-delegation\.v1\.json$/.test(f) ||
+      /^governance\/recovery\/founder-backend-only-api\.v1\.json$/.test(f) ||
+      /^tooling\/release\/agent-execute\.cjs$/.test(f) ||
+      /^tooling\/dev\/provision-production-resend\.cjs$/.test(f) ||
+      /^tooling\/dev\/provision-production-turnstile\.cjs$/.test(f) ||
+      /^tooling\/dev\/ops-auto-backend\.cjs$/.test(f) ||
+      /^tooling\/dev\/redeploy-production-api\.cjs$/.test(f) ||
+      /^tooling\/verify\/founder-execution-delegation\.cjs$/.test(f) ||
+      /^\.cursor\/rules\/founder-execution-delegation\.mdc$/.test(f) ||
+      /^\.cursor\/rules\/cursor-autonomous-ops\.mdc$/.test(f) ||
+      /^governance\/release-master\/PROD_READINESS\.md$/.test(f),
+    scripts: ["founder-execution-delegation.cjs"],
   },
   {
     test: (f) =>
@@ -172,7 +211,7 @@ const RULES = [
     test: (f) =>
       /^tooling\/release\/production-release-decision\.cjs$/.test(f) ||
       /^tooling\/verify\/production-release-decision\.cjs$/.test(f),
-    scripts: ["production-release-decision.cjs"],
+    scripts: ["production-release-decision.cjs", "s3-36-observability.cjs"],
   },
   {
     test: (f) =>
@@ -185,10 +224,52 @@ const RULES = [
   },
   {
     test: (f) =>
-      /^services\/api-nest\/src\/common\/admin-session\.(cookies|csrf|runtime\.test)\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/common\/admin-session\.(cookies|csrf|runtime\.test|controller)\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/common\/admin-code-exchange\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/common\/admin-rbac\.lookup/.test(f) ||
+      /^services\/api-nest\/src\/common\/admin-session\.revoke\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/common\/admin\.guard\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/common\/admin-(identity|totp|auth|session\.store)/.test(f) ||
+      /^services\/api-nest\/src\/admin-identity\//.test(f) ||
+      /^apps\/admin\/components\/Admin(SessionBar|LoginForm)\.tsx$/.test(f) ||
+      /^apps\/admin\/app\/admin\/login\//.test(f) ||
+      /^apps\/admin\/lib\/admin-login\.ts$/.test(f) ||
       /^tooling\/verify\/admin-csrf-double-submit\.cjs$/.test(f) ||
+      /^tooling\/verify\/admin-code-exchange-isolation\.cjs$/.test(f) ||
+      /^tooling\/verify\/admin-identity-b0\.cjs$/.test(f) ||
       /^governance\/recovery\/csrf-double-submit-judgment\.v1\.json$/.test(f),
-    scripts: ["admin-csrf-double-submit.cjs"],
+    scripts: [
+      "admin-csrf-double-submit.cjs",
+      "admin-code-exchange-isolation.cjs",
+      "admin-identity-b0.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\/src\/matching-policy\//.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/(opportunities\.user\.service|participate\.service)\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/ai\/coach\.orchestrator\.ts$/.test(f) ||
+      /^supabase\/migrations\/20260906130000_user_matching_policy_b7\.sql$/.test(f) ||
+      /^tooling\/verify\/admin-user-matching-b7\.cjs$/.test(f) ||
+      /^apps\/admin\/app\/admin\/users\/\[id\]\/page\.tsx$/.test(f),
+    scripts: ["admin-user-matching-b7.cjs", "s3-33-products.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/products\//.test(f) ||
+      /^tooling\/verify\/s3-33-products\.cjs$/.test(f) ||
+      /^supabase\/migrations\/20260906150000_s3_33_product_pipeline\.sql$/.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/(opportunities\.user\.service|catalog-runtime-seed\.service|opportunity-reprice\.service)\.ts$/.test(
+        f,
+      ) ||
+      /^services\/api-nest\/src\/ai\/fact-tool\.service\.ts$/.test(f) ||
+      /^apps\/web\/components\/spark-dash-profits\//.test(f) ||
+      /^apps\/web\/app\/profits\/\[id\]\//.test(f),
+    scripts: [
+      "s3-33-products.cjs",
+      "admin-user-matching-b7.cjs",
+      "ebay-identity-ingest.cjs",
+    ],
   },
   {
     test: (f) =>
@@ -223,12 +304,14 @@ const RULES = [
   },
   {
     test: (f) =>
-      /^apps\/web\/lib\/opportunity-card-map\.ts$/.test(f) ||
       /^apps\/web\/components\/spark-dash-home\/format\.ts$/.test(f) ||
-      /^packages\/ui\/components\/opportunity\/money-display\.ts$/.test(f) ||
-      /^packages\/ui\/components\/opportunity\/Opportunity(Card|Detail)\.tsx$/.test(
+      /^apps\/web\/components\/spark-dash-home\/Home(Desktop|Mobile)\.tsx$/.test(
         f,
       ) ||
+      /^apps\/web\/components\/spark-dash-profits\/Opportunity(Card|Metrics)\.tsx$/.test(
+        f,
+      ) ||
+      /^packages\/ui\/components\/opportunity\/money-display\.ts$/.test(f) ||
       /^packages\/ui\/components\/trust\/ParticipateProofPanel\.tsx$/.test(f) ||
       /^tooling\/e2e\/lib\/money-unavailable\.cjs$/.test(f) ||
       /^tooling\/e2e\/specs\/money-unavailable\.spec\.cjs$/.test(f) ||
@@ -255,6 +338,7 @@ const RULES = [
       /^infra\/domain\.manifest\.json$/.test(f) ||
       /^tooling\/deploy\/cf-(pages-web|pages-ops|preflight|origin-smoke)/.test(f) ||
       /^workers\/(web-proxy|ops-proxy|_shared)\//.test(f) ||
+      /^tooling\/dev\/deploy-web-proxy\.cjs$/.test(f) ||
       /^tooling\/verify\/opennext-workers-origin\.cjs$/.test(f),
     scripts: [
       "opennext-workers-origin.cjs",
@@ -280,7 +364,19 @@ const RULES = [
       /^services\/api-nest\/src\/health\.public\.runtime\.test\.ts$/.test(f) ||
       /^services\/api-nest\/src\/config\/nest-provenance\.ts$/.test(f) ||
       /^tooling\/verify\/nest-production-provenance\.cjs$/.test(f),
-    scripts: ["nest-production-provenance.cjs", "api-nest-build.cjs"],
+    scripts: ["nest-production-provenance.cjs", "api-nest-build.cjs", "s3-36-observability.cjs"],
+  },
+  {
+    // D1-BLK-004 (2026-09-05): packages/ui had zero standalone typecheck
+    // coverage — any file no app happened to import was never type-checked
+    // by anything. Scoped to packages/ui/** only (not apps/web/**, which is
+    // handled by its own per-app tsc as before) so this does not duplicate
+    // or slow down unrelated apps/web-only slices.
+    test: (f) =>
+      /^packages\/ui\//.test(f) ||
+      /^tooling\/verify\/packages-ui-typecheck\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/packages-ui-typecheck-negative\.fixture\.tsx$/.test(f),
+    scripts: ["packages-ui-typecheck.cjs"],
   },
   {
     test: (f) => /^(packages\/ui\/|apps\/web\/)/.test(f),
@@ -315,12 +411,22 @@ const RULES = [
       /^apps\/web\/app\/auth\//.test(f) ||
       /^apps\/web\/app\/onboarding\//.test(f) ||
       /^packages\/sdk\/src\/auth\//.test(f) ||
+      /^packages\/sdk\/src\/product-onboarding\//.test(f) ||
+      /^services\/api-nest\/src\/product-onboarding\//.test(f) ||
+      /^packages\/ui\/copy\/ko\/product-onboarding\.ts$/.test(f) ||
+      /^packages\/ui\/canon\/surfaces\/product-onboarding\.wire\.json$/.test(f) ||
+      /^supabase\/migrations\/20260906233000_product_onboarding_progress\.sql$/.test(
+        f,
+      ) ||
+      /^governance\/onboarding\//.test(f) ||
       /^packages\/ui\/components\/(auth|onboarding)\//.test(f) ||
       /^governance\/consumer-acquisition\//.test(f) ||
       /^tooling\/verify\/acquisition-release\.cjs$/.test(f) ||
       /^tooling\/verify\/login-kakao-closure\.cjs$/.test(f) ||
       /^tooling\/verify\/complete-profile-closure\.cjs$/.test(f) ||
-      /^tooling\/verify\/onboarding-journey-closure\.cjs$/.test(f),
+      /^tooling\/verify\/onboarding-experiential\.cjs$/.test(f) ||
+      /^tooling\/verify\/onboarding-journey-closure\.cjs$/.test(f) ||
+      /^tooling\/e2e\/specs\/onboarding-experiential-runtime\.spec\.cjs$/.test(f),
     scripts: [
       "acquisition-release.cjs",
       "auth-surfaces.cjs",
@@ -348,8 +454,11 @@ const RULES = [
       /^apps\/web\/app\/pwa-shell\.css$/.test(f) ||
       /^apps\/web\/app\/layout\.tsx$/.test(f) ||
       /^apps\/web\/components\/pwa\//.test(f) ||
-      /^tooling\/verify\/pwa-native-shell\.cjs$/.test(f),
-    scripts: ["pwa-native-shell.cjs"],
+      /^tooling\/verify\/pwa-native-shell\.cjs$/.test(f) ||
+      /^tooling\/verify\/s3-35-pwa\.cjs$/.test(f) ||
+      /^governance\/pwa\/s3-35-connection-matrix\.v1\.json$/.test(f) ||
+      /^apps\/web\/public\/offline\.html$/.test(f),
+    scripts: ["pwa-native-shell.cjs", "s3-35-pwa.cjs"],
   },
   {
     test: (f) =>
@@ -394,11 +503,10 @@ const RULES = [
   {
     test: (f) =>
       /^apps\/web\/app\/page\.tsx$/.test(f) ||
-      /^apps\/web\/app\/HomePageClient\.tsx$/.test(f) ||
-      /^apps\/web\/app\/_components\/HomePageClient\.tsx$/.test(f) ||
-      /^apps\/web\/components\/HomePageClient\.tsx$/.test(f) ||
+      /^apps\/web\/app\/HomeDesktopClient\.tsx$/.test(f) ||
+      /^apps\/web\/components\/spark-dash-home\//.test(f) ||
       /^packages\/sdk\/src\/user-feed\//.test(f) ||
-      /HomePrincipalRail/.test(f) ||
+      /^governance\/runtime-surfaces\.v1\.json$/.test(f) ||
       /home-principal-slots/.test(f) ||
       /^packages\/sdk\/src\/growth\//.test(f) ||
       /^services\/api-nest\/src\/growth\//.test(f),
@@ -596,6 +704,23 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^services\/api-nest\/src\/wallet\/withdraw-treasury-solvency/.test(f) ||
+      /^services\/api-nest\/src\/wallet\/withdraw-coverage/.test(f) ||
+      /^services\/api-nest\/src\/wallet\/withdraw-intent\.service\.ts$/.test(f) ||
+      /^tooling\/verify\/withdraw-treasury-solvency\.cjs$/.test(f) ||
+      /^tooling\/verify\/a4-withdraw-reserve-race\.cjs$/.test(f),
+    scripts: ["withdraw-treasury-solvency.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/web\/app\/robots\.ts$/.test(f) ||
+      /^apps\/web\/app\/sitemap\.ts$/.test(f) ||
+      /^apps\/web\/app\/layout\.tsx$/.test(f) ||
+      /^tooling\/verify\/seo-schema\.cjs$/.test(f),
+    scripts: ["seo-schema.cjs"],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/app\/wallet\/deposit\//.test(f) ||
       /^apps\/web\/app\/me\/kyc\//.test(f) ||
       /^apps\/web\/app\/me\/support\//.test(f) ||
@@ -646,7 +771,23 @@ const RULES = [
       "rel-219-admin-growth-ticker.cjs",
       "rel-220-admin-growth-whale.cjs",
       "rel-221-admin-growth-content.cjs",
+      "admin-s3-31-full.cjs",
+      "admin-user-matching-b7.cjs",
     ],
+  },
+  {
+    test: (f) =>
+      /^governance\/admin\/s3-31-connection-matrix\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/admin-s3-31-full\.cjs$/.test(f),
+    scripts: ["admin-s3-31-full.cjs", "admin-user-matching-b7.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/auth\//.test(f) ||
+      /^tooling\/verify\/s3-32-user-auth\.cjs$/.test(f) ||
+      /^packages\/ui\/components\/auth\//.test(f) ||
+      /^apps\/web\/app\/auth\//.test(f),
+    scripts: ["s3-32-user-auth.cjs"],
   },
   {
     test: (f) =>
@@ -680,6 +821,7 @@ const RULES = [
       "rel-220-admin-growth-whale.cjs",
       "rel-221-admin-growth-content.cjs",
       "admin-entry-e2e.cjs",
+      "admin-s3-31-full.cjs",
     ],
   },
   {
@@ -784,7 +926,17 @@ const RULES = [
       /^governance\/release-master\/REL-222-ADMIN-OPS\.md$/.test(f) ||
       /^tooling\/verify\/rel-222-admin-ops\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/rel-222-admin-ops\.v1\.json$/.test(f) ||
-      /^supabase\/migrations\/\d+_admin_ops_intents\.sql$/.test(f),
+      /^supabase\/migrations\/\d+_admin_ops_intents\.sql$/.test(f) ||
+      // PUTDUK continuation session, Step 7.3: admin-capabilities.ts drives
+      // this check's "REL-222 must reuse all, not invent <capability>" scan
+      // over AdminOpsAdminController's own block - a change anywhere in
+      // this shared file (even an unrelated controller's entry) can flip
+      // that scan's result, as this task's own TradesAdminController
+      // addition just proved by exposing a real block-boundary bug in the
+      // scan itself. Local T0/T1 had no domain-by-path rule tying the two
+      // together before this, so that class of regression only surfaced
+      // in full CI, not locally.
+      f === "services/api-nest/src/common/admin-capabilities.ts",
     scripts: ["rel-222-admin-ops.cjs"],
   },
   {
@@ -878,7 +1030,7 @@ const RULES = [
       /^services\/api-nest\/src\/opportunities\/current-fx-approx/.test(f) ||
       /^tooling\/verify\/rel-508-current-fx-approx\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/rel-508-current-fx-approx\.v1\.json$/.test(f),
-    scripts: ["rel-508-current-fx-approx.cjs"],
+    scripts: ["rel-508-current-fx-approx.cjs", "user-money-display.cjs"],
   },
   {
     test: (f) =>
@@ -901,7 +1053,23 @@ const RULES = [
     test: (f) =>
       /^governance\/release-master\/REL-600-STAGING\.md$/.test(f) ||
       /^infra\/domain\.manifest\.json$/.test(f) ||
-      /^tooling\/deploy\/cf-(pages-web|pages-ops|deploy-staging|origin-smoke|preflight)\.cjs$/.test(f) ||
+      /^infra\/turnstile\.public\.json$/.test(f) ||
+      /^tooling\/deploy\/cf-(pages-web|pages-ops|deploy-staging|deploy-dedicated|origin-smoke|preflight|access-dedicated)\.cjs$/.test(f) ||
+      /^tooling\/deploy\/render-staging-sha\.cjs$/.test(f) ||
+      /^tooling\/deploy\/lib\/(env|non-prod-api-host(\.runtime\.test)?)\.cjs$/.test(f) ||
+      /^tooling\/verify\/(rel-600-staging|s5-dedicated-staging|hard-gate-live|j0-admin-auth-live)\.cjs$/.test(f) ||
+      /^governance\/release-master\/S5-DEDICATED-STAGING\.v1\.json$/.test(f) ||
+      /^governance\/release-master\/S5-STAGING-MIGRATIONS\.v1\.json$/.test(f) ||
+      /^governance\/release-master\/S5-STAGING-ORIGIN-PROBE\.v1\.json$/.test(f) ||
+      /^governance\/release-master\/HARD_GATE_LIVE\.v1\.json$/.test(f) ||
+      /^governance\/release-master\/J0-LIVE\.v1\.json$/.test(f) ||
+      /^tooling\/e2e\/(j0-admin-auth-live.*|lib\/j0-live-.*)\.cjs$/.test(f) ||
+      /^tooling\/deploy\/cf-access-j0-service-token\.cjs$/.test(f) ||
+      /^tooling\/dev\/(provision-staging-j0-admins|patch-catalog-j0)\.cjs$/.test(f) ||
+      /^tooling\/dev\/(apply-staging-unapplied|s5-staging-origin-probe|provision-staging-turnstile)\.cjs$/.test(f) ||
+      /^apps\/admin\/(middleware\.ts|proxy\.ts|lib\/cf-access-jwt\.ts)$/.test(f) ||
+      /^infra\/(web|ops)\/wrangler\.toml$/.test(f) ||
+      /^\.github\/workflows\/deploy-dedicated\.yml$/.test(f) ||
       /^tooling\/deploy\/lib\/non-prod-api-host(\.runtime\.test)?\.cjs$/.test(f) ||
       /^tooling\/verify\/rel-600-staging\.cjs$/.test(f) ||
       /^tooling\/verify\/staging-topology-readiness\.cjs$/.test(f) ||
@@ -910,7 +1078,7 @@ const RULES = [
       /^\.github\/workflows\/deploy-cloudflare\.yml$/.test(f) ||
       /^tooling\/verify\/fixtures\/rel-600-staging\.v1\.json$/.test(f) ||
       /^\.github\/workflows\/deploy-staging\.yml$/.test(f),
-    scripts: ["rel-600-staging.cjs", "staging-topology-readiness.cjs"],
+    scripts: ["rel-600-staging.cjs", "staging-topology-readiness.cjs", "s5-dedicated-staging.cjs", "hard-gate-live.cjs", "j0-admin-auth-live.cjs"],
   },
   {
     test: (f) =>
@@ -1010,7 +1178,10 @@ const RULES = [
       /apps\/web\/app\/me\/peotteok\//.test(f) ||
       /packages\/sdk\/src\/peotteok\//.test(f) ||
       /^tooling\/e2e\/specs\/peotteok-closure\.spec\.cjs$/.test(f) ||
-      /^tooling\/verify\/peotteok-closure\.cjs$/.test(f),
+      /^tooling\/verify\/peotteok-closure\.cjs$/.test(f) ||
+      /^tooling\/verify\/s3-34-peotteok\.cjs$/.test(f) ||
+      /^governance\/peotteok\//.test(f) ||
+      /^supabase\/migrations\/20260906160000_s3_34_peotteok_history\.sql$/.test(f),
     scripts: [
       "ai-coach-ui.cjs",
       "canon-surfaces.cjs",
@@ -1019,6 +1190,7 @@ const RULES = [
       "ai-coach-runtime.cjs",
       "age-tone-surfaces.cjs",
       "peotteok-closure.cjs",
+      "s3-34-peotteok.cjs",
     ],
   },
   {
@@ -1027,7 +1199,7 @@ const RULES = [
         f,
       ) ||
       /^services\/memory-service\/src\/(preference-memory|memory)\.cjs$/.test(f) ||
-      /^services\/api-nest\/src\/ai\/(coach\.orchestrator|fact-tool\.service|conversation-state\.service|memory\.service|ai\.engine)\.ts$/.test(
+      /^services\/api-nest\/src\/ai\/(coach\.orchestrator|fact-tool\.service|conversation-state\.service|memory\.service|ai\.engine|peotteok-history\.service|peotteok-citation|coach\.controller|coach\.routes)\.ts$/.test(
         f,
       ) ||
       /^tooling\/verify\/(reference-resolution|conversation-state-bounded)\.cjs$/.test(
@@ -1041,6 +1213,7 @@ const RULES = [
       "ai-coach-no-autonomy.cjs",
       "ai-general-no-money-tools.cjs",
       "age-tone-surfaces.cjs",
+      "s3-34-peotteok.cjs",
     ],
   },
   {
@@ -1211,7 +1384,9 @@ const RULES = [
       /packages\/ui\/components\/lux\/(VirtualList|VirtualTicker|FluidCard|TouchButton|LivePayoutTicker)\./.test(
         f,
       ) ||
-      /packages\/ui\/components\/opportunity\/VirtualOpportunityList\./.test(f) ||
+      /apps\/web\/components\/spark-dash-profits\/VirtualOpportunityGrid\./.test(
+        f,
+      ) ||
       /packages\/sdk\/src\/device-tier\.ts/.test(f) ||
       /apps\/web\/components\/DeviceTierApply\./.test(f) ||
       /tooling\/verify\/responsive(\.cjs|\/)/.test(f),
@@ -1223,6 +1398,25 @@ const RULES = [
       /^services\/api-nest\//.test(f) &&
       /(money|bucket|withdraw|deposit|ledger|referral|mission|benefit)/i.test(f),
     scripts: ["pg-module-scan.cjs", "bucket-invariant.cjs"],
+  },
+  {
+    test: (f) =>
+      /trial-grant|trial-funding|trial-fx|trial-state|trial-eligible|trial_welcome|referral-slot|trial-welcome/.test(
+        f,
+      ),
+    scripts: ["trial-welcome.cjs", "user-money-display.cjs"],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\/src\/money-display\//.test(f) ||
+      /^tooling\/verify\/user-money-display\.cjs$/.test(f) ||
+      /^schemas\/wallet-buckets\.v1\.json$/.test(f) ||
+      /^packages\/sdk\/src\/wallet\/(fetch|types)\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/wallet\/wallet\.controller\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/opportunities\.user\.service\.ts$/.test(
+        f,
+      ),
+    scripts: ["user-money-display.cjs"],
   },
   {
     test: (f) =>
@@ -1241,8 +1435,16 @@ const RULES = [
       /^packages\/observability\//.test(f) ||
       /^services\/api-nest\/src\/observability\//.test(f) ||
       /^apps\/web\/components\/observability\//.test(f) ||
-      /^tooling\/verify\/observability\.cjs$/.test(f),
-    scripts: ["observability.cjs"],
+      /^tooling\/verify\/observability\.cjs$/.test(f) ||
+      /^tooling\/verify\/s3-36-observability\.cjs$/.test(f),
+    scripts: ["observability.cjs", "s3-36-observability.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/github\//.test(f) ||
+      /^tooling\/github\//.test(f) ||
+      /^tooling\/verify\/s3-37-merge-rules\.cjs$/.test(f),
+    scripts: ["s3-37-merge-rules.cjs"],
   },
   {
     test: (f) =>
@@ -1275,6 +1477,7 @@ const RULES = [
       /^tooling\/verify\/home-money-read-contract\.cjs$/.test(f),
     scripts: [
       "home-money-read-contract.cjs",
+      "user-money-display.cjs",
       "pg-module-scan.cjs",
       "bucket-invariant.cjs",
     ],
@@ -1336,13 +1539,35 @@ const RULES = [
       /^services\/engine-rust\//.test(f) ||
       /^tooling\/verify\/settlement-rule-parity\.cjs$/.test(f) ||
       (/^services\/api-nest\//.test(f) &&
-        /(opportunit|participat|settlement|trade|execution|membership|match)/i.test(f)),
+        /(opportunit|participat|settlement|trade|execution|membership|match|payout-reservation)/i.test(f)),
     scripts: [
       "match-success-rule.cjs",
       "settlement-rule-parity.cjs",
       "participate-http.cjs",
       "execute-rule-loop.cjs",
+      "trades-execution-race.runtime.cjs",
+      "participate-atomicity.runtime.cjs",
+      "trades-reconcile.runtime.cjs",
+      "trades-payout-reserve.runtime.cjs",
+      "a5-authoritative-success.cjs",
     ],
+  },
+  {
+    // PUTDUK continuation session, Step 7.1 - ledger.posting.service.ts is
+    // not matched by the broad money/bucket/ledger regex's own file-name
+    // substring test's neighbor above only via "ledger", which already
+    // triggers pg-module-scan/bucket-invariant; this narrower, precise
+    // rule additionally re-runs the exact lock+trade atomicity regression
+    // whenever the shared posting core or its one current
+    // postJournalInTransaction caller changes, without broadening the
+    // wider money/bucket/deposit/withdraw/referral/mission/benefit regex
+    // (which would re-run this build+compile-heavy check for many
+    // unrelated files that regex already matches).
+    test: (f) =>
+      f === "services/api-nest/src/ledger/ledger.posting.service.ts" ||
+      f === "services/api-nest/src/opportunities/participate.atomicity.selftest.ts" ||
+      f === "tooling/verify/participate-atomicity.runtime.cjs",
+    scripts: ["participate-atomicity.runtime.cjs"],
   },
   {
     test: (f) =>
@@ -1365,6 +1590,7 @@ const RULES = [
       "catalog-runtime-seed.cjs",
       "ebay-resilience.cjs",
       "price-denomination-contract.cjs",
+      "s3-33-products.cjs",
     ],
   },
   {
@@ -1380,6 +1606,23 @@ const RULES = [
       "balance-aware-feed.cjs",
       "price-denomination-contract.cjs",
       "ebay-resilience.cjs",
+      "fashionphile-parser.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^workers\/fashionphile-parser\//.test(f) ||
+      /^services\/market-intelligence\/src\/fashionphile-observation\.cjs$/.test(f) ||
+      /^services\/market-intelligence\/src\/observation-identity-match\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/adapters\/fashionphile-observation-pull\.service\.ts$/.test(
+        f,
+      ) ||
+      /^tooling\/verify\/fashionphile-parser\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/fashionphile-products\.v1\.json$/.test(f),
+    scripts: [
+      "fashionphile-parser.cjs",
+      "listing-legs-day1.cjs",
+      "market-intel-engine.cjs",
     ],
   },
   {
@@ -1391,14 +1634,62 @@ const RULES = [
   {
     test: (f) =>
       (/^services\/api-nest\//.test(f) && /auth/i.test(f)) ||
-      /packages\/.*jwt/i.test(f),
+      /packages\/.*jwt/i.test(f) ||
+      // S1F Section 6.3/6.4 - Turnstile + distributed rate limiter live
+      // under src/common/ (not src/auth/) but are launch-critical auth
+      // write-endpoint defenses, so they must trigger the same domain
+      // gate as everything else on the signup/login/reset path.
+      /^services\/api-nest\/src\/common\/turnstile\.(service|guard)\.ts$/.test(f) ||
+      /^services\/api-nest\/turnstile\.policy\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/common\/turnstile\.selftest\.cjs$/.test(f),
     scripts: [
       "auth-jwt-runtime.cjs",
       "auth-flows.cjs",
       "auth-session-cookie.cjs",
       "auth-rate-limit.cjs",
       "auth-identity-proof.runtime.cjs",
+      "s3-32-user-auth.cjs",
     ],
+  },
+  {
+    // S1F Section 11 - refresh-token rotation + reuse detection. This is
+    // the highest-value regression suite this session added (see
+    // session-rotation.reuse.runtime.test.ts's own header comment) - it
+    // had zero automated coverage before, despite guarding real
+    // account/session takeover-recovery behavior.
+    test: (f) =>
+      f === "services/api-nest/src/auth/session-rotation.service.ts" ||
+      f === "services/api-nest/src/auth/session-rotation.reuse.selftest.ts",
+    scripts: ["auth-session-rotation-reuse.runtime.cjs"],
+  },
+  {
+    // S1F Section 7 - client-side refresh-and-retry-once fetch wrapper. A
+    // regression here silently reverts users to "logged out every 15
+    // minutes" (see governance/release-master/evidence/
+    // REL-710-714-PLAN-SSOT-UPDATE-HANDOFF.md sibling note for context).
+    test: (f) =>
+      f === "apps/web/lib/session-refresh-fetch.ts" ||
+      f === "apps/web/components/SessionRefreshRuntime.tsx" ||
+      f === "apps/web/app/layout.tsx",
+    scripts: ["auth-session-refresh-fetch.runtime.cjs"],
+  },
+  {
+    // S1F Section 9.1 - admin members directory. The controller filename
+    // already matches the generic "*.admin.controller.ts" -> admin-boundary
+    // rule above, but the service file (users-admin.service.ts) does not
+    // match any suffix pattern on its own - this closes that gap so a
+    // service-only change (e.g. a new SQL filter) still re-runs the real
+    // adversarial RBAC round-trip.
+    test: (f) =>
+      /^services\/api-nest\/src\/users\//.test(f) ||
+      // PUTDUK continuation session, Step 7.3: admin-capabilities.ts is
+      // the deny-by-default classification source of truth for EVERY
+      // admin controller/route - a change here (e.g. adding
+      // TradesAdminController.reconcileTick) had no domain-by-path rule
+      // at all before this, so a real classification mistake here could
+      // land without the adversarial RBAC round-trip test ever re-running.
+      f === "services/api-nest/src/common/admin-capabilities.ts",
+    scripts: ["admin-boundary.cjs"],
   },
   {
     test: (f) =>
@@ -1411,6 +1702,9 @@ const RULES = [
       /^tooling\/verify\/withdraw-stepup-security/.test(f) ||
       /^tooling\/verify\/usdt-ingest-machine-auth/.test(f) ||
       /^tooling\/verify\/adapter-ingest-fail-closed/.test(f) ||
+      /^tooling\/verify\/adapter-worker-machine-auth/.test(f) ||
+      /^workers\/_shared\/adapter-machine-auth\.ts$/.test(f) ||
+      /^workers\/(ebay|amazon|yahoo-jp|pokemontcg|ygoprodeck|coingecko|frankfurter)-adapter\/src\/index\.ts$/.test(f) ||
       /^services\/api-nest\/src\/adapters\/adapters\.ingest\.controller\.ts$/.test(f) ||
       /^tooling\/verify\/tron-hd-derivation-fail-closed/.test(f) ||
       /^services\/api-nest\/src\/wallet\/chain-sweeper/.test(f) ||
@@ -1425,6 +1719,7 @@ const RULES = [
       "withdraw-stepup-security.cjs",
       "usdt-ingest-machine-auth.cjs",
       "adapter-ingest-fail-closed.cjs",
+      "adapter-worker-machine-auth.cjs",
       "tron-hd-derivation-fail-closed.runtime.cjs",
       "withdraw-fee-ledger.cjs",
       "min-holding-scope.cjs",

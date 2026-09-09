@@ -8,6 +8,7 @@ export const OPPORTUNITY_ADMIN_ROUTES = {
   list: "opportunities",
   get: "opportunities/:id",
   patchPricing: "opportunities/:id/pricing",
+  patchTrialEligible: "opportunities/:id/trial-eligible",
   priceLayers: "opportunities/:id/price-layers",
   assets: "opportunities/assets",
   assetById: "opportunities/assets/:assetId",

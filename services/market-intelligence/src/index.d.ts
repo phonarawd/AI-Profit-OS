@@ -323,6 +323,40 @@ export function resolveStoredLegListingPrices(input: {
   | { ok: false };
 export function marketIdFromEbayMarketplace(marketplaceId: string): string;
 export function isSignupReadyAdapterId(adapterId: string): boolean;
+export function isObservationAdapterId(adapterId: string): boolean;
+export const OBSERVATION_MATCHER_VERSION: string;
+export function isFashionphileImageHost(url: string | null | undefined): boolean;
+export function resolveObservationMatches(input: {
+  observations: unknown[];
+  masters?: unknown[];
+  now?: string;
+}): {
+  matched: Array<Record<string, unknown>>;
+  unmatched: Array<Record<string, unknown>>;
+  matchAttempts: Array<{
+    adapterId: string;
+    category?: string;
+    matched: boolean;
+    reason?: string;
+    at: string;
+  }>;
+  persistToListingLeg: false;
+  matcherVersion: string;
+  stats: { input: number; matched: number; unmatched: number };
+};
+export function extractFashionphileProducts(input: {
+  productsJson?: { products?: unknown[] } | null;
+  observedAt?: string;
+}): {
+  source: string;
+  persistToListingLeg: false;
+  listingRows: unknown[];
+  accepted: Array<Record<string, unknown>>;
+  rejected: Array<Record<string, unknown>>;
+};
+export function normalizeWebObservationForPersist(obs: Record<string, unknown>):
+  | { ok: false; reason: string }
+  | { ok: true; row: Record<string, unknown> };
 export function isForbiddenAdapterId(id?: string | null): boolean;
 
 /** Engine §51.12 card grade */

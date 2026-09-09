@@ -9,6 +9,8 @@ export const pwaCopy = {
   updateCta: "새로고침",
   updateLater: "나중에",
   offlineTitle: "연결이 끊겼어요",
+  offlineMoneyOff: "충전·출금은 연결 후에 할 수 있어요",
+  offlineLastSeen: "마지막 연결",
   offlineRetry: "다시 시도",
   pushTitle: "소식 받기",
   pushBody: "새 기회가 오면 알려 줄게요",

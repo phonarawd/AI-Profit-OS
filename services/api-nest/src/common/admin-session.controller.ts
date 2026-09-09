@@ -1,10 +1,12 @@
 /**
  * Admin 세션 교환 — 토큰을 HttpOnly 쿠키로만 남긴다. JSON에 bearer를 돌려주지 않는다.
+ * 연결 코드는 정식 로그인이 아니다. 성공 시 emergency session 을 새로 발급한다.
  */
 
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   Post,
   Req,
@@ -16,6 +18,7 @@ import {
   verifyAdminAccessToken,
 } from "./admin-token";
 import {
+  ADMIN_REFRESH_COOKIE_NAME,
   ADMIN_SESSION_COOKIE_NAME,
   attachAdminSessionCookies,
   clearAdminSessionCookies,
@@ -23,9 +26,21 @@ import {
   requestHasQueryBearer,
 } from "./admin-session.cookies";
 import {
+  consumeAdminCodeExchange,
+  hashToken,
   isAdminAccessTokenRevoked,
-  revokeAdminAccessToken,
+  isAdminCodeExchangeConsumed,
 } from "./admin-session.revoke";
+import {
+  isAdminCodeExchangeEnabled,
+  planAdminCodeExchange,
+} from "./admin-code-exchange";
+import { resolveAdminRbac } from "./admin-rbac.lookup";
+import { getAdminIdentityStore, resolveAdminSession } from "./admin-session.store";
+import {
+  mintEmergencyCodeSession,
+  revokeCurrentAdminFamily,
+} from "./admin-auth.flow";
 
 type CookieRequest = {
   cookies?: Record<string, string | undefined>;
@@ -46,7 +61,7 @@ type CookieResponse = {
 @Controller("admin-session")
 export class AdminSessionController {
   @Post()
-  exchange(
+  async exchange(
     @Body() body: Record<string, unknown>,
     @Req() req: CookieRequest,
     @Res({ passthrough: true }) res: CookieResponse,
@@ -55,9 +70,24 @@ export class AdminSessionController {
       throw new UnauthorizedException("ADMIN_AUTH_INVALID");
     }
     const token = String(body?.token ?? body?.accessToken ?? "").trim();
-    if (!token) throw new UnauthorizedException("ADMIN_AUTH_REQUIRED");
-    if (isAdminAccessTokenRevoked(token)) {
-      throw new UnauthorizedException("ADMIN_AUTH_INVALID");
+    const store = getAdminIdentityStore();
+    const consumedAlready = token
+      ? isAdminCodeExchangeConsumed(token) ||
+        Boolean(store && (await store.isCodeExchangeConsumed(hashToken(token))))
+      : false;
+    const plan = planAdminCodeExchange({
+      enabled: isAdminCodeExchangeEnabled(),
+      token,
+      revoked: Boolean(token) && (isAdminAccessTokenRevoked(token) || consumedAlready),
+    });
+    if (!plan.ok) {
+      if (plan.code === "ADMIN_CODE_EXCHANGE_DISABLED") {
+        throw new ForbiddenException("ADMIN_CODE_EXCHANGE_DISABLED");
+      }
+      throw new UnauthorizedException(plan.code);
+    }
+    if (!store) {
+      throw new UnauthorizedException("ADMIN_SESSION_UNAVAILABLE");
     }
     let principal;
     try {
@@ -67,16 +97,37 @@ export class AdminSessionController {
         err instanceof AdminTokenError ? err.code : "ADMIN_AUTH_INVALID",
       );
     }
-    attachAdminSessionCookies(res, token);
+    const rbac = await resolveAdminRbac(principal.adminId);
+    if (rbac.kind !== "active" && rbac.kind !== "unwired") {
+      throw new ForbiddenException("ADMIN_RBAC_INACTIVE");
+    }
+    const expiresAt = Date.parse(principal.expiresAt);
+    const firstUse = await store.consumeCodeExchange(
+      hashToken(token),
+      new Date(Number.isFinite(expiresAt) ? expiresAt : Date.now() + 15 * 60 * 1000).toISOString(),
+    );
+    if (!firstUse) {
+      throw new UnauthorizedException("ADMIN_AUTH_INVALID");
+    }
+    consumeAdminCodeExchange(
+      token,
+      Number.isFinite(expiresAt) ? expiresAt : Date.now() + 15 * 60 * 1000,
+    );
+    const minted = await mintEmergencyCodeSession({
+      adminId: principal.adminId,
+      role: rbac.kind === "active" ? rbac.role : principal.role,
+    });
+    attachAdminSessionCookies(res, minted.accessToken, undefined, minted.refreshToken);
     return {
       connected: true,
       adminId: principal.adminId,
-      role: principal.role,
+      role: minted.session.kind === "code_exchange_emergency" ? (rbac.kind === "active" ? rbac.role : principal.role) : principal.role,
+      kind: "code_exchange_emergency",
     };
   }
 
   @Get()
-  status(@Req() req: CookieRequest) {
+  async status(@Req() req: CookieRequest) {
     if (requestHasQueryBearer(req.url ?? req.originalUrl)) {
       return { connected: false };
     }
@@ -86,10 +137,18 @@ export class AdminSessionController {
     }
     try {
       const principal = verifyAdminAccessToken(token);
+      const session = await resolveAdminSession({
+        tokenId: principal.tokenId,
+        adminId: principal.adminId,
+      });
+      if (session.kind !== "active" && session.kind !== "unwired") {
+        return { connected: false };
+      }
       return {
         connected: true,
         adminId: principal.adminId,
         role: principal.role,
+        kind: session.kind === "active" ? session.session.kind : undefined,
       };
     } catch {
       return { connected: false };
@@ -97,7 +156,7 @@ export class AdminSessionController {
   }
 
   @Post("logout")
-  logout(
+  async logout(
     @Req() req: CookieRequest,
     @Res({ passthrough: true }) res: CookieResponse,
   ) {
@@ -108,9 +167,9 @@ export class AdminSessionController {
     if (plan.action === "revoke_and_clear") {
       try {
         const principal = verifyAdminAccessToken(plan.token);
-        revokeAdminAccessToken(plan.token, Date.parse(principal.expiresAt));
+        await revokeCurrentAdminFamily(principal.tokenId);
       } catch {
-        revokeAdminAccessToken(plan.token, Date.now() + 15 * 60 * 1000);
+        /* 쿠키는 지운다 */
       }
       clearAdminSessionCookies(res);
     } else if (plan.action === "clear_only") {
@@ -118,4 +177,8 @@ export class AdminSessionController {
     }
     return { connected: false };
   }
+}
+
+export function readAdminRefreshCookie(req: CookieRequest): string {
+  return String(req.cookies?.[ADMIN_REFRESH_COOKIE_NAME] ?? "").trim();
 }

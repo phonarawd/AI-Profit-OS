@@ -10,6 +10,8 @@ describe("public health sanitization", () => {
     const body = publicHealthBody({
       gitSha: "deadbeef",
       gitShaSource: "RENDER_GIT_COMMIT",
+      environment: "staging",
+      migrationHead: "20260906160000",
       dbConfigured: true,
       dbOk: true,
       redisConfigured: true,
@@ -20,9 +22,27 @@ describe("public health sanitization", () => {
     assert.equal(body.service, "api-nest");
     assert.equal(body.gitSha, "deadbeef");
     assert.equal(body.gitShaSource, "RENDER_GIT_COMMIT");
+    assert.equal(body.environment, "staging");
+    assert.equal(body.migrationHead, "20260906160000");
     assert.deepEqual(body.db, { configured: true, ok: true });
     assert.deepEqual(body.redis, { configured: true, ok: false });
     assert.deepEqual(body.warnings, [{ code: "SUPABASE_REGION_UNSUPPORTED" }]);
+    assert.deepEqual(assertPublicHealthSanitized(body), []);
+  });
+
+  it("drops host-like environment and raw SQL migration heads", () => {
+    const body = publicHealthBody({
+      gitSha: null,
+      gitShaSource: null,
+      environment: "api.hiptk.app",
+      migrationHead: "select * from users; supabase.co",
+      dbConfigured: false,
+      dbOk: false,
+      redisConfigured: false,
+      redisOk: false,
+    });
+    assert.equal(body.environment, "development");
+    assert.equal(body.migrationHead, null);
     assert.deepEqual(assertPublicHealthSanitized(body), []);
   });
 

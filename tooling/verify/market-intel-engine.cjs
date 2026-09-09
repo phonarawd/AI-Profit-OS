@@ -18,6 +18,7 @@ const files = [
   "services/market-intelligence/src/pipeline.cjs",
   "services/market-intelligence/src/asset-master.cjs",
   "services/market-intelligence/src/forbidden.cjs",
+  "governance/global-product/global-source-unlock-authorization.v1.md",
   "services/api-nest/src/opportunities/opportunities.module.ts",
   "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
   "services/api-nest/src/opportunities/opportunities.admin.service.ts",
@@ -46,8 +47,14 @@ for (const stage of [
     fails.push(`pipeline missing stage ${stage}`);
   }
 }
-if (!pipeline.PUBLISH_GUARDS.yahooJpForbidden) {
-  fails.push("PUBLISH_GUARDS.yahooJpForbidden must be true");
+if (pipeline.PUBLISH_GUARDS.yahooJpForbidden === true) {
+  fails.push("PUBLISH_GUARDS.yahooJpForbidden must be false after global-source-unlock");
+}
+if (
+  !Array.isArray(pipeline.OBSERVATION_SOURCES_ALLOWED) ||
+  !pipeline.OBSERVATION_SOURCES_ALLOWED.includes("kream")
+) {
+  fails.push("OBSERVATION_SOURCES_ALLOWED must include kream");
 }
 
 const forbidden = require(path.join(
@@ -56,6 +63,12 @@ const forbidden = require(path.join(
 ));
 if (forbidden.FORBIDDEN_MARKET_IDS.includes("yahoo_jp")) {
   fails.push("FORBIDDEN_MARKET_IDS must not include yahoo_jp (v7.22.41 partner)");
+}
+if (forbidden.isForbiddenAdapterId("kream") || forbidden.isForbiddenAdapterId("feelway")) {
+  fails.push("kream/feelway must not be forbidden after global-source-unlock");
+}
+if (!require(path.join(root, "services/market-intelligence/src/index.cjs")).isIngestableAdapterId("fashionphile")) {
+  fails.push("fashionphile must be ingestable observation adapter");
 }
 if (forbidden.isForbiddenAdapterId("yahoo_jp") || forbidden.isForbiddenAdapterId("amazon")) {
   fails.push("partner adapters yahoo_jp/amazon must not be forbidden");
@@ -205,5 +218,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:market-intel-engine] PASS (Asset Master·pipeline·Admin §36·Day-1 ebay|admin)",
+  "[verify:market-intel-engine] PASS (Asset Master·pipeline·observation unlock·Admin §36)",
 );

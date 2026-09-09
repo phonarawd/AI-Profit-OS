@@ -29,6 +29,7 @@ const files = [
   "packages/ui/copy/ko/guide.ts",
   "packages/ui/copy/ko/peotteok.ts",
   "packages/ui/copy/ko/onboarding.ts",
+  "packages/ui/copy/ko/product-onboarding.ts",
   "packages/ui/copy/ko/auth.ts",
   "packages/ui/copy/ko/landing.ts",
   "packages/ui/copy/ko/toast.ts",

@@ -4,7 +4,7 @@
 const { test, expect } = require("@playwright/test");
 const { assertQaIsolation } = require("../lib/qa-env-isolation-guard.cjs");
 const { ensureLocalWebRuntime } = require("../lib/local-web-runtime.cjs");
-const { blockingViolations } = require("../lib/axe-scan.cjs");
+const { blockingViolations, scanPageAxe } = require("../lib/axe-scan.cjs");
 
 test.describe.configure({ timeout: 180000 });
 
@@ -108,11 +108,6 @@ test("peotteok a11y has no new critical/serious axe violations", async ({
   page,
 }) => {
   await openPeotteok(page, "ready");
-  await page.addScriptTag({ path: require.resolve("axe-core") });
-  const results = await page.evaluate(async () => {
-    return window.axe.run(document, {
-      runOnly: { type: "tag", values: ["wcag2a", "wcag2aa"] },
-    });
-  });
+  const results = await scanPageAxe(page);
   expect(blockingViolations(results), JSON.stringify(blockingViolations(results).map((v) => v.id))).toEqual([]);
 });

@@ -32,13 +32,19 @@ function isProdTarget(target) {
   return target === "production" || target === "prod";
 }
 
-/** preview|staging → wrangler [env.preview]. production only uses [env.production]. */
+/** preview|staging → wrangler [env.preview] (REL-600). dedicated → [env.dedicated] (S5 J0). production only uses [env.production]. */
 function resolveWranglerEnv(target) {
-  return isProdTarget(target) ? "production" : "preview";
+  if (isProdTarget(target)) return "production";
+  if (target === "dedicated") return "dedicated";
+  return "preview";
 }
 
 function isStagingSlot(slot) {
   return slot === "staging" || slot === "preview";
+}
+
+function isDedicatedSlot(slot) {
+  return slot === "dedicated";
 }
 
 function requireRootDomainForProd(target) {
@@ -109,6 +115,7 @@ module.exports = {
   isProdTarget,
   resolveWranglerEnv,
   isStagingSlot,
+  isDedicatedSlot,
   requireRootDomainForProd,
   requireCloudflareCreds,
   mustExist,

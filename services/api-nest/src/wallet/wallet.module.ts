@@ -3,6 +3,7 @@ import { AdminAuditModule } from "../audit/admin-audit.module";
 import { KillSwitchModule } from "../kill-switch/kill-switch.module";
 import { ComplianceModule } from "../compliance/compliance.module";
 import { LedgerModule } from "../ledger/ledger.module";
+import { MoneyDisplayModule } from "../money-display/money-display.module";
 import { LoopModule } from "../loop/loop.module";
 import { RiskModule } from "../risk/risk.module";
 import { ChainSweeperPhase0Service } from "./chain-sweeper.phase0.service";
@@ -34,6 +35,7 @@ import { WithdrawStepUpService } from "./withdraw-stepup.service";
 @Module({
   imports: [
     LedgerModule,
+    MoneyDisplayModule,
     ComplianceModule,
     RiskModule,
     LoopModule,

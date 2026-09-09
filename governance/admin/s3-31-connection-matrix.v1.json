@@ -1,0 +1,509 @@
+{
+  "id": "s3-31-connection-matrix.v1",
+  "slice": "S3/3.1",
+  "liveE2e": "NOT_RUN",
+  "productionDbApply": false,
+  "notes": [
+    "Amazon/Yahoo stay honest not-ready",
+    "Approvals list is not durable yet — do not paint as live queue",
+    "Trades reconcileTick is operator POST without a dedicated 3.1 surface",
+    "last_login and device/session list are honest unavailable",
+    "spread/margin/referral finance tabs stay honest not-ready (no dedicated API)"
+  ],
+  "pages": [
+    {
+      "file": "apps/admin/app/page.tsx",
+      "route": "/admin",
+      "api": "redirect",
+      "capability": "n/a",
+      "identity": "n/a",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    },
+    {
+      "file": "apps/admin/app/admin/login/page.tsx",
+      "route": "/admin/login",
+      "api": "/api/v1/admin/auth/login",
+      "capability": "admin-identity",
+      "identity": "step-up/MFA",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    },
+    {
+      "file": "apps/admin/app/admin/page.tsx",
+      "route": "/admin",
+      "api": "/api/v1/admin/users + withdraw-intents + kyc + ledger/recon + push/circuit/queue",
+      "capability": "users/wallet/compliance/ledger/circuit",
+      "identity": "session",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    },
+    {
+      "file": "apps/admin/app/admin/users/page.tsx",
+      "route": "/admin/users",
+      "api": "/api/v1/admin/users",
+      "capability": "users",
+      "identity": "session",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    },
+    {
+      "file": "apps/admin/app/admin/users/[id]/page.tsx",
+      "route": "/admin/users/:id",
+      "api": "/api/v1/admin/users/:id + buckets + matching-policy + pii-reveal + risk + overrides + membership",
+      "capability": "users/userMatchPolicy/risk",
+      "identity": "step-up on reveal/write",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    },
+    {
+      "file": "apps/admin/app/admin/users/[id]/finance/page.tsx",
+      "route": "/admin/users/:id/finance",
+      "api": "/api/v1/admin/users/:id/buckets + ledger/journals",
+      "capability": "users/ledger",
+      "identity": "session",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    },
+    {
+      "file": "apps/admin/app/admin/users/[id]/adjust/page.tsx",
+      "route": "/admin/users/:id/adjust",
+      "api": "/api/v1/admin/users/:id/balance-adjust",
+      "capability": "ledger",
+      "identity": "step-up + maker-checker >1000",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    },
+    {
+      "file": "apps/admin/app/admin/opportunities/page.tsx",
+      "route": "/admin/opportunities",
+      "api": "/api/v1/admin/opportunities + assets + match-controls/verbs",
+      "capability": "opportunities",
+      "identity": "session",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    },
+    {
+      "file": "apps/admin/app/admin/execution-policy/page.tsx",
+      "route": "/admin/execution-policy",
+      "api": "/api/v1/admin/execution-policy",
+      "capability": "executionPolicy",
+      "identity": "session",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    },
+    {
+      "file": "apps/admin/app/admin/adapters/page.tsx",
+      "route": "/admin/adapters",
+      "api": "/api/v1/admin/adapters + source-policy/health",
+      "capability": "adapters",
+      "identity": "session",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    },
+    {
+      "file": "apps/admin/app/admin/wallet/page.tsx",
+      "route": "/admin/wallet",
+      "api": "/api/v1/admin/wallet/*",
+      "capability": "wallet",
+      "identity": "step-up on writes",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    },
+    {
+      "file": "apps/admin/app/admin/ledger/page.tsx",
+      "route": "/admin/ledger",
+      "api": "/api/v1/admin/ledger/*",
+      "capability": "ledger",
+      "identity": "session",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    },
+    {
+      "file": "apps/admin/app/admin/risk/page.tsx",
+      "route": "/admin/risk",
+      "api": "/api/v1/admin/risk/*",
+      "capability": "risk",
+      "identity": "step-up on freeze",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    },
+    {
+      "file": "apps/admin/app/admin/compliance/page.tsx",
+      "route": "/admin/compliance",
+      "api": "/api/v1/admin/compliance/kyc",
+      "capability": "compliance",
+      "identity": "step-up on decide",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    },
+    {
+      "file": "apps/admin/app/admin/system-control/page.tsx",
+      "route": "/admin/system-control",
+      "api": "/api/v1/admin/system-control/* + ops/modes + reserve",
+      "capability": "circuit/all",
+      "identity": "step-up + confirm",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    },
+    {
+      "file": "apps/admin/app/admin/ai-logs/page.tsx",
+      "route": "/admin/ai-logs",
+      "api": "/api/v1/admin/ai/*",
+      "capability": "aiLogs",
+      "identity": "session",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    },
+    {
+      "file": "apps/admin/app/admin/growth/page.tsx",
+      "route": "/admin/growth",
+      "api": "/api/v1/admin/growth/*",
+      "capability": "growth",
+      "identity": "step-up on writes",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    },
+    {
+      "file": "apps/admin/app/admin/growth/deposit/page.tsx",
+      "route": "/admin/growth/deposit",
+      "api": "legacy redirect to growth?tab=deposit",
+      "capability": "growth",
+      "identity": "n/a",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    },
+    {
+      "file": "apps/admin/app/admin/growth/content/page.tsx",
+      "route": "/admin/growth/content",
+      "api": "legacy redirect to growth?tab=content",
+      "capability": "growth",
+      "identity": "n/a",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    },
+    {
+      "file": "apps/admin/app/admin/growth/whale/page.tsx",
+      "route": "/admin/growth/whale",
+      "api": "legacy redirect to growth?tab=whale",
+      "capability": "growth",
+      "identity": "n/a",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    },
+    {
+      "file": "apps/admin/app/admin/growth/ticker/page.tsx",
+      "route": "/admin/growth/ticker",
+      "api": "legacy redirect to growth?tab=ticker",
+      "capability": "growth",
+      "identity": "n/a",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    },
+    {
+      "file": "apps/admin/app/admin/audit/page.tsx",
+      "route": "/admin/audit",
+      "api": "/api/v1/admin/audit/events",
+      "capability": "audit",
+      "identity": "session",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    },
+    {
+      "file": "apps/admin/app/admin/support/page.tsx",
+      "route": "/admin/support",
+      "api": "/api/v1/admin/ops-inbox",
+      "capability": "support",
+      "identity": "session",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    },
+    {
+      "file": "apps/admin/app/admin/reports/financial/page.tsx",
+      "route": "/admin/reports/financial",
+      "api": "/api/v1/admin/ledger/financial",
+      "capability": "ledger",
+      "identity": "session",
+      "loading": "T.admin.state.loading",
+      "empty": "T.admin.state.empty or AdminTruth null",
+      "error": "AdminFetchNote + retry on live tiles",
+      "audit": "existing admin audit writers",
+      "e2e": "NOT_RUN",
+      "status": "wired"
+    }
+  ],
+  "controllers": [
+    {
+      "file": "services/api-nest/src/users/users.admin.controller.ts",
+      "capability": "users",
+      "ui": "apps/admin/app/admin/users",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/matching-policy/matching-policy.admin.controller.ts",
+      "capability": "userMatchPolicy",
+      "ui": "apps/admin/app/admin/users/[id]/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/risk/risk.admin.controller.ts",
+      "capability": "risk",
+      "ui": "apps/admin/app/admin/risk/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/wallet/deposit-config.admin.controller.ts",
+      "capability": "wallet",
+      "ui": "apps/admin/app/admin/wallet/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/wallet/krw-deposit.admin.controller.ts",
+      "capability": "wallet",
+      "ui": "apps/admin/app/admin/wallet/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/wallet/withdraw-credentials.admin.controller.ts",
+      "capability": "wallet",
+      "ui": "apps/admin/app/admin/wallet/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/wallet/withdraw-review.admin.controller.ts",
+      "capability": "wallet",
+      "ui": "apps/admin/app/admin/wallet/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/wallet/deposit-dispute.admin.controller.ts",
+      "capability": "wallet",
+      "ui": "apps/admin/app/admin/wallet/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/ledger/ledger.admin.controller.ts",
+      "capability": "ledger",
+      "ui": "apps/admin/app/admin/ledger/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/compliance/kyc.admin.controller.ts",
+      "capability": "compliance",
+      "ui": "apps/admin/app/admin/compliance/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/membership/membership.admin.controller.ts",
+      "capability": "users",
+      "ui": "apps/admin/app/admin/users/[id]/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/execution-policy/execution-policy.admin.controller.ts",
+      "capability": "executionPolicy",
+      "ui": "apps/admin/app/admin/execution-policy/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/simulation/platform-reserve.admin.controller.ts",
+      "capability": "circuit",
+      "ui": "apps/admin/app/admin/system-control/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/simulation/simulation.admin.controller.ts",
+      "capability": "growth",
+      "ui": "apps/admin/app/admin/growth/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
+      "capability": "opportunities",
+      "ui": "apps/admin/app/admin/opportunities/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/opportunities/user-opportunity-override.admin.controller.ts",
+      "capability": "userOpportunityOverride",
+      "ui": "apps/admin/app/admin/users/[id]/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/adapters/adapters.admin.controller.ts",
+      "capability": "adapters",
+      "ui": "apps/admin/app/admin/adapters/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/source-policy/source-policy.admin.controller.ts",
+      "capability": "adapters",
+      "ui": "apps/admin/app/admin/adapters/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/match-control/match-control.admin.controller.ts",
+      "capability": "opportunities",
+      "ui": "apps/admin/app/admin/opportunities/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/admin-ops/admin-ops.admin.controller.ts",
+      "capability": "all",
+      "ui": "apps/admin/app/admin/system-control/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/kill-switch/kill-switch.admin.controller.ts",
+      "capability": "circuit",
+      "ui": "apps/admin/app/admin/system-control/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/audit/audit-events.admin.controller.ts",
+      "capability": "audit",
+      "ui": "apps/admin/app/admin/audit/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/push/push-kill.admin.controller.ts",
+      "capability": "circuit",
+      "ui": "apps/admin/app/admin/system-control/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/referral/referral.admin.controller.ts",
+      "capability": "growth",
+      "ui": "apps/admin/app/admin/growth/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/inbox/ops-inbox.admin.controller.ts",
+      "capability": "support",
+      "ui": "apps/admin/app/admin/support/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/ai/shadow-replay.admin.controller.ts",
+      "capability": "aiLogs",
+      "ui": "apps/admin/app/admin/ledger/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/ai/ai-logs.admin.controller.ts",
+      "capability": "aiLogs",
+      "ui": "apps/admin/app/admin/ai-logs/page.tsx",
+      "status": "wired"
+    },
+    {
+      "file": "services/api-nest/src/ai/ai-pick.admin.controller.ts",
+      "capability": "aiLogs",
+      "ui": "apps/admin/app/admin/ai-logs/page.tsx",
+      "status": "wired"
+    }
+  ],
+  "backendOnly": [
+    {
+      "file": "services/api-nest/src/admin-identity/approvals.admin.controller.ts",
+      "reason": "GET list returns empty placeholder; B4 uses secondApproverId on adjust",
+      "ui": "none-on-purpose"
+    },
+    {
+      "file": "services/api-nest/src/trades/trades.admin.controller.ts",
+      "reason": "reconcileTick is a batch POST; dashboard recon uses ledger/recon",
+      "ui": "none-on-purpose"
+    }
+  ]
+}

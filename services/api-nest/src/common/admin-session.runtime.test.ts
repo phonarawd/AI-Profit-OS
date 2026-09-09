@@ -13,9 +13,21 @@ import {
   verifyAdminCsrfToken,
 } from "./admin-session.csrf.ts";
 import {
+  consumeAdminCodeExchange,
   isAdminAccessTokenRevoked,
+  isAdminCodeExchangeConsumed,
+  resetAdminSessionMapsForTest,
   revokeAdminAccessToken,
 } from "./admin-session.revoke.ts";
+import {
+  isAdminCodeExchangeEnabled,
+  planAdminCodeExchange,
+} from "./admin-code-exchange.ts";
+import {
+  clearAdminRbacLookup,
+  registerAdminRbacLookup,
+  resolveAdminRbac,
+} from "./admin-rbac.lookup.ts";
 
 function sessionToken(label: string): string {
   return `${label}.${"s".repeat(64)}`;
@@ -192,4 +204,90 @@ test("signed double-submit CSRF cookie stays readable but is session-bound", () 
     },
     headers: { "x-admin-csrf": csrf },
   });
+});
+
+test("connection-code exchange is off by default", () => {
+  assert.equal(isAdminCodeExchangeEnabled({}), false);
+  assert.equal(isAdminCodeExchangeEnabled({ AIPO_ADMIN_CODE_EXCHANGE_ENABLED: "true" }), true);
+  const disabled = planAdminCodeExchange({
+    enabled: false,
+    token: "jwt",
+    revoked: false,
+  });
+  assert.equal(disabled.ok, false);
+  if (!disabled.ok) assert.equal(disabled.code, "ADMIN_CODE_EXCHANGE_DISABLED");
+});
+
+test("same admin JWT cannot be exchanged twice on this process", () => {
+  resetAdminSessionMapsForTest();
+  const token = sessionToken("exchange-once");
+  const first = planAdminCodeExchange({
+    enabled: true,
+    token,
+    revoked: isAdminCodeExchangeConsumed(token),
+  });
+  assert.equal(first.ok, true);
+  consumeAdminCodeExchange(token, Date.now() + 60_000);
+  const second = planAdminCodeExchange({
+    enabled: true,
+    token,
+    revoked:
+      isAdminAccessTokenRevoked(token) || isAdminCodeExchangeConsumed(token),
+  });
+  assert.equal(second.ok, false);
+  if (!second.ok) assert.equal(second.code, "ADMIN_AUTH_INVALID");
+});
+
+test("process map reset is not session authority when the durable store has revoked", async () => {
+  const { createMemoryAdminIdentityStore, registerAdminIdentityStore, clearAdminIdentityStore } =
+    await import("./admin-session.store.ts");
+  const store = createMemoryAdminIdentityStore();
+  registerAdminIdentityStore(store);
+  await store.insertSession({
+    id: "00000000-0000-4000-8000-000000000001",
+    adminId: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+    familyId: "00000000-0000-4000-8000-000000000002",
+    accessJti: "jti-durable-revoke",
+    refreshHash: "hash",
+    kind: "password_mfa",
+    aal: "aal2",
+    issuedAt: new Date().toISOString(),
+    expiresAt: new Date(Date.now() + 60_000).toISOString(),
+    lastSeenAt: new Date().toISOString(),
+    idleDeadline: new Date(Date.now() + 60_000).toISOString(),
+    stepUpAt: new Date().toISOString(),
+    revokedAt: null,
+    rotatedAt: null,
+  });
+  await store.revokeByJti("jti-durable-revoke", new Date().toISOString());
+  resetAdminSessionMapsForTest();
+  const resolved = await store.resolveByJti("jti-durable-revoke");
+  assert.equal(resolved.kind, "revoked");
+  clearAdminIdentityStore();
+});
+
+test("inactive admin_rbac row denies a valid signed identity", async () => {
+  registerAdminRbacLookup(async () => ({
+    status: "row",
+    row: { role: "super", active: false },
+  }));
+  const inactive = await resolveAdminRbac("aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa");
+  assert.equal(inactive.kind, "inactive");
+  registerAdminRbacLookup(async () => ({ status: "empty" }));
+  const missing = await resolveAdminRbac("aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa");
+  assert.equal(missing.kind, "missing");
+  clearAdminRbacLookup();
+  const unwired = await resolveAdminRbac("aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa");
+  assert.equal(unwired.kind, "unwired");
+});
+
+test("active admin_rbac role replaces the token role", async () => {
+  registerAdminRbacLookup(async () => ({
+    status: "row",
+    row: { role: "cs", active: true },
+  }));
+  const active = await resolveAdminRbac("aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa");
+  assert.equal(active.kind, "active");
+  if (active.kind === "active") assert.equal(active.role, "cs");
+  clearAdminRbacLookup();
 });

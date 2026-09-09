@@ -1,5 +1,7 @@
 import { admin } from "./admin";
+import { adminLogin } from "./admin-login";
 import { auth } from "./auth";
+import { authClassic } from "./auth-classic";
 import { benefits } from "./benefits";
 import { brand } from "./brand";
 import { common } from "./common";
@@ -23,6 +25,7 @@ import { margin } from "./margin";
 import { membership } from "./membership";
 import { objections } from "./objections";
 import { onboarding } from "./onboarding";
+import { productOnboarding } from "./product-onboarding";
 import { operator } from "./operator";
 import { opportunity } from "./opportunity";
 import { peotteok } from "./peotteok";
@@ -43,8 +46,17 @@ import { wallet } from "./wallet";
 
 /** 유저·어드민 화면 카피 SSOT 루트 (`T.*`) */
 export const T = {
-  admin,
+  admin: {
+    ...admin,
+    login: adminLogin,
+    session: {
+      ...admin.session,
+      login: adminLogin.title,
+      loginHint: adminLogin.description,
+    },
+  },
   auth,
+  authClassic,
   benefits,
   brand,
   common,
@@ -63,6 +75,7 @@ export const T = {
   membership,
   objections,
   onboarding,
+  productOnboarding,
   operator,
   opportunity,
   peotteok,
@@ -84,6 +97,7 @@ export type CopyRoot = typeof T;
 export {
   admin,
   auth,
+  authClassic,
   benefits,
   brand,
   common,
@@ -105,6 +119,7 @@ export {
   membership,
   objections,
   onboarding,
+  productOnboarding,
   operator,
   opportunity,
   peotteok,

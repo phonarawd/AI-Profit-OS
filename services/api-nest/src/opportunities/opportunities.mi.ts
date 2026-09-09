@@ -119,6 +119,9 @@ export const {
   deriveMarketplaceLegs,
   normalizeNativeToUsdt,
   resolveStoredLegListingPrices,
+  isFashionphileImageHost,
+  resolveObservationMatches,
+  OBSERVATION_MATCHER_VERSION,
 } = mi;
 
 export type PricingResult = ReturnType<typeof computeOpportunityPricing>;

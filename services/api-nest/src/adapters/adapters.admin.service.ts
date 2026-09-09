@@ -19,12 +19,19 @@ import {
   healthStatusFromKpi,
   isForbiddenAdapterId,
   isIngestableAdapterId,
+  isObservationAdapterId,
+  normalizeWebObservationForPersist,
+  resolveObservationMatches,
+  isFashionphileImageHost,
+  OBSERVATION_MATCHER_VERSION,
   resolveEbayIngestListings,
   assertNoQueryAssetIds,
   simulationS4InputFromKpi,
   worstTint,
 } from "./adapters.mi";
 import { InProcessEventBus } from "../events/in-process.bus";
+import { PostgresService } from "../db/postgres";
+import { identityReviewKey } from "../matching-policy/matching-policy.engine";
 import { CatalogRuntimeSeedService } from "../opportunities/catalog-runtime-seed.service";
 import { FxSnapshotService } from "../opportunities/fx-snapshot.service";
 import { ADAPTER_EVENTS } from "./adapters.events";
@@ -51,6 +58,7 @@ const LABEL_KO: Record<string, string> = {
   ygoprodeck: "유희왕 카드 목록",
   coingecko: "코인 환율",
   frankfurter: "법정화폐 환율",
+  fashionphile: "패션파일 시세",
 };
 
 type HealthState = {
@@ -101,6 +109,7 @@ export class AdaptersAdminService {
   constructor(
     private readonly bus: InProcessEventBus,
     private readonly providerHealth: ProviderHealthService,
+    private readonly db: PostgresService,
     @Optional()
     @Inject(forwardRef(() => CatalogRuntimeSeedService))
     private readonly catalogSeed?: CatalogRuntimeSeedService,
@@ -200,7 +209,7 @@ export class AdaptersAdminService {
       })),
       day1AutoPublishYahooJp: DAY1_AUTO_PUBLISH_YAHOO_JP,
       phase1Partners: ["amazon", "yahoo_jp"],
-      forbidden: ["bunjang", "joonggonara", "daangn", "chrono24", "tcgplayer"],
+      forbidden: [],
     };
   }
 
@@ -264,15 +273,26 @@ export class AdaptersAdminService {
   /**
    * §0.10 Admin/Ops surface — unmatched ebay identity review queue.
    */
-  identityReviewQueue(): {
+  async identityReviewQueue(): Promise<{
     items: IdentityReviewQueueItem[];
     count: number;
     silentDrop: false;
-  } {
+    durable: boolean;
+  }> {
+    const durable = await this.loadIdentityReviewFromDb();
+    if (durable) {
+      return {
+        items: durable,
+        count: durable.length,
+        silentDrop: false,
+        durable: true,
+      };
+    }
     return {
       items: [...this.identityReview],
       count: this.identityReview.length,
       silentDrop: false,
+      durable: false,
     };
   }
 
@@ -286,6 +306,12 @@ export class AdaptersAdminService {
     identityUnmatchedQueued?: number;
     fxSnapshotId?: string | null;
     fxNormalizationFailed?: number;
+    observationsPersisted?: number;
+    observationsRejected?: number;
+    observationPersistError?: string | null;
+    observationMatches?: number;
+    observationUnmatched?: number;
+    observationImageApplied?: number;
   }> {
     const adapterId = String(body.adapterId ?? "");
     assertNotForbidden({ adapterId, source: adapterId });
@@ -372,7 +398,7 @@ export class AdaptersAdminService {
         now: observedAt,
       });
       assertNoQueryAssetIds(resolved.matched);
-      this.enqueueIdentityReview(resolved.unmatched);
+      await this.enqueueIdentityReview(resolved.unmatched);
       identityMatched = resolved.matched.length;
       identityUnmatchedQueued = resolved.unmatched.length;
       listingsForPersist = resolved.matched;
@@ -438,6 +464,34 @@ export class AdaptersAdminService {
       await this.recordEbayProviderHeartbeat(body, observedAt);
     }
 
+    let observationsPersisted = 0;
+    let observationsRejected = 0;
+    let observationPersistError: string | null = null;
+    let observationMatches = 0;
+    let observationUnmatched = 0;
+    let observationImageApplied = 0;
+    if (
+      isObservationAdapterId(adapterId) &&
+      Array.isArray(body.observations) &&
+      body.observations.length > 0 &&
+      !body.dryRun
+    ) {
+      const persisted = await this.persistSourceObservations(
+        adapterId,
+        body.observations,
+      );
+      observationsPersisted = persisted.inserted;
+      observationsRejected = persisted.rejected;
+      observationPersistError = persisted.error;
+      const attached = await this.attachObservationMatches(
+        adapterId,
+        persisted.rows,
+      );
+      observationMatches = attached.matched;
+      observationUnmatched = attached.unmatched;
+      observationImageApplied = attached.images;
+    }
+
     const row = this.toRow(adapterId, this.computeKpi(adapterId));
     this.bus.emit(ADAPTER_EVENTS.healthChanged, row);
     this.bus.emit(ADAPTER_EVENTS.observationIngested, {
@@ -460,7 +514,224 @@ export class AdaptersAdminService {
       identityUnmatchedQueued,
       fxSnapshotId,
       fxNormalizationFailed,
+      observationsPersisted,
+      observationsRejected,
+      observationPersistError,
+      observationMatches,
+      observationUnmatched,
+      observationImageApplied,
     };
+  }
+
+  /**
+   * Observation-only persist. Never writes listings / opportunity publish.
+   */
+  private async persistSourceObservations(
+    adapterId: string,
+    observations: unknown[],
+  ): Promise<{
+    inserted: number;
+    rejected: number;
+    error: string | null;
+    rows: Array<Record<string, unknown>>;
+  }> {
+    if (!this.db.configured()) {
+      return {
+        inserted: 0,
+        rejected: 0,
+        error: "DATABASE_URL_UNSET",
+        rows: [],
+      };
+    }
+    let inserted = 0;
+    let rejected = 0;
+    const rows: Array<Record<string, unknown>> = [];
+    try {
+      for (const raw of observations) {
+        if (!raw || typeof raw !== "object") {
+          rejected += 1;
+          continue;
+        }
+        const obs = { ...(raw as Record<string, unknown>) };
+        if (!obs.source) obs.source = adapterId;
+        const normalized = normalizeWebObservationForPersist(obs);
+        if (!normalized.ok) {
+          rejected += 1;
+          continue;
+        }
+        const row = normalized.row;
+        const result = await this.db.query(
+          `INSERT INTO public.source_observations (
+             id, source, external_item_id, observation_purpose, source_status,
+             url, observed_at, payload, content_fingerprint
+           ) VALUES ($1, $2, $3, $4, $5, $6, $7::timestamptz, $8::jsonb, $9)
+           ON CONFLICT (id) DO NOTHING`,
+          [
+            row.id,
+            row.source,
+            row.external_item_id,
+            row.observation_purpose,
+            row.source_status,
+            row.url,
+            row.observed_at,
+            JSON.stringify(row.payload),
+            row.content_fingerprint,
+          ],
+        );
+        if ((result.rowCount ?? 0) > 0) inserted += 1;
+        const payload =
+          row.payload && typeof row.payload === "object"
+            ? (row.payload as Record<string, unknown>)
+            : {};
+        rows.push({
+          ...payload,
+          source: row.source,
+          externalItemId: row.external_item_id,
+          observationId: row.id,
+          url: row.url,
+        });
+      }
+      return { inserted, rejected, error: null, rows };
+    } catch (err) {
+      const code =
+        err && typeof err === "object" && "code" in err
+          ? String((err as { code?: string }).code || "")
+          : "";
+      if (code === "42P01") {
+        return {
+          inserted,
+          rejected,
+          error: "SOURCE_OBSERVATIONS_TABLE_MISSING",
+          rows,
+        };
+      }
+      return {
+        inserted,
+        rejected,
+        error:
+          err instanceof Error
+            ? err.message.slice(0, 200)
+            : "SOURCE_OBSERVATION_PERSIST_FAILED",
+        rows,
+      };
+    }
+  }
+
+  private async attachObservationMatches(
+    adapterId: string,
+    observations: Array<Record<string, unknown>>,
+  ): Promise<{ matched: number; unmatched: number; images: number }> {
+    if (!observations.length) {
+      return { matched: 0, unmatched: 0, images: 0 };
+    }
+    const resolved = resolveObservationMatches({ observations });
+    if (resolved.matchAttempts.length > 0) {
+      this.recordMatchAttempts(resolved.matchAttempts, { adapterId });
+    }
+    let images = 0;
+    if (this.catalogSeed) {
+      for (const m of resolved.matched) {
+        const assetId = String(m.assetId || "");
+        const imageUrl = String(m.imageUrl || "");
+        if (
+          m.identityMatch === "exact_identity" &&
+          assetId &&
+          imageUrl &&
+          isFashionphileImageHost(imageUrl)
+        ) {
+          const applied = await this.catalogSeed.applyObservationImageProvenance({
+            assetId,
+            imageUrl,
+          });
+          if (applied.ok) images += 1;
+        }
+        await this.upsertCanonicalObservationLink(m);
+      }
+    }
+    return {
+      matched: resolved.matched.length,
+      unmatched: resolved.unmatched.length,
+      images,
+    };
+  }
+
+  private async upsertCanonicalObservationLink(
+    match: Record<string, unknown>,
+  ): Promise<void> {
+    if (!this.db.configured()) return;
+    const assetId = String(match.assetId || "").trim();
+    const observationId = String(match.observationId || "").trim();
+    const source = String(match.source || "").trim();
+    const externalItemId = String(match.externalItemId || "").trim();
+    if (!assetId || !observationId || !source || !externalItemId) return;
+    const canonicalProductId = `cp_${assetId}`;
+    const identityKey = `asset:${assetId}`;
+    try {
+      await this.db.query(
+        `INSERT INTO public.canonical_products (
+           canonical_product_id, putduk_product_code, category_profile,
+           canonical_identity_key, canonical_attributes, status,
+           identity_evidence_summary, payload
+         ) VALUES (
+           $1,
+           'PD-' || lpad(nextval('public.putduk_product_code_seq')::text, 7, '0'),
+           $2, $3,
+           $4::jsonb, 'active', $5::jsonb, $6::jsonb
+         )
+         ON CONFLICT (category_profile, canonical_identity_key) DO NOTHING`,
+        [
+          canonicalProductId,
+          String(match.category || "luxury_bag"),
+          identityKey,
+          JSON.stringify({
+            assetId,
+            brand:
+              match.meta && typeof match.meta === "object"
+                ? (match.meta as Record<string, unknown>).brand
+                : null,
+          }),
+          JSON.stringify({
+            matcherVersion: OBSERVATION_MATCHER_VERSION,
+            identityMatch: match.identityMatch || null,
+          }),
+          JSON.stringify({ assetId, persistToListingLeg: false }),
+        ],
+      );
+      const existing = await this.db.query(
+        `SELECT canonical_product_id FROM public.canonical_products
+         WHERE category_profile = $1 AND canonical_identity_key = $2`,
+        [String(match.category || "luxury_bag"), identityKey],
+      );
+      const cpId =
+        existing.rows?.[0]?.canonical_product_id || canonicalProductId;
+      await this.db.query(
+        `INSERT INTO public.canonical_product_source_links (
+           canonical_product_id, source, source_item_id, source_url,
+           latest_observation_ref, matching_decision, matcher_version, evidence
+         ) VALUES ($1, $2, $3, $4, $5, 'MATCH', $6, $7::jsonb)
+         ON CONFLICT (canonical_product_id, source, source_item_id)
+         DO UPDATE SET
+           latest_observation_ref = EXCLUDED.latest_observation_ref,
+           matching_decision = EXCLUDED.matching_decision,
+           matcher_version = EXCLUDED.matcher_version,
+           evidence = EXCLUDED.evidence,
+           updated_at = now()`,
+        [
+          cpId,
+          source,
+          externalItemId,
+          String(match.url || ""),
+          observationId,
+          OBSERVATION_MATCHER_VERSION,
+          JSON.stringify({
+            identityMatch: match.identityMatch || null,
+            persistToListingLeg: false,
+          }),
+        ],
+      );
+    } catch {
+      // table/constraint missing = fail-closed; ingest still returns match counts
+    }
   }
 
   /**
@@ -540,16 +811,15 @@ export class AdaptersAdminService {
     });
   }
 
-  private enqueueIdentityReview(items: IdentityReviewQueueItem[]): void {
+  private async enqueueIdentityReview(
+    items: IdentityReviewQueueItem[],
+  ): Promise<void> {
     for (const item of items) {
-      const key = String(
-        item.externalItemId ?? item.listingId ?? item.id ?? "",
-      );
-      if (key) {
-        this.identityReview = this.identityReview.filter((x) => {
-          const xk = String(x.externalItemId ?? x.listingId ?? x.id ?? "");
-          return xk !== key;
-        });
+      const key = identityReviewKey(item);
+      if (key.replace(/\u001f/g, "")) {
+        this.identityReview = this.identityReview.filter(
+          (x) => identityReviewKey(x) !== key,
+        );
       }
       this.identityReview.unshift({
         ...item,
@@ -558,6 +828,91 @@ export class AdaptersAdminService {
     }
     if (this.identityReview.length > MAX_IDENTITY_REVIEW) {
       this.identityReview = this.identityReview.slice(0, MAX_IDENTITY_REVIEW);
+    }
+    await this.persistIdentityReview(items);
+  }
+
+  private async persistIdentityReview(
+    items: IdentityReviewQueueItem[],
+  ): Promise<void> {
+    if (!this.db.configured() || items.length === 0) return;
+    for (const item of items) {
+      const key = identityReviewKey(item);
+      try {
+        await this.db.query(
+          `INSERT INTO public.identity_review_queue (
+             identity_key, adapter_id, external_item_id, listing_id,
+             title, search_query, reason, evidence, queued_at
+           ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8::jsonb, now())
+           ON CONFLICT (identity_key) DO UPDATE SET
+             title = EXCLUDED.title,
+             search_query = EXCLUDED.search_query,
+             reason = EXCLUDED.reason,
+             evidence = EXCLUDED.evidence,
+             queued_at = now()`,
+          [
+            key,
+            String(item.adapterId ?? "ebay"),
+            item.externalItemId != null ? String(item.externalItemId) : null,
+            item.listingId != null ? String(item.listingId) : null,
+            item.title != null ? String(item.title) : null,
+            item.searchQuery != null ? String(item.searchQuery) : null,
+            item.reason != null ? String(item.reason) : "unmatched",
+            JSON.stringify(item.evidence ?? item),
+          ],
+        );
+      } catch (err) {
+        const code =
+          err && typeof err === "object" && "code" in err
+            ? String((err as { code?: unknown }).code ?? "")
+            : "";
+        if (code === "42P01") return;
+        throw err;
+      }
+    }
+  }
+
+  private async loadIdentityReviewFromDb(): Promise<
+    IdentityReviewQueueItem[] | null
+  > {
+    if (!this.db.configured()) return null;
+    try {
+      const { rows } = await this.db.query<{
+        identity_key: string;
+        adapter_id: string;
+        external_item_id: string | null;
+        listing_id: string | null;
+        title: string | null;
+        search_query: string | null;
+        reason: string;
+        evidence: Record<string, unknown> | null;
+        queued_at: Date;
+      }>(
+        `SELECT identity_key, adapter_id, external_item_id, listing_id,
+                title, search_query, reason, evidence, queued_at
+           FROM public.identity_review_queue
+          ORDER BY queued_at DESC
+          LIMIT $1`,
+        [MAX_IDENTITY_REVIEW],
+      );
+      return rows.map((row) => ({
+        id: `unmatched_${row.external_item_id || row.listing_id || row.identity_key}`,
+        adapterId: row.adapter_id,
+        externalItemId: row.external_item_id,
+        listingId: row.listing_id,
+        title: row.title,
+        searchQuery: row.search_query,
+        reason: row.reason,
+        evidence: row.evidence || {},
+        queuedAt: new Date(row.queued_at).toISOString(),
+      }));
+    } catch (err) {
+      const code =
+        err && typeof err === "object" && "code" in err
+          ? String((err as { code?: unknown }).code ?? "")
+          : "";
+      if (code === "42P01") return null;
+      throw err;
     }
   }
 

@@ -19,6 +19,8 @@ export class LedgerBucketsService {
       profit_usdt: string;
       locked_usdt: string;
       practice_usdt: string;
+      trial_principal_usdt: string;
+      trial_locked_usdt: string;
       liability_usdt: string;
     }>(
       `SELECT user_id::text,
@@ -26,6 +28,8 @@ export class LedgerBucketsService {
               profit_usdt::text,
               locked_usdt::text,
               practice_usdt::text,
+              COALESCE(trial_principal_usdt, 0)::text AS trial_principal_usdt,
+              COALESCE(trial_locked_usdt, 0)::text AS trial_locked_usdt,
               liability_usdt::text
          FROM public.wallet_buckets
         WHERE user_id = $1::uuid`,
@@ -38,6 +42,12 @@ export class LedgerBucketsService {
     const profitUsdt = formatAmount(parseAmount(row.profit_usdt));
     const lockedUsdt = formatAmount(parseAmount(row.locked_usdt));
     const practiceUsdt = formatAmount(parseAmount(row.practice_usdt));
+    const trialPrincipalUsdt = formatAmount(
+      parseAmount(row.trial_principal_usdt ?? "0"),
+    );
+    const trialLockedUsdt = formatAmount(
+      parseAmount(row.trial_locked_usdt ?? "0"),
+    );
     const liabilityUsdt = formatAmount(parseAmount(row.liability_usdt));
 
     const sum = addAmount(
@@ -66,6 +76,8 @@ export class LedgerBucketsService {
       profitUsdt,
       lockedUsdt,
       practiceUsdt,
+      trialPrincipalUsdt,
+      trialLockedUsdt,
       liabilityUsdt,
       asOfLedgerEntryId: asOf.rows[0]?.id ?? "none",
     };

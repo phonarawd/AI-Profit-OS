@@ -162,6 +162,12 @@ async function run(): Promise<void> {
   }
 
   // ── Magic link ──
+  // S1F Section 6.2 fix: consent (terms/privacy) is captured server-side at
+  // request() time (stored in the proof record's payload), never read from
+  // prove()'s own request body - this is exactly what fixes the previous
+  // cross-device/cross-tab bug (sessionStorage-only consent unavailable
+  // when the link is opened elsewhere). This test block therefore exercises
+  // consent by varying what is passed to request(), not to prove().
   {
     const store = new MemoryProofStore();
     const resend = new FakeResend();
@@ -171,7 +177,7 @@ async function run(): Promise<void> {
     if (req.status !== "accepted" || req.delivery !== "resend") {
       fail("magic request accepted", JSON.stringify(req));
     } else {
-      pass("magic request accepted — no session");
+      pass("magic request accepted - no session");
     }
     if (minted !== 0) fail("magic request must not mint", `minted=${minted}`);
     const raw = JSON.stringify(req);
@@ -187,35 +193,39 @@ async function run(): Promise<void> {
     await expectThrow("magic malformed token", () =>
       magic.prove({ token: "short" }, { userExists: true }),
     );
+    // request() carried NO consent above -> the stored proof record has
+    // none either -> prove() for a new user must still require it.
     const newUser = await expectThrow("magic new user without terms", async () => {
       const out = await magic.prove({ token }, { userExists: false });
       mint();
       return out;
     });
     void newUser;
-    const proven = await magic.prove(
-      {
-        token,
-        termsAcceptedAt: "2026-09-01T00:00:00.000Z",
-        privacyAcceptedAt: "2026-09-01T00:00:00.000Z",
-      },
-      { userExists: false },
-    );
+
+    // A second request DOES carry consent (as SignupRuntime.tsx now does
+    // at request time, not at prove time) - this is the server-owned
+    // pending-state path that makes cross-device/cross-tab work.
+    resend.sent.length = 0;
+    await magic.request({
+      email: "user@example.com",
+      termsAcceptedAt: "2026-09-01T00:00:00.000Z",
+      privacyAcceptedAt: "2026-09-01T00:00:00.000Z",
+    } as unknown as Record<string, unknown>);
+    const tokenWithConsent = tokenFromUrl(resend.sent[0].url);
+    // prove()'s OWN body deliberately carries no consent fields at all -
+    // proving the server-stored value (not the verify call's body) is what
+    // satisfies the requirement (this is the cross-device scenario itself:
+    // a different browser/tab opening the link sends no sessionStorage
+    // state whatsoever).
+    const proven = await magic.prove({ token: tokenWithConsent }, { userExists: false });
     if (proven.email === "user@example.com") {
       mint();
-      pass("magic valid token proves email");
+      pass("magic valid token proves email (consent read from server, not from prove() body)");
     } else {
       fail("magic valid token", JSON.stringify(proven));
     }
     await expectThrow("magic replay", () =>
-      magic.prove(
-        {
-          token,
-          termsAcceptedAt: "2026-09-01T00:00:00.000Z",
-          privacyAcceptedAt: "2026-09-01T00:00:00.000Z",
-        },
-        { userExists: false },
-      ),
+      magic.prove({ token: tokenWithConsent }, { userExists: false }),
     );
   }
 
@@ -233,17 +243,21 @@ async function run(): Promise<void> {
   }
 
   {
+    // S1F Section 6.2 fix #2: a genuine transport failure must throw, not
+    // silently report {ok:true,status:"accepted"} - the previous version
+    // of this method returned the same success shape on both branches,
+    // which is the exact bug this regression test now proves is fixed.
     const store = new MemoryProofStore();
     const resend = new FakeResend();
     resend.failNext = true;
     const magic = new MagicLinkService(store, resend as never);
     minted = 0;
-    const out = await magic.request({ email: "fail@example.com" });
-    if (out.status === "accepted" && minted === 0) {
-      pass("magic send failure does not mint");
-    } else {
-      fail("magic send failure", JSON.stringify(out));
-    }
+    await expectThrowMessage(
+      "magic send failure throws (never reported as success)",
+      "EMAIL_SEND_UNAVAILABLE",
+      () => magic.request({ email: "fail@example.com" }),
+    );
+    if (minted !== 0) fail("magic send failure must not mint", `minted=${minted}`);
   }
 
   // ── OAuth ──

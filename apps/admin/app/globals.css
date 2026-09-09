@@ -294,11 +294,30 @@ summary {
 }
 
 .admin-session-form > p,
-.admin-session-note {
+.admin-session-note,
+.turnstile-block-help {
   margin: 0;
   color: var(--color-lux-text-muted);
   font-size: 0.78rem;
   line-height: 1.55;
+}
+
+.turnstile-block {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0.35rem 0 0.15rem;
+}
+
+.admin-session-form [data-testid="turnstile-field"] {
+  min-height: 4.5rem;
+}
+
+.admin-session-form button:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+  background: #2a3140;
+  border-color: var(--color-lux-border);
+  color: #929caf;
 }
 
 .admin-session-field-row {
@@ -804,4 +823,29 @@ summary {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }
+}
+
+.admin-command-search {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.5rem clamp(1rem, 3vw, 2.5rem) 0.75rem;
+}
+.admin-command-search input {
+  min-width: 0;
+  flex: 1;
+  min-height: 2.75rem;
+  border: 1px solid var(--color-lux-border);
+  border-radius: var(--radius-lux-md);
+  background: var(--color-lux-bg);
+  color: var(--color-lux-text);
+  padding: 0 0.75rem;
+}
+.admin-command-search button {
+  min-height: 2.75rem;
+  border: 0;
+  border-radius: var(--radius-lux-md);
+  background: var(--color-lux-elevated);
+  color: var(--color-lux-text);
+  padding: 0 0.9rem;
 }

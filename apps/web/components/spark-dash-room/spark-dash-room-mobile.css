@@ -606,6 +606,33 @@
   color: #ff8aa0;
 }
 
+.sdrm-cta-badges {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.sdrm-cta-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid #667085;
+  color: #c7cee0;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.sdrm-cta-disclaimer {
+  margin: 0;
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #8b95a7;
+}
+
 .sdrm-cta-actions {
   display: flex;
   flex-direction: column;

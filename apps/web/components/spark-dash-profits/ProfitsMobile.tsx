@@ -15,6 +15,17 @@ import { moneyOrDash, splitUsdtParts } from "../spark-dash-home/format";
 import type { ProfitsDesktopModel, ProfitsMediaState, ProfitsOpportunity } from "./types";
 import "./spark-dash-profits-mobile.css";
 
+/**
+ * Windowed reveal for the /profits mobile card list (D1-BLK-009 fix).
+ * Same bounded-initial-render + IntersectionObserver-incremental-growth
+ * technique already used by VirtualOpportunityGrid.tsx for the desktop grid
+ * (see that file's own header comment for the full rationale). Below
+ * threshold, every item renders immediately - zero behaviour change from
+ * before this fix.
+ */
+export const VIRTUAL_PROFITS_MOBILE_THRESHOLD = 20;
+const PROFITS_MOBILE_PAGE_SIZE = 20;
+
 const PROFITS_MOBILE_NAV = [
   { key: "home", label: "홈", href: "/", icon: "home" as const },
   { key: "explore", label: "기회 탐색", href: "/profits", icon: "explore" as const },
@@ -247,12 +258,17 @@ function ProfitsMobileEmpty() {
   return (
     <div className="sdpm-empty" data-sdpm="empty">
       <img className="sdpm-empty-icon" src={SD_ASSETS.mobileNavExplore} alt="" width={40} height={40} />
-      <p className="sdpm-empty-title">지금 확인할 수 있는 기회가 없어요</p>
+      <p className="sdpm-empty-title">지금 이용할 수 있는 상품이 없습니다</p>
       <p className="sdpm-empty-body">
-        새로운 기회가 생기면
-        <br />
-        여기에서 바로 확인할 수 있어요
+        이용 가능한 다른 상품을 확인해 주세요
       </p>
+      <button
+        type="button"
+        className="sdpm-empty-retry"
+        onClick={() => window.location.reload()}
+      >
+        다시 확인
+      </button>
     </div>
   );
 }
@@ -271,6 +287,73 @@ function ProfitsMobileSkeleton() {
 }
 
 export function ProfitsMobile({ model }: { model: ProfitsDesktopModel }) {
+  const windowed = model.items.length > VIRTUAL_PROFITS_MOBILE_THRESHOLD;
+  const [visibleCount, setVisibleCount] = useState(
+    windowed ? PROFITS_MOBILE_PAGE_SIZE : model.items.length,
+  );
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    // Reset window when the underlying feed changes (new data/filter).
+    setVisibleCount(windowed ? PROFITS_MOBILE_PAGE_SIZE : model.items.length);
+  }, [model.items, windowed]);
+
+  useEffect(() => {
+    if (!windowed || model.viewState !== "READY") return;
+    const root = scrollRef.current;
+    if (!root || typeof IntersectionObserver === "undefined") return;
+    let cancelled = false;
+    let observer: IntersectionObserver | null = null;
+    let pollId = 0;
+    let rafId = 0;
+    const grow = () => {
+      setVisibleCount((prev) => Math.min(model.items.length, prev + PROFITS_MOBILE_PAGE_SIZE));
+    };
+    const shouldGrow = () => {
+      const sent = sentinelRef.current;
+      if (!sent) return false;
+      if (root.scrollTop + root.clientHeight + 600 >= root.scrollHeight) {
+        return true;
+      }
+      const sentBox = sent.getBoundingClientRect();
+      const viewBottom =
+        (typeof window !== "undefined" ? window.innerHeight : 0) + 600;
+      return sentBox.top <= viewBottom;
+    };
+    const onScroll = () => {
+      if (shouldGrow()) grow();
+    };
+    const attach = () => {
+      if (cancelled) return;
+      const sentinel = sentinelRef.current;
+      if (!sentinel) {
+        rafId = requestAnimationFrame(attach);
+        return;
+      }
+      observer = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) grow();
+        },
+        { rootMargin: "600px 0px" },
+      );
+      observer.observe(sentinel);
+      root.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+      pollId = window.setInterval(onScroll, 200);
+    };
+    attach();
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(rafId);
+      if (pollId) window.clearInterval(pollId);
+      observer?.disconnect();
+      root.removeEventListener("scroll", onScroll);
+    };
+  }, [windowed, model.viewState, model.items.length, visibleCount]);
+
+  const visibleItems = windowed ? model.items.slice(0, visibleCount) : model.items;
+
   return (
     <div
       className="sdpm-root"
@@ -279,7 +362,12 @@ export function ProfitsMobile({ model }: { model: ProfitsDesktopModel }) {
       data-sdpm-state={model.viewState}
     >
       <ProfitsMobileHeader />
-      <div className="sdpm-scroll" data-sdpm="scroll">
+      <div
+        ref={scrollRef}
+        className="sdpm-scroll"
+        data-sdpm="scroll"
+        data-virtual={windowed ? "on" : "off"}
+      >
         <div className="sdpm-stack">
           {model.viewState === "LOADING" ? <ProfitsMobileSkeleton /> : null}
           {model.viewState === "ERROR" ? (
@@ -302,9 +390,12 @@ export function ProfitsMobile({ model }: { model: ProfitsDesktopModel }) {
                 <span className="lab">확인 가능한 기회</span>
                 <span className="count">· {model.items.length}개의 기회</span>
               </div>
-              {model.items.map((item) => (
+              {visibleItems.map((item) => (
                 <OpportunityCardMobile key={item.id} item={item} />
               ))}
+              {windowed && visibleCount < model.items.length ? (
+                <div ref={sentinelRef} data-testid="profits-mobile-sentinel" aria-hidden />
+              ) : null}
             </>
           ) : null}
         </div>

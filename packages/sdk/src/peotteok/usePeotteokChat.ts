@@ -2,9 +2,15 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { fetchPeotteokChips, streamPeotteokChat } from "./chat-sse";
+import {
+  deletePeotteokConversation,
+  getPeotteokConversation,
+  listPeotteokConversations,
+} from "./history";
 import type {
   PeotteokChatDone,
   PeotteokChip,
+  PeotteokConversationSummary,
   PeotteokLane,
   PeotteokMessage,
   PeotteokToneBand,
@@ -20,6 +26,8 @@ export type UsePeotteokChatOptions = {
 
 export type UsePeotteokChatResult = {
   messages: PeotteokMessage[];
+  conversations: PeotteokConversationSummary[];
+  conversationId: string | null;
   chips: PeotteokChip[];
   toneBand: PeotteokToneBand | null;
   busy: boolean;
@@ -28,6 +36,10 @@ export type UsePeotteokChatResult = {
   error: Error | null;
   send: (text: string) => void;
   refreshChips: () => Promise<void>;
+  refreshHistory: () => Promise<void>;
+  newConversation: () => void;
+  openConversation: (id: string) => Promise<void>;
+  deleteConversation: (id: string) => Promise<void>;
 };
 
 let msgSeq = 0;
@@ -47,6 +59,10 @@ export function usePeotteokChat(
   } = opts;
 
   const [messages, setMessages] = useState<PeotteokMessage[]>([]);
+  const [conversations, setConversations] = useState<PeotteokConversationSummary[]>(
+    [],
+  );
+  const [conversationId, setConversationId] = useState<string | null>(null);
   const [chips, setChips] = useState<PeotteokChip[]>(fallbackChips);
   const [toneBand, setToneBand] = useState<PeotteokToneBand | null>(null);
   const [busy, setBusy] = useState(false);
@@ -83,14 +99,100 @@ export function usePeotteokChat(
     }
   }, [apiBase, enabled, fallbackChips]);
 
+  const refreshHistory = useCallback(async () => {
+    if (!enabled) return;
+    try {
+      const rows = await listPeotteokConversations({
+        apiBase,
+        getAccessToken: () => getTokenRef.current(),
+      });
+      setConversations(rows);
+    } catch {
+      /* list is additive; chat still works when table is not applied */
+    }
+  }, [apiBase, enabled]);
+
   useEffect(() => {
     void refreshChips();
+    void refreshHistory();
     return () => {
       streamGenRef.current += 1;
       stopRef.current?.();
       stopRef.current = null;
     };
-  }, [refreshChips]);
+  }, [refreshChips, refreshHistory]);
+
+  const newConversation = useCallback(() => {
+    streamGenRef.current += 1;
+    stopRef.current?.();
+    stopRef.current = null;
+    conversationIdRef.current = undefined;
+    setConversationId(null);
+    setMessages([]);
+    setLastDone(null);
+    setLastLane(null);
+    setBusy(false);
+    setError(null);
+  }, []);
+
+  const openConversation = useCallback(
+    async (id: string) => {
+      if (!enabled || !id) return;
+      streamGenRef.current += 1;
+      stopRef.current?.();
+      stopRef.current = null;
+      setBusy(true);
+      try {
+        const row = await getPeotteokConversation({
+          apiBase,
+          conversationId: id,
+          getAccessToken: () => getTokenRef.current(),
+        });
+        conversationIdRef.current = row.conversation.id;
+        setConversationId(row.conversation.id);
+        setMessages(
+          row.messages.map((m) => ({
+            id: m.id,
+            role: m.role,
+            text: m.text,
+            lane:
+              m.lane === "P" || m.lane === "G" || m.lane === "S"
+                ? m.lane
+                : undefined,
+            deepLink: m.deepLink,
+            citations: m.citations,
+            streaming: false,
+          })),
+        );
+        setError(null);
+      } catch (e) {
+        setError(e instanceof Error ? e : new Error(String(e)));
+      } finally {
+        setBusy(false);
+      }
+    },
+    [apiBase, enabled],
+  );
+
+  const removeConversation = useCallback(
+    async (id: string) => {
+      if (!enabled || !id) return;
+      try {
+        await deletePeotteokConversation({
+          apiBase,
+          conversationId: id,
+          getAccessToken: () => getTokenRef.current(),
+        });
+        if (conversationIdRef.current === id) {
+          newConversation();
+        }
+        await refreshHistory();
+      } catch (e) {
+        setError(e instanceof Error ? e : new Error(String(e)));
+      }
+    },
+    [apiBase, enabled, newConversation, refreshHistory],
+  );
 
   const send = useCallback(
     (raw: string) => {
@@ -131,6 +233,7 @@ export function usePeotteokChat(
           }
           if (meta.conversation_id) {
             conversationIdRef.current = meta.conversation_id;
+            setConversationId(meta.conversation_id);
           }
         },
         onChunk: (chunk) => {
@@ -147,6 +250,7 @@ export function usePeotteokChat(
           setLastDone(done);
           if (done.conversation_id) {
             conversationIdRef.current = done.conversation_id;
+            setConversationId(done.conversation_id);
           }
           if (done.lane === "P" || done.lane === "G" || done.lane === "S") {
             setLastLane(done.lane);
@@ -160,6 +264,7 @@ export function usePeotteokChat(
                     text: done.answer_text?.trim() || m.text,
                     lane,
                     deepLink: done.deep_link ?? null,
+                    citations: done.citations,
                     degraded: Boolean(done.degraded),
                     streaming: false,
                   }
@@ -168,6 +273,7 @@ export function usePeotteokChat(
           );
           setBusy(false);
           stopRef.current = null;
+          void refreshHistory();
         },
         onError: (err) => {
           if (gen !== streamGenRef.current) return;
@@ -199,11 +305,13 @@ export function usePeotteokChat(
         },
       });
     },
-    [apiBase, busy, enabled],
+    [apiBase, busy, enabled, refreshHistory],
   );
 
   return {
     messages,
+    conversations,
+    conversationId,
     chips,
     toneBand,
     busy,
@@ -212,5 +320,9 @@ export function usePeotteokChat(
     error,
     send,
     refreshChips,
+    refreshHistory,
+    newConversation,
+    openConversation,
+    deleteConversation: removeConversation,
   };
 }

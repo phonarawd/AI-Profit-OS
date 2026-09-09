@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "slice": "S3/3.5",
+  "liveE2e": "NOT_RUN",
+  "productionDbApply": false,
+  "stagingBrowser": "NOT_RUN",
+  "launchYes": false,
+  "checks": {
+    "F1_putduk_cache_prefix": "code",
+    "F1_optional_shell_fail_open": "code",
+    "F1_no_auth_money_html_cache": "code",
+    "F1_branded_offline": "code",
+    "F2_bip_only_android_cta": "code",
+    "F2_no_force_reload_money": "code",
+    "F3_server_push_enabled": "code",
+    "F3_path_reeval": "code",
+    "F3_live_browser": "NOT_RUN",
+    "F3_visual_home": "NOT_RUN"
+  }
+}

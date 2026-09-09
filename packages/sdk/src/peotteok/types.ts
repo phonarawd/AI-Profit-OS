@@ -27,6 +27,13 @@ export type PeotteokChatMeta = {
   conversation_id?: string;
 };
 
+export type PeotteokCitation = {
+  kind: "opportunity" | "ledger";
+  id?: string;
+  deepLink?: string | null;
+  asOf?: string;
+};
+
 export type PeotteokChatDone = {
   trace_id?: string;
   /** Engine §47.16.2 — pass back on the next request body to keep bounded recent history */
@@ -37,6 +44,13 @@ export type PeotteokChatDone = {
   degraded?: boolean;
   answer_text?: string;
   provider_effective?: string;
+  citations?: PeotteokCitation[];
+};
+
+export type PeotteokConversationSummary = {
+  id: string;
+  title: string;
+  updatedAt: string;
 };
 
 export type PeotteokMessage = {
@@ -47,4 +61,5 @@ export type PeotteokMessage = {
   deepLink?: string | null;
   degraded?: boolean;
   streaming?: boolean;
+  citations?: PeotteokCitation[];
 };

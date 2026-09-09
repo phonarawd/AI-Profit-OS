@@ -43,8 +43,8 @@ if (!pkg.includes("verify:rel-404-lighthouse-budget")) {
 if (!catalog.includes("rel-404-lighthouse-budget")) {
   fails.push("CATALOG missing rel-404-lighthouse-budget");
 }
-if (!gate.includes("verify:rel-404-lighthouse-budget")) {
-  fails.push("gate.yml must run verify:rel-404-lighthouse-budget");
+if (gate.includes("verify:rel-404-lighthouse-budget")) {
+  fails.push("backend gate.yml must not always-run leftover verify:rel-404-lighthouse-budget");
 }
 if (!workflow.includes("workflow_dispatch")) {
   fails.push("lighthouse.yml must stay HUMAN workflow_dispatch");

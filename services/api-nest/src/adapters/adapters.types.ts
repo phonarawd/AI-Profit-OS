@@ -1,6 +1,6 @@
 /** Engine §0.0 · §51.15 · Admin /admin/adapters health + matching KPI contract */
 
-export type AdapterRole = "listing" | "catalog_ref" | "fx";
+export type AdapterRole = "listing" | "catalog_ref" | "fx" | "observation";
 
 export type AdapterHealthStatus = "green" | "yellow" | "red" | "unknown";
 

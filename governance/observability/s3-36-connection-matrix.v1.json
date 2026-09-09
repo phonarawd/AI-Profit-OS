@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "slice": "S3/3.6",
+  "liveE2e": "NOT_RUN",
+  "productionDbApply": false,
+  "stagingBrowser": "NOT_RUN",
+  "launchYes": false,
+  "notes": [
+    "codeql_workflow success is not CODEQL_UNTRIAGED=0",
+    "live alert send, live CodeQL open-alert API, and backup restore rehearsal stay S6"
+  ],
+  "checks": {
+    "H1_health_git_sha": "code",
+    "H1_health_migration_head": "code",
+    "H1_health_environment": "code",
+    "H1_mask_and_alert_rules": "code",
+    "H1_live_alert_send": "NOT_RUN",
+    "H2_codeql_workflow": "code",
+    "H2_workflow_green_is_not_open_alert_zero": "code",
+    "H2_codeql_open_alerts_live": "NOT_RUN",
+    "H3_backup_restore_rehearsal": "NOT_RUN",
+    "H3_kill_switch_live_e2e": "NOT_RUN"
+  }
+}

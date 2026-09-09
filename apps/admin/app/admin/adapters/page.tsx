@@ -5,6 +5,7 @@ import { T } from "@aipo/ui/copy/ko";
 import { adminGet, type AdminResult } from "../../../lib/admin-api";
 import { readStatusLabel, readText } from "../../../lib/admin-truth";
 import { AdminFetchNote, AdminTruth } from "../../../components/AdminTruth";
+import { DASH_COPY, ReadOnlyAdminApiPanel } from "../../../components/AdminLivePanels";
 
 /**
  * Admin §9.1.1 · 해외 시세 수집기
@@ -290,6 +291,11 @@ export default function Page() {
       >
         아쉽게 놓친 기회의 금액 한도는 ‘수익 진행 기준’에서만 바꿀 수 있습니다.
       </p>
+      <ReadOnlyAdminApiPanel
+        api="/api/v1/admin/source-policy/health"
+        title={DASH_COPY.source}
+        testId="admin-source-policy-panel"
+      />
     </main>
   );
 }

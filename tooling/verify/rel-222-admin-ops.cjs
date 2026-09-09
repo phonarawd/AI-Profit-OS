@@ -155,13 +155,27 @@ if (/write\("(?!all)/.test(caps.slice(caps.indexOf("AdminOpsAdminController"))))
     // allow only all
   }
 }
-const opsBlock = caps.includes("AdminOpsAdminController")
-  ? caps.slice(
-      caps.indexOf("AdminOpsAdminController"),
-      caps.indexOf("};", caps.indexOf("AdminOpsAdminController")),
-    )
-  : "";
-if (opsBlock && /"(?!all)[a-zA-Z]+"/.test(opsBlock.replace(/AdminOpsAdminController/g, ""))) {
+// PUTDUK continuation session, Step 7.3 fix: the previous slice used
+// indexOf("};", ...) as the block's end boundary, assuming that was
+// AdminOpsAdminController's own closing brace. Every controller entry in
+// this file actually closes with "}," (comma, not semicolon) since they
+// are not the last property of ADMIN_CAPABILITY_POLICY - the only real
+// "};" in the file is the final Object.freeze({...}); closer at the very
+// end. That made the old slice silently capture EVERY controller block
+// defined after AdminOpsAdminController (UsersAdminController,
+// TradesAdminController, ...) as if it were still inside
+// AdminOpsAdminController - a real latent bug this task's own unrelated,
+// correct addition of TradesAdminController: { reconcileTick:
+// write("circuit") } exposed as a false "REL-222 must reuse all, not
+// invent circuit" failure. Matched with a regex bounded to the first "}"
+// after the key instead, which correctly captures only this one
+// controller's own entry (none of its values contain literal braces).
+const opsMatch = caps.match(/AdminOpsAdminController:\s*\{([^}]*)\}/);
+const opsBlock = opsMatch ? opsMatch[1] : "";
+if (!opsBlock) {
+  fails.push("AdminOpsAdminController capability block not found");
+}
+if (opsBlock && /"(?!all)[a-zA-Z]+"/.test(opsBlock)) {
   const inventedCap = opsBlock.match(/"(kyc|wallet|growth|circuit|audit|rbac|ledger)"/);
   if (inventedCap) {
     fails.push("REL-222 must reuse all, not invent " + inventedCap[1]);

@@ -21,6 +21,14 @@ for (const needle of [
   "/api/v1/admin/wallet/deposit-config",
   "/api/v1/admin/wallet/krw-deposit-requests",
   "adminGet",
+  // S1F Section 9.2 - the review tab (withdraw_intents) was verified this
+  // session to already be real (WithdrawReviewAdminController + backend
+  // idempotency/race handling + this exact frontend wiring) - this repo's
+  // own REL-206-ADMIN-WALLET.md previously said "list API 없음" for this
+  // tab, which this file's own content already disproves; adding the
+  // missing coverage here rather than leaving the stale claim unchecked.
+  'data-testid="wallet-review-panel"',
+  "/api/v1/admin/wallet/withdraw-intents",
 ]) {
   if (!page.includes(needle)) fails.push(`wallet missing ${needle}`);
 }

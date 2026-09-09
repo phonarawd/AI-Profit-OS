@@ -370,6 +370,31 @@
 .sdr-warn { color: #f3c77a; }
 .sdr-err { color: #ff8aa0; }
 
+.sdr-badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.sdr-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid #667085;
+  color: #c7cee0;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.sdr-disclaimer {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: #8b95a7;
+}
+
 .sdr-actions {
   display: grid;
   gap: 0.55rem;

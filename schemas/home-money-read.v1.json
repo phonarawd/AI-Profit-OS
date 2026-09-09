@@ -13,10 +13,22 @@
     "state"
   ],
   "properties": {
+    "displayPrimary": {
+      "const": "KRW",
+      "description": "유저 화면 주력 숫자. 장부 SoT는 principalUsdt."
+    },
+    "displaySecondary": {
+      "const": "USDT"
+    },
     "principalUsdt": {
       "type": "string",
       "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
       "description": "WalletBuckets.principalUsdt only · never sum with profitUsdt/lockedUsdt · zero only when ledger projection is 0"
+    },
+    "principalKrwApprox": {
+      "type": ["string", "null"],
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "DISPLAY_ONLY · missing FX or recoverable_error → null · NEVER fabricate 0"
     },
     "settlementCompletedTodayCount": {
       "type": "integer",

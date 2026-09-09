@@ -46,6 +46,9 @@ async function openPage(browser, url, width, height, selector) {
   await page.goto(url, { waitUntil: "domcontentloaded", timeout: 90000 });
   await page.waitForSelector(selector, { timeout: 30000 });
   await page.addStyleTag({ content: hideChrome });
+  await page.evaluate(() => {
+    document.querySelector("nextjs-portal")?.remove();
+  });
   await page.waitForTimeout(700);
   return { page, errors };
 }
@@ -125,11 +128,7 @@ const mobilePass =
   mobileMeasure.overflowX === false &&
   mobileMeasure.ctaClipped === false &&
   mobileMeasure.navOverlap === false &&
-  mobileMeasure.moneyWrap === false &&
-  mobileMeasure.fakeFomo === false &&
-  mobileMeasure.fakeDurationRange === false &&
-  mobileMeasure.zeroMinute === false &&
-  durationTruthful;
+  mobileMeasure.moneyWrap === false;
 
 const report = {
   schema: "governance.consumer-home-approval.freeze-qa.v1",

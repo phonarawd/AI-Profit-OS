@@ -1,6 +1,7 @@
 /**
  * verify:rel-214-admin-audit
- * Honest empty until REL-405 classifies a list. Delete UI 0. No new Nest API.
+ * Live list via GET /api/v1/admin/audit/events (REL-405). Delete UI 0.
+ * Do not invent AuditAdminController.
  */
 const fs = require("fs");
 const path = require("path");
@@ -18,25 +19,29 @@ function read(rel) {
 }
 
 const page = read("apps/admin/app/admin/audit/page.tsx");
+const panels = read("apps/admin/components/AdminLivePanels.tsx");
 const routes = read("apps/admin/routes.ts");
 const spec = read("governance/admin/control-plane-superset.md");
 const pkg = read("package.json");
+const wired = page + panels;
 
 if (page.includes("골격")) fails.push("audit leftover stub chrome");
 if (/adminSend/.test(page)) fails.push("audit must stay read-only");
-if (/\/api\/v1\/admin\/audit/.test(page)) {
-  fails.push("audit must not invent a list API");
+if (!wired.includes("/api/v1/admin/audit/events")) {
+  fails.push("audit list must call /api/v1/admin/audit/events");
 }
 
 for (const n of [
   'data-testid="admin-audit-page"',
-  'data-testid="audit-empty-records"',
   'data-testid="audit-empty-rbac"',
   'data-forbid="audit_delete"',
   "/admin/audit?tab=rbac",
   "tab=rbac",
 ]) {
   if (page.includes(n) === false) fails.push("audit missing " + n);
+}
+if (!panels.includes('data-testid="audit-empty-records"')) {
+  fails.push("audit empty records state missing");
 }
 
 for (const banned of [

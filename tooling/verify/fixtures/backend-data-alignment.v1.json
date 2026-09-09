@@ -1,11 +1,11 @@
 {
   "rel": "REL-505",
   "version": "1.0.1",
-  "certIssued": 1,
+  "certIssued": 0,
   "protectedScopeMutation": false,
   "applyMigration": 0,
   "projectRef": "mgsytcetsiecllmhcyox",
-  "stalePendingRebase": false,
+  "stalePendingRebase": true,
   "openConflicts": [],
   "additiveRel": "REL-508",
   "sdkPairs": [

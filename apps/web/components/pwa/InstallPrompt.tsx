@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { pwaCopy } from "./copy";
+import {
+  isInstallOverlayAllowed,
+  shouldSuppressPwaChrome,
+} from "./suppress-pwa-chrome";
 
 const DISMISS_KEY = "putduk.install.dismissedAt";
 const COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
@@ -48,34 +53,52 @@ function markDismissed() {
 }
 
 export function InstallPrompt() {
+  const pathname = usePathname() || "";
   const [visible, setVisible] = useState(false);
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(
     null,
   );
   const [ios, setIos] = useState(false);
+  const allowed = isInstallOverlayAllowed(pathname);
 
   useEffect(() => {
-    if (isStandalone() || dismissedRecently()) return;
+    if (isStandalone()) return;
 
     const onPrompt = (event: Event) => {
       event.preventDefault();
       setDeferred(event as BeforeInstallPromptEvent);
     };
     window.addEventListener("beforeinstallprompt", onPrompt);
-
-    const timer = window.setTimeout(() => {
-      if (isStandalone() || dismissedRecently()) return;
-      setIos(isIosSafari());
-      setVisible(true);
-    }, FIRST_SHOW_MS);
-
     return () => {
       window.removeEventListener("beforeinstallprompt", onPrompt);
-      window.clearTimeout(timer);
     };
   }, []);
 
-  if (!visible || isStandalone()) return null;
+  useEffect(() => {
+    if (!allowed) {
+      setVisible(false);
+      return;
+    }
+    if (isStandalone() || dismissedRecently()) return;
+    const timer = window.setTimeout(() => {
+      if (shouldSuppressPwaChrome(pathname)) return;
+      if (!isInstallOverlayAllowed(pathname)) return;
+      if (isStandalone() || dismissedRecently()) return;
+      const iosNow = isIosSafari();
+      setIos(iosNow);
+      if (iosNow) setVisible(true);
+    }, FIRST_SHOW_MS);
+    return () => window.clearTimeout(timer);
+  }, [allowed, pathname]);
+
+  useEffect(() => {
+    if (!allowed || !deferred || isStandalone() || dismissedRecently()) return;
+    if (shouldSuppressPwaChrome(pathname)) return;
+    setVisible(true);
+  }, [allowed, deferred, pathname]);
+
+  if (!visible || !allowed || isStandalone()) return null;
+  if (!ios && !deferred) return null;
 
   const hide = () => {
     markDismissed();

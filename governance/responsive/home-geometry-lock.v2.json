@@ -1,0 +1,61 @@
+{
+  "schema": "responsive.home-geometry-lock.v2",
+  "rel": "D1-S1C-HOME-LOCK-2026-09-05",
+  "rewrite": "FORBIDDEN",
+  "supersedes": "governance/responsive/home-geometry-lock.v1.json (responsive.home-geometry-lock.v1, REL-019)",
+  "supersessionRecord": "governance/responsive/HOME-GEOMETRY-LOCK-SUPERSESSION.md",
+  "authorityNote": "This file is the byte-level geometry lock for the CURRENT set of Home source files. It is subordinate to governance/consumer-home-approval/home-approval-freeze.v1.json for visual authority (approved baselines, viewports, truth rules) - this file only pins the exact bytes of the source files that produce that approved visual, so future edits to those files are caught.",
+  "boundAtCandidateHead": "98c3e9f379f8c757a0fa6c5a2f0a2abd9ffd30d6",
+  "boundAtCandidateBranch": "chore/d1-zero-known-defect-20260904",
+  "visualEquivalenceEvidence": "_audit-d0-20260904/session-1c-correction/D1S1C-06-HOME-LOCK.md",
+  "files": {
+    "apps/web/app/page.tsx": {
+      "sha256": "297e7a4e1e3bc79de0fc3cf2f9b72b9919966597aea5dd1fcd68baca085799d5",
+      "bytes": 192
+    },
+    "apps/web/app/HomeDesktopClient.tsx": {
+      "sha256": "925815ac81e56bf7bde2099e3812342f7a8859e51045d1b44a45a30f5860ec18",
+      "bytes": 3007
+    },
+    "apps/web/app/globals.css": {
+      "sha256": "2ec7a4ea357aec77b475baaa7b404675fe0d79c2ef16b10f8e0e06aa70103cad",
+      "bytes": 252
+    },
+    "apps/web/components/spark-dash-home/HomeDesktop.tsx": {
+      "sha256": "081d70ae79220648d77ac70e79f1ceee034c3374013a54bd4c5a91e216c38760",
+      "bytes": 16209
+    },
+    "apps/web/components/spark-dash-home/HomeMobile.tsx": {
+      "sha256": "a9f3728e1036d08d458fa87c1bb0a68804551f290b228a9a879a20f51c4fef5f",
+      "bytes": 14827
+    },
+    "apps/web/components/spark-dash-home/spark-dash-home.css": {
+      "sha256": "6c5508fc04d5f96af6c59af769945b1cff69e96bd51788eef13ff22239fc62e8",
+      "bytes": 26411
+    },
+    "apps/web/components/spark-dash-home/spark-dash-mobile.css": {
+      "sha256": "edfab94f6502b2fdd254f78e04c286f489b49372c7ba33ddba6606ac521d9ed1",
+      "bytes": 14781
+    },
+    "apps/web/components/spark-dash-home/assets.ts": {
+      "sha256": "d35fd864a89c5fad9c59db7809d25e86d9aa1369aed998f087e91ad32b645072",
+      "bytes": 2580
+    },
+    "apps/web/components/spark-dash-home/format.ts": {
+      "sha256": "511f95fed898163c7be7d26520aa6e99401fb9f55ede09a4c22c7166e3b0cd2d",
+      "bytes": 2577
+    },
+    "apps/web/components/spark-dash-home/map-runtime.ts": {
+      "sha256": "4a8e68cfc3605026b31a0a83e962c175236e6f619bfe91f94517a4ed0b00dca4",
+      "bytes": 6407
+    },
+    "apps/web/components/spark-dash-home/types.ts": {
+      "sha256": "f68d922afa91ed18a20c452600d40dc93cd2c9fef32838799da4375c3ca73341",
+      "bytes": 2280
+    },
+    "apps/web/components/spark-dash-home/visual-fixture.ts": {
+      "sha256": "d8d339642060981664956ac5e2218ff356eab33613a119f5d4412b1fdfcb25fa",
+      "bytes": 4944
+    }
+  }
+}
