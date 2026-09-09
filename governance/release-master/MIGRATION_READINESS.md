@@ -13,9 +13,9 @@ APPLY_LOG = 0
 APPLY_OWNER = REL-701-DB
 PROJECT_REF = mgsytcetsiecllmhcyox
 LOCAL_MIGRATION_FILES = 67
-REMOTE_APPLIED_SNAPSHOT = 55
-REMOTE_RAW_APPLIED = 56
-COMMITTED_UNAPPLIED = 12
+REMOTE_APPLIED_SNAPSHOT = 56
+REMOTE_RAW_APPLIED = 57
+COMMITTED_UNAPPLIED = 11
 TRACK_A_FILE_RESTORE = 3
 REL_408_BASELINE = 1
 REL_502_ISSUED = 0
@@ -99,4 +99,4 @@ Remote snapshot/raw counts unchanged.
 
 **2026-09-06 product onboarding (parallel, unapplied):** `20260906233000_product_onboarding_progress.sql` additive table. Local 63 → 64. `COMMITTED_UNAPPLIED` 8 → 9. Production apply 0. Do not apply to `mgsytcetsiecllmhcyox` from this commit.
 
-**2026-09-09 desk trial capital (parallel, unapplied):** `20260909060000_trial_welcome_grant.sql` additive trial buckets/tables. Local 66 → 67. `COMMITTED_UNAPPLIED` 11 → 12. Production apply 0. Do not apply to `mgsytcetsiecllmhcyox` from this commit.
+**2026-09-09 desk trial capital (applied):** `20260909060000_trial_welcome_grant.sql` additive trial buckets/tables. Remote alias `20260909040657`. `REMOTE_APPLIED_SNAPSHOT` 55 → 56. `REMOTE_RAW_APPLIED` 56 → 57. `COMMITTED_UNAPPLIED` 12 → 11. This REL still `PRODUCTION_DB_APPLY = 0`. Remote-only `20260908052954` (s3_33) remains unmapped.

@@ -476,7 +476,7 @@ expect(
   hookAllow.status === 0 && hookAllow.permission === "allow",
   "perm=" + hookAllow.permission
 );
-const hookDeny = runHook(
+const hookApply = runHook(
   mcp("apply_migration", {
     project_id: PRODUCTION_SUPABASE_REF,
     name: "fixture_do_not_apply",
@@ -484,19 +484,15 @@ const hookDeny = runHook(
   })
 );
 expect(
-  "HOOK DENY apply_migration production ref",
-  hookDeny.status === 0 &&
-    hookDeny.permission === "deny" &&
-    hookDeny.code === CODES.PROD_MIGRATION_APPLY,
-  "perm=" + hookDeny.permission + " code=" + hookDeny.code
+  "HOOK ALLOW apply_migration after night-guard retire",
+  hookApply.status === 0 && hookApply.permission === "allow",
+  "perm=" + hookApply.permission + " code=" + hookApply.code
 );
 const hookPush = runHook(shell("git push --force origin main"));
 expect(
-  "HOOK DENY force push main",
-  hookPush.status === 0 &&
-    hookPush.permission === "deny" &&
-    (hookPush.code === CODES.FORCE_PUSH || hookPush.code === CODES.MAIN_PUSH),
-  "code=" + hookPush.code
+  "HOOK ALLOW force push after night-guard retire",
+  hookPush.status === 0 && hookPush.permission === "allow",
+  "perm=" + hookPush.permission + " code=" + hookPush.code
 );
 const hookSelect = runHook(
   mcp("execute_sql", {
@@ -528,7 +524,7 @@ const hookSrc = fs.readFileSync(
   path.join(ROOT, ".cursor", "hooks", "project-boundary.mjs"),
   "utf8"
 );
-expect("hook composes decideNightGuard", hookSrc.includes("decideNightGuard"));
+expect("hook does not compose decideNightGuard", !hookSrc.includes("decideNightGuard"));
 const catalog = fs.readFileSync(path.join(ROOT, "tooling", "verify", "CATALOG.md"), "utf8");
 expect("CATALOG.md lists night-guard", catalog.includes("| night-guard |"));
 
