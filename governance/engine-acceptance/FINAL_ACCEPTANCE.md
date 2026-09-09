@@ -27,15 +27,15 @@ NEXT = QA1_DETERMINISTIC_TRUTH
 BASELINE_ID = ea-baseline-1292c584c81f-6e4af6f46fe5
 PREDECESSOR_BASELINE_ID = ea-baseline-e55a08433445-faae139c3115
 REBASE_ID = ea-rebase-b9308bb15bf6-6e4af6f46fe5
-LIVE_AGGREGATE = 156bf1674ba0f80dc47aef4e36b20a0ff9a4d18d5cef72231e82eb47288f7b63
+LIVE_AGGREGATE = 471a80f297b46788604d24d66514532b8d35aa5a085e8be37db13d44d327454e
 BASELINE_AGGREGATE = 6e4af6f46fe5f5692617e10d1c1293f8aaa43d3ba613aab10ef1894fbe529721
-PATH_COUNT_LIVE = 567
+PATH_COUNT_LIVE = 576
 PATH_COUNT_BASELINE = 564
-CHANGED_PATHS = 13
-ADDED_PATHS = 3
-MUTATED_PATHS = 10
+CHANGED_PATHS = 44
+ADDED_PATHS = 12
+MUTATED_PATHS = 32
 MISSING_PATHS = 0
-EXIT_GATE = PUTDUK 2026-09-08 preview Turnstile host · protected-scope drift 13 · NOT_ISSUED · rebase required
+EXIT_GATE = PUTDUK 2026-09-09 desk trial capital · protected-scope drift 44 · NOT_ISSUED · rebase required
 ```
 
 ## 판정 (2026-09-07 J0 MFA rebase apply)
@@ -384,4 +384,12 @@ live protected aggregate `51bd18befb9375b89473a2f6d129d1f8501ca2e4e5d99350f9a9cd
 `92b2c811` / `7ba771ba` mutated staging Turnstile host/action on existing Nest files (`phase0.env.ts`, `turnstile.policy.cjs`, admin-auth login guard). Path counts stay 564 / added 73 / mutated 51 / changed 124. Production apply 0. STATUS stays NOT_ISSUED. CERT_ISSUED stays 0. REL-502 is not issued by this recert.
 
 live protected aggregate `faae139c3115adf90aae7e5ff2558ca494bffcc694e9a6ecfe3fc459d41d5da6` differs from baseline (added 73 · mutated 51 · missing 0 · changed 124). Values from `compareProtectedScope()` on dirty HEAD after the login-fix commits. No issue. No fake QA.
+
+## 13th recert (2026-09-09)
+
+Desk trial capital (`d88689cb` · `4b940830`) and the REL-402 pin (`8c827f84`) changed protected-scope roots. STATUS stays NOT_ISSUED. CERT_ISSUED stays 0. REL-502 is not issued by this recert.
+
+This recert does not change STATUS/CERT_ISSUED/PROTECTED_SCOPE_DRIFT/REBASE_REQUIRED. LIVE_AGGREGATE/PATH_COUNT_LIVE/CHANGED_PATHS/ADDED_PATHS/MUTATED_PATHS are current-HEAD values from `compareProtectedScope()`.
+
+live protected aggregate `471a80f297b46788604d24d66514532b8d35aa5a085e8be37db13d44d327454e` differs from baseline `6e4af6f46fe5f5692617e10d1c1293f8aaa43d3ba613aab10ef1894fbe529721` (added 12 · mutated 32 · missing 0 · changed 44). No issue. No fake QA.
 
