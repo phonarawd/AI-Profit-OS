@@ -29,6 +29,7 @@ mustExist(".cursor/hooks.json");
 mustExist("packages/ui/tokens/lux-fintech.ts");
 mustExist("packages/ui/tokens/lux-theme.css");
 mustExist("packages/ui/brand/brand.manifest.json");
+mustExist("governance/brand/brand.manifest.json");
 mustExist("packages/sdk/package.json");
 mustExist("packages/schemas/package.json");
 mustExist("apps/web/package.json");

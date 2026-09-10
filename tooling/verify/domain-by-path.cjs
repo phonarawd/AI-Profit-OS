@@ -1638,9 +1638,22 @@ function getChangedFiles(opts) {
   );
 }
 
+function isRetiredUiPath(file) {
+  const f = String(file || "").replace(/\\/g, "/");
+  return (
+    f === "apps/web" ||
+    f.startsWith("apps/web/") ||
+    f === "apps/admin" ||
+    f.startsWith("apps/admin/") ||
+    f === "packages/ui" ||
+    f.startsWith("packages/ui/")
+  );
+}
+
 function scriptsForChangedFiles(files) {
   const scripts = new Set();
   for (const file of files) {
+    if (isRetiredUiPath(file)) continue;
     for (const rule of RULES) {
       if (rule.test(file)) {
         for (const script of rule.scripts) scripts.add(script);

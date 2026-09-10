@@ -337,10 +337,8 @@ expect(
   const adminCopy = "packages/ui/copy/ko/admin.ts";
   const scripts = scriptsForChangedFiles([adminCopy]);
   expect(
-    "admin copy maps only admin-novice-ui",
-    scripts.includes("admin-novice-ui.cjs") &&
-      !scripts.includes("rel-201-admin-dashboard.cjs") &&
-      !scripts.includes("rel-213-admin-system-control.cjs"),
+        "retired admin UI copy maps to no domain verify",
+    scripts.length === 0,
     scripts.join(","),
   );
   const verifierScripts = scriptsForChangedFiles(["tooling/verify/admin-novice-ui.cjs"]);

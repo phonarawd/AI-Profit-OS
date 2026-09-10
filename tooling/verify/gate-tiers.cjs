@@ -1,8 +1,8 @@
 /**
- * 3-tier gate SSOT (ADR-016)
- * T0 fast  — commit (~10–30s)
- * T1 push  — push / 슬라이스 품질 (~1–3min)
- * T2 full  — CI / main 합격 (next+opennext 포함)
+ * 3-tier gate SSOT (ADR-016) · backend-only repository
+ * T0 fast  — commit
+ * T1 push  — backend extras (no Next/Tailwind/admin-ui)
+ * T2 full  — CI · api-nest-build (customer Next lives in putduk-web)
  */
 const { scriptsForChangedFiles, getChangedFiles } = require("./domain-by-path.cjs");
 
@@ -18,7 +18,6 @@ const T0_ALWAYS = [
 const T1_PUSH = [
   "settlement-rule-parity.cjs",
   "pg-module-scan.cjs",
-  "brand-assets.cjs",
   "cf-infra.cjs",
   "ebay-worker-deploy-path.cjs",
   "p0-ebay-secret-provisioning.cjs",
@@ -28,15 +27,6 @@ const T1_PUSH = [
   "root-domain-env.cjs",
   "domain-bootstrap.cjs",
   "opennext-workers-origin.cjs",
-  "next-major-pin.cjs",
-  "tailwind-v4.cjs",
-  "lux-theme-sync.cjs",
-  "dark-leak-guard.cjs",
-  "cf-deploy-packages.cjs",
-  "no-admin-in-web.cjs",
-  "ia-tabs.cjs",
-  "admin-routes.cjs",
-  "admin-boundary.cjs",
   "domain-clock.cjs",
   "db-recovery.cjs",
   "privacy-purge.cjs",
@@ -45,7 +35,7 @@ const T1_PUSH = [
 ];
 
 /** @type {string[]} */
-const T2_CI = ["next-build.cjs", "opennext-build.cjs"];
+const T2_CI = ["api-nest-build.cjs"];
 
 function domainSteps() {
   const files = getChangedFiles();
