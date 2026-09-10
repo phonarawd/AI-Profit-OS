@@ -200,6 +200,27 @@ describe("acquisition release — guest / auth / error / resume", () => {
     assert.doesNotMatch(body, /rrn/i);
   });
 
+  it("sends profile gender only as male or female", async () => {
+    let body = "";
+    mockFetch((url, init) => {
+      assert.equal(url, "/api/v1/auth/profile");
+      body = String(init?.body ?? "");
+      return jsonRes(200, { ok: true, onboardingStage: "B_complete", gender: "female" });
+    });
+    const out = await patchAuthProfile(
+      {
+        displayName: "이름",
+        phoneE164: "+821012345678",
+        birthDate: "1990-01-01",
+        email: "a@b.co",
+        gender: "female",
+      },
+      { apiBase: "" },
+    );
+    assert.equal(out.gender, "female");
+    assert.match(body, /"gender":"female"/);
+  });
+
   it("rejects a non-Nest issuer instead of resuming", async () => {
     mockFetch(() => jsonRes(200, { ...nestSession, issuer: "supabase" }));
     await assert.rejects(() => fetchAuthSession({ apiBase: "" }), /SESSION_UNAVAILABLE/);

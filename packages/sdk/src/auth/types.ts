@@ -18,6 +18,7 @@ export type AuthSession = {
   expiresAt: string;
   revoked: false;
   onboardingStage: AuthOnboardingStage;
+  gender: "male" | "female" | null;
 };
 
 export type KakaoStartInput = {
@@ -46,11 +47,13 @@ export type StageBProfileInput = {
   birthDate: string;
   email?: string;
   emailAlreadyKnown?: boolean;
+  gender?: "male" | "female";
 };
 
 export type StageBProfileResult = {
   ok: true;
   onboardingStage: "B_complete";
+  gender?: "male" | "female" | null;
 };
 
 /** Nest `DELETE_ACCOUNT_CONFIRM_PHRASE` — 화면 문구와 동일해야 한다. */

@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://ai-profit-os.local/schemas/user-profile.v1.json",
   "title": "UserProfileV1",
-  "description": "Infra §51.9.1 Stage A/B. NEVER: RRN · gender · Day-1 required address.",
+  "description": "Infra §51.9.1 Stage A/B. NEVER: RRN · free-string gender · Day-1 required address.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -47,7 +47,12 @@
     "birthDate": {
       "type": "string",
       "format": "date",
-      "description": "Age 19+ · no gender field"
+      "description": "Age 19+"
+    },
+    "gender": {
+      "type": ["string", "null"],
+      "enum": ["male", "female", null],
+      "description": "고객 GenderSelect · male|female · 과거 사용자는 null"
     },
     "onboardingStage": {
       "type": "string",
@@ -76,9 +81,15 @@
         ]
       },
       {
-        "required": [
-          "gender"
-        ]
+        "properties": {
+          "gender": {
+            "type": "string",
+            "not": {
+              "enum": ["male", "female"]
+            }
+          }
+        },
+        "required": ["gender"]
       },
       {
         "required": [

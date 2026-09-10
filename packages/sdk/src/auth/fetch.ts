@@ -1,6 +1,6 @@
 /**
  * Auth HTTP client.
- * 기존 Nest 경로만. code를 subject로 쓰지 않음. 성별/주민번호 전송 0.
+ * 기존 Nest 경로만. code를 subject로 쓰지 않음. 주민번호 전송 0. 프로필 gender는 male|female만.
  */
 
 import type {
@@ -42,7 +42,6 @@ const STAGES = new Set<AuthOnboardingStage>([
   "B_complete",
 ]);
 const FORBIDDEN_PROFILE_KEYS = [
-  "gender",
   "rrn",
   "rrnFull",
   "residentRegistrationNumber",
@@ -159,6 +158,10 @@ export function normalizeAuthSession(raw: unknown): AuthSession {
   if (!STAGES.has(stage as AuthOnboardingStage)) {
     throw new AuthError(0, "SESSION_UNAVAILABLE");
   }
+  const gender =
+    o.gender === "male" || o.gender === "female" || o.gender === null
+      ? o.gender
+      : null;
   return {
     sessionId,
     userId,
@@ -167,6 +170,7 @@ export function normalizeAuthSession(raw: unknown): AuthSession {
     expiresAt,
     revoked: false,
     onboardingStage: stage as AuthOnboardingStage,
+    gender,
   };
 }
 
@@ -194,6 +198,7 @@ export function buildStageBProfileBody(
     emailAlreadyKnown: input.emailAlreadyKnown === true,
   };
   if (input.email?.trim()) body.email = input.email.trim();
+  if (input.gender === "male" || input.gender === "female") body.gender = input.gender;
   assertNoForbiddenProfileFields(body);
   return body;
 }
@@ -335,7 +340,12 @@ export async function patchAuthProfile(
   }
   const raw = await readJson(res);
   if (!res.ok) throwHttp(res.status, raw);
-  return { ok: true, onboardingStage: "B_complete" };
+  const o = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
+  const gender =
+    o.gender === "male" || o.gender === "female" || o.gender === null
+      ? o.gender
+      : null;
+  return { ok: true, onboardingStage: "B_complete", gender };
 }
 
 export async function requestMagicLink(
