@@ -333,6 +333,10 @@
     "engine-acceptance:selftest-pre-rebase-harness": "node tooling/engine-acceptance/selftest-pre-rebase-harness.cjs"
   },
   "pnpm": {
+    "overrides": {
+      "sharp": "0.35.4",
+      "multer": "2.3.0"
+    },
     "onlyBuiltDependencies": [
       "esbuild",
       "sharp",
