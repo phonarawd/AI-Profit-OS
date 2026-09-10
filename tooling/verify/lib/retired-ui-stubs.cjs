@@ -87,6 +87,7 @@ const RETIRED_MIXED_UI_STUBS = new Set([
   "market-briefing-no-investment-advice.cjs",
   "participate-proof.cjs",
   "responsive.cjs",
+  "pwa-day1-certification.cjs",
 ]);
 
 function isRetiredUiStub(name) {

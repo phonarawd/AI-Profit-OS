@@ -15,10 +15,10 @@
 | `node tooling/verify/phase0-bootstrap.cjs` | 0 | <5s | PASS | Next 존재 검사 제거, apps/web·admin 부재 불변 추가 |
 | `node tooling/verify/bucket-invariant.cjs` | 0 | <10s | PASS | 원장 불변 |
 | `node tooling/verify/wallet-kyc-session-auth.cjs` | 0 | <10s | PASS | 세션+KYC 인증 게이트 |
-| `node tooling/verify/auth-jwt-runtime.cjs` | 1 | ~30s | BLOCKED_LOCAL | 워크트리 `node_modules`가 본 레포 정션이라 `@nestjs/common` 링크 없음. CI 신규 install 필요 |
+| `node tooling/verify/auth-jwt-runtime.cjs` | 0 | ~25s | PASS | 워크트리 정션 해제 후 frozen install 뒤 재실행 |
 | `node tooling/verify/gate-push.cjs` (T1, UI 삭제 직후) | 1 | ~35s | FAIL→수정 | `phase0-bootstrap`가 `apps/web/next.config.ts` ENOENT. 이후 스크립트 수정 |
-| `pnpm install --frozen-lockfile` (정리 후 격리 install) | — | — | NOT_RUN | 저사양 PC · 공유 정션 오염 방지. CI에서 실행 |
-| typecheck / lint (별도) | — | — | NOT_RUN | T1 `api-nest-build`에 포함. 로컬 nest 링크 없음 |
+| `pnpm install --frozen-lockfile` (워크트리, 정션 해제) | 0 | ~119s | PASS | Packages +222 · `services/api-nest/node_modules/@nestjs/common` 링크 복구. 부모 레포 store 유지 |
+| typecheck (`api-nest-build` tsc) | 0 | T1 내 | PASS | `[verify:api-nest-build] PASS` |
 | unit/integration (전체 스위트) | — | — | NOT_RUN | |
 | auth/OAuth 전용 테스트 스위트 | — | — | NOT_RUN | `auth-session-cookie` T1 스텁은 유지 |
 | ledger 테스트 | 0 | — | PASS | `bucket-invariant` |
@@ -27,9 +27,9 @@
 | membership/benefits | — | — | NOT_RUN | `membership-ladder` 등 UI 혼재 스텁은 SKIP. 서버 코드는 유지 |
 | migration validation | — | — | NOT_RUN | 초안만 유지. prod apply 금지 |
 | security audit / CodeQL | — | — | NOT_RUN | CI |
-| backend production build | — | — | NOT_RUN | `api-nest-build` — 로컬 nest 링크 없음 |
+| backend production build (`api-nest-build`) | 0 | T1 내 | PASS | `[verify:api-nest-build] PASS (services/api-nest tsc build clean)` |
 | `pnpm verify:gate` (T2) | — | — | NOT_RUN | T2 = `api-nest-build.cjs` (next-build 제거됨) |
-| `pnpm verify:gate:push` (T1 전체, 수정 후) | — | — | NOT_RUN | 푸시 훅/CI에서 실행 |
+| `node tooling/verify/gate-push.cjs` (T1 전체, PWA skip 후) | 0 | ~75s | PASS | `[verify:gate:push] PASS (20 steps)` |
 
 PASS로 위장하지 않음. 미실행은 NOT_RUN.
 
@@ -49,6 +49,8 @@ PASS로 위장하지 않음. 미실행은 NOT_RUN.
 - UI-only 28개: copy/Canon/화면 전용
 - Mixed 56개: 백엔드+화면 혼재. 화면 파일이 없어 FAIL. **삭제하지 않음.** T0/T1에서만 skip
 - Mixed 11개는 UI 경로를 무시하도록 수정한 뒤 **계속 실행** (예: `auth-session-cookie`, `kyc-r2-only`, `notification-prefs-default-on`)
+
+`pwa-day1-certification` skip 이유: `apps/web/public/manifest.webmanifest` (고객 PWA). 파일 유지.
 
 `kyc-withdraw-only` skip 이유: `apps/web` withdraw 페이지 + admin routes + `wallet-reader-http.runtime.cjs`가 웹 클라이언트를 읽음. 게이트 파일은 유지 (REVIEW_REQUIRED).
 
