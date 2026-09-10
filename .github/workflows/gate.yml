@@ -97,10 +97,5 @@ jobs:
         run: pnpm verify:gate
       - name: OpenNext build:cf (Linux — Workers deploy output SSOT)
         run: |
-          pnpm --filter @aipo/web build:cf
-          pnpm --filter @aipo/admin build:cf
-          test -f apps/web/.open-next/worker.js
-          test -d apps/web/.open-next/assets
-          test -f apps/admin/.open-next/worker.js
-          test -d apps/admin/.open-next/assets
+          echo "backend-only: customer OpenNext is phonarawd/putduk-web; admin app not in this repo"
 
