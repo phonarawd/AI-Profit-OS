@@ -209,7 +209,6 @@ if (/"web-vitals"\s*:/.test(pkg)) {
   fails.push("web-vitals dependency present; flip WEB_VITALS_RUM or remove the package");
 }
 const rumFiles = [
-  "apps/web/components/observability/ObsRuntime.tsx",
   "packages/observability/observability.core.cjs",
 ];
 for (const rel of rumFiles) {
@@ -272,6 +271,11 @@ if (!domain.includes("rel-506-r8-infra-core.cjs")) {
 
 if (fails.length === 0) {
   for (const script of fixture.extraVerifies || []) {
+    const { isRetiredUiStub } = require("./lib/retired-ui-stubs.cjs");
+    if (isRetiredUiStub(script)) {
+      console.log("[verify] SKIP retired UI extraVerify " + script);
+      continue;
+    }
     const run = spawnSync(process.execPath, [path.join(root, "tooling/verify", script)], {
       cwd: root,
       encoding: "utf8",

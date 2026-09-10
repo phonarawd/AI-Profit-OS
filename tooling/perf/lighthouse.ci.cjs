@@ -1,6 +1,6 @@
 /**
  * REL-404 Lighthouse 동등 게이트.
- * 로컬/기본 CI = 예산 파일 + image/lazy 배선 + Home lock.
+ * 로컬/기본 CI = 예산 파일 + (UI가 있을 때만) image/lazy 배선 + Home lock.
  * 풀 Lighthouse 바이너리는 이 REL에서 설치하지 않는다.
  */
 const fs = require("fs");
@@ -42,31 +42,34 @@ function staticBudgetAudit() {
   const geo = JSON.parse(read(spec.homeGeometryLock));
   if (geo.rewrite !== "FORBIDDEN") fails.push("home-geometry-lock rewrite must be FORBIDDEN");
 
-  const product = read("packages/ui/components/product/ProductImage.tsx");
-  if (!product.includes('loading={priority ? undefined : "lazy"}')) {
-    fails.push("ProductImage must lazy-load when not priority");
-  }
-  if (!product.includes("productImageSizes") && !product.includes("sizes=")) {
-    fails.push("ProductImage must set sizes");
-  }
+  // image/lazy 배선은 고객 웹(putduk-web) SSOT. 이 레포에 packages/ui가 있을 때만 검사.
+  if (fs.existsSync(path.join(root, "packages/ui"))) {
+    const product = read("packages/ui/components/product/ProductImage.tsx");
+    if (!product.includes('loading={priority ? undefined : "lazy"}')) {
+      fails.push("ProductImage must lazy-load when not priority");
+    }
+    if (!product.includes("productImageSizes") && !product.includes("sizes=")) {
+      fails.push("ProductImage must set sizes");
+    }
 
-  const hero = read("packages/ui/components/home/HomeHeroIllustration.tsx");
-  if (!hero.includes('type="image/avif"') || !hero.includes('type="image/webp"')) {
-    fails.push("Home hero must keep AVIF/WebP sources");
-  }
-  if (!hero.includes('fetchPriority="high"')) {
-    fails.push("Home hero must stay high fetchPriority (not lazy)");
-  }
-  if (/loading=\{?["']lazy["']\}?/.test(hero)) {
-    fails.push("Home hero must not be marked lazy");
-  }
+    const hero = read("packages/ui/components/home/HomeHeroIllustration.tsx");
+    if (!hero.includes('type="image/avif"') || !hero.includes('type="image/webp"')) {
+      fails.push("Home hero must keep AVIF/WebP sources");
+    }
+    if (!hero.includes('fetchPriority="high"')) {
+      fails.push("Home hero must stay high fetchPriority (not lazy)");
+    }
+    if (/loading=\{?["']lazy["']\}?/.test(hero)) {
+      fails.push("Home hero must not be marked lazy");
+    }
 
-  const ppe = read("packages/ui/performance/README.md");
-  if (!ppe.includes("PREMIUM VISUAL QUALITY")) {
-    fails.push("PPE readme must keep premium visual lock");
-  }
-  if (!ppe.includes("VISUAL_PERFORMANCE_CONFLICT")) {
-    fails.push("PPE must keep VISUAL_PERFORMANCE_CONFLICT");
+    const ppe = read("packages/ui/performance/README.md");
+    if (!ppe.includes("PREMIUM VISUAL QUALITY")) {
+      fails.push("PPE readme must keep premium visual lock");
+    }
+    if (!ppe.includes("VISUAL_PERFORMANCE_CONFLICT")) {
+      fails.push("PPE must keep VISUAL_PERFORMANCE_CONFLICT");
+    }
   }
 
   return { ok: fails.length === 0, fails, delegated: true, spec };

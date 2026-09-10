@@ -287,6 +287,10 @@ async function liveScenario(scenario) {
 }
 
 function runPlaywright() {
+  if (!fs.existsSync(path.join(root, "apps/web"))) {
+    console.log("[verify:rel-603-age-usability-spotcheck] SKIP playwright — customer web is putduk-web");
+    return;
+  }
   // Phase0 저사양 로컬: Playwright 풀 코호트는 CI가 증명한다 (CI=true면 절대 skip 불가).
   if (process.env.CI !== "true" && process.env.AIPO_LOWSPEC_SKIP_HEAVY === "1") {
     console.log(
@@ -348,6 +352,11 @@ function runPlaywright() {
 
   if (fails.length === 0) {
     for (const script of fixture.extraVerifies || []) {
+    const { isRetiredUiStub } = require("./lib/retired-ui-stubs.cjs");
+    if (isRetiredUiStub(script)) {
+      console.log("[verify] SKIP retired UI extraVerify " + script);
+      continue;
+    }
       const run = spawnSync(
         process.execPath,
         [path.join(root, "tooling/verify", script)],

@@ -222,7 +222,9 @@ if (mig.includes("CREATE TABLE public.money_circuit")) {
   auditCore.resetAuditSink();
   core.resetMemory();
 
-  const page = read("apps/admin/app/admin/system-control/page.tsx");
+  const page = fs.existsSync(path.join(root, "apps/admin/app/admin/system-control/page.tsx"))
+    ? read("apps/admin/app/admin/system-control/page.tsx")
+    : "";
   const serverReady =
     fs.existsSync(
       path.join(
@@ -243,6 +245,7 @@ if (mig.includes("CREATE TABLE public.money_circuit")) {
   if (page.includes("window.confirm") && !serverReady) {
     fails.push("EXIT_GATE: UI only — server enforce missing");
   }
+  if (page) {
   for (const id of [
     "GLOBAL_OPPORTUNITY_PAUSE",
     "GLOBAL_MATCHING_PAUSE",
@@ -256,6 +259,7 @@ if (mig.includes("CREATE TABLE public.money_circuit")) {
   }
   if (!page.includes("/api/v1/admin/system-control/switches")) {
     fails.push("system-control must name the switches API");
+  }
   }
 
   const webAdmin = path.join(root, "apps/web/app/admin");

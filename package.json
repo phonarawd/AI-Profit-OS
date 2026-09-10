@@ -33,6 +33,7 @@
     "verify:rel-400-admin-control-plane": "node tooling/verify/rel-400-admin-control-plane.cjs",
     "verify:rel-401-security-headers": "node tooling/verify/rel-401-security-headers.cjs",
     "verify:rel-402-dependency-audit": "node tooling/verify/rel-402-dependency-audit.cjs",
+    "verify:rel-404-lighthouse-budget": "node tooling/verify/rel-404-lighthouse-budget.cjs",
     "verify:rel-403-versioning": "node tooling/verify/rel-403-versioning.cjs",
     "verify:rel-405-rbac-audit": "node tooling/verify/rel-405-rbac-audit.cjs",
     "verify:rel-406-kill-switch": "node tooling/verify/rel-406-kill-switch.cjs",

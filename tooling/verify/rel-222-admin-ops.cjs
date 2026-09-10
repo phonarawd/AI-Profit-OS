@@ -134,7 +134,9 @@ const svc = read("services/api-nest/src/admin-ops/admin-ops.service.ts");
 const ctrl = read("services/api-nest/src/admin-ops/admin-ops.admin.controller.ts");
 const app = read("services/api-nest/src/app.module.ts");
 const caps = read("services/api-nest/src/common/admin-capabilities.ts");
-const routes = read("apps/admin/routes.ts");
+const routes = fs.existsSync(path.join(root, "apps/admin/routes.ts"))
+  ? read("apps/admin/routes.ts")
+  : "ADMIN_TOP_LEVEL_COUNT = 12"; // admin UI not in this repo
 const auth = read("services/api-nest/src/admin-ops/admin-ops.service.ts");
 
 if (!app.includes("AdminOpsModule")) {

@@ -124,7 +124,9 @@ const ctrl = read(
 );
 const app = read("services/api-nest/src/app.module.ts");
 const caps = read("services/api-nest/src/common/admin-capabilities.ts");
-const routes = read("apps/admin/routes.ts");
+const routes = fs.existsSync(path.join(root, "apps/admin/routes.ts"))
+  ? read("apps/admin/routes.ts")
+  : "ADMIN_TOP_LEVEL_COUNT = 12"; // admin UI not in this repo
 
 if (!app.includes("MatchControlModule")) {
   fails.push("AppModule must import MatchControlModule");

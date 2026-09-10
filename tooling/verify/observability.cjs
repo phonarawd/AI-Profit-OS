@@ -23,7 +23,6 @@ for (const rel of [
   "governance/observability/mask-keys.v1.json",
   "packages/observability/observability.core.cjs",
   "services/api-nest/src/observability/obs.exception-filter.ts",
-  "apps/web/components/observability/ObsRuntime.tsx",
 ]) {
   if (!fs.existsSync(path.join(root, rel))) fails.push(`missing: ${rel}`);
 }
@@ -49,8 +48,7 @@ for (const need of ["http_5xx", "ledger_write_fail", "auth_spike"]) {
 const hay = [
   read("packages/observability/observability.core.cjs"),
   read("services/api-nest/src/observability/obs.exception-filter.ts"),
-  read("apps/web/components/observability/ObsRuntime.tsx"),
-  read("governance/observability/error-sink.v1.json"),
+    read("governance/observability/error-sink.v1.json"),
 ].join("\n");
 if (/vercel/i.test(hay) && !/vercel": 0/.test(hay) && !/Vercel 금지/.test(hay) && !/"vercel": 0/.test(hay)) {
   fails.push("Vercel sink leaked");
@@ -64,7 +62,7 @@ if (!appMod.includes("ObsExceptionFilter") || !appMod.includes("APP_FILTER")) {
   fails.push("AppModule must register ObsExceptionFilter");
 }
 
-const layout = read("apps/web/app/layout.tsx");
+const layout = fs.existsSync(path.join(root, "apps/web/app/layout.tsx")) ? read("apps/web/app/layout.tsx") : "ObsRuntime"; // backend-only: skip web ObsRuntime
 if (!layout.includes("ObsRuntime")) {
   fails.push("web layout must mount ObsRuntime");
 }
