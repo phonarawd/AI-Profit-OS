@@ -18,6 +18,9 @@ build/
 out/
 coverage/
 *.tsbuildinfo
+services/api-nest/src/config/nest-build-info.generated.json
+quality/*.out.txt
+quality/verify-p0.log
 
 # Env / secrets (never commit — ADR-016)
 .env

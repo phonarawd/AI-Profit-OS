@@ -4,20 +4,53 @@
 
 export type PublicHealthWarning = { code: string };
 
+export type PublicHealthEnvironment =
+  | "production"
+  | "staging"
+  | "development"
+  | "test";
+
 export type PublicHealthBody = {
   ok: true;
   service: "api-nest";
   phase: 0;
   gitSha: string | null;
   gitShaSource: string | null;
+  environment: PublicHealthEnvironment;
+  version: string;
+  buildTime: string | null;
   db: { configured: boolean; ok: boolean };
   redis: { configured: boolean; ok: boolean };
   warnings: PublicHealthWarning[];
 };
 
+const VERSION_RE = /^[A-Za-z0-9._-]{1,32}$/;
+const BUILD_TIME_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/;
+
+export function sanitizeEnvironment(raw: unknown): PublicHealthEnvironment {
+  const value = String(raw ?? "").trim().toLowerCase();
+  if (value === "production" || value === "staging" || value === "test") {
+    return value;
+  }
+  return "development";
+}
+
+export function sanitizeVersion(raw: unknown): string {
+  const value = String(raw ?? "").trim();
+  return VERSION_RE.test(value) ? value : "0.0.0";
+}
+
+export function sanitizeBuildTime(raw: unknown): string | null {
+  const value = String(raw ?? "").trim();
+  return BUILD_TIME_RE.test(value) ? value : null;
+}
+
 export function publicHealthBody(input: {
   gitSha: string | null;
   gitShaSource: string | null;
+  environment?: unknown;
+  version?: unknown;
+  buildTime?: unknown;
   dbConfigured: boolean;
   dbOk: boolean;
   redisConfigured: boolean;
@@ -30,6 +63,9 @@ export function publicHealthBody(input: {
     phase: 0,
     gitSha: input.gitSha,
     gitShaSource: input.gitShaSource,
+    environment: sanitizeEnvironment(input.environment),
+    version: sanitizeVersion(input.version),
+    buildTime: sanitizeBuildTime(input.buildTime),
     db: {
       configured: input.dbConfigured,
       ok: input.dbOk,

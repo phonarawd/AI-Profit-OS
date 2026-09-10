@@ -20,6 +20,9 @@ describe("public health sanitization", () => {
     assert.equal(body.service, "api-nest");
     assert.equal(body.gitSha, "deadbeef");
     assert.equal(body.gitShaSource, "RENDER_GIT_COMMIT");
+    assert.equal(body.environment, "development");
+    assert.equal(body.version, "0.0.0");
+    assert.equal(body.buildTime, null);
     assert.deepEqual(body.db, { configured: true, ok: true });
     assert.deepEqual(body.redis, { configured: true, ok: false });
     assert.deepEqual(body.warnings, [{ code: "SUPABASE_REGION_UNSUPPORTED" }]);
