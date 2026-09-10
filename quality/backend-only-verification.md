@@ -80,3 +80,42 @@ PASS로 위장하지 않음. 미실행은 NOT_RUN.
 2. 로컬 워크트리 `node_modules` 정션을 끊고 `pnpm install --frozen-lockfile` 후 T1 전체
 3. GitHub CodeQL / `verify:gate` T2 green
 4. `kyc-withdraw-only` 등 mixed 스텁을 백엔드 전용으로 분할할지
+
+## 추가 증거 (2026-09-10 후속 · HEAD `c5460ef5`)
+
+OpenNext / leftover-browser-harness / strict-webkit CI 실패를 고친 뒤의 로컬 결과. CI T2·CodeQL은 이 SHA에서 아직 안 돌렸으면 NOT_RUN.
+
+| 명령 | exit | 시간 | 결과 | 증거 |
+|---|---|---|---|---|
+| `node tooling/verify/domain-by-path-ci.cjs` | 0 | ~37–74s | PASS | unit 21/21. retired stub은 자기 파일 변경 시 self-run |
+| `pnpm verify:gate:fast` (T0, OpenNext+self-run 커밋) | 0 | ~70–87s | PASS | Husky pre-commit |
+| `node tooling/verify/leftover-browser-harness.cjs` | 0 | <5s | PASS | npm script 복구 후 정적 하니스 |
+| `no-fake-zero-status` · `home-money-read-contract` · `listing-legs-day1` · `notification-prefs-default-on` · `push-channel-prefs` · `observability` · `release-engine-truth-consistency` | 0 | <1s each | PASS | PR vs main 도메인 스텝 사전 실행 |
+| `pnpm verify:gate` (T2, 이 SHA CI) | — | — | NOT_RUN | 이전 CI `15eb08c9` 는 leftover-browser-harness에서 FAIL. 원인: UI 스크립트 삭제 + 도메인 매핑. 위장 PASS 없음 |
+| GitHub CodeQL (`15eb08c9`) | 0 | ~2m | PASS | run 34498025952. 이 SHA는 푸시 후 재확인 |
+| `pnpm verify:gate:push` (T1, 이 SHA) | — | — | NOT_RUN | push 훅에서 실행 예정 |
+
+### CI 수정 (잡 이름 유지 · 게이트 예외 추가 없음)
+
+- `gate.yml` OpenNext 스텝: Next 빌드 대신 putduk-web 위임 echo. 스텝 이름 유지.
+- `leftover-browser-harness` / `axe-harness` / `critical-cross-browser` / `full-product-axe-inventory` npm script 복구. 파일 삭제 없음.
+- 위 4개는 `retired-ui-stubs` 로 도메인 매핑에서 skip (self-run은 유지).
+- `release-integration-contract.yml` `strict-webkit` 잡 이름 유지, Playwright/Next no-op.
+
+### 보안 의존성 (정정)
+
+| 패키지 | 경로 | 조치 |
+|---|---|---|
+| `multer@2.3.0` | `@nestjs/platform-express` (KYC `UploadedFiles`) | `pnpm.overrides`. 숨기기 삭제 아님 |
+| `sharp@0.35.4` | wrangler → miniflare | `pnpm.overrides` + `onlyBuiltDependencies` |
+| `js-yaml` | UI 제거 후 현재 lockfile에 없음 | 삭제로 취약 숨김 아님 |
+| `qs` moderate 2 | express 전이 (GHSA-x5fp-wj9c-mxmx, GHSA-4mjr-xmp4-gh2g) | 미업그레이드. REL-402 auditLevel=high 라 PASS. 예외 추가 없음 |
+
+### PR #222
+
+이 브랜치 변경 경로와 #222 파일 **겹침 0** (gh pr view 222 files vs `origin/main...HEAD`). revert/overwrite 없음.
+
+### 아직 손대지 않음 (REVIEW)
+
+- `release-build.yml` · `deploy-cloudflare.yml`: `workflow_dispatch` only. 웹/ops 빌드 스텝은 남아 있음. **이 작업에서 dispatch/배포 안 함.**
+- mixed 스텁 파일 자체는 삭제하지 않음.
