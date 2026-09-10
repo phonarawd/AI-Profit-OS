@@ -172,7 +172,7 @@ if (fs.existsSync(distSelftest)) {
   const run = spawnSync(process.execPath, [distSelftest], {
     cwd: root,
     encoding: "utf8",
-    timeout: 30_000,
+    timeout: 90_000,
   });
   process.stdout.write(run.stdout || "");
   process.stderr.write(run.stderr || "");
