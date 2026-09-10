@@ -40,6 +40,7 @@ export type ProvenOauthIdentity = {
   provider: OauthProvider;
   providerSubject: string;
   email?: string;
+  bindHash?: string;
 };
 
 export type OauthHttp = {
@@ -170,7 +171,10 @@ export class OauthIdentityService {
     private readonly nowMs: () => number = Date.now,
   ) {}
 
-  async startReady(provider: OauthProvider): Promise<OauthStartView> {
+  async startReady(
+    provider: OauthProvider,
+    bindHash?: string,
+  ): Promise<OauthStartView> {
     const env = loadPhase0Env();
     if (!oauthConfigured(env, provider)) {
       return {
@@ -187,7 +191,7 @@ export class OauthIdentityService {
       hash: hashProofSecret(state),
       expiresAtMs: this.nowMs() + OAUTH_STATE_TTL_MS,
       consumedAtMs: null,
-      payload: { provider },
+      payload: bindHash ? { provider, bindHash } : { provider },
     });
     const redirectUri = oauthRedirectUri(provider, env);
     if (provider === "kakao") {
@@ -223,6 +227,9 @@ export class OauthIdentityService {
   ): Promise<ProvenOauthIdentity> {
     if (body?.providerSubject != null && String(body.providerSubject).length > 0) {
       throw new BadRequestException("caller providerSubject is not identity authority");
+    }
+    if (body?.redirectUri != null || body?.redirect_uri != null) {
+      throw new BadRequestException("oauth redirect is server-owned");
     }
     const state = typeof body.state === "string" ? body.state.trim() : "";
     const code = typeof body.code === "string" ? body.code.trim() : "";
@@ -263,10 +270,15 @@ export class OauthIdentityService {
       throw new BadRequestException("oauth provider subject missing");
     }
     void apiOrigin(env);
+    const bindHash =
+      typeof consumed.payload.bindHash === "string"
+        ? consumed.payload.bindHash
+        : undefined;
     return {
       provider,
       providerSubject: profile.subject,
       email: profile.emailVerified === true ? profile.email : undefined,
+      bindHash,
     };
   }
 }

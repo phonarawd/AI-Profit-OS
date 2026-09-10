@@ -35,6 +35,7 @@ import {
   USER_JWT_ISSUER,
   type OauthProvider,
   type OnboardingStage,
+  type ProfileGender,
 } from "./auth.constants";
 import {
   mintReferralCode,
@@ -45,6 +46,7 @@ import { PrivacyAccountService } from "./privacy-account.service";
 import {
   assertNoForbiddenAuthFields,
   evaluateDeleteAccountGuards,
+  parseProfileGender,
   validateStageA,
   validateStageB,
   type DeleteAccountGuardSnapshot,
@@ -53,6 +55,14 @@ import {
 } from "./auth.stage";
 import { MagicLinkService } from "./magic-link.service";
 import { OauthIdentityService } from "./oauth-identity.service";
+import {
+  assertOauthBind,
+  issueOauthPending,
+  loadOauthPending,
+  termsPresent,
+  termsRequiredBody,
+} from "./oauth-pending-signup";
+import { PostgresOauthPendingStore } from "./oauth-pending-signup.pg";
 import { WebauthnAssertService } from "./webauthn-assert.service";
 import {
   assertPasskeyCredentialUnclaimed,
@@ -83,6 +93,7 @@ export type AuthSessionView = {
   expiresAt: string;
   revoked: boolean;
   onboardingStage: OnboardingStage;
+  gender: ProfileGender | null;
 };
 
 function isUniqueViolation(e: unknown): boolean {
@@ -106,6 +117,7 @@ export class AuthService {
     private readonly magicLink: MagicLinkService,
     private readonly oauthIdentity: OauthIdentityService,
     private readonly webauthn: WebauthnAssertService,
+    private readonly oauthPending: PostgresOauthPendingStore,
   ) {}
 
   /**
@@ -184,7 +196,11 @@ export class AuthService {
     body: Record<string, unknown>,
     opts: { emailAlreadyKnown: boolean },
   ) {
-    const forbidden = assertNoForbiddenAuthFields(body);
+    const genderParsed = parseProfileGender(body.gender);
+    if (!genderParsed.ok) throw new BadRequestException(genderParsed.error);
+    const withoutGender = { ...body };
+    delete withoutGender.gender;
+    const forbidden = assertNoForbiddenAuthFields(withoutGender);
     if (forbidden) throw new BadRequestException(forbidden);
 
     const input = body as unknown as StageBProfileInput;
@@ -195,14 +211,15 @@ export class AuthService {
     await this.db.query(
       `INSERT INTO public.user_profiles (
          user_id, terms_accepted_at, privacy_accepted_at,
-         display_name, birth_date, onboarding_stage
-       ) VALUES ($1::uuid, now(), now(), $2, $3::date, 'B_complete')
+         display_name, birth_date, onboarding_stage, gender
+       ) VALUES ($1::uuid, now(), now(), $2, $3::date, 'B_complete', $4)
        ON CONFLICT (user_id) DO UPDATE
          SET display_name = EXCLUDED.display_name,
              birth_date = EXCLUDED.birth_date,
              onboarding_stage = 'B_complete',
+             gender = COALESCE(EXCLUDED.gender, public.user_profiles.gender),
              updated_at = now()`,
-      [userId, input.displayName, input.birthDate],
+      [userId, input.displayName, input.birthDate, genderParsed.value ?? null],
     );
     if (input.email && !opts.emailAlreadyKnown) {
       await this.db.query(
@@ -219,19 +236,29 @@ export class AuthService {
       );
     }
 
+    const profile = await this.loadSessionProfile(userId);
     return {
       ok: true as const,
       onboardingStage: "B_complete" as const,
+      gender: profile.gender,
     };
   }
 
-  oauthStart(providerRaw: string) {
-    return this.oauthIdentity.startReady(this.parseOauthProvider(providerRaw));
+  oauthStart(providerRaw: string, bindHash?: string) {
+    return this.oauthIdentity.startReady(
+      this.parseOauthProvider(providerRaw),
+      bindHash,
+    );
   }
 
-  async oauthCallback(providerRaw: string, body: Record<string, unknown>) {
+  async oauthCallback(
+    providerRaw: string,
+    body: Record<string, unknown>,
+    bindCookie?: string,
+  ) {
     const provider = this.parseOauthProvider(providerRaw);
     const proven = await this.oauthIdentity.prove(provider, body ?? {});
+    if (proven.bindHash) assertOauthBind(bindCookie, proven.bindHash);
     this.assertDbConfigured();
     const existingOauth = await this.db.query<{ user_id: string }>(
       `SELECT user_id::text FROM public.auth_oauth_identities
@@ -239,15 +266,63 @@ export class AuthService {
       [provider, proven.providerSubject],
     );
     const isExisting = Boolean(existingOauth.rows[0]);
-    const terms = String(body.termsAcceptedAt ?? "");
-    const privacy = String(body.privacyAcceptedAt ?? "");
-    if (!isExisting && (!terms || !privacy)) {
+    if (!isExisting && !termsPresent(body ?? {})) {
+      const pendingToken = await issueOauthPending({
+        store: this.oauthPending,
+        provider,
+        providerSubject: proven.providerSubject,
+        emailFromProvider: proven.email,
+        bindHash: proven.bindHash ?? "",
+        nowMs: Date.now(),
+      });
+      termsRequiredBody(pendingToken);
+    }
+    return this.finishOauthSignup(provider, proven.providerSubject, proven.email, body ?? {});
+  }
+
+  async oauthComplete(
+    providerRaw: string,
+    body: Record<string, unknown>,
+    bindCookie?: string,
+  ) {
+    const provider = this.parseOauthProvider(providerRaw);
+    if (!termsPresent(body ?? {})) {
       throw new BadRequestException("TERMS_REQUIRED");
     }
+    this.assertDbConfigured();
+    const pending = await loadOauthPending({
+      store: this.oauthPending,
+      provider,
+      pendingToken: String(body.pendingToken ?? ""),
+      bindCookie,
+      nowMs: Date.now(),
+    });
+    if (pending.userId) {
+      return this.sessionMintView(pending.userId);
+    }
+    const out = await this.finishOauthSignup(
+      provider,
+      pending.providerSubject,
+      pending.emailFromProvider,
+      body ?? {},
+    );
+    await this.oauthPending.markUser(pending.tokenHash, out.session.userId);
+    await this.oauthPending.consumeCreate(pending.tokenHash, Date.now());
+    return out;
+  }
+
+  private async finishOauthSignup(
+    provider: OauthProvider,
+    providerSubject: string,
+    email: string | undefined,
+    body: Record<string, unknown>,
+  ) {
+    const terms = String(body.termsAcceptedAt ?? "");
+    const privacy = String(body.privacyAcceptedAt ?? "");
     const { userId, isNew } = await this.findOrCreateUserByOauth(
       provider,
-      proven.providerSubject,
-      proven.email,
+      providerSubject,
+      email,
     );
     if (isNew) {
       await this.provisionLedgerBucketsForUser(userId);
@@ -258,21 +333,10 @@ export class AuthService {
         marketingConsent: Boolean(body.marketingConsent),
         referralCode:
           typeof body.referralCode === "string" ? body.referralCode : undefined,
-        oauth: { provider, providerSubject: proven.providerSubject, email: proven.email },
+        oauth: { provider, providerSubject, email },
       });
     }
-    const { accessToken, session } = await this.mintSession(userId);
-    return {
-      ok: true as const,
-      stage: "A" as const,
-      onboarding:
-        session.onboardingStage === "B_complete"
-          ? ("complete" as const)
-          : ("incomplete" as const),
-      session,
-      accessToken,
-      issuer: USER_JWT_ISSUER,
-    };
+    return this.sessionMintView(userId);
   }
 
   passkeyOptions(kind: "register" | "authenticate") {
@@ -416,7 +480,7 @@ export class AuthService {
       // this must read as revoked, not as a healthy active session.
       revoked = r.rows[0] ? r.rows[0].revoked === true : true;
     }
-    const onboardingStage = await this.loadOnboardingStage(sessionUser.userId);
+    const profile = await this.loadSessionProfile(sessionUser.userId);
     return {
       sessionId: sessionUser.sessionId,
       userId: sessionUser.userId,
@@ -424,7 +488,8 @@ export class AuthService {
       issuedAt: sessionUser.issuedAt,
       expiresAt: sessionUser.expiresAt,
       revoked,
-      onboardingStage,
+      onboardingStage: profile.onboardingStage,
+      gender: profile.gender,
     };
   }
 
@@ -704,7 +769,7 @@ export class AuthService {
       );
     }
 
-    const onboardingStage = await this.loadOnboardingStage(userId);
+    const profile = await this.loadSessionProfile(userId);
     return {
       accessToken,
       session: {
@@ -714,7 +779,8 @@ export class AuthService {
         issuedAt: issuedAt.toISOString(),
         expiresAt: expiresAt.toISOString(),
         revoked: false,
-        onboardingStage,
+        onboardingStage: profile.onboardingStage,
+        gender: profile.gender,
       },
     };
   }
@@ -744,13 +810,23 @@ export class AuthService {
     );
   }
 
-  private async loadOnboardingStage(userId: string): Promise<OnboardingStage> {
-    if (!this.db.configured()) return "A";
-    const r = await this.db.query<{ onboarding_stage: OnboardingStage }>(
-      `SELECT onboarding_stage FROM public.user_profiles WHERE user_id = $1::uuid`,
+  private async loadSessionProfile(userId: string): Promise<{
+    onboardingStage: OnboardingStage;
+    gender: ProfileGender | null;
+  }> {
+    if (!this.db.configured()) return { onboardingStage: "A", gender: null };
+    const r = await this.db.query<{
+      onboarding_stage: OnboardingStage;
+      gender: ProfileGender | null;
+    }>(
+      `SELECT onboarding_stage, gender FROM public.user_profiles WHERE user_id = $1::uuid`,
       [userId],
     );
-    return r.rows[0]?.onboarding_stage ?? "A";
+    const gender = r.rows[0]?.gender;
+    return {
+      onboardingStage: r.rows[0]?.onboarding_stage ?? "A",
+      gender: gender === "male" || gender === "female" ? gender : null,
+    };
   }
 
   private assertDbConfigured(): void {

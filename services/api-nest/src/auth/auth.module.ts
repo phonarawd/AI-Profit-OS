@@ -11,6 +11,7 @@ import { AuthService } from "./auth.service";
 import { PrivacyAccountService } from "./privacy-account.service";
 import { MagicLinkService } from "./magic-link.service";
 import { OauthIdentityService, defaultOauthHttp } from "./oauth-identity.service";
+import { PostgresOauthPendingStore } from "./oauth-pending-signup.pg";
 import { WebauthnAssertService } from "./webauthn-assert.service";
 import { PostgresProofStore } from "./identity-proof.store";
 
@@ -33,6 +34,7 @@ import { PostgresProofStore } from "./identity-proof.store";
         new MagicLinkService(store, resend),
       inject: [PostgresProofStore, ResendEmailProvider],
     },
+    PostgresOauthPendingStore,
     {
       provide: OauthIdentityService,
       useFactory: (store: PostgresProofStore) =>

@@ -44,6 +44,16 @@ if (!oauth.includes("tokenExchange") || !oauth.includes("fetchProfile")) {
 if (!oauth.includes("caller providerSubject is not identity authority")) {
   fails.push("oauth must reject caller providerSubject");
 }
+if (!oauth.includes("oauth redirect is server-owned")) {
+  fails.push("oauth must reject caller redirectUri");
+}
+const pending = read("services/api-nest/src/auth/oauth-pending-signup.ts");
+if (!pending.includes("TERMS_REQUIRED") || !pending.includes("pendingToken")) {
+  fails.push("oauth pending signup must return TERMS_REQUIRED + pendingToken");
+}
+if (!ctrl.includes("AUTH_ROUTES.oauthComplete") || !svc.includes("oauthComplete")) {
+  fails.push("oauth complete route must convert pending to a session");
+}
 if (ctrl.includes("providerSubject: String(body.providerSubject")) {
   fails.push("oauth callback must not trust body.providerSubject");
 }
