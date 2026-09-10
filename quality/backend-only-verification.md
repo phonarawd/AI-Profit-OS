@@ -119,3 +119,23 @@ OpenNext / leftover-browser-harness / strict-webkit CI 실패를 고친 뒤의 �
 
 - `release-build.yml` · `deploy-cloudflare.yml`: `workflow_dispatch` only. 웹/ops 빌드 스텝은 남아 있음. **이 작업에서 dispatch/배포 안 함.**
 - mixed 스텁 파일 자체는 삭제하지 않음.
+
+## CI 증거 (SHA `8c8b9720` · 2026-09-10)
+
+푸시 후 GitHub `gate.yml` / required checks. 위장 PASS 없음.
+
+| 명령 | exit | 시간 | 결과 | 증거 |
+|---|---|---|---|---|
+| `pnpm verify:gate:push` (T1, push 훅) | 0 | ~80s | PASS | 20 steps · 로컬 Husky |
+| GitHub `pnpm verify:gate` (T2 스텝) | 0 | job 2m53s | PASS | [run 34501020151](https://github.com/phonarawd/AI-Profit-OS/actions/runs/34501020151) verify-gate |
+| OpenNext build:cf 스텝 | 0 | no-op | PASS | 같은 job · Next 빌드 없음 |
+| `release-integration-contract` strict-webkit | 0 | 4s | PASS | [run 34501020015](https://github.com/phonarawd/AI-Profit-OS/actions/runs/34501020015) · 잡 이름 유지 |
+| CodeQL analyze | 0 | 1m56s | PASS | [run 34501020184](https://github.com/phonarawd/AI-Profit-OS/actions/runs/34501020184) |
+| UI 워크플로 4개 (axe/cross-browser/spark/worldclass) | 0 | ≤4s | PASS | 잡 이름 유지 · Next/Playwright no-op |
+| unit/integration 전체 스위트 | — | — | NOT_RUN | api-nest 일부 runtime은 T1 내 PASS |
+| withdrawal idempotency 전용 | — | — | NOT_RUN | |
+| membership/benefits 전용 | — | — | NOT_RUN | |
+| migration apply (prod) | — | — | NOT_RUN | 금지. 초안만 유지 |
+| `release-build.yml` / `deploy-cloudflare.yml` | — | — | NOT_RUN | workflow_dispatch only · 이 작업에서 실행 안 함 |
+
+PR: https://github.com/phonarawd/AI-Profit-OS/pull/223 · **머지 안 함** · #222와 파일 겹침 0
