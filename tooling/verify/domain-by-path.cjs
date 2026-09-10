@@ -1658,7 +1658,8 @@ function scriptsForChangedFiles(files) {
     for (const rule of RULES) {
       if (rule.test(file)) {
         for (const script of rule.scripts) {
-          if (isRetiredUiStub(script)) continue;
+          const self = file.replace(/\\/g, "/") === "tooling/verify/" + script;
+          if (isRetiredUiStub(script) && !self) continue;
           scripts.add(script);
         }
       }
