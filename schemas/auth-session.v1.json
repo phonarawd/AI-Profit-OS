@@ -56,6 +56,14 @@
     },
     "refreshJti": {
       "type": "string"
+    },
+    "onboardingStage": {
+      "type": "string",
+      "enum": ["A", "B_incomplete", "B_complete"]
+    },
+    "gender": {
+      "type": ["string", "null"],
+      "enum": ["male", "female", null]
     }
   }
 }

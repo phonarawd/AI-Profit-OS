@@ -12,9 +12,10 @@ import {
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { COMPLIANCE_USER_ROUTES } from "./compliance.routes";
+import { KYC_MAX_FILE_BYTES } from "./kyc-upload.contract";
 import { KycService } from "./kyc.service";
 
-type UploadPart = { buffer?: Buffer };
+type UploadPart = { buffer?: Buffer; mimetype?: string; originalname?: string };
 
 type SessionReq = {
   user?: { userId?: string; sub?: string };
@@ -35,14 +36,17 @@ export class KycController {
     return this.kyc.getStatus(this.sessionUserId(req));
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post(COMPLIANCE_USER_ROUTES.kycSubmit)
   @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: "idDoc", maxCount: 1 },
-      { name: "selfie", maxCount: 1 },
-    ]),
+    FileFieldsInterceptor(
+      [
+        { name: "idDoc", maxCount: 1 },
+        { name: "selfie", maxCount: 1 },
+      ],
+      { limits: { fileSize: KYC_MAX_FILE_BYTES, files: 2 } },
+    ),
   )
+  @UseGuards(JwtAuthGuard)
   submit(
     @Body() body: Record<string, unknown>,
     @Req() req: SessionReq,
@@ -63,14 +67,20 @@ export class KycController {
         ? Buffer.from(body.selfieBase64, "base64")
         : undefined;
 
+    const idDocBytes = idFromFile ?? idFromB64 ?? Buffer.alloc(0);
+    const selfieBytes = selfieFromFile ?? selfieFromB64 ?? Buffer.alloc(0);
     return this.kyc.submit({
       userId: this.sessionUserId(req),
       legalName: String(body.legalName ?? ""),
       phoneE164: String(body.phoneE164 ?? ""),
       birthDate: String(body.birthDate ?? ""),
       idDocType: String(body.idDocType ?? ""),
-      idDocBytes: idFromFile ?? idFromB64 ?? Buffer.alloc(0),
-      selfieBytes: selfieFromFile ?? selfieFromB64,
+      idDocBytes,
+      selfieBytes,
+      idDocMime: files?.idDoc?.[0]?.mimetype,
+      idDocName: files?.idDoc?.[0]?.originalname,
+      selfieMime: files?.selfie?.[0]?.mimetype,
+      selfieName: files?.selfie?.[0]?.originalname,
     });
   }
 

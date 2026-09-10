@@ -6,9 +6,13 @@
 import {
   FORBIDDEN_USER_AUTH_FIELDS,
   STAGE_B_MIN_AGE_YEARS,
+  parseProfileGender,
   type OnboardingStage,
+  type ProfileGender,
 } from "./auth.constants";
 import { isValidEmail } from "./identity-proof.email";
+
+export { parseProfileGender };
 
 /** Stage A (즉시 가입) — required + optional */
 export const STAGE_A_REQUIRED_FIELDS = [
@@ -60,6 +64,7 @@ export type StageBProfileInput = {
   phoneE164: string;
   birthDate: string;
   email?: string;
+  gender?: ProfileGender;
 };
 
 export type StageGateCapability =

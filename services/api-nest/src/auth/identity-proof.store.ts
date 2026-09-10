@@ -64,7 +64,11 @@ export class MemoryProofStore implements ProofChallengeStore {
 
 function namespaceEmail(kind: ProofKind, payload: Record<string, unknown>): string {
   if (kind === "magic_link") return String(payload.email ?? "");
-  if (kind === "oauth_state") return `oauth:${String(payload.provider ?? "")}`;
+  if (kind === "oauth_state") {
+    const provider = String(payload.provider ?? "");
+    const bindHash = String(payload.bindHash ?? "");
+    return bindHash ? `oauth:${provider}:${bindHash}` : `oauth:${provider}`;
+  }
   return `webauthn:${String(payload.webauthnKind ?? "challenge")}`;
 }
 
@@ -75,12 +79,17 @@ function parseNamespaced(
   consumedAtMs: number | null,
 ): ProofRecord {
   if (email.startsWith("oauth:")) {
+    const rest = email.slice("oauth:".length);
+    const sep = rest.indexOf(":");
     return {
       kind: "oauth_state",
       hash,
       expiresAtMs,
       consumedAtMs,
-      payload: { provider: email.slice("oauth:".length) },
+      payload:
+        sep === -1
+          ? { provider: rest }
+          : { provider: rest.slice(0, sep), bindHash: rest.slice(sep + 1) },
     };
   }
   if (email.startsWith("webauthn:")) {

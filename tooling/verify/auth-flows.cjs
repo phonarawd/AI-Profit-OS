@@ -82,6 +82,7 @@ const needPaths = [
   "refresh",
   "oauth/:provider/start",
   "oauth/:provider/callback",
+  "oauth/:provider/complete",
   "passkey/register/options",
   "passkey/authenticate/options",
   "magic-link/request",

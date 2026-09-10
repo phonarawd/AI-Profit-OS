@@ -12,14 +12,18 @@ import {
 import { loadPhase0Env } from "../config/phase0.env";
 import {
   ACCESS_TOKEN_TTL_SEC,
+  OAUTH_BIND_COOKIE_NAME,
   USER_SESSION_COOKIE_NAME,
 } from "./auth.constants";
+import { OAUTH_PENDING_TTL_MS, hashOauthBind } from "./oauth-pending-signup";
+import { randomProofSecret } from "./identity-proof.crypto";
 import { AUTH_ROUTES } from "./auth.routes";
 import { AuthService } from "./auth.service";
 import { AuthRateLimitGuard } from "./auth-rate-limit.guard";
 import { JwtAuthGuard, type SessionUser } from "./jwt-auth.guard";
 
 type AuthedRequest = { user: SessionUser };
+type CookieRequest = { cookies?: Record<string, string | undefined> };
 
 type SessionMintBody = { accessToken?: string };
 
@@ -56,6 +60,22 @@ function attachUserSessionCookie(
 
 function clearUserSessionCookie(res: CookieResponse): void {
   res.clearCookie(USER_SESSION_COOKIE_NAME, { path: "/" });
+}
+
+function attachOauthBindCookie(res: CookieResponse, bindSecret: string): void {
+  const env = loadPhase0Env();
+  res.cookie(OAUTH_BIND_COOKIE_NAME, bindSecret, {
+    httpOnly: true,
+    secure: env.nodeEnv === "production",
+    sameSite: "lax",
+    maxAge: OAUTH_PENDING_TTL_MS,
+    path: "/",
+  });
+}
+
+function readOauthBind(req: CookieRequest): string | undefined {
+  const value = req.cookies?.[OAUTH_BIND_COOKIE_NAME];
+  return typeof value === "string" && value.trim() ? value.trim() : undefined;
 }
 
 /**
@@ -120,19 +140,44 @@ export class AuthController {
   }
 
   @Post(AUTH_ROUTES.oauthStart)
-  oauthStart(@Param("provider") provider: string) {
-    return this.auth.oauthStart(provider);
+  oauthStart(
+    @Param("provider") provider: string,
+    @Res({ passthrough: true }) res: CookieResponse,
+  ) {
+    const bindSecret = randomProofSecret();
+    attachOauthBindCookie(res, bindSecret);
+    return this.auth.oauthStart(provider, hashOauthBind(bindSecret));
   }
 
   @Post(AUTH_ROUTES.oauthCallback)
   async oauthCallback(
     @Param("provider") provider: string,
     @Body() body: Record<string, unknown>,
+    @Req() req: CookieRequest,
     @Res({ passthrough: true }) res: CookieResponse,
   ) {
     const out = (await this.auth.oauthCallback(
       provider,
       body ?? {},
+      readOauthBind(req),
+    )) as SessionMintBody;
+    if (typeof out.accessToken === "string") {
+      attachUserSessionCookie(res, out.accessToken);
+    }
+    return out;
+  }
+
+  @Post(AUTH_ROUTES.oauthComplete)
+  async oauthComplete(
+    @Param("provider") provider: string,
+    @Body() body: Record<string, unknown>,
+    @Req() req: CookieRequest,
+    @Res({ passthrough: true }) res: CookieResponse,
+  ) {
+    const out = (await this.auth.oauthComplete(
+      provider,
+      body ?? {},
+      readOauthBind(req),
     )) as SessionMintBody;
     if (typeof out.accessToken === "string") {
       attachUserSessionCookie(res, out.accessToken);

@@ -7,6 +7,13 @@ import { OauthIdentityService, type OauthHttp } from "./oauth-identity.service";
 import { WebauthnAssertService } from "./webauthn-assert.service";
 import { MemoryProofStore } from "./identity-proof.store";
 import {
+  MemoryOauthPendingStore,
+  hashOauthBind,
+  issueOauthPending,
+  loadOauthPending,
+  termsPresent,
+} from "./oauth-pending-signup";
+import {
   EMAIL_MAX_LEN,
   exportSpkiDer,
   generateTestEs256,
@@ -344,6 +351,9 @@ async function run(): Promise<void> {
       started.status === "ready"
         ? new URL(started.authorizeUrl).searchParams.get("state") ?? ""
         : "";
+    await expectThrow("oauth caller redirect forbidden", () =>
+      oauth.prove("google", { code: "g-code", state, redirectUri: "https://evil.test" }),
+    );
     const proven = await oauth.prove("google", {
       code: "g-code",
       state,
@@ -356,6 +366,9 @@ async function run(): Promise<void> {
     } else {
       fail("google prove", JSON.stringify(proven));
     }
+    await expectThrow("google state one-time", () =>
+      oauth.prove("google", { code: "g-code-2", state }),
+    );
   }
 
   // ── WebAuthn ──
@@ -605,6 +618,68 @@ async function run(): Promise<void> {
           }),
         },
       ),
+    );
+  }
+
+  {
+    if (!termsPresent({}) && termsPresent({
+      termsAcceptedAt: "2026-01-01T00:00:00.000Z",
+      privacyAcceptedAt: "2026-01-01T00:00:00.000Z",
+    })) {
+      pass("oauth terms timestamps required");
+    } else {
+      fail("oauth terms timestamps required", "termsPresent mismatch");
+    }
+    const store = new MemoryOauthPendingStore();
+    const bind = "bind-secret-value-32bytes-minimum";
+    const token = await issueOauthPending({
+      store,
+      provider: "google",
+      providerSubject: "sub-self",
+      bindHash: hashOauthBind(bind),
+      nowMs: 1_000,
+    });
+    const loaded = await loadOauthPending({
+      store,
+      provider: "google",
+      pendingToken: token,
+      bindCookie: bind,
+      nowMs: 1_001,
+    });
+    if (loaded.providerSubject === "sub-self" && !loaded.userId) {
+      pass("oauth pending load before account");
+    } else {
+      fail("oauth pending load before account", JSON.stringify(loaded));
+    }
+    const again = await loadOauthPending({
+      store,
+      provider: "google",
+      pendingToken: token,
+      bindCookie: bind,
+      nowMs: 1_002,
+    });
+    if (again.providerSubject === "sub-self") {
+      pass("oauth pending retry before markUser");
+    } else {
+      fail("oauth pending retry before markUser", JSON.stringify(again));
+    }
+    await expectThrow("oauth pending expired", () =>
+      loadOauthPending({
+        store,
+        provider: "google",
+        pendingToken: token,
+        bindCookie: bind,
+        nowMs: 1_000 + 11 * 60 * 1000,
+      }),
+    );
+    await expectThrow("oauth pending bind mismatch", () =>
+      loadOauthPending({
+        store,
+        provider: "google",
+        pendingToken: token,
+        bindCookie: "other-browser",
+        nowMs: 1_003,
+      }),
     );
   }
 

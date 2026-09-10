@@ -1,4 +1,5 @@
 import { Controller, Get } from "@nestjs/common";
+import { nestBuildInfo } from "./config/nest-build-info";
 import { nestProvenance } from "./config/nest-provenance";
 import { assertSupabaseRegionOrWarn, loadPhase0Env } from "./config/phase0.env";
 import { PostgresService } from "./db/postgres";
@@ -18,10 +19,14 @@ export class HealthController {
     const regionWarn = assertSupabaseRegionOrWarn(env);
     const [db, cache] = await Promise.all([this.pg.ping(), this.redis.ping()]);
     const provenance = nestProvenance();
+    const build = nestBuildInfo();
 
     return publicHealthBody({
       gitSha: provenance.gitSha,
       gitShaSource: provenance.gitShaSource,
+      environment: env.nodeEnv,
+      version: build.version,
+      buildTime: build.buildTime,
       dbConfigured: this.pg.configured(),
       dbOk: db.ok === true,
       redisConfigured: this.redis.configured(),

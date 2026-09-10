@@ -40,7 +40,7 @@
       "rawCountDelta": 0
     }
   ],
-  "note": "versions[] = canonical local version prefixes corresponding to remote-applied schema truth. committedUnapplied[] = repo-only migrations awaiting their authorized production apply (0 after REL-701-DB). remoteRawAppliedCount preserves the actual schema_migrations row count. remoteHistoricalMappings explicitly records every remote version alias/history row that has no same-version local file (5 aliases · never renamed · never reapplied · never repaired). 2026-08-24 reconciliation restored the exact remote-applied SQL for krw_deposit_fx_facts and beginner_onboarding_experience into the repo. 2026-09-04 02:34 UTC REL-701-DB: Founder-authorized `supabase db push --include-all` applied the 12 committedUnapplied migrations to Production in version order (43 → 55 rows · head unchanged · alias rows intact · 93 public tables unchanged · only net schema delta = withdraw_stepup_challenges.token_consumed_at + withdraw_stepup_challenges_token_unspent_idx). Evidence = rel701db below.",
+  "note": "versions[] = canonical local version prefixes corresponding to remote-applied schema truth. committedUnapplied[] = repo-only migrations awaiting their authorized production apply. remoteRawAppliedCount preserves the actual schema_migrations row count. remoteHistoricalMappings explicitly records every remote version alias/history row that has no same-version local file (5 aliases · never renamed · never reapplied · never repaired). 2026-08-24 reconciliation restored the exact remote-applied SQL for krw_deposit_fx_facts and beginner_onboarding_experience into the repo. 2026-09-04 02:34 UTC REL-701-DB: Founder-authorized `supabase db push --include-all` applied the 12 committedUnapplied migrations to Production in version order (43 → 55 rows · head unchanged · alias rows intact · 93 public tables unchanged · only net schema delta = withdraw_stepup_challenges.token_consumed_at + withdraw_stepup_challenges_token_unspent_idx). Evidence = rel701db below. 2026-09-10: committedUnapplied에 oauth_pending_signup·user_profile_gender 추가(작성·검증만 · 운영 미적용).",
   "rel701db": {
     "status": "APPLIED",
     "appliedAtUtc": "2026-09-04T02:33:15Z",
@@ -127,5 +127,8 @@
     "20260902032000",
     "20260902155632"
   ],
-  "committedUnapplied": []
+  "committedUnapplied": [
+    "20260910083000",
+    "20260910090000"
+  ]
 }

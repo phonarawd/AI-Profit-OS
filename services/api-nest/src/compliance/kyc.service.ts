@@ -34,6 +34,7 @@ import {
   type KycStatusV1,
   type KycSubmissionV1,
 } from "./compliance.types";
+import { assertKycUploadPair } from "./kyc-upload.contract";
 
 type StatusRow = {
   user_id: string;
@@ -107,6 +108,10 @@ export class KycService {
     idDocType: string;
     idDocBytes: Buffer;
     selfieBytes?: Buffer;
+    idDocMime?: string;
+    idDocName?: string;
+    selfieMime?: string;
+    selfieName?: string;
   }): Promise<KycSubmissionV1> {
     if (!input.userId) throw new BadRequestException("userId required");
     const legalName = (input.legalName ?? "").trim();
@@ -121,9 +126,20 @@ export class KycService {
       throw new BadRequestException("idDocType must be kr_id|driver|passport");
     }
     // NEVER: rrnFull · gender · publicUrl
-    if (!input.idDocBytes?.length) {
-      throw new BadRequestException("id document bytes required");
-    }
+    assertKycUploadPair({
+      idDoc: {
+        bytes: input.idDocBytes,
+        mime: input.idDocMime,
+        originalName: input.idDocName,
+      },
+      selfie: input.selfieBytes
+        ? {
+            bytes: input.selfieBytes,
+            mime: input.selfieMime,
+            originalName: input.selfieName,
+          }
+        : undefined,
+    });
 
     const current = await this.getStatus(input.userId);
     if (current.kycStatus === "pending") {
