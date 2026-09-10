@@ -203,16 +203,12 @@ if (!phaseRule.includes("NATS")) {
   fails.push("phase-activation.mdc must mention NATS phase boundary");
 }
 
-// PART9-pre needle — web /api/v1 → API_HOST · /ads rewrite 보존
-const webNextCfg = read("apps/web/next.config.ts");
-if (!webNextCfg.includes("/ads") || !webNextCfg.includes("/l/")) {
-  fails.push("apps/web/next.config.ts must preserve /ads → /l rewrites");
+// Customer Next rewrite SSOT is phonarawd/putduk-web — this repo must not host apps/web.
+if (fs.existsSync(path.join(root, "apps/web"))) {
+  fails.push("backend-only repo must not contain apps/web (customer web is putduk-web)");
 }
-if (!webNextCfg.includes("/api/v1/:path*")) {
-  fails.push("apps/web/next.config.ts must rewrite /api/v1/:path* → API_HOST");
-}
-if (!webNextCfg.includes("API_HOST")) {
-  fails.push("apps/web/next.config.ts /api/v1 rewrite must use API_HOST");
+if (fs.existsSync(path.join(root, "apps/admin"))) {
+  fails.push("backend-only repo must not contain apps/admin (future separate admin repo)");
 }
 
 if (fails.length) {

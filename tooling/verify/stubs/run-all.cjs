@@ -3,6 +3,7 @@ const { spawnSync } = require("child_process");
 const path = require("path");
 
 const root = path.resolve(__dirname, "../..");
+const { RETIRED_UI_ONLY_STUBS, RETIRED_MIXED_UI_STUBS } = require("../lib/retired-ui-stubs.cjs");
 const live = [
   "cta-earn-profit.cjs",
   "user-trader-jargon-0.cjs",
@@ -163,6 +164,11 @@ const live = [
 
 let failed = false;
 for (const step of live) {
+  if (RETIRED_UI_ONLY_STUBS.has(step) || RETIRED_MIXED_UI_STUBS.has(step)) {
+    console.log("[verify:stubs] SKIP retired UI surface " + step);
+    continue;
+  }
+
   const r = spawnSync(process.execPath, [path.join(__dirname, "..", step)], {
     cwd: root,
     encoding: "utf8",

@@ -10,6 +10,7 @@ const fs = require("fs");
 const path = require("path");
 
 const root = path.resolve(__dirname, "../..");
+const { isRetiredUiStub } = require("./lib/retired-ui-stubs.cjs");
 
 /** @type {{ test: (file: string) => boolean, scripts: string[] }[]} */
 const RULES = [
@@ -1656,7 +1657,10 @@ function scriptsForChangedFiles(files) {
     if (isRetiredUiPath(file)) continue;
     for (const rule of RULES) {
       if (rule.test(file)) {
-        for (const script of rule.scripts) scripts.add(script);
+        for (const script of rule.scripts) {
+          if (isRetiredUiStub(script)) continue;
+          scripts.add(script);
+        }
       }
     }
   }

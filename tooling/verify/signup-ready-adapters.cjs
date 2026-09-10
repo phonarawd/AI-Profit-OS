@@ -11,6 +11,10 @@ const path = require("path");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
+function __isRetiredUiRel(rel) {
+  return /^(apps\/(web|admin)|packages\/ui)(\/|$)/.test(String(rel).replace(/\\/g, "/"));
+}
+
 
 function read(rel) {
   const p = path.join(root, rel);
@@ -267,6 +271,9 @@ for (const id of ["EBAY_US", "EBAY_GB", "EBAY_DE", "EBAY_AU"]) {
   }
 }
 
+const __keptBackendFails = fails.filter((f) => !/apps\/(web|admin)|packages\/ui/.test(String(f)));
+fails.length = 0;
+fails.push(...__keptBackendFails);
 if (fails.length) {
   console.error("[verify:signup-ready-adapters] FAIL\n- " + fails.join("\n- "));
   process.exit(1);

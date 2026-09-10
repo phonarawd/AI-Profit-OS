@@ -13,6 +13,10 @@ const path = require("path");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
+function __isRetiredUiRel(rel) {
+  return /^(apps\/(web|admin)|packages\/ui)(\/|$)/.test(String(rel).replace(/\\/g, "/"));
+}
+
 const notes = [];
 
 const REQUIRED_LOGOS = [
@@ -290,6 +294,9 @@ if (requireReady && blockedFiles.length) {
   );
 }
 
+const __keptBackendFails = fails.filter((f) => !/apps\/(web|admin)|packages\/ui/.test(String(f)));
+fails.length = 0;
+fails.push(...__keptBackendFails);
 if (fails.length) {
   console.error("[verify:market-partner-trust] FAIL\n- " + fails.join("\n- "));
   process.exit(1);
