@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-09-11T19:27:24.097Z",
- "headSha": "5407260f11359d674a70b7dcf603b92cae8f52b6",
+ "generatedAt": "2026-09-11T20:06:24.903Z",
+ "headSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
  "generator": "tooling/backend/ownership-graph.cjs",
  "overrides": "tooling/backend/ownership-overrides.json",
  "inputs": {
@@ -7327,8 +7327,8 @@
     "tooling/backend/ownership-overrides.json|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-08-10T04:09:53+09:00",
-   "lastCommitSha": "8127046d1de45333a76e10a8abf988f7dd3672ce",
+   "lastCommit": "2026-09-12T05:04:37+09:00",
+   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
    "sizeBytes": 906,
    "refSummary": {
     "deletedUiRefs": [],
@@ -7387,8 +7387,8 @@
     "tooling/verify/webauthn-fallback-pointer.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-08-21T04:17:32+09:00",
-   "lastCommitSha": "44dfc341bcb8e12fc26b0165dce5429c9fb90d8c",
+   "lastCommit": "2026-09-12T05:04:37+09:00",
+   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
    "sizeBytes": 10564,
    "refSummary": {
     "deletedUiRefs": [],
@@ -8609,8 +8609,8 @@
     "tooling/verify/rc-formal.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T13:22:36+09:00",
-   "lastCommitSha": "720e7d54b9d5f0727266fc8388fb4cbc6e73ed90",
+   "lastCommit": "2026-09-12T05:04:37+09:00",
+   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
    "sizeBytes": 1203,
    "refSummary": {
     "deletedUiRefs": [],
@@ -8672,8 +8672,8 @@
     "tooling/backend/ownership-overrides.json|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-01T03:38:53+09:00",
-   "lastCommitSha": "4c29baeef5fafea6d61226ddabe1e3891056de60",
+   "lastCommit": "2026-09-12T05:04:37+09:00",
+   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
    "sizeBytes": 23,
    "refSummary": {
     "deletedUiRefs": [],
@@ -8940,8 +8940,8 @@
     "tooling/backend/ownership-overrides.json|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-08-09T06:54:34+09:00",
-   "lastCommitSha": "0eaa5a17413da2d4f8d6852200608d5fc7274602",
+   "lastCommit": "2026-09-12T05:04:37+09:00",
+   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
    "sizeBytes": 455,
    "refSummary": {
     "deletedUiRefs": [],
@@ -8994,8 +8994,8 @@
     "tooling/recovery/classify-local-state.cjs|deploy-cmd"
    ],
    "blockers": [],
-   "lastCommit": "2026-08-10T04:09:53+09:00",
-   "lastCommitSha": "8127046d1de45333a76e10a8abf988f7dd3672ce",
+   "lastCommit": "2026-09-12T05:04:37+09:00",
+   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
    "sizeBytes": 4231,
    "refSummary": {
     "deletedUiRefs": [],
@@ -31346,9 +31346,9 @@
     "tooling/verify/CATALOG.md|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-12T01:45:18+09:00",
-   "lastCommitSha": "5407260f11359d674a70b7dcf603b92cae8f52b6",
-   "sizeBytes": 8130,
+   "lastCommit": "2026-09-12T05:04:37+09:00",
+   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
+   "sizeBytes": 470,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -32106,9 +32106,9 @@
     "tooling/backend/ownership-graph.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-12T01:45:18+09:00",
-   "lastCommitSha": "5407260f11359d674a70b7dcf603b92cae8f52b6",
-   "sizeBytes": 2998841,
+   "lastCommit": "2026-09-12T05:04:37+09:00",
+   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
+   "sizeBytes": 2998319,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -32172,9 +32172,9 @@
     "tooling/verify/workers-typecheck.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-12T01:45:18+09:00",
-   "lastCommitSha": "5407260f11359d674a70b7dcf603b92cae8f52b6",
-   "sizeBytes": 4730984,
+   "lastCommit": "2026-09-12T05:04:37+09:00",
+   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
+   "sizeBytes": 4722172,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -77242,8 +77242,8 @@
     "package.json|pkg-script|backend:ownership-graph"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T22:01:58+09:00",
-   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
+   "lastCommit": "2026-09-12T05:04:37+09:00",
+   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
    "sizeBytes": 91544,
    "refSummary": {
     "deletedUiRefs": [
@@ -77450,8 +77450,8 @@
     "tooling/backend/ownership-graph.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-12T01:23:24+09:00",
-   "lastCommitSha": "cc50e4cf971f2ba1510de9d57ffd30fad30fa6b1",
+   "lastCommit": "2026-09-12T05:04:37+09:00",
+   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
    "sizeBytes": 29827,
    "refSummary": {
     "deletedUiRefs": [
@@ -77565,8 +77565,8 @@
     ".github/workflows/backend-ci.yml|workflow-run|verify:backend-boundary"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-12T01:23:24+09:00",
-   "lastCommitSha": "cc50e4cf971f2ba1510de9d57ffd30fad30fa6b1",
+   "lastCommit": "2026-09-12T05:04:37+09:00",
+   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
    "sizeBytes": 25511,
    "refSummary": {
     "deletedUiRefs": [
@@ -78162,8 +78162,8 @@
     "package.json|pkg-script|cf:preflight"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T22:01:58+09:00",
-   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
+   "lastCommit": "2026-09-12T05:04:37+09:00",
+   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
    "sizeBytes": 1744,
    "refSummary": {
     "deletedUiRefs": [],
@@ -86053,8 +86053,8 @@
     "workers/push-dispatcher/src/lib/dispatch.d.cts|verifier-reads|tooling/pwa"
    ],
    "blockers": [],
-   "lastCommit": "2026-08-21T04:51:54+09:00",
-   "lastCommitSha": "d1c6fe282757c552f0caa0834919c3dd3b72d364",
+   "lastCommit": "2026-09-12T05:04:37+09:00",
+   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
    "sizeBytes": 1156,
    "refSummary": {
     "deletedUiRefs": [],
@@ -86105,8 +86105,8 @@
     "workers/push-dispatcher/src/lib/dispatch.d.cts|verifier-reads|tooling/pwa"
    ],
    "blockers": [],
-   "lastCommit": "2026-08-21T04:51:54+09:00",
-   "lastCommitSha": "d1c6fe282757c552f0caa0834919c3dd3b72d364",
+   "lastCommit": "2026-09-12T05:04:37+09:00",
+   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
    "sizeBytes": 1050,
    "refSummary": {
     "deletedUiRefs": [],
@@ -86364,8 +86364,8 @@
     "workers/push-dispatcher/src/lib/dispatch.d.cts|verifier-reads|tooling/pwa"
    ],
    "blockers": [],
-   "lastCommit": "2026-08-21T04:42:02+09:00",
-   "lastCommitSha": "c4943ac5696149edf3a9cd0ae2990686a9f6090c",
+   "lastCommit": "2026-09-12T05:04:37+09:00",
+   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
    "sizeBytes": 927,
    "refSummary": {
     "deletedUiRefs": [],
@@ -86745,8 +86745,8 @@
     "tooling/recovery/classify-local-state.selftest.cjs|deploy-cmd|tooling/recovery"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-01T16:20:34+09:00",
-   "lastCommitSha": "28fb416c7401c13ace42a5e1e0ea10e53d9a1be1",
+   "lastCommit": "2026-09-12T05:04:37+09:00",
+   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
    "sizeBytes": 8750,
    "refSummary": {
     "deletedUiRefs": [],
@@ -87273,8 +87273,8 @@
     "tooling/verify/release-manifest-identity-lock.cjs|require"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T19:45:09+09:00",
-   "lastCommitSha": "4fc9890267973bd176a98a653bf769d9040c34ef",
+   "lastCommit": "2026-09-12T05:04:37+09:00",
+   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
    "sizeBytes": 16350,
    "refSummary": {
     "deletedUiRefs": [],
@@ -88101,8 +88101,8 @@
     "tooling/backend/ownership-overrides.json|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-08-10T04:09:53+09:00",
-   "lastCommitSha": "8127046d1de45333a76e10a8abf988f7dd3672ce",
+   "lastCommit": "2026-09-12T05:04:37+09:00",
+   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
    "sizeBytes": 7358,
    "refSummary": {
     "deletedUiRefs": [],
@@ -98409,8 +98409,8 @@
     "tooling/verify/rel-601-staging-regression.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T10:00:51+09:00",
-   "lastCommitSha": "4214bd85af8f44902854a374e484d159948e2047",
+   "lastCommit": "2026-09-12T05:04:37+09:00",
+   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
    "sizeBytes": 1689,
    "refSummary": {
     "deletedUiRefs": [],
@@ -102043,8 +102043,8 @@
     ".github/workflows/backend-ci.yml|workflow-run|verify:phase0-bootstrap"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T22:01:58+09:00",
-   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
+   "lastCommit": "2026-09-12T05:04:37+09:00",
+   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
    "sizeBytes": 7272,
    "refSummary": {
     "deletedUiRefs": [],
@@ -105790,8 +105790,8 @@
     ".github/workflows/backend-ci.yml|workflow-run|verify:rel-601-staging-regression"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T22:01:58+09:00",
-   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
+   "lastCommit": "2026-09-12T05:04:37+09:00",
+   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
    "sizeBytes": 6177,
    "refSummary": {
     "deletedUiRefs": [],
