@@ -1030,11 +1030,9 @@ const RULES = [
     test: (f) =>
       /^services\/api-nest\/src\/ledger\/ledger\.user/.test(f) ||
       /^services\/api-nest\/ledger-user-query\.core\.cjs$/.test(f) ||
-      /^packages\/sdk\/src\/ledger\//.test(f) ||
       /^tooling\/e2e\/lib\/ledger-user-query-harness\.cjs$/.test(f) ||
       /^tooling\/e2e\/specs\/ledger-user-query\.spec\.cjs$/.test(f) ||
-      /^tooling\/verify\/user-ledger-query\.cjs$/.test(f) ||
-      /^tooling\/verify\/ledger-journal-reader\.runtime\.cjs$/.test(f),
+      /^tooling\/verify\/user-ledger-query\.cjs$/.test(f),
     scripts: ["user-ledger-query.cjs"],
   },
   {

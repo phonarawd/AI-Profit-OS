@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-09-11T10:21:24.162Z",
- "headSha": "97b079082c96a2513029208385e54ad57c9d95aa",
+ "generatedAt": "2026-09-11T11:14:33.745Z",
+ "headSha": "4fc9890267973bd176a98a653bf769d9040c34ef",
  "edgeKinds": [
   "import",
   "require",
@@ -3221,372 +3221,6 @@
    "type": "file",
    "class": "BACKEND_RUNTIME",
    "decision": "KEEP"
-  },
-  {
-   "id": "packages/schemas/README.md",
-   "type": "file",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
-   "id": "packages/schemas/package.json",
-   "type": "file",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
-   "id": "packages/schemas/src/index.ts",
-   "type": "file",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
-   "id": "packages/schemas/src/root.ts",
-   "type": "file",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
-   "id": "packages/sdk/package.json",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/auth/auth-release.test.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/auth/fetch.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/auth/index.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/auth/kakao-ready.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/auth/proof.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/auth/types.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/current-fx/fetch.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/current-fx/index.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/current-fx/types.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/device-tier.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/execution-stream/create-transport.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/execution-stream/errors.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/execution-stream/index.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/execution-stream/polling-transport.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/execution-stream/sse-transport.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/execution-stream/transport.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/execution-stream/types.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/execution-stream/useTradeExecution.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/growth/fetch.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/growth/index.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/growth/types.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/home-money-read/fetch.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/home-money-read/index.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/home-money-read/types.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/home-read-model/fetch.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/home-read-model/index.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/home-read-model/types.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/index.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/internal/qa-loopback-api-base.d.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/internal/qa-loopback-api-base.js",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/ledger/errors.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/ledger/fetch.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/ledger/index.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/ledger/types.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/participate/fetch.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/participate/index.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/participate/types.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/peotteok/chat-sse.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/peotteok/index.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/peotteok/sse-consume.runtime.test.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/peotteok/sse-consume.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/peotteok/types.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/peotteok/usePeotteokChat.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/push/index.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/push/subscribe.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/trades/fetch.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/trades/index.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/trades/types.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/user-feed/fetch.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/user-feed/index.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/user-feed/types.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/wallet/fetch.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/wallet/idempotency-lifecycle.runtime.test.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/wallet/idempotency-lifecycle.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/wallet/index.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "packages/sdk/src/wallet/types.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
   },
   {
    "id": "pnpm-lock.yaml",
@@ -7393,6 +7027,12 @@
    "decision": "KEEP"
   },
   {
+   "id": "tooling/e2e/helpers/auth-session.runtime.test.cjs",
+   "type": "file",
+   "class": "MIXED",
+   "decision": "SPLIT"
+  },
+  {
    "id": "tooling/e2e/lib/auth-rate-limit-harness.cjs",
    "type": "file",
    "class": "BACKEND_TEST",
@@ -8383,6 +8023,12 @@
    "decision": "KEEP"
   },
   {
+   "id": "tooling/verify/backend/auth/ux-prefs-jwt-scope.cjs",
+   "type": "file",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
    "id": "tooling/verify/backend/auth/webauthn-ux-rp.cjs",
    "type": "file",
    "class": "BACKEND_TEST",
@@ -8390,6 +8036,12 @@
   },
   {
    "id": "tooling/verify/backend/benefit-referral/benefit-hub-surfaces.cjs",
+   "type": "file",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
+   "id": "tooling/verify/backend/benefit-referral/referral-own-code.cjs",
    "type": "file",
    "class": "BACKEND_TEST",
    "decision": "KEEP"
@@ -8576,6 +8228,12 @@
   },
   {
    "id": "tooling/verify/backend/opportunity-engine/capital-tier-catalog.cjs",
+   "type": "file",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
+   "id": "tooling/verify/backend/opportunity-engine/image-hosts-contract.cjs",
    "type": "file",
    "class": "BACKEND_TEST",
    "decision": "KEEP"
@@ -8987,12 +8645,6 @@
    "type": "file",
    "class": "BACKEND_TEST",
    "decision": "KEEP"
-  },
-  {
-   "id": "tooling/verify/ledger-journal-reader.runtime.cjs",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
   },
   {
    "id": "tooling/verify/legacy-plan-migration.cjs",
@@ -10245,7 +9897,7 @@
   {
    "id": "dir:tooling/e2e",
    "type": "directory",
-   "files": 13
+   "files": 14
   },
   {
    "id": "missing:governance/release-master/REL-006-QA-LAB-BOOTSTRAP.md",
@@ -10353,7 +10005,7 @@
   {
    "id": "dir:tooling/verify",
    "type": "directory",
-   "files": 240
+   "files": 242
   },
   {
    "id": "deleted:packages/ui/tokens",
@@ -10715,9 +10367,8 @@
    "type": "missing-path"
   },
   {
-   "id": "dir:packages/sdk",
-   "type": "directory",
-   "files": 57
+   "id": "missing:packages/sdk",
+   "type": "missing-path"
   },
   {
    "id": "dir:workers/chain-watchers/",
@@ -10813,9 +10464,8 @@
    "type": "deleted-ui-path"
   },
   {
-   "id": "dir:packages/sdk/",
-   "type": "directory",
-   "files": 57
+   "id": "missing:packages/sdk/",
+   "type": "missing-path"
   },
   {
    "id": "dir:workers/push-dispatcher/",
@@ -11111,7 +10761,7 @@
   {
    "id": "dir:tooling/verify/",
    "type": "directory",
-   "files": 240
+   "files": 242
   },
   {
    "id": "deleted:packages/ui/brand/assets/markets/manifest.json",
@@ -11272,7 +10922,7 @@
   {
    "id": "dir:tooling/verify/*.cjs",
    "type": "glob",
-   "files": 168
+   "files": 167
   },
   {
    "id": "missing:supabase/migrations/20260809144409_catalog_runtime_day1_fx_bootstrap.sql",
@@ -11635,11 +11285,6 @@
    "files": 94
   },
   {
-   "id": "dir:packages/**",
-   "type": "glob",
-   "files": 62
-  },
-  {
    "id": "deleted:packages/ui/copy/**",
    "type": "deleted-ui-path"
   },
@@ -11868,7 +11513,7 @@
   {
    "id": "dir:tooling/verify/*",
    "type": "glob",
-   "files": 171
+   "files": 170
   },
   {
    "id": "deleted:packages/ui/brand/brand.manifest.json",
@@ -13022,6 +12667,14 @@
    "type": "deleted-ui-path"
   },
   {
+   "id": "missing:packages/sdk/src/auth/auth-release.test.ts",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:packages/sdk/src/auth/fetch.ts",
+   "type": "missing-path"
+  },
+  {
    "id": "missing:services/api-nest/src/auth/magic-link.delivery.runtime.test.ts",
    "type": "missing-path"
   },
@@ -13575,6 +13228,10 @@
    "type": "missing-path"
   },
   {
+   "id": "missing:packages/sdk/src/peotteok/sse-consume.ts",
+   "type": "missing-path"
+  },
+  {
    "id": "missing:tooling/verify/rel-603-age-usability-spotcheck.cjs",
    "type": "missing-path"
   },
@@ -13585,6 +13242,10 @@
   {
    "id": "deleted:apps/web/scripts/asset-pipeline/run.mjs",
    "type": "deleted-ui-path"
+  },
+  {
+   "id": "missing:packages/sdk/src/execution-stream/polling-transport.ts",
+   "type": "missing-path"
   },
   {
    "id": "deleted:apps/admin/lib/admin-truth.ts",
@@ -13643,11 +13304,27 @@
    "type": "missing-path"
   },
   {
+   "id": "missing:packages/sdk/src/auth/index.ts",
+   "type": "missing-path"
+  },
+  {
    "id": "missing:packages/sdk/src/auth/session-token.ts",
    "type": "missing-path"
   },
   {
+   "id": "missing:packages/sdk/src/peotteok/chat-sse.ts",
+   "type": "missing-path"
+  },
+  {
    "id": "missing:packages/sdk/src/peotteok/control.ts",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:packages/sdk/src/peotteok/index.ts",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:packages/sdk/src/peotteok/usePeotteokChat.ts",
    "type": "missing-path"
   },
   {
@@ -14132,6 +13809,10 @@
    "type": "missing-path"
   },
   {
+   "id": "missing:packages/sdk/src/device-tier.ts",
+   "type": "missing-path"
+  },
+  {
    "id": "deleted:packages/ui/tokens/device-tier-contract.ts",
    "type": "deleted-ui-path"
   },
@@ -14325,23 +14006,6 @@
    "type": "missing-path"
   },
   {
-   "id": "env:NEXT_PUBLIC_OAUTH_KAKAO_ENABLED",
-   "type": "env-var"
-  },
-  {
-   "id": "env:NEXT_PUBLIC_OAUTH_KAKAO_CLIENT_ID",
-   "type": "env-var"
-  },
-  {
-   "id": "pkg:react",
-   "type": "external-package"
-  },
-  {
-   "id": "dir:packages/*",
-   "type": "glob",
-   "files": 62
-  },
-  {
    "id": "dir:services/*",
    "type": "glob",
    "files": 437
@@ -14366,19 +14030,16 @@
    "files": 324
   },
   {
-   "id": "dir:packages/sdk/src",
-   "type": "directory",
-   "files": 56
+   "id": "missing:packages/sdk/src",
+   "type": "missing-path"
   },
   {
-   "id": "dir:packages/sdk/src/**/fetch.ts",
-   "type": "glob",
-   "files": 10
+   "id": "missing:packages/sdk/src/**/fetch.ts",
+   "type": "missing-path"
   },
   {
-   "id": "dir:packages/sdk/src/auth/**",
-   "type": "glob",
-   "files": 6
+   "id": "missing:packages/sdk/src/auth/**",
+   "type": "missing-path"
   },
   {
    "id": "missing:packages/sdk/src/{wallet",
@@ -14452,14 +14113,13 @@
    "type": "deleted-ui-path"
   },
   {
-   "id": "dir:packages/schemas",
-   "type": "directory",
-   "files": 4
+   "id": "missing:packages/schemas",
+   "type": "missing-path"
   },
   {
    "id": "dir:tooling/verify/**",
    "type": "glob",
-   "files": 240
+   "files": 242
   },
   {
    "id": "dir:governance/release-master/**",
@@ -14622,6 +14282,22 @@
    "files": 2
   },
   {
+   "id": "missing:packages/schemas/README.md",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:packages/schemas/package.json",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:packages/schemas/src/index.ts",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:packages/schemas/src/root.ts",
+   "type": "missing-path"
+  },
+  {
    "id": "deleted:apps/admin/package.json",
    "type": "deleted-ui-path"
   },
@@ -14694,9 +14370,8 @@
    "type": "missing-path"
   },
   {
-   "id": "dir:packages/sdk/**",
-   "type": "glob",
-   "files": 57
+   "id": "missing:packages/sdk/**",
+   "type": "missing-path"
   },
   {
    "id": "dir:quality/admin-handoff",
@@ -14709,6 +14384,10 @@
   },
   {
    "id": "missing:tooling/e2e/specs/money-unavailable.spec.cjs",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:tooling/verify/ledger-journal-reader.runtime.cjs",
    "type": "missing-path"
   },
   {
@@ -14726,7 +14405,7 @@
   {
    "id": "dir:tooling/verify/backend/",
    "type": "directory",
-   "files": 46
+   "files": 49
   },
   {
    "id": "missing:tooling/verify/lib/retired-ui-stubs.cjs",
@@ -14737,7 +14416,15 @@
    "type": "missing-path"
   },
   {
+   "id": "missing:packages/sdk/package.json",
+   "type": "missing-path"
+  },
+  {
    "id": "missing:tooling/verify/home-state-truth.cjs",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:packages/sdk/src/index.ts",
    "type": "missing-path"
   },
   {
@@ -14754,6 +14441,18 @@
   },
   {
    "id": "missing:tooling/verify/account-journey.cjs",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:packages/sdk/src/home-read-model/fetch.ts",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:packages/sdk/src/participate/fetch.ts",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:packages/sdk/src/wallet/fetch.ts",
    "type": "missing-path"
   },
   {
@@ -15006,7 +14705,7 @@
   {
    "id": "dir:tooling/verify/*-closure.cjs",
    "type": "glob",
-   "files": 240
+   "files": 242
   },
   {
    "id": "missing:.github/workflows/{consumer-spark-worldclass",
@@ -15216,9 +14915,8 @@
    "type": "deleted-ui-path"
   },
   {
-   "id": "dir:packages/sdk/src/auth/*",
-   "type": "glob",
-   "files": 6
+   "id": "missing:packages/sdk/src/auth/*",
+   "type": "missing-path"
   },
   {
    "id": "dir:services/api-nest/**/*.runtime.test.ts",
@@ -15228,7 +14926,7 @@
   {
    "id": "dir:tooling/verify/*.runtime.cjs",
    "type": "glob",
-   "files": 7
+   "files": 6
   },
   {
    "id": "dir:infra/r2/",
@@ -15276,9 +14974,8 @@
    "files": 8
   },
   {
-   "id": "dir:packages/sdk/src/**/*.test.ts",
-   "type": "glob",
-   "files": 3
+   "id": "missing:packages/sdk/src/**/*.test.ts",
+   "type": "missing-path"
   },
   {
    "id": "dir:services/api-nest/src/**/*.routes.ts",
@@ -15395,7 +15092,7 @@
   {
    "id": "dir:tooling/e2e/**",
    "type": "glob",
-   "files": 13
+   "files": 14
   },
   {
    "id": "dir:tooling/pwa/**",
@@ -15487,6 +15184,10 @@
    "type": "missing-path"
   },
   {
+   "id": "missing:packages/sdk/src/push/subscribe.ts",
+   "type": "missing-path"
+  },
+  {
    "id": "deleted:apps/web/components/pwa/PushOptIn.tsx",
    "type": "deleted-ui-path"
   },
@@ -15497,7 +15198,7 @@
   {
    "id": "dir:tooling/verify/backend/**",
    "type": "glob",
-   "files": 46
+   "files": 49
   },
   {
    "id": "missing:CONSTITUTION/46b",
@@ -15505,6 +15206,10 @@
   },
   {
    "id": "missing:governance/admin/control-plane-superset",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:quality/putduk-web-sdk-handoff.md",
    "type": "missing-path"
   },
   {
@@ -15775,7 +15480,7 @@
   {
    "id": "dir:tooling/e2e/",
    "type": "directory",
-   "files": 13
+   "files": 14
   },
   {
    "id": "dir:services/**/ai",
@@ -15794,7 +15499,7 @@
   {
    "id": "dir:tooling/verify/backend/**/*.cjs",
    "type": "glob",
-   "files": 46
+   "files": 49
   },
   {
    "id": "missing:quality/backend-doc-ownership.json",
@@ -16083,6 +15788,11 @@
    "type": "missing-path"
   },
   {
+   "id": "dir:tooling/**/*.runtime.test.cjs",
+   "type": "glob",
+   "files": 2
+  },
+  {
    "id": "missing:tooling/verify/platform-fact-state-registry.cjs",
    "type": "missing-path"
   },
@@ -16138,9 +15848,8 @@
    "files": 8
   },
   {
-   "id": "dir:packages/sdk/src/push/**",
-   "type": "glob",
-   "files": 2
+   "id": "missing:packages/sdk/src/push/**",
+   "type": "missing-path"
   },
   {
    "id": "dir:schemas/push-*.json",
@@ -16237,14 +15946,12 @@
    "type": "deleted-ui-path"
   },
   {
-   "id": "dir:packages/sdk/src/participate",
-   "type": "directory",
-   "files": 3
+   "id": "missing:packages/sdk/src/participate",
+   "type": "missing-path"
   },
   {
-   "id": "dir:packages/sdk/src/wallet/**",
-   "type": "glob",
-   "files": 5
+   "id": "missing:packages/sdk/src/wallet/**",
+   "type": "missing-path"
   },
   {
    "id": "deleted:apps/web/app/trades/EarningsEmbed.tsx",
@@ -16255,9 +15962,8 @@
    "type": "deleted-ui-path"
   },
   {
-   "id": "dir:packages/sdk/src/home-money-read/**",
-   "type": "glob",
-   "files": 3
+   "id": "missing:packages/sdk/src/home-money-read/**",
+   "type": "missing-path"
   },
   {
    "id": "missing:eval/p_fact",
@@ -16326,6 +16032,11 @@
   {
    "id": "missing:schemas/opportunity-fx-card.v1.json",
    "type": "missing-path"
+  },
+  {
+   "id": "dir:services/market-intelligence/src",
+   "type": "directory",
+   "files": 30
   },
   {
    "id": "dir:services/api-nest/src/missions",
@@ -16404,10 +16115,6 @@
   },
   {
    "id": "missing:workers/${name}/wrangler.toml",
-   "type": "missing-path"
-  },
-  {
-   "id": "missing:tooling/e2e/helpers/auth-session.runtime.test.cjs",
    "type": "missing-path"
   },
   {
@@ -18264,10 +17971,6 @@
    "decision": "KEEP"
   },
   {
-   "id": "pkg:@types/react",
-   "type": "external-package"
-  },
-  {
    "id": "script:@aipo/api-nest#dev",
    "type": "npm-script",
    "package": "services/api-nest/package.json",
@@ -19888,7 +19591,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md",
-   "to": "dir:packages/sdk",
+   "to": "missing:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
@@ -20066,7 +19769,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md",
-   "to": "dir:packages/sdk/",
+   "to": "missing:packages/sdk/",
    "kind": "doc-link",
    "spec": "packages/sdk/"
   },
@@ -21439,7 +21142,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_03_ui_ux_d4e5f6a7.plan.md",
-   "to": "dir:packages/sdk",
+   "to": "missing:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
@@ -22224,7 +21927,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_05_pwa_f6a7b8c9.plan.md",
-   "to": "dir:packages/sdk/",
+   "to": "missing:packages/sdk/",
    "kind": "doc-link",
    "spec": "packages/sdk/"
   },
@@ -22660,7 +22363,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_launch_54c1261e.plan.md",
-   "to": "dir:packages/sdk",
+   "to": "missing:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
@@ -23014,7 +22717,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_launch_54c1261e.plan.md",
-   "to": "dir:packages/sdk/",
+   "to": "missing:packages/sdk/",
    "kind": "doc-link",
    "spec": "packages/sdk/"
   },
@@ -23598,7 +23301,7 @@
   },
   {
    "from": ".cursor/rules/ide-problems.mdc",
-   "to": "dir:packages/**",
+   "to": "packages/observability/observability.core.cjs",
    "kind": "doc-link",
    "spec": "packages/**"
   },
@@ -52911,7 +52614,7 @@
   },
   {
    "from": "governance/platform-redesign/change-control.v1.md",
-   "to": "dir:packages/**",
+   "to": "packages/observability/observability.core.cjs",
    "kind": "doc-link",
    "spec": "packages/**"
   },
@@ -54773,13 +54476,15 @@
   },
   {
    "from": "governance/recovery/chatgpt-takeover-20260903/pr-transplant-audit.json",
-   "to": "packages/sdk/src/auth/auth-release.test.ts",
-   "kind": "verifier-reads"
+   "to": "missing:packages/sdk/src/auth/auth-release.test.ts",
+   "kind": "verifier-reads",
+   "spec": "packages/sdk/src/auth/auth-release.test.ts"
   },
   {
    "from": "governance/recovery/chatgpt-takeover-20260903/pr-transplant-audit.json",
-   "to": "packages/sdk/src/auth/fetch.ts",
-   "kind": "verifier-reads"
+   "to": "missing:packages/sdk/src/auth/fetch.ts",
+   "kind": "verifier-reads",
+   "spec": "packages/sdk/src/auth/fetch.ts"
   },
   {
    "from": "governance/recovery/chatgpt-takeover-20260903/pr-transplant-audit.json",
@@ -55216,13 +54921,15 @@
   },
   {
    "from": "governance/recovery/chatgpt-takeover-20260903/staged-paths.txt",
-   "to": "packages/sdk/src/auth/auth-release.test.ts",
-   "kind": "doc-link"
+   "to": "missing:packages/sdk/src/auth/auth-release.test.ts",
+   "kind": "doc-link",
+   "spec": "packages/sdk/src/auth/auth-release.test.ts"
   },
   {
    "from": "governance/recovery/chatgpt-takeover-20260903/staged-paths.txt",
-   "to": "packages/sdk/src/auth/fetch.ts",
-   "kind": "doc-link"
+   "to": "missing:packages/sdk/src/auth/fetch.ts",
+   "kind": "doc-link",
+   "spec": "packages/sdk/src/auth/fetch.ts"
   },
   {
    "from": "governance/recovery/chatgpt-takeover-20260903/staged-paths.txt",
@@ -57903,8 +57610,9 @@
   },
   {
    "from": "governance/recovery/ghas-coach-xss-through-exception.v1.json",
-   "to": "packages/sdk/src/peotteok/sse-consume.ts",
-   "kind": "verifier-reads"
+   "to": "missing:packages/sdk/src/peotteok/sse-consume.ts",
+   "kind": "verifier-reads",
+   "spec": "packages/sdk/src/peotteok/sse-consume.ts"
   },
   {
    "from": "governance/recovery/ghas-kyc-xss-through-dom.v1.json",
@@ -58146,13 +57854,15 @@
   },
   {
    "from": "governance/recovery/ghas-pr114-open.20260902.v1.json",
-   "to": "packages/sdk/src/auth/fetch.ts",
-   "kind": "verifier-reads"
+   "to": "missing:packages/sdk/src/auth/fetch.ts",
+   "kind": "verifier-reads",
+   "spec": "packages/sdk/src/auth/fetch.ts"
   },
   {
    "from": "governance/recovery/ghas-pr114-open.20260902.v1.json",
-   "to": "packages/sdk/src/execution-stream/polling-transport.ts",
-   "kind": "verifier-reads"
+   "to": "missing:packages/sdk/src/execution-stream/polling-transport.ts",
+   "kind": "verifier-reads",
+   "spec": "packages/sdk/src/execution-stream/polling-transport.ts"
   },
   {
    "from": "governance/recovery/ghas-pr114-open.20260902.v1.json",
@@ -58339,13 +58049,15 @@
   },
   {
    "from": "governance/recovery/local-24-commits.v1.json",
-   "to": "packages/sdk/src/auth/fetch.ts",
-   "kind": "verifier-reads"
+   "to": "missing:packages/sdk/src/auth/fetch.ts",
+   "kind": "verifier-reads",
+   "spec": "packages/sdk/src/auth/fetch.ts"
   },
   {
    "from": "governance/recovery/local-24-commits.v1.json",
-   "to": "packages/sdk/src/auth/index.ts",
-   "kind": "verifier-reads"
+   "to": "missing:packages/sdk/src/auth/index.ts",
+   "kind": "verifier-reads",
+   "spec": "packages/sdk/src/auth/index.ts"
   },
   {
    "from": "governance/recovery/local-24-commits.v1.json",
@@ -58355,8 +58067,9 @@
   },
   {
    "from": "governance/recovery/local-24-commits.v1.json",
-   "to": "packages/sdk/src/peotteok/chat-sse.ts",
-   "kind": "verifier-reads"
+   "to": "missing:packages/sdk/src/peotteok/chat-sse.ts",
+   "kind": "verifier-reads",
+   "spec": "packages/sdk/src/peotteok/chat-sse.ts"
   },
   {
    "from": "governance/recovery/local-24-commits.v1.json",
@@ -58366,13 +58079,15 @@
   },
   {
    "from": "governance/recovery/local-24-commits.v1.json",
-   "to": "packages/sdk/src/peotteok/index.ts",
-   "kind": "verifier-reads"
+   "to": "missing:packages/sdk/src/peotteok/index.ts",
+   "kind": "verifier-reads",
+   "spec": "packages/sdk/src/peotteok/index.ts"
   },
   {
    "from": "governance/recovery/local-24-commits.v1.json",
-   "to": "packages/sdk/src/peotteok/usePeotteokChat.ts",
-   "kind": "verifier-reads"
+   "to": "missing:packages/sdk/src/peotteok/usePeotteokChat.ts",
+   "kind": "verifier-reads",
+   "spec": "packages/sdk/src/peotteok/usePeotteokChat.ts"
   },
   {
    "from": "governance/recovery/local-24-commits.v1.json",
@@ -59596,8 +59311,9 @@
   },
   {
    "from": "governance/release-master/REL-019-DEVICE-TIER.md",
-   "to": "packages/sdk/src/device-tier.ts",
-   "kind": "doc-link"
+   "to": "missing:packages/sdk/src/device-tier.ts",
+   "kind": "doc-link",
+   "spec": "packages/sdk/src/device-tier.ts"
   },
   {
    "from": "governance/release-master/REL-019-DEVICE-TIER.md",
@@ -59807,8 +59523,9 @@
   },
   {
    "from": "governance/release-master/REL-101-SIGNUP.md",
-   "to": "packages/sdk/src/auth/auth-release.test.ts",
-   "kind": "doc-link"
+   "to": "missing:packages/sdk/src/auth/auth-release.test.ts",
+   "kind": "doc-link",
+   "spec": "packages/sdk/src/auth/auth-release.test.ts"
   },
   {
    "from": "governance/release-master/REL-102-LOGIN-KAKAO.md",
@@ -60391,7 +60108,7 @@
   },
   {
    "from": "governance/release-master/staging-topology.current.v1.json",
-   "to": "dir:packages/**",
+   "to": "packages/observability/observability.core.cjs",
    "kind": "verifier-reads",
    "spec": "packages/**"
   },
@@ -60412,8 +60129,9 @@
   },
   {
    "from": "governance/responsive/DEVICE_TIER.md",
-   "to": "packages/sdk/src/device-tier.ts",
-   "kind": "doc-link"
+   "to": "missing:packages/sdk/src/device-tier.ts",
+   "kind": "doc-link",
+   "spec": "packages/sdk/src/device-tier.ts"
   },
   {
    "from": "governance/responsive/DEVICE_TIER.md",
@@ -61776,576 +61494,8 @@
    "kind": "verifier-reads"
   },
   {
-   "from": "packages/schemas/README.md",
-   "to": "dir:schemas/*.v1.json",
-   "kind": "doc-link",
-   "spec": "schemas/*.v1.json"
-  },
-  {
-   "from": "packages/schemas/README.md",
-   "to": "missing:apps/services",
-   "kind": "doc-link",
-   "spec": "apps/services"
-  },
-  {
-   "from": "packages/schemas/src/index.ts",
-   "to": "packages/schemas/src/root.ts",
-   "kind": "import",
-   "spec": "./root"
-  },
-  {
-   "from": "packages/sdk/src/auth/auth-release.test.ts",
-   "to": "packages/sdk/src/auth/fetch.ts",
-   "kind": "import",
-   "spec": "./fetch.ts"
-  },
-  {
-   "from": "packages/sdk/src/auth/fetch.ts",
-   "to": "packages/sdk/src/auth/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/auth/index.ts",
-   "to": "packages/sdk/src/auth/fetch.ts",
-   "kind": "import",
-   "spec": "./fetch"
-  },
-  {
-   "from": "packages/sdk/src/auth/index.ts",
-   "to": "packages/sdk/src/auth/proof.ts",
-   "kind": "import",
-   "spec": "./proof"
-  },
-  {
-   "from": "packages/sdk/src/auth/index.ts",
-   "to": "packages/sdk/src/auth/kakao-ready.ts",
-   "kind": "import",
-   "spec": "./kakao-ready"
-  },
-  {
-   "from": "packages/sdk/src/auth/index.ts",
-   "to": "packages/sdk/src/auth/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/auth/kakao-ready.ts",
-   "to": "env:NEXT_PUBLIC_OAUTH_KAKAO_ENABLED",
-   "kind": "env"
-  },
-  {
-   "from": "packages/sdk/src/auth/kakao-ready.ts",
-   "to": "env:NEXT_PUBLIC_OAUTH_KAKAO_CLIENT_ID",
-   "kind": "env"
-  },
-  {
-   "from": "packages/sdk/src/auth/proof.ts",
-   "to": "packages/sdk/src/auth/fetch.ts",
-   "kind": "import",
-   "spec": "./fetch"
-  },
-  {
-   "from": "packages/sdk/src/auth/proof.ts",
-   "to": "packages/sdk/src/auth/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/current-fx/fetch.ts",
-   "to": "packages/sdk/src/internal/qa-loopback-api-base.js",
-   "kind": "import",
-   "spec": "../internal/qa-loopback-api-base.js"
-  },
-  {
-   "from": "packages/sdk/src/current-fx/fetch.ts",
-   "to": "packages/sdk/src/current-fx/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/current-fx/index.ts",
-   "to": "packages/sdk/src/current-fx/fetch.ts",
-   "kind": "import",
-   "spec": "./fetch"
-  },
-  {
-   "from": "packages/sdk/src/current-fx/index.ts",
-   "to": "packages/sdk/src/current-fx/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/execution-stream/create-transport.ts",
-   "to": "packages/sdk/src/execution-stream/polling-transport.ts",
-   "kind": "import",
-   "spec": "./polling-transport"
-  },
-  {
-   "from": "packages/sdk/src/execution-stream/create-transport.ts",
-   "to": "packages/sdk/src/execution-stream/sse-transport.ts",
-   "kind": "import",
-   "spec": "./sse-transport"
-  },
-  {
-   "from": "packages/sdk/src/execution-stream/create-transport.ts",
-   "to": "packages/sdk/src/execution-stream/transport.ts",
-   "kind": "import",
-   "spec": "./transport"
-  },
-  {
-   "from": "packages/sdk/src/execution-stream/create-transport.ts",
-   "to": "packages/sdk/src/execution-stream/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/execution-stream/index.ts",
-   "to": "packages/sdk/src/execution-stream/errors.ts",
-   "kind": "import",
-   "spec": "./errors"
-  },
-  {
-   "from": "packages/sdk/src/execution-stream/index.ts",
-   "to": "packages/sdk/src/execution-stream/create-transport.ts",
-   "kind": "import",
-   "spec": "./create-transport"
-  },
-  {
-   "from": "packages/sdk/src/execution-stream/index.ts",
-   "to": "packages/sdk/src/execution-stream/polling-transport.ts",
-   "kind": "import",
-   "spec": "./polling-transport"
-  },
-  {
-   "from": "packages/sdk/src/execution-stream/index.ts",
-   "to": "packages/sdk/src/execution-stream/sse-transport.ts",
-   "kind": "import",
-   "spec": "./sse-transport"
-  },
-  {
-   "from": "packages/sdk/src/execution-stream/index.ts",
-   "to": "packages/sdk/src/execution-stream/transport.ts",
-   "kind": "import",
-   "spec": "./transport"
-  },
-  {
-   "from": "packages/sdk/src/execution-stream/index.ts",
-   "to": "packages/sdk/src/execution-stream/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/execution-stream/index.ts",
-   "to": "packages/sdk/src/execution-stream/useTradeExecution.ts",
-   "kind": "import",
-   "spec": "./useTradeExecution"
-  },
-  {
-   "from": "packages/sdk/src/execution-stream/polling-transport.ts",
-   "to": "packages/sdk/src/execution-stream/errors.ts",
-   "kind": "import",
-   "spec": "./errors"
-  },
-  {
-   "from": "packages/sdk/src/execution-stream/polling-transport.ts",
-   "to": "packages/sdk/src/execution-stream/transport.ts",
-   "kind": "import",
-   "spec": "./transport"
-  },
-  {
-   "from": "packages/sdk/src/execution-stream/polling-transport.ts",
-   "to": "packages/sdk/src/execution-stream/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/execution-stream/sse-transport.ts",
-   "to": "packages/sdk/src/execution-stream/polling-transport.ts",
-   "kind": "import",
-   "spec": "./polling-transport"
-  },
-  {
-   "from": "packages/sdk/src/execution-stream/sse-transport.ts",
-   "to": "packages/sdk/src/execution-stream/transport.ts",
-   "kind": "import",
-   "spec": "./transport"
-  },
-  {
-   "from": "packages/sdk/src/execution-stream/transport.ts",
-   "to": "packages/sdk/src/execution-stream/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/execution-stream/useTradeExecution.ts",
-   "to": "pkg:react",
-   "kind": "import",
-   "spec": "react"
-  },
-  {
-   "from": "packages/sdk/src/execution-stream/useTradeExecution.ts",
-   "to": "packages/sdk/src/device-tier.ts",
-   "kind": "import",
-   "spec": "../device-tier"
-  },
-  {
-   "from": "packages/sdk/src/execution-stream/useTradeExecution.ts",
-   "to": "packages/sdk/src/execution-stream/create-transport.ts",
-   "kind": "import",
-   "spec": "./create-transport"
-  },
-  {
-   "from": "packages/sdk/src/execution-stream/useTradeExecution.ts",
-   "to": "packages/sdk/src/execution-stream/transport.ts",
-   "kind": "import",
-   "spec": "./transport"
-  },
-  {
-   "from": "packages/sdk/src/execution-stream/useTradeExecution.ts",
-   "to": "packages/sdk/src/execution-stream/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/growth/fetch.ts",
-   "to": "packages/sdk/src/growth/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/growth/index.ts",
-   "to": "packages/sdk/src/growth/fetch.ts",
-   "kind": "import",
-   "spec": "./fetch"
-  },
-  {
-   "from": "packages/sdk/src/growth/index.ts",
-   "to": "packages/sdk/src/growth/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/home-money-read/fetch.ts",
-   "to": "packages/sdk/src/home-money-read/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/home-money-read/index.ts",
-   "to": "packages/sdk/src/home-money-read/fetch.ts",
-   "kind": "import",
-   "spec": "./fetch"
-  },
-  {
-   "from": "packages/sdk/src/home-money-read/index.ts",
-   "to": "packages/sdk/src/home-money-read/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/home-read-model/fetch.ts",
-   "to": "packages/sdk/src/internal/qa-loopback-api-base.js",
-   "kind": "import",
-   "spec": "../internal/qa-loopback-api-base.js"
-  },
-  {
-   "from": "packages/sdk/src/home-read-model/fetch.ts",
-   "to": "packages/sdk/src/home-read-model/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/home-read-model/index.ts",
-   "to": "packages/sdk/src/home-read-model/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/home-read-model/index.ts",
-   "to": "packages/sdk/src/home-read-model/fetch.ts",
-   "kind": "import",
-   "spec": "./fetch"
-  },
-  {
-   "from": "packages/sdk/src/index.ts",
-   "to": "packages/sdk/src/device-tier.ts",
-   "kind": "import",
-   "spec": "./device-tier"
-  },
-  {
-   "from": "packages/sdk/src/index.ts",
-   "to": "packages/sdk/src/execution-stream/index.ts",
-   "kind": "import",
-   "spec": "./execution-stream"
-  },
-  {
-   "from": "packages/sdk/src/index.ts",
-   "to": "packages/sdk/src/peotteok/index.ts",
-   "kind": "import",
-   "spec": "./peotteok"
-  },
-  {
-   "from": "packages/sdk/src/index.ts",
-   "to": "packages/sdk/src/participate/index.ts",
-   "kind": "import",
-   "spec": "./participate"
-  },
-  {
-   "from": "packages/sdk/src/index.ts",
-   "to": "packages/sdk/src/user-feed/index.ts",
-   "kind": "import",
-   "spec": "./user-feed"
-  },
-  {
-   "from": "packages/sdk/src/index.ts",
-   "to": "packages/sdk/src/trades/index.ts",
-   "kind": "import",
-   "spec": "./trades"
-  },
-  {
-   "from": "packages/sdk/src/index.ts",
-   "to": "packages/sdk/src/ledger/index.ts",
-   "kind": "import",
-   "spec": "./ledger"
-  },
-  {
-   "from": "packages/sdk/src/index.ts",
-   "to": "packages/sdk/src/wallet/index.ts",
-   "kind": "import",
-   "spec": "./wallet"
-  },
-  {
-   "from": "packages/sdk/src/index.ts",
-   "to": "packages/sdk/src/growth/index.ts",
-   "kind": "import",
-   "spec": "./growth"
-  },
-  {
-   "from": "packages/sdk/src/ledger/fetch.ts",
-   "to": "packages/sdk/src/ledger/errors.ts",
-   "kind": "import",
-   "spec": "./errors"
-  },
-  {
-   "from": "packages/sdk/src/ledger/fetch.ts",
-   "to": "packages/sdk/src/ledger/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/ledger/index.ts",
-   "to": "packages/sdk/src/ledger/errors.ts",
-   "kind": "import",
-   "spec": "./errors"
-  },
-  {
-   "from": "packages/sdk/src/ledger/index.ts",
-   "to": "packages/sdk/src/ledger/fetch.ts",
-   "kind": "import",
-   "spec": "./fetch"
-  },
-  {
-   "from": "packages/sdk/src/ledger/index.ts",
-   "to": "packages/sdk/src/ledger/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/participate/fetch.ts",
-   "to": "packages/sdk/src/participate/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/participate/index.ts",
-   "to": "packages/sdk/src/participate/fetch.ts",
-   "kind": "import",
-   "spec": "./fetch"
-  },
-  {
-   "from": "packages/sdk/src/participate/index.ts",
-   "to": "packages/sdk/src/participate/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/participate/index.ts",
-   "to": "packages/sdk/src/participate/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/peotteok/chat-sse.ts",
-   "to": "packages/sdk/src/peotteok/sse-consume.ts",
-   "kind": "import",
-   "spec": "./sse-consume"
-  },
-  {
-   "from": "packages/sdk/src/peotteok/chat-sse.ts",
-   "to": "packages/sdk/src/peotteok/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/peotteok/index.ts",
-   "to": "packages/sdk/src/peotteok/chat-sse.ts",
-   "kind": "import",
-   "spec": "./chat-sse"
-  },
-  {
-   "from": "packages/sdk/src/peotteok/index.ts",
-   "to": "packages/sdk/src/peotteok/usePeotteokChat.ts",
-   "kind": "import",
-   "spec": "./usePeotteokChat"
-  },
-  {
-   "from": "packages/sdk/src/peotteok/index.ts",
-   "to": "packages/sdk/src/peotteok/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/peotteok/sse-consume.runtime.test.ts",
-   "to": "packages/sdk/src/peotteok/sse-consume.ts",
-   "kind": "import",
-   "spec": "./sse-consume.ts"
-  },
-  {
-   "from": "packages/sdk/src/peotteok/sse-consume.ts",
-   "to": "packages/sdk/src/peotteok/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/peotteok/usePeotteokChat.ts",
-   "to": "pkg:react",
-   "kind": "import",
-   "spec": "react"
-  },
-  {
-   "from": "packages/sdk/src/peotteok/usePeotteokChat.ts",
-   "to": "packages/sdk/src/peotteok/chat-sse.ts",
-   "kind": "import",
-   "spec": "./chat-sse"
-  },
-  {
-   "from": "packages/sdk/src/peotteok/usePeotteokChat.ts",
-   "to": "packages/sdk/src/peotteok/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/push/index.ts",
-   "to": "packages/sdk/src/push/subscribe.ts",
-   "kind": "import",
-   "spec": "./subscribe"
-  },
-  {
-   "from": "packages/sdk/src/trades/fetch.ts",
-   "to": "packages/sdk/src/execution-stream/errors.ts",
-   "kind": "import",
-   "spec": "../execution-stream/errors"
-  },
-  {
-   "from": "packages/sdk/src/trades/fetch.ts",
-   "to": "packages/sdk/src/execution-stream/types.ts",
-   "kind": "import",
-   "spec": "../execution-stream/types"
-  },
-  {
-   "from": "packages/sdk/src/trades/fetch.ts",
-   "to": "packages/sdk/src/trades/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/trades/index.ts",
-   "to": "packages/sdk/src/trades/fetch.ts",
-   "kind": "import",
-   "spec": "./fetch"
-  },
-  {
-   "from": "packages/sdk/src/trades/index.ts",
-   "to": "packages/sdk/src/trades/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/trades/types.ts",
-   "to": "packages/sdk/src/execution-stream/types.ts",
-   "kind": "import",
-   "spec": "../execution-stream/types"
-  },
-  {
-   "from": "packages/sdk/src/user-feed/fetch.ts",
-   "to": "packages/sdk/src/internal/qa-loopback-api-base.js",
-   "kind": "import",
-   "spec": "../internal/qa-loopback-api-base.js"
-  },
-  {
-   "from": "packages/sdk/src/user-feed/fetch.ts",
-   "to": "packages/sdk/src/user-feed/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/user-feed/index.ts",
-   "to": "packages/sdk/src/user-feed/fetch.ts",
-   "kind": "import",
-   "spec": "./fetch"
-  },
-  {
-   "from": "packages/sdk/src/user-feed/index.ts",
-   "to": "packages/sdk/src/user-feed/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/user-feed/index.ts",
-   "to": "packages/sdk/src/user-feed/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/wallet/fetch.ts",
-   "to": "packages/sdk/src/internal/qa-loopback-api-base.js",
-   "kind": "import",
-   "spec": "../internal/qa-loopback-api-base.js"
-  },
-  {
-   "from": "packages/sdk/src/wallet/fetch.ts",
-   "to": "packages/sdk/src/wallet/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
-   "from": "packages/sdk/src/wallet/idempotency-lifecycle.runtime.test.ts",
-   "to": "packages/sdk/src/wallet/idempotency-lifecycle.ts",
-   "kind": "import",
-   "spec": "./idempotency-lifecycle.ts"
-  },
-  {
-   "from": "packages/sdk/src/wallet/index.ts",
-   "to": "packages/sdk/src/wallet/fetch.ts",
-   "kind": "import",
-   "spec": "./fetch"
-  },
-  {
-   "from": "packages/sdk/src/wallet/index.ts",
-   "to": "packages/sdk/src/wallet/idempotency-lifecycle.ts",
-   "kind": "import",
-   "spec": "./idempotency-lifecycle"
-  },
-  {
-   "from": "packages/sdk/src/wallet/index.ts",
-   "to": "packages/sdk/src/wallet/types.ts",
-   "kind": "import",
-   "spec": "./types"
-  },
-  {
    "from": "pnpm-workspace.yaml",
-   "to": "dir:packages/*",
+   "to": "packages/observability/observability.core.cjs",
    "kind": "verifier-reads",
    "spec": "packages/*"
   },
@@ -62439,7 +61589,7 @@
   },
   {
    "from": "quality/backend-api-contract-map.md",
-   "to": "dir:packages/sdk/src",
+   "to": "missing:packages/sdk/src",
    "kind": "doc-link",
    "spec": "packages/sdk/src"
   },
@@ -62450,14 +61600,15 @@
   },
   {
    "from": "quality/backend-api-contract-map.md",
-   "to": "dir:packages/sdk/src/**/fetch.ts",
+   "to": "missing:packages/sdk/src/**/fetch.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/src/**/fetch.ts"
   },
   {
    "from": "quality/backend-api-contract-map.md",
-   "to": "packages/sdk/src/auth/fetch.ts",
-   "kind": "doc-link"
+   "to": "missing:packages/sdk/src/auth/fetch.ts",
+   "kind": "doc-link",
+   "spec": "packages/sdk/src/auth/fetch.ts"
   },
   {
    "from": "quality/backend-api-contract-map.md",
@@ -62481,7 +61632,7 @@
   },
   {
    "from": "quality/backend-api-contract-map.md",
-   "to": "dir:packages/sdk",
+   "to": "missing:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
@@ -62505,7 +61656,7 @@
   },
   {
    "from": "quality/backend-api-contract-map.md",
-   "to": "dir:packages/sdk/src/auth/**",
+   "to": "missing:packages/sdk/src/auth/**",
    "kind": "doc-link",
    "spec": "packages/sdk/src/auth/**"
   },
@@ -62734,7 +61885,7 @@
   },
   {
    "from": "quality/backend-ci.md",
-   "to": "dir:packages/sdk",
+   "to": "missing:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
@@ -62855,13 +62006,13 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "dir:packages/sdk",
+   "to": "missing:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "dir:packages/schemas",
+   "to": "missing:packages/schemas",
    "kind": "doc-link",
    "spec": "packages/schemas"
   },
@@ -63170,23 +62321,27 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "packages/schemas/README.md",
-   "kind": "doc-link"
+   "to": "missing:packages/schemas/README.md",
+   "kind": "doc-link",
+   "spec": "packages/schemas/README.md"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "packages/schemas/package.json",
-   "kind": "doc-link"
+   "to": "missing:packages/schemas/package.json",
+   "kind": "doc-link",
+   "spec": "packages/schemas/package.json"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "packages/schemas/src/index.ts",
-   "kind": "doc-link"
+   "to": "missing:packages/schemas/src/index.ts",
+   "kind": "doc-link",
+   "spec": "packages/schemas/src/index.ts"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "packages/schemas/src/root.ts",
-   "kind": "doc-link"
+   "to": "missing:packages/schemas/src/root.ts",
+   "kind": "doc-link",
+   "spec": "packages/schemas/src/root.ts"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
@@ -63783,7 +62938,7 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "dir:packages/sdk/**",
+   "to": "missing:packages/sdk/**",
    "kind": "doc-link",
    "spec": "packages/sdk/**"
   },
@@ -63863,8 +63018,9 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "tooling/verify/ledger-journal-reader.runtime.cjs",
-   "kind": "doc-link"
+   "to": "missing:tooling/verify/ledger-journal-reader.runtime.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/verify/ledger-journal-reader.runtime.cjs"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
@@ -64632,8 +63788,9 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "packages/sdk/package.json",
-   "kind": "doc-link"
+   "to": "missing:packages/sdk/package.json",
+   "kind": "doc-link",
+   "spec": "packages/sdk/package.json"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
@@ -64699,8 +63856,9 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "packages/sdk/src/index.ts",
-   "kind": "doc-link"
+   "to": "missing:packages/sdk/src/index.ts",
+   "kind": "doc-link",
+   "spec": "packages/sdk/src/index.ts"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
@@ -64766,8 +63924,9 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "packages/sdk/src/home-read-model/fetch.ts",
-   "kind": "doc-link"
+   "to": "missing:packages/sdk/src/home-read-model/fetch.ts",
+   "kind": "doc-link",
+   "spec": "packages/sdk/src/home-read-model/fetch.ts"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
@@ -64776,13 +63935,15 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "packages/sdk/src/participate/fetch.ts",
-   "kind": "doc-link"
+   "to": "missing:packages/sdk/src/participate/fetch.ts",
+   "kind": "doc-link",
+   "spec": "packages/sdk/src/participate/fetch.ts"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "packages/sdk/src/wallet/fetch.ts",
-   "kind": "doc-link"
+   "to": "missing:packages/sdk/src/wallet/fetch.ts",
+   "kind": "doc-link",
+   "spec": "packages/sdk/src/wallet/fetch.ts"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
@@ -65350,7 +64511,7 @@
   },
   {
    "from": "quality/backend-only-deletion-plan.md",
-   "to": "dir:packages/sdk",
+   "to": "missing:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
@@ -65422,7 +64583,7 @@
   },
   {
    "from": "quality/backend-only-deletion-plan.md",
-   "to": "dir:packages/sdk/**",
+   "to": "missing:packages/sdk/**",
    "kind": "doc-link",
    "spec": "packages/sdk/**"
   },
@@ -65684,7 +64845,7 @@
   },
   {
    "from": "quality/backend-only-deletion-plan.md",
-   "to": "dir:packages/schemas",
+   "to": "missing:packages/schemas",
    "kind": "doc-link",
    "spec": "packages/schemas"
   },
@@ -65856,7 +65017,7 @@
   },
   {
    "from": "quality/backend-only-inventory.md",
-   "to": "dir:packages/sdk",
+   "to": "missing:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
@@ -65886,7 +65047,7 @@
   },
   {
    "from": "quality/backend-only-inventory.md",
-   "to": "dir:packages/*",
+   "to": "packages/observability/observability.core.cjs",
    "kind": "doc-link",
    "spec": "packages/*"
   },
@@ -66248,13 +65409,13 @@
   },
   {
    "from": "quality/backend-only-inventory.md",
-   "to": "dir:packages/sdk/src/auth/*",
+   "to": "missing:packages/sdk/src/auth/*",
    "kind": "doc-link",
    "spec": "packages/sdk/src/auth/*"
   },
   {
    "from": "quality/backend-only-inventory.md",
-   "to": "dir:packages/schemas",
+   "to": "missing:packages/schemas",
    "kind": "doc-link",
    "spec": "packages/schemas"
   },
@@ -66487,7 +65648,7 @@
   },
   {
    "from": "quality/backend-only-inventory.md",
-   "to": "dir:packages/sdk/src/**/*.test.ts",
+   "to": "missing:packages/sdk/src/**/*.test.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/src/**/*.test.ts"
   },
@@ -66499,7 +65660,7 @@
   },
   {
    "from": "quality/backend-only-inventory.md",
-   "to": "dir:packages/sdk/src/**/fetch.ts",
+   "to": "missing:packages/sdk/src/**/fetch.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/src/**/fetch.ts"
   },
@@ -66772,7 +65933,7 @@
   },
   {
    "from": "quality/backend-only-official-basis.md",
-   "to": "dir:packages/*",
+   "to": "packages/observability/observability.core.cjs",
    "kind": "doc-link",
    "spec": "packages/*"
   },
@@ -66819,14 +65980,15 @@
   },
   {
    "from": "quality/backend-only-official-basis.md",
-   "to": "dir:packages/sdk",
+   "to": "missing:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
   {
    "from": "quality/backend-only-official-basis.md",
-   "to": "packages/sdk/package.json",
-   "kind": "doc-link"
+   "to": "missing:packages/sdk/package.json",
+   "kind": "doc-link",
+   "spec": "packages/sdk/package.json"
   },
   {
    "from": "quality/backend-only-official-basis.md",
@@ -67034,13 +66196,13 @@
   },
   {
    "from": "quality/backend-only-verification.md",
-   "to": "dir:packages/sdk",
+   "to": "missing:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
   {
    "from": "quality/backend-only-verification.md",
-   "to": "dir:packages/schemas",
+   "to": "missing:packages/schemas",
    "kind": "doc-link",
    "spec": "packages/schemas"
   },
@@ -67099,7 +66261,7 @@
   },
   {
    "from": "quality/backend-only-verification.md",
-   "to": "dir:packages/sdk/src/auth/*",
+   "to": "missing:packages/sdk/src/auth/*",
    "kind": "doc-link",
    "spec": "packages/sdk/src/auth/*"
   },
@@ -67347,7 +66509,7 @@
   },
   {
    "from": "quality/backend-residual-report.md",
-   "to": "dir:packages/sdk",
+   "to": "missing:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
@@ -67359,7 +66521,7 @@
   },
   {
    "from": "quality/backend-residual-report.md",
-   "to": "dir:packages/schemas",
+   "to": "missing:packages/schemas",
    "kind": "doc-link",
    "spec": "packages/schemas"
   },
@@ -67666,7 +66828,7 @@
   },
   {
    "from": "quality/putduk-web-ui-assertions-handoff.md",
-   "to": "dir:packages/sdk",
+   "to": "missing:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
@@ -67773,8 +66935,9 @@
   },
   {
    "from": "quality/putduk-web-ui-assertions-handoff.md",
-   "to": "packages/sdk/src/push/subscribe.ts",
-   "kind": "doc-link"
+   "to": "missing:packages/sdk/src/push/subscribe.ts",
+   "kind": "doc-link",
+   "spec": "packages/sdk/src/push/subscribe.ts"
   },
   {
    "from": "quality/putduk-web-ui-assertions-handoff.md",
@@ -67822,6 +66985,18 @@
    "to": "missing:apps/*",
    "kind": "doc-link",
    "spec": "apps/*"
+  },
+  {
+   "from": "quality/putduk-web-ui-assertions-handoff.md",
+   "to": "missing:quality/putduk-web-sdk-handoff.md",
+   "kind": "doc-link",
+   "spec": "quality/putduk-web-sdk-handoff.md"
+  },
+  {
+   "from": "quality/putduk-web-ui-assertions-handoff.md",
+   "to": "dir:packages/observability",
+   "kind": "doc-link",
+   "spec": "packages/observability"
   },
   {
    "from": "quality/putduk-web-ui-assertions-handoff.md",
@@ -78978,6 +78153,18 @@
    "spec": "../lib/qa-env-isolation-guard.cjs"
   },
   {
+   "from": "tooling/e2e/helpers/auth-session.runtime.test.cjs",
+   "to": "tooling/e2e/lib/qa-env-isolation-guard.cjs",
+   "kind": "require",
+   "spec": "../lib/qa-env-isolation-guard.cjs"
+  },
+  {
+   "from": "tooling/e2e/helpers/auth-session.runtime.test.cjs",
+   "to": "tooling/e2e/helpers/auth-session.cjs",
+   "kind": "require",
+   "spec": "./auth-session.cjs"
+  },
+  {
    "from": "tooling/e2e/lib/auth-rate-limit-harness.cjs",
    "to": "tooling/e2e/lib/qa-env-isolation-guard.cjs",
    "kind": "require",
@@ -83020,7 +82207,7 @@
   },
   {
    "from": "tooling/verify/CATALOG.md",
-   "to": "tooling/deploy/lib/non-prod-api-host.runtime.test.cjs",
+   "to": "dir:tooling/**/*.runtime.test.cjs",
    "kind": "verifier-reads",
    "spec": "tooling/**/*.runtime.test.cjs"
   },
@@ -83352,7 +82539,7 @@
   },
   {
    "from": "tooling/verify/CATALOG.md",
-   "to": "dir:packages/sdk/src/push/**",
+   "to": "missing:packages/sdk/src/push/**",
    "kind": "verifier-reads",
    "spec": "packages/sdk/src/push/**"
   },
@@ -83528,8 +82715,9 @@
   },
   {
    "from": "tooling/verify/CATALOG.md",
-   "to": "packages/sdk/src/device-tier.ts",
-   "kind": "verifier-reads"
+   "to": "missing:packages/sdk/src/device-tier.ts",
+   "kind": "verifier-reads",
+   "spec": "packages/sdk/src/device-tier.ts"
   },
   {
    "from": "tooling/verify/CATALOG.md",
@@ -83978,7 +83166,7 @@
   },
   {
    "from": "tooling/verify/CATALOG.md",
-   "to": "dir:packages/sdk/src/participate",
+   "to": "missing:packages/sdk/src/participate",
    "kind": "verifier-reads",
    "spec": "packages/sdk/src/participate"
   },
@@ -83990,7 +83178,7 @@
   },
   {
    "from": "tooling/verify/CATALOG.md",
-   "to": "dir:packages/sdk/src/wallet/**",
+   "to": "missing:packages/sdk/src/wallet/**",
    "kind": "verifier-reads",
    "spec": "packages/sdk/src/wallet/**"
   },
@@ -84013,7 +83201,7 @@
   },
   {
    "from": "tooling/verify/CATALOG.md",
-   "to": "dir:packages/sdk/src/home-money-read/**",
+   "to": "missing:packages/sdk/src/home-money-read/**",
    "kind": "verifier-reads",
    "spec": "packages/sdk/src/home-money-read/**"
   },
@@ -85359,6 +84547,26 @@
    "kind": "verifier-reads"
   },
   {
+   "from": "tooling/verify/backend/auth/ux-prefs-jwt-scope.cjs",
+   "to": "services/api-nest/src/ux-prefs/user-ux-prefs.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/backend/auth/ux-prefs-jwt-scope.cjs",
+   "to": "services/api-nest/src/ux-prefs/user-ux-prefs.user.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/backend/auth/ux-prefs-jwt-scope.cjs",
+   "to": "services/api-nest/src/ux-prefs/user-ux-prefs.runtime.test.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/backend/auth/ux-prefs-jwt-scope.cjs",
+   "to": "services/api-nest/src/inbox/inbox.user.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
    "from": "tooling/verify/backend/auth/webauthn-ux-rp.cjs",
    "to": "tooling/pwa/webauthn-rp.cjs",
    "kind": "require"
@@ -85426,6 +84634,26 @@
   {
    "from": "tooling/verify/backend/benefit-referral/benefit-hub-surfaces.cjs",
    "to": "services/api-nest/src/missions/mission.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/backend/benefit-referral/referral-own-code.cjs",
+   "to": "services/api-nest/src/referral/referral.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/backend/benefit-referral/referral-own-code.cjs",
+   "to": "services/api-nest/src/referral/referral.own-code.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/backend/benefit-referral/referral-own-code.cjs",
+   "to": "services/api-nest/src/referral/referral-code.util.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/backend/benefit-referral/referral-own-code.cjs",
+   "to": "services/api-nest/src/referral/referral-code.util.runtime.test.ts",
    "kind": "verifier-reads"
   },
   {
@@ -86920,6 +86148,43 @@
    "from": "tooling/verify/backend/opportunity-engine/capital-tier-catalog.cjs",
    "to": "services/api-nest/src/opportunities/opportunities.admin.service.ts",
    "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/backend/opportunity-engine/image-hosts-contract.cjs",
+   "to": "services/api-nest/src/opportunities/asset-image-r2.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/backend/opportunity-engine/image-hosts-contract.cjs",
+   "to": "services/market-intelligence/src/trading-card-seed.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/backend/opportunity-engine/image-hosts-contract.cjs",
+   "to": "services/market-intelligence/src/luxury-bag-seed.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/backend/opportunity-engine/image-hosts-contract.cjs",
+   "to": "services/market-intelligence/src/watch-seed.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/backend/opportunity-engine/image-hosts-contract.cjs",
+   "to": "services/market-intelligence/src/ebay-identity-match.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/backend/opportunity-engine/image-hosts-contract.cjs",
+   "to": "dir:services/api-nest/src",
+   "kind": "verifier-reads",
+   "spec": "services/api-nest/src"
+  },
+  {
+   "from": "tooling/verify/backend/opportunity-engine/image-hosts-contract.cjs",
+   "to": "dir:services/market-intelligence/src",
+   "kind": "verifier-reads",
+   "spec": "services/market-intelligence/src"
   },
   {
    "from": "tooling/verify/backend/opportunity-engine/luxury-bag-vertical.cjs",
@@ -89258,21 +88523,6 @@
    "kind": "verifier-reads"
   },
   {
-   "from": "tooling/verify/ledger-journal-reader.runtime.cjs",
-   "to": "packages/sdk/src/ledger/fetch.ts",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/ledger-journal-reader.runtime.cjs",
-   "to": "packages/sdk/src/ledger/errors.ts",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/ledger-journal-reader.runtime.cjs",
-   "to": "packages/sdk/src/ledger/types.ts",
-   "kind": "verifier-reads"
-  },
-  {
    "from": "tooling/verify/legacy-plan-migration.cjs",
    "to": "dir:.cursor/plans",
    "kind": "verifier-reads",
@@ -90798,9 +90048,8 @@
   },
   {
    "from": "tooling/verify/qa-env-isolation-guard.cjs",
-   "to": "missing:tooling/e2e/helpers/auth-session.runtime.test.cjs",
-   "kind": "verifier-reads",
-   "spec": "tooling/e2e/helpers/auth-session.runtime.test.cjs"
+   "to": "tooling/e2e/helpers/auth-session.runtime.test.cjs",
+   "kind": "verifier-reads"
   },
   {
    "from": "tooling/verify/qa-env-isolation-guard.cjs",
@@ -90870,42 +90119,6 @@
    "from": "tooling/verify/rc-formal.cjs",
    "to": "tooling/verify/fixtures/migrations-applied.v1.json",
    "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rc-formal.cjs",
-   "to": "deleted:apps/web/",
-   "kind": "verifier-reads",
-   "spec": "apps/web/"
-  },
-  {
-   "from": "tooling/verify/rc-formal.cjs",
-   "to": "deleted:apps/admin/",
-   "kind": "verifier-reads",
-   "spec": "apps/admin/"
-  },
-  {
-   "from": "tooling/verify/rc-formal.cjs",
-   "to": "deleted:packages/ui/",
-   "kind": "verifier-reads",
-   "spec": "packages/ui/"
-  },
-  {
-   "from": "tooling/verify/rc-formal.cjs",
-   "to": "deleted:apps/web",
-   "kind": "verifier-reads",
-   "spec": "apps/web"
-  },
-  {
-   "from": "tooling/verify/rc-formal.cjs",
-   "to": "deleted:apps/admin",
-   "kind": "verifier-reads",
-   "spec": "apps/admin"
-  },
-  {
-   "from": "tooling/verify/rc-formal.cjs",
-   "to": "deleted:packages/ui",
-   "kind": "verifier-reads",
-   "spec": "packages/ui"
   },
   {
    "from": "tooling/verify/rc-formal.cjs",
@@ -93492,7 +92705,7 @@
   },
   {
    "from": "tooling/verify/unit-tests.cjs",
-   "to": "tooling/deploy/lib/non-prod-api-host.runtime.test.cjs",
+   "to": "dir:tooling/**/*.runtime.test.cjs",
    "kind": "verifier-reads",
    "spec": "tooling/**/*.runtime.test.cjs"
   },
@@ -96925,24 +96138,6 @@
    "to": "pkg:wrangler",
    "kind": "pkg-dep",
    "spec": "devDependencies:^4.120.0"
-  },
-  {
-   "from": "packages/sdk/package.json",
-   "to": "pkg:@types/react",
-   "kind": "pkg-dep",
-   "spec": "devDependencies:^19.1.9"
-  },
-  {
-   "from": "packages/sdk/package.json",
-   "to": "pkg:react",
-   "kind": "pkg-dep",
-   "spec": "devDependencies:19.2.0"
-  },
-  {
-   "from": "packages/sdk/package.json",
-   "to": "pkg:react",
-   "kind": "pkg-dep",
-   "spec": "peerDependencies:^19.0.0"
   },
   {
    "from": "services/ai-platform/package.json",

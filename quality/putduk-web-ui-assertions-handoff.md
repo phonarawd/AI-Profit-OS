@@ -217,3 +217,7 @@
 ## Stage-4 UI verifier deletion (97b07908 recovery)
 
 Deleted UI-only verifiers/E2E/Playwright/responsive/pwa-client-sim in this backend-only repo. Recovery: `git checkout 97b07908 -- <path>`. Backend assertions moved to `tooling/verify/backend/**` or kept in-place after stripping `apps/*` / `packages/ui` / `packages/sdk` reads.
+
+## Stage-4 SDK move (commit 2)
+
+Client package `@aipo/sdk` and pointer `@aipo/schemas` left this repo. See `quality/putduk-web-sdk-handoff.md`. `ledger-journal-reader.runtime.cjs` handed off with the SDK; Nest decimal/JWT stays in `user-ledger-query.cjs`. `packages/observability` stays.
