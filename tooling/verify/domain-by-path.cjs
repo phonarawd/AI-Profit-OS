@@ -39,17 +39,11 @@ const RULES = [
     ],
   },
   {
-    test: (f) =>
-      /^governance\/figma\//.test(f) ||
-      /^tooling\/verify\/figma-project-registry\.cjs$/.test(f) ||
-      /^governance\/release-master\/rel-131-account-figma/.test(f) ||
-      /^governance\/release-master\/REL-131-ACCOUNT-HUB-FIGMA\.md$/.test(f),
-    scripts: ["figma-project-registry.cjs", "locked-visual-reconciliation.cjs"],
+    test: (f) => /^tooling\/verify\/figma-project-registry\.cjs$/.test(f),
+    scripts: ["figma-project-registry.cjs"],
   },
   {
-    test: (f) =>
-      /^governance\/visual-reconciliation\//.test(f) ||
-      /^tooling\/verify\/locked-visual-reconciliation\.cjs$/.test(f),
+    test: (f) => /^tooling\/verify\/locked-visual-reconciliation\.cjs$/.test(f),
     scripts: ["locked-visual-reconciliation.cjs"],
   },
   {
@@ -1051,7 +1045,6 @@ const RULES = [
     test: (f) =>
       /^packages\/sdk\/src\/device-tier\.ts$/.test(f) ||
       /^packages\/ui\/tokens\/device-tier-contract\.ts$/.test(f) ||
-      /^governance\/responsive\//.test(f) ||
       /^tooling\/verify\/device-tier-system\.cjs$/.test(f),
     scripts: ["device-tier-system.cjs"],
   },

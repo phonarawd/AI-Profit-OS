@@ -91,8 +91,6 @@ CI job ↔ 검증기 매핑 = `tooling/verify/gate-tiers.cjs` `CI_JOBS` · 문�
 |-----------|--------|
 | `governance/platform-redesign/**` · `schemas/governance-observation.v1.json` · `tooling/verify/platform-redesign-inventory.cjs` · `tooling/verify/platform-fact-state-registry.cjs` · `tooling/verify/platform-change-control.cjs` · `tooling/verify/governance-observation-registry.cjs` · `tooling/verify/lib/platform-redesign-measure.cjs` | platform-redesign-inventory · platform-fact-state-registry · platform-change-control · governance-observation-registry |
 | `governance/engine-acceptance/**` (FINAL_ACCEPTANCE.md 제외) · `tooling/engine-acceptance/**` · `tooling/verify/engine-acceptance.cjs` · `.github/workflows/engine-acceptance.yml` | engine-acceptance |
-| `governance/figma/**` · `tooling/verify/figma-project-registry.cjs` | figma-project-registry |
-| `governance/visual-reconciliation/**` · `tooling/verify/locked-visual-reconciliation.cjs` · locked Account Hub `/me` | locked-visual-reconciliation |
 | `tooling/verify/domain-by-path.cjs` · `tooling/verify/domain-by-path.selftest.cjs` · `tooling/verify/domain-by-path-ci.cjs` · `.github/workflows/backend-ci.yml` | domain-by-path-ci |
 | `.cursor/hooks/**` · `.cursor/hooks.json` · `scripts/verify-night-guard.mjs` · `tooling/verify/night-guard.cjs` · `scripts/verify-project-boundary.mjs` | night-guard · project-boundary |
 | `tooling/e2e/**` · `tooling/verify/qa-env-isolation-guard.cjs` | qa-env-isolation-guard |
@@ -100,20 +98,10 @@ CI job ↔ 검증기 매핑 = `tooling/verify/gate-tiers.cjs` `CI_JOBS` · 문�
 | `governance/release-master/rel-b3-promotion/**` · `b3-promotion-ledger` · `tooling/verify/b3-promotion.cjs` | b3-promotion |
 | `release-acceptance.v1.json` · `tooling/release/*acceptance*` · `engine-acceptance.yml` · `deploy-cloudflare.yml` | release-acceptance |
 | `.github/workflows/**` · `.github/dependabot.yml` · `workflow-action-pins.v1.json` · `tooling/verify/workflow-action-pin.cjs` | workflow-action-pin |
-| `tooling/e2e/lib/axe-scan.cjs` · `tooling/e2e/specs/axe-a11y.spec.cjs` · `tooling/verify/axe-harness.cjs` | axe-harness |
-| leftover-browser specs · leftover-browser-harness.cjs · leftover-browser-evidence.v1.json | leftover-browser-harness |
-| `apps/web/lib/opportunity-card-map.ts` · `apps/web/components/spark-dash-home/format.ts` · `packages/ui/components/opportunity/money-display.ts` · `tooling/e2e/lib/money-unavailable.cjs` · `tooling/e2e/specs/money-unavailable.spec.cjs` · `tooling/verify/money-unavailable.cjs` | money-unavailable |
-| `packages/ui/**` · `apps/web/**` | no-it-jargon · mockup-governance · canon-surfaces |
-| `apps/web/**` · `tooling/verify/web-lint.cjs` | web-lint |
-| `apps/web/next.config.ts` · `packages/ui/components/product/image-hosts.ts` · `tooling/verify/web-remote-patterns.cjs` | web-remote-patterns · product-image |
-| `apps/web/public/manifest.webmanifest` · `apps/web/public/sw.js` · `apps/web/public/icons/**` · `apps/web/app/pwa-shell.css` · `apps/web/components/pwa/**` · `tooling/verify/pwa-native-shell.cjs` | pwa-native-shell |
 | `workers/push-dispatcher/**` · `services/api-nest/src/push/**` · `packages/sdk/src/push/**` · `governance/pwa/**` · `schemas/push-*.json` · `tooling/pwa/**` · `tooling/verify/pwa-push-badge.cjs` | pwa-push-badge · push-channel-prefs |
 | `services/api-nest/src/auth/webauthn-rp.ts` · `packages/ui/components/auth/webauthn-ready.ts` · `packages/ui/components/auth/AuthLogin.tsx` · `governance/pwa/webauthn-rp.v1.json` · `tooling/pwa/webauthn-*` · `tooling/verify/webauthn-ux-rp.cjs` | webauthn-ux-rp · webauthn-fallback-pointer · pwa-native-shell |
-| `governance/pwa/DAY1_CERTIFICATION.md` · `governance/pwa/day1-checklist.v1.json` · `tooling/pwa/pwa-day1-*` · `tooling/pwa/lighthouse-pwa.ci.cjs` · `tooling/verify/pwa-day1-certification.cjs` | pwa-day1-certification |
 | `services/api-nest/src/ledger/ledger.user*` · `services/api-nest/ledger-user-query.core.cjs` · `tooling/e2e/**/ledger-user-query*` · `tooling/verify/user-ledger-query.cjs` | user-ledger-query |
 | `governance/observability/**` · `packages/observability/**` · `services/api-nest/src/observability/**` · `apps/web/components/observability/**` · `tooling/verify/observability.cjs` | observability |
-| `apps/web/scripts/asset-pipeline/**` · `tooling/verify/asset-production-pipeline.cjs` | asset-production-pipeline |
-| `packages/sdk/src/device-tier.ts` · `packages/ui/tokens/device-tier-contract.ts` · `governance/responsive/**` · `tooling/verify/device-tier-system.cjs` · `tooling/verify/ux-design-system.cjs` | device-tier-system · ux-design-system |
 | `governance/admin/**` · `tooling/verify/rel-400-admin-control-plane.cjs` | rel-400-admin-control-plane |
 | `governance/security/http-headers` · `tooling/security/http-headers.cjs` · web/admin next.config · api-nest security-headers | rel-401-security-headers |
 | `governance/security/dependency-audit` · `governance/security/AUDIT_EXCEPTIONS.md` · `tooling/security/dependency-audit.cjs` · `.github/workflows/backend-ci.yml` | rel-402-dependency-audit |
