@@ -121,29 +121,7 @@ if (auth && !auth.includes("notificationPrefs")) {
   fails.push("AuthService must inject NotificationPrefsService");
 }
 
-const settings = read("packages/ui/copy/ko/settings.ts");
-for (const key of [
-  "master:",
-  "opportunity:",
-  "wallet:",
-  "notice:",
-  "campaign:",
-  "opsMessage:",
-  "strategyMatch:",
-  "defaultAllOn: true",
-]) {
-  if (settings && !settings.includes(key)) {
-    fails.push(`settings.ts notify missing ${key}`);
-  }
-}
-
-const panel = read("packages/ui/components/settings/SettingsPanel.tsx");
-if (panel && !panel.includes('data-testid="settings-notify"')) {
-  fails.push("SettingsPanel must expose settings-notify");
-}
-if (panel && !panel.includes("/api/v1/me/notification-prefs")) {
-  fails.push("SettingsPanel must call notification-prefs API");
-}
+// settings.ts notify copy keys · SettingsPanel settings-notify testid + notification-prefs API call: putduk-web (handoff 1d)
 
 const rootPkg = read("package.json");
 if (rootPkg && !rootPkg.includes('"verify:notification-prefs-default-on"')) {

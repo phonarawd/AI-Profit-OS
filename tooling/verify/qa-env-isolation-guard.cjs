@@ -19,13 +19,11 @@ function read(rel) {
 
 const files = [
   "tooling/e2e/README.md",
-  "tooling/e2e/playwright.config.cjs",
   "tooling/e2e/fixtures/qa-allowlist.v1.json",
   "tooling/e2e/lib/qa-env-isolation-guard.cjs",
   "tooling/e2e/lib/money-mutation-gate.cjs",
   "tooling/e2e/helpers/auth-session.cjs",
-  "tooling/e2e/specs/happy-path.placeholder.spec.cjs",
-  "tooling/e2e/persona/qa-lab-seed.v1.md",
+  "tooling/e2e/helpers/auth-session.runtime.test.cjs",
 ];
 for (const f of files) mustExist(f);
 
@@ -134,9 +132,10 @@ if (redacted.includes("YOUR_PASSWORD")) {
   fails.push("redactUrl must not leak password");
 }
 
-const spec = read("tooling/e2e/specs/happy-path.placeholder.spec.cjs");
+// committed node:test (run by verify:unit-tests) must exercise guard + auth session helper together
+const spec = read("tooling/e2e/helpers/auth-session.runtime.test.cjs");
 if (!spec.includes("assertQaIsolation") || !spec.includes("createAuthSession")) {
-  fails.push("committed spec must use guard + auth session helper");
+  fails.push("committed runtime test must use guard + auth session helper");
 }
 
 const pkg = read("package.json");
@@ -161,5 +160,5 @@ if (fails.length) {
 }
 
 console.log(
-  "[verify:qa-env-isolation-guard] PASS (production throw · money fail-closed · committed spec)",
+  "[verify:qa-env-isolation-guard] PASS (production throw · money fail-closed · committed runtime test)",
 );

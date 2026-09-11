@@ -213,3 +213,7 @@
 - 백엔드 포트에서 함께 제거한 자기 등재 검사(`package.json` verify 스크립트 · `CATALOG.md` · `stubs/run-all.cjs` 등재)는 개별 스크립트를 두지 않는 새 구조(`verify:backend` 1개)와 충돌하므로 인계 대상이 아니라 폐기.
 - 런타임 하네스 의존: `withdraw-kyc-gate.runtime.cjs` · `wallet-reader-http.runtime.cjs` · `tooling/pwa/webauthn-ux-harness.cjs` · `webauthn-ux.spec.cjs` 는 클라이언트 코드(훅·SDK) 시뮬이라 백엔드 포트에서 호출을 제거했다(1단계 판정 4단계 DELETE). `deposit-config-*.runtime.mts` 2종(1단계 KEEP)은 계속 실행한다.
 - `tooling/verify/responsive/**` 는 `responsive.cjs` 삭제로 고아가 되었으나 1단계 4단계(UI 검증기·E2E 제거) 대상이므로 이번에 건드리지 않았다.
+
+## Stage-4 UI verifier deletion (97b07908 recovery)
+
+Deleted UI-only verifiers/E2E/Playwright/responsive/pwa-client-sim in this backend-only repo. Recovery: `git checkout 97b07908 -- <path>`. Backend assertions moved to `tooling/verify/backend/**` or kept in-place after stripping `apps/*` / `packages/ui` / `packages/sdk` reads.

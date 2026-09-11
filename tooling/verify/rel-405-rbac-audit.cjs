@@ -207,7 +207,6 @@ const denied = core.buildDeniedEvent({
     "app.module",
   );
 
-  const ui = path.join(root, "apps/admin/app/admin/audit/page.tsx");
   const serverReady =
     fs.existsSync(
       path.join(root, "services/api-nest/src/audit/audit-events.admin.controller.ts"),
@@ -216,15 +215,7 @@ const denied = core.buildDeniedEvent({
     fs.existsSync(
       path.join(root, "supabase/migrations/20260823160000_admin_audit_events.sql"),
     );
-  if (fs.existsSync(ui) && !serverReady) {
-    fails.push("EXIT_GATE: UI only — server RBAC/audit missing");
-  }
   if (!serverReady) fails.push("EXIT_GATE: server audit foundation missing");
-
-  const webAdmin = path.join(root, "apps/web/app/admin");
-  if (fs.existsSync(webAdmin)) {
-    fails.push("apps/web must not grow /admin");
-  }
 
   const pkg = read("package.json");
   const catalog = read("tooling/verify/CATALOG.md");

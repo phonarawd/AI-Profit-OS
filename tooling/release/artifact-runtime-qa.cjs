@@ -36,24 +36,6 @@ function parseArgs(argv) {
 function surfacesForRoot(root) {
   return [
     {
-      id: "web",
-      kind: "opennext",
-      script: path.join(root, "apps/web/.open-next/worker.js"),
-      config: path.join(root, "infra/web/wrangler.toml"),
-      route: "/",
-      accept: OPENNEXT_ACCEPT,
-    },
-    {
-      id: "ops",
-      kind: "opennext",
-      script: path.join(root, "apps/admin/.open-next/worker.js"),
-      config: path.join(root, "infra/ops/wrangler.toml"),
-      // ops `/` → 307 `/admin`; local unstable_dev에서 `/` fetch 실패가
-      // 재현되므로 실제 렌더 경로 `/admin`을 직접 검증한다 (CF smoke=307/200).
-      route: "/admin",
-      accept: OPENNEXT_ACCEPT,
-    },
-    {
       id: "push-dispatcher",
       kind: "worker",
       scriptDir: path.join(root, "workers/push-dispatcher", PREBUILT_DIR),

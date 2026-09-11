@@ -1,6 +1,8 @@
 /**
  * verify:rel-401-security-headers
  * Required headers applied. CSP host wildcard abuse 0. SW worker-src self.
+ * Customer web / admin next.config · sw.js · PwaRuntime · lux-theme assertions moved to putduk-web (handoff 1d);
+ * the shared header spec (tooling/security/http-headers.cjs) and the Nest api profile stay here.
  */
 const http = require("http");
 const fs = require("fs");
@@ -35,13 +37,8 @@ const {
 const spec = loadSpec();
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
-const webCfg = read("apps/web/next.config.ts");
-const adminCfg = read("apps/admin/next.config.ts");
 const main = read("services/api-nest/src/main.ts");
 const mw = read("services/api-nest/src/common/security-headers.middleware.ts");
-const sw = read("apps/web/public/sw.js");
-const pwa = read("apps/web/components/pwa/PwaRuntime.tsx");
-const theme = read("packages/ui/tokens/lux-theme.css");
 
 for (const name of spec.requiredHeaderNames) {
   if (!spec.staticHeaders[name] && name !== "Content-Security-Policy") {
@@ -118,19 +115,6 @@ if (!Array.isArray(sources) || sources.length < 1) {
   fails.push("nextSecurityHeaderSources empty");
 }
 
-if (!webCfg.includes("nextSecurityHeaderSources")) {
-  fails.push("apps/web/next.config.ts must apply nextSecurityHeaderSources");
-}
-if (!webCfg.includes("headers()")) {
-  fails.push("apps/web/next.config.ts must define headers()");
-}
-if (!adminCfg.includes("nextSecurityHeaderSources")) {
-  fails.push("apps/admin/next.config.ts must apply nextSecurityHeaderSources");
-}
-if (!adminCfg.includes("headers()")) {
-  fails.push("apps/admin/next.config.ts must define headers()");
-}
-
 if (!main.includes("securityHeadersMiddleware")) {
   fails.push("api-nest main.ts must use securityHeadersMiddleware");
 }
@@ -141,25 +125,11 @@ if (!mw.includes('"api"') && !mw.includes("'api'")) {
   fails.push("Nest must apply the api header profile");
 }
 
-if (!pwa.includes('navigator.serviceWorker.register("/sw.js"')) {
-  fails.push("PWA must still register /sw.js");
-}
-if (!sw.includes("putduk-shell-v1")) {
-  fails.push("sw.js must stay the native shell worker");
-}
-if (!theme.includes("cdn.jsdelivr.net/gh/orioncactus/pretendard")) {
-  fails.push("lux-theme Pretendard host must stay listed in CSP via spec");
-}
-
 if (!pkg.includes("verify:rel-401-security-headers")) {
   fails.push("package.json missing verify:rel-401-security-headers");
 }
 if (!catalog.includes("rel-401-security-headers")) {
   fails.push("CATALOG missing rel-401-security-headers");
-}
-
-if (fs.existsSync(path.join(root, "apps/web/app/admin"))) {
-  fails.push("apps/web must not grow /admin");
 }
 
 // Real HTTP smoke of the same builder Nest/web use.

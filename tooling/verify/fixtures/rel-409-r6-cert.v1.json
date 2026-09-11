@@ -115,7 +115,6 @@
     }
   ],
   "extraVerifies": [
-    "no-admin-in-web.cjs",
     "rel-400-admin-control-plane.cjs",
     "rel-405-rbac-audit.cjs",
     "rel-406-kill-switch.cjs",

@@ -1,6 +1,7 @@
 /**
- * verify:stack-lock (ADR-014 · ADR-015 · ADR-016)
- * Docker optional when Supabase remote configured.
+ * verify:stack-lock (ADR-014 · ADR-015 · ADR-016) · backend-only repository
+ * Node22 · pnpm@10.14 · Nest · Rust engine · Cloudflare Workers · Supabase PG. Docker optional when Supabase remote configured.
+ * (next@16 / Tailwind v4 / OpenNext web-ops locks moved to putduk-web with the customer web.)
  */
 const fs = require("fs");
 const path = require("path");
@@ -22,13 +23,10 @@ mustExist(".node-version");
 mustExist("rust-toolchain.toml");
 mustExist(".cursor/rules/stack-lock.mdc");
 mustExist(".cursor/rules/phase-activation.mdc");
-mustExist(".cursor/rules/mockup-governance.mdc");
 mustExist(".cursor/rules/phase0-ram.mdc");
 mustExist(".cursor/rules/git-safety.mdc");
 mustExist(".cursor/hooks.json");
 mustExist("governance/brand/brand.manifest.json");
-mustExist("packages/sdk/package.json");
-mustExist("packages/schemas/package.json");
 mustExist("services/api-nest/package.json");
 mustExist("services/engine-rust/Cargo.toml");
 mustExist("tooling/verify/CATALOG.md");
@@ -51,12 +49,19 @@ const stackLock = fs.readFileSync(
   path.join(root, ".cursor/rules/stack-lock.mdc"),
   "utf8"
 );
-if (!stackLock.includes("next@16")) fails.push("stack-lock.mdc must pin next@16");
-if (!stackLock.includes("tailwindcss@4") && !stackLock.includes("Tailwind v4")) {
-  fails.push("stack-lock.mdc must pin Tailwind v4");
-}
-if (!stackLock.includes("퍼뜩")) fails.push("stack-lock.mdc must name 퍼뜩");
+if (!stackLock.includes("Nest")) fails.push("stack-lock.mdc must lock Nest");
+if (!stackLock.includes("Rust")) fails.push("stack-lock.mdc must lock the Rust engine");
 if (!stackLock.includes("Cloudflare")) fails.push("stack-lock.mdc must lock Cloudflare");
+if (!/Vercel/.test(stackLock)) fails.push("stack-lock.mdc must keep the Vercel ban");
+
+const nestPkg = JSON.parse(fs.readFileSync(path.join(root, "services/api-nest/package.json"), "utf8"));
+if (!nestPkg.dependencies || !nestPkg.dependencies["@nestjs/core"]) {
+  fails.push("services/api-nest must depend on @nestjs/core (Nest JWT-only API · ADR-006)");
+}
+for (const banned of ["next", "react", "tailwindcss", "@opennextjs/cloudflare"]) {
+  const all = { ...(pkg.dependencies || {}), ...(pkg.devDependencies || {}) };
+  if (all[banned]) fails.push(`root package.json must not depend on UI package ${banned}`);
+}
 
 function ensureCargoBinOnPath() {
   const home = process.env.USERPROFILE || process.env.HOME;

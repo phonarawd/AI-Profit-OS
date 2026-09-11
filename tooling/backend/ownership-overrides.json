@@ -688,6 +688,13 @@
    "decision": "KEEP",
    "stage": "-",
    "reason": "verify:backend 러너 · tooling/verify/backend/**/*.cjs 전부 순차 실행 · 하나라도 FAIL이면 exit 1 · 0개면 FAIL · skip 없음 · gate-tiers T1_PUSH 등재."
+  },
+  {
+   "path": "tooling/e2e/helpers/auth-session.cjs",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "in-process QA isolation session helper required by qa-env-isolation-guard (KEEP HTTP/in-process harness family). Ownership DELETE was QA-lab browser binding; helper itself is not a browser spec."
   }
  ]
 }

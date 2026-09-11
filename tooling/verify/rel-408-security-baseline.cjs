@@ -127,9 +127,6 @@ if (!gate.includes("verify:rel-408-security-baseline")) {
   fails.push("backend-ci.yml must run verify:rel-408-security-baseline");
 }
 
-const webAdmin = path.join(root, "apps/web/app/admin");
-if (fs.existsSync(webAdmin)) fails.push("apps/web must not grow /admin");
-
 if (fails.length) {
   console.error("[verify:rel-408-security-baseline] FAIL");
   for (const f of fails) console.error(" - " + f);

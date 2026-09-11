@@ -806,12 +806,6 @@ function writeFakeWorker(payloadSrc, name) {
 }
 try {
   const payloadSrc = path.join(tmpRoot, "src");
-  fs.mkdirSync(path.join(payloadSrc, "apps/web/.open-next/assets"), { recursive: true });
-  fs.mkdirSync(path.join(payloadSrc, "apps/admin/.open-next/assets"), { recursive: true });
-  fs.writeFileSync(path.join(payloadSrc, "apps/web/.open-next/worker.js"), "web-worker");
-  fs.writeFileSync(path.join(payloadSrc, "apps/web/.open-next/assets/a.txt"), "asset");
-  fs.writeFileSync(path.join(payloadSrc, "apps/admin/.open-next/worker.js"), "ops-worker");
-  fs.writeFileSync(path.join(payloadSrc, "apps/admin/.open-next/assets/a.txt"), "asset");
   const apiDist = path.join(payloadSrc, "services/api-nest/dist");
   fs.mkdirSync(apiDist, { recursive: true });
   const apiEntry = path.join(apiDist, "main.js");
@@ -859,22 +853,18 @@ try {
       fail("API tamper must fail closed");
     }
   }
-  fs.writeFileSync(path.join(bundle, "payload", "apps/web/.open-next/worker.js"), "tampered");
+  fs.writeFileSync(path.join(bundle, "payload", "services/api-nest/dist/main.js"), "tampered-again");
   try {
     verifyBundle(bundle, { sourceSha: fullSha, digest: packed.artifact_digest });
     fail("tampered digest must fail");
   } catch (err) {
     const text = ((err && err.fails) || []).join(" ");
-    if (!text.includes("digest_mismatch")) fail("tamper must be digest_mismatch");
+    if (!text.includes("digest_mismatch") && !text.includes("api_artifact_digest_mismatch")) {
+      fail("tamper must be digest_mismatch");
+    }
   }
 
   const missingApiSrc = path.join(tmpRoot, "src-no-api");
-  fs.mkdirSync(path.join(missingApiSrc, "apps/web/.open-next/assets"), { recursive: true });
-  fs.mkdirSync(path.join(missingApiSrc, "apps/admin/.open-next/assets"), { recursive: true });
-  fs.writeFileSync(path.join(missingApiSrc, "apps/web/.open-next/worker.js"), "web-worker");
-  fs.writeFileSync(path.join(missingApiSrc, "apps/web/.open-next/assets/a.txt"), "asset");
-  fs.writeFileSync(path.join(missingApiSrc, "apps/admin/.open-next/worker.js"), "ops-worker");
-  fs.writeFileSync(path.join(missingApiSrc, "apps/admin/.open-next/assets/a.txt"), "asset");
   for (const name of WORKER_SNAPSHOTS) writeFakeWorker(missingApiSrc, name);
   try {
     packFromPayload(missingApiSrc, path.join(tmpRoot, "bundle-no-api"), fullSha);
@@ -947,22 +937,20 @@ try {
   );
   if (!healthOk.ok) fail("worker /health 200 ok:true must pass");
   const healthBad = evaluateSurfaceResult(
-    { id: "web", kind: "opennext", accept: [200, 307] },
+    { id: "push-dispatcher", kind: "worker", accept: [200] },
     { status: 500 },
   );
-  if (healthBad.ok) fail("OpenNext 500 must fail runtime QA");
+  if (healthBad.ok) fail("worker 500 must fail runtime QA");
 
   const runtime = summarizeRuntime(packed.artifact_digest, [
-    { id: "web", kind: "opennext", route: "/", status: 200, ok: true },
-    { id: "ops", kind: "opennext", route: "/", status: 307, ok: true },
     { id: "push-dispatcher", kind: "worker", route: "/health", status: 200, ok: true },
     { id: "ebay-adapter", kind: "worker", route: "/health", status: 200, ok: true },
   ]);
   if (!runtime.verified) fail("runtime summary must pass when every surface is ok");
   if (runtime.artifact_digest !== packed.artifact_digest) fail("runtime evidence must reuse packed digest");
-  if (runtime.surfaces.length !== 4) fail("runtime QA must cover web/ops/workers");
+  if (runtime.surfaces.length !== 2) fail("runtime QA must cover backend workers");
   const runtimeFail = summarizeRuntime(packed.artifact_digest, [
-    { id: "web", kind: "opennext", route: "/", status: 500, ok: false },
+    { id: "push-dispatcher", kind: "worker", route: "/health", status: 500, ok: false },
   ]);
   if (runtimeFail.verified) fail("failed surface must not verify runtime QA");
 } finally {
@@ -972,9 +960,11 @@ try {
 const missingWorkers = fs.mkdtempSync(path.join(os.tmpdir(), "aipo-relart-noworker-"));
 try {
   const src = path.join(missingWorkers, "src");
-  fs.mkdirSync(path.join(src, "apps/web/.open-next/assets"), { recursive: true });
-  fs.writeFileSync(path.join(src, "apps/web/.open-next/worker.js"), "web-worker");
-  fs.writeFileSync(path.join(src, "apps/web/.open-next/assets/a.txt"), "asset");
+  const apiDist = path.join(src, "services/api-nest/dist");
+  fs.mkdirSync(apiDist, { recursive: true });
+  const apiEntry = path.join(apiDist, "main.js");
+  fs.writeFileSync(apiEntry, "api-main");
+  writeApiManifest(apiDist, fullSha, apiEntry);
   try {
     packFromPayload(src, path.join(missingWorkers, "bundle"), fullSha);
     fail("pack without worker prebuilt must fail");

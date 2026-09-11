@@ -237,17 +237,7 @@ if (events && !/adapter\.health\.changed/.test(events)) {
   fails.push("ADAPTER_EVENTS must include adapter.health.changed");
 }
 
-const adminPage = read("apps/admin/app/admin/adapters/page.tsx");
-if (adminPage) {
-  for (const id of ["ebay", "pokemontcg", "ygoprodeck", "coingecko", "frankfurter"]) {
-    if (!adminPage.includes(id)) {
-      fails.push(`admin adapters page must list ${id}`);
-    }
-  }
-  if (/nearMissCap/.test(adminPage)) {
-    fails.push("admin adapters page must not own nearMissCap settings");
-  }
-}
+// admin adapters page (5 adapter ids · nearMissCap not owned by the page): future admin repo (quality/admin-handoff)
 
 // Registry SSOT
 const reg = require(path.join(

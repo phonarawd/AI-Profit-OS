@@ -235,9 +235,6 @@ if (/UPDATE\s+public\.listings/i.test(mig)) {
   });
   if (moneyAudit.ok) fails.push("audit payload must reject money keys");
 
-  const webAdmin = path.join(root, "apps/web/app/admin");
-  if (fs.existsSync(webAdmin)) fails.push("apps/web must not grow /admin");
-
   const pkg = read("package.json");
   const catalog = read("tooling/verify/CATALOG.md");
   const gate = read(".github/workflows/backend-ci.yml");

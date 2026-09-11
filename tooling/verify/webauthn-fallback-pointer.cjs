@@ -303,11 +303,8 @@ const bannedOwnership = [
   /WITHDRAW_STEP_UP_PRIORITY/,
   /email_otp.*priority/,
 ];
-const scanRoots = [
-  path.join(root, "apps", "web"),
-  path.join(root, "packages", "sdk"),
-  path.join(root, "workers"),
-];
+// customer web / client SDK ownership scan lives in putduk-web (handoff 1d); only Workers are scanned here
+const scanRoots = [path.join(root, "workers")];
 for (const dir of scanRoots) {
   walk(dir, (file) => {
     if (!/\.(ts|tsx|js|jsx|md)$/.test(file)) return;

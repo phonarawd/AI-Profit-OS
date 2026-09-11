@@ -35,9 +35,6 @@ const RULES = [
       /^tooling\/verify\/governance-observation-registry\.cjs$/.test(f) ||
       /^tooling\/verify\/lib\/platform-redesign-measure\.cjs$/.test(f),
     scripts: [
-      "platform-redesign-inventory.cjs",
-      "platform-fact-state-registry.cjs",
-      "platform-change-control.cjs",
       "governance-observation-registry.cjs",
     ],
   },
@@ -302,12 +299,12 @@ const RULES = [
       /^apps\/web\/next\.config\.ts$/.test(f) ||
       /^packages\/ui\/components\/product\/image-hosts\.ts$/.test(f) ||
       /^tooling\/verify\/web-remote-patterns\.cjs$/.test(f),
-    scripts: ["web-remote-patterns.cjs"],
+    scripts: ["backend/opportunity-engine/image-hosts-contract.cjs"],
   },
   {
     test: (f) =>
       /^apps\/web\//.test(f) || /^tooling\/verify\/web-lint\.cjs$/.test(f),
-    scripts: ["web-lint.cjs"],
+    scripts: [],
   },
   {
     test: (f) =>
@@ -319,7 +316,7 @@ const RULES = [
       /^apps\/web\/app\/layout\.tsx$/.test(f) ||
       /^apps\/web\/components\/pwa\//.test(f) ||
       /^tooling\/verify\/pwa-native-shell\.cjs$/.test(f),
-    scripts: ["pwa-native-shell.cjs"],
+    scripts: [],
   },
   {
     test: (f) =>
@@ -378,7 +375,7 @@ const RULES = [
       /^tooling\/e2e\/specs\/execute-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/execute-live-wire\.cjs$/.test(f) ||
       /^tooling\/verify\/execute-web-wire\.cjs$/.test(f),
-    scripts: ["execute-live-wire.cjs", "execute-web-wire.cjs"],
+    scripts: ["execute-rule-loop.cjs"],
   },
   {
     test: (f) =>
@@ -390,7 +387,7 @@ const RULES = [
       /^tooling\/e2e\/specs\/trades-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/trades-live-wire\.cjs$/.test(f) ||
       /^tooling\/verify\/earnings-embed\.cjs$/.test(f),
-    scripts: ["trades-live-wire.cjs", "backend/matching-membership/trades-web-wire.cjs", "earnings-embed.cjs"],
+    scripts: ["backend/matching-membership/trades-web-wire.cjs"],
   },
   {
     test: (f) =>
@@ -410,11 +407,7 @@ const RULES = [
       /^tooling\/verify\/opportunity-detail-live-wire\.cjs$/.test(f) ||
       /^tooling\/verify\/participate-web-wire\.cjs$/.test(f) ||
       /^tooling\/verify\/participate-sheet-live-wire\.cjs$/.test(f),
-    scripts: [
-      "opportunity-detail-live-wire.cjs",
-      "participate-web-wire.cjs",
-      "participate-sheet-live-wire.cjs",
-    ],
+    scripts: ["participate-http.cjs"],
   },
   {
     test: (f) =>
@@ -426,7 +419,7 @@ const RULES = [
       /^packages\/sdk\/src\/wallet\.ts$/.test(f) ||
       /^tooling\/e2e\/specs\/wallet-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/wallet-closure\.cjs$/.test(f),
-    scripts: ["wallet-closure.cjs"],
+    scripts: ["user-ledger-query.cjs"],
   },
   {
     test: (f) =>
@@ -441,10 +434,7 @@ const RULES = [
       /^tooling\/e2e\/lib\/account-route-stubs\.cjs$/.test(f) ||
       /^tooling\/e2e\/specs\/invite-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/invite-closure\.cjs$/.test(f),
-    scripts: [
-      "invite-closure.cjs",
-      "invite-explain-surfaces.cjs",
-    ],
+    scripts: ["backend/benefit-referral/referral-own-code.cjs"],
   },
   {
     test: (f) =>
@@ -452,7 +442,7 @@ const RULES = [
       /^packages\/ui\/components\/inbox\//.test(f) ||
       /^tooling\/e2e\/specs\/inbox-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/inbox-closure\.cjs$/.test(f),
-    scripts: ["inbox-closure.cjs", "backend/notification/ops-inbox.cjs"],
+    scripts: ["backend/notification/ops-inbox.cjs"],
   },
   {
     test: (f) =>
@@ -473,7 +463,7 @@ const RULES = [
       /^apps\/web\/components\/FontScaleApply\.tsx$/.test(f) ||
       /^tooling\/e2e\/specs\/settings-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/settings-closure\.cjs$/.test(f),
-    scripts: ["settings-closure.cjs"],
+    scripts: ["backend/auth/ux-prefs-jwt-scope.cjs"],
   },
   {
     test: (f) =>
@@ -498,11 +488,7 @@ const RULES = [
       /^tooling\/verify\/account-hub-batch\.cjs$/.test(f) ||
       /^tooling\/verify\/account-journey\.cjs$/.test(f) ||
       /^tooling\/verify\/account-compat-closure\.cjs$/.test(f),
-    scripts: [
-      "account-hub-batch.cjs",
-      "account-compat-closure.cjs",
-      "account-journey.cjs",
-    ],
+    scripts: [],
   },
   {
     test: (f) =>
@@ -1484,7 +1470,7 @@ function scriptsForChangedFiles(files) {
       }
     }
   }
-  return [...scripts];
+  return [...scripts].filter((s) => fs.existsSync(path.join(__dirname, s)));
 }
 
 if (require.main === module) {

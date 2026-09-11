@@ -31,9 +31,6 @@ const requiredFiles = [
   "services/api-nest/src/wallet/home-money-read.service.ts",
   "services/api-nest/src/wallet/home-money-read.user.controller.ts",
   "services/api-nest/src/wallet/home-money-read.user.routes.ts",
-  "packages/sdk/src/home-money-read/types.ts",
-  "packages/sdk/src/home-money-read/fetch.ts",
-  "packages/sdk/src/home-money-read/index.ts",
 ];
 for (const f of requiredFiles) mustExist(f);
 
@@ -156,7 +153,6 @@ for (const needle of ["INSERT INTO", "UPDATE public.", "CREATE TABLE"]) {
 for (const rel of [
   "services/api-nest/src/wallet/home-money-read.user.controller.ts",
   "services/api-nest/src/wallet/home-money-read.service.ts",
-  "packages/sdk/src/home-money-read/types.ts",
 ]) {
   const src = read(rel);
   if (/^\s*availableUsdt\s*:/m.test(src) || /["']availableUsdt["']\s*:/.test(src)) {
@@ -179,25 +175,8 @@ if (!mapSrc.includes("availableUsdt") || !mapSrc.includes("FORBIDDEN")) {
   fails.push("map.ts must deny-list availableUsdt (zero≠absent guard)");
 }
 
-// ── SDK ──
-const sdkPkg = read("packages/sdk/package.json");
-if (!sdkPkg.includes('"./home-money-read"')) {
-  fails.push("packages/sdk package.json must export ./home-money-read");
-}
-const sdkFetch = read("packages/sdk/src/home-money-read/fetch.ts");
-const sdkTypes = read("packages/sdk/src/home-money-read/types.ts");
-if (!sdkFetch.includes("/api/v1/me/home-money-read")) {
-  fails.push("SDK fetch must call /api/v1/me/home-money-read");
-}
-if (!sdkTypes.includes("settlementCompletedTodayCount")) {
-  fails.push("SDK types must include settlementCompletedTodayCount");
-}
-if (
-  sdkFetch.includes("todayPossibleProfitUsdt") ||
-  sdkTypes.includes("availableUsdt")
-) {
-  fails.push("SDK must not expose Engine todayPossible / availableUsdt");
-}
+// ── SDK (packages/sdk home-money-read export · fetch path · types deny-list): client side, moved with the SDK to putduk-web
+//    (quality/putduk-web-sdk-handoff.md · quality/putduk-web-ui-assertions-handoff.md 1d)
 
 // ── package.json + CATALOG registration ──
 const pkg = read("package.json");

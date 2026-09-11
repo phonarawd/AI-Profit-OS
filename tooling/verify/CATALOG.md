@@ -19,7 +19,6 @@
 | plans-ssot | `verify:plans-ssot` | T0 | ✅ live |
 | brand-consumer | `verify:brand-consumer` | T0 | ✅ live |
 | pg-module-scan | `verify:pg-module-scan` | T1 | ✅ live |
-| brand-assets | `verify:brand-assets` | T1 | ✅ live (visual_kit_v1) |
 | cf-infra | `verify:cf-infra` | T1 | ✅ live |
 | ebay-worker-deploy-path | `verify:ebay-worker-deploy-path` | T0 path + T1 | ✅ live (P0-A · p0-ebay=ebay-adapter only · surface fail-closed · dry-run mutation=0) |
 | p0-ebay-secret-provisioning | `verify:p0-ebay-secret-provisioning` | T0 path + T1 | ✅ live (P0-B1 · production ebay-adapter four secret names · no value print · no preview copy · dry-run mutation=0) |
@@ -28,18 +27,9 @@
 | phase0-bootstrap | `verify:phase0-bootstrap` | T1 | ✅ live |
 | root-domain-env | `verify:root-domain-env` | T1 | ✅ live |
 | domain-bootstrap | `verify:domain-bootstrap` | T1 | ✅ live |
-| next-major-pin | `verify:next-major-pin` | T1 | ✅ live |
-| tailwind-v4 | `verify:tailwind-v4` | T1 | ✅ live |
-| lux-theme-sync | `verify:lux-theme-sync` | T1 | ✅ live |
-| dark-leak-guard | `verify:dark-leak-guard` | T1 | ✅ live (peotteok-light 단일 출시 · prefers-color-scheme 0 · lux-dark archive 활성참조 0) |
-| cf-deploy-packages | `verify:cf-deploy-packages` | T1 | ✅ live |
-| no-admin-in-web | `verify:no-admin-in-web` | T1 | ✅ live |
-| ia-tabs | `verify:ia-tabs` | T1 | ✅ live |
 | api-nest-build | `verify:api-nest-build` | T1 | ✅ live |
 | stubs/run-all | domain stubs | T1 | ✅ live |
 | settlement-rule-parity | `verify:settlement-rule-parity` | T0 path + T1 always | ✅ live (REL-008 · rust==cjs golden vectors · REL-502 대체 0) |
-| web-lint | `verify:web-lint` | T0 path | ✅ live (REL-011 · apps/web eslint 실검사 · no-op echo 0 · 구문 오류 FAIL) |
-| leftover-shared-states | `verify:leftover-shared-states` | T0 path | live (app error.tsx · RecoveryRetry · PermissionDenied · execute receipt KEEP) |
 | rel-402-dependency-audit | `verify:rel-402-dependency-audit` | T0 path + CI | ✅ live (REL-402 · pnpm audit high+ · local full scan 0 · exception ledger) |
 | rel-403-versioning | `verify:rel-403-versioning` | T0 path | ✅ live (REL-403 · semver + manual tag · HUMAN deploy · REL-602) |
 | rel-405-rbac-audit | `verify:rel-405-rbac-audit` | T0 path + CI | ✅ live (REL-405 · 5-role lock · audit write/deny · invented roles 0) |
@@ -69,16 +59,11 @@
 | rel-600-staging | `verify:rel-600-staging` | T0 path + CI | live (REL-600 staging preview workers) |
 | rel-601-staging-regression | `verify:rel-601-staging-regression` | T0 path + CI | live (REL-601 Surface Matrix staging preview · Home redesign 0 · local full 0) |
 | rel-602-staging-rollback | `verify:rel-602-staging-rollback` | T0 path + CI | live (REL-602 real preview rollback + read-only regression + forward deploy · production/DB/money 0) |
-| web-remote-patterns | `verify:web-remote-patterns` | T0 path | ✅ live (REL-013 · next/image 최소 allowlist · used hosts match · https-all 0) |
-| pwa-native-shell | `verify:pwa-native-shell` | T0 path | ✅ live (REL-014 · E-PWA-001 · manifest+icons+동등 SW+install/update · store-bridge 0 · push=REL-020) |
 | pwa-push-badge | `verify:pwa-push-badge` | T0 path | ✅ live (REL-020 · E-PWA-002 · VAPID path · dispatcher 실연결 · subscribe+SW badge · Admin kill · secret 0) |
 | push-channel-prefs | `verify:push-channel-prefs` | T0 path | ✅ live (REL-021 · E-PWA-003 · notice/campaign/opportunity 격리 · pref=false enqueue 0) |
 | user-ledger-query | `verify:user-ledger-query` | T0 path | ✅ live (REL-015 · 유저 JWT 본인 전표 · 403 타인 · decimal string · GET-only · UPDATE 0) |
-| earnings-embed | `verify:earnings-embed` | T0 path | ✅ live (REL-111 · /trades earnings owner=wallet.profitUsdt · client sum 0 · KRW 0) |
 | observability | `verify:observability` | T0 path | ✅ live (REL-016 · CF Workers console sink · money/KYC mask · 5xx/ledger/auth alerts · Vercel 0) |
 | legacy-plan-migration | `verify:legacy-plan-migration` | T0 path | ✅ live (REL-017 · 21파일 권위 스탬프 · sync-plans 0 · Home mirror 0) |
-| asset-production-pipeline | `verify:asset-production-pipeline` | T0 path | ✅ live (REL-018 · source→optimize→hash→public→review · partner AI 0 · Home lock) |
-| device-tier-system | `verify:device-tier-system` | T0 path | ✅ live (REL-019 · detectDeviceTier 재사용 · 2560/3440/3840 안전 문서 · Home geometry lock) |
 
 ## T2 CI-only (backend-ci.yml · 로컬 T2 = CI 합집합)
 

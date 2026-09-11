@@ -23,24 +23,12 @@ const fixture = JSON.parse(
   read("tooling/verify/fixtures/rel-409-r6-cert.v1.json") || "{}",
 );
 const plan = read(".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md");
-const routes = fs.existsSync(path.join(root, "apps/admin/routes.ts"))
-  ? read("apps/admin/routes.ts")
-  : "ADMIN_TOP_LEVEL_COUNT = 12\nid: \"2b\"\n/admin/execution-policy";
 const cert = read("governance/admin/R6_CERTIFICATION.md");
 
 if (fixture.topLevel !== 12) fails.push("fixture topLevel must be 12");
 if (fixture.child2b !== true) fails.push("fixture must require 2b");
 if (fixture.sidebar13 !== 0) fails.push("sidebar13 must be 0");
-if (!/ADMIN_TOP_LEVEL_COUNT\s*=\s*12/.test(routes)) {
-  fails.push("ADMIN_TOP_LEVEL_COUNT must be 12");
-}
-if (!routes.includes('id: "2b"') || !routes.includes("/admin/execution-policy")) {
-  fails.push("2b execution-policy child missing");
-}
-if (/id: 13/.test(routes)) fails.push("13th sidebar module forbidden");
-
-const webAdmin = path.join(root, "apps/web/app/admin");
-if (fs.existsSync(webAdmin)) fails.push("apps/web must not grow /admin");
+// admin sidebar routes (12 top-level · 2b execution-policy child · no 13th module): future admin repo (quality/admin-handoff)
 
 // R6 known-severity budget is the admin cert + fixture, not the live
 // engine-acceptance discovery ledger. QA4/QA5/QA8 must be allowed to
@@ -81,10 +69,7 @@ if (modules.length !== 13) {
   fails.push("must certify 12 modules + 2b (13 rows), got " + modules.length);
 }
 for (const mod of modules) {
-  if (fs.existsSync(path.join(root, "apps/admin/routes.ts")) && !routes.includes('"' + mod.href + '"')) {
-    fails.push("routes missing " + mod.href);
-  }
-  // admin UI pages moved to putduk-web; backend contract verify (if any) must exist and run
+  // admin UI pages live in the future admin repo; the backend contract verify (if any) must exist and run
   if (mod.verify && !fs.existsSync(path.join(root, "tooling/verify", mod.verify))) {
     fails.push("missing verify " + mod.verify);
   }

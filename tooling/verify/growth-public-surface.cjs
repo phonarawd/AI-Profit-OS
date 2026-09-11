@@ -7,18 +7,12 @@ const path = require("path");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
-function __isRetiredUiRel(rel) {
-  return /^(apps\/(web|admin)|packages\/ui)(\/|$)/.test(String(rel).replace(/\\/g, "/"));
-}
-
 
 function mustExist(rel) {
-  if (__isRetiredUiRel(rel)) return;
   if (!fs.existsSync(path.join(root, rel))) fails.push(`missing: ${rel}`);
 }
 
 function read(rel) {
-  if (__isRetiredUiRel(rel)) return /\.json$/i.test(rel) ? "{}" : "";
   const p = path.join(root, rel);
   if (!fs.existsSync(p)) {
     fails.push(`missing: ${rel}`);
@@ -76,14 +70,8 @@ if (!adminPlan.includes("growth_ticker_config")) {
   );
 }
 
-// apps/admin code 0 for this todo
-const adminGrowth = path.join(root, "apps/admin/app/admin/growth");
-// allow existing growth folder — but PART9g must not add PATCH in apps/admin
-// soft check: no new requirement
+// Admin growth PATCH surface = future admin repo (API-only pointer · quality/admin-handoff); no UI tree exists here.
 
-const __keptBackendFails = fails.filter((f) => !/apps\/(web|admin)|packages\/ui/.test(String(f)));
-fails.length = 0;
-fails.push(...__keptBackendFails);
 if (fails.length) {
   console.error("[verify:growth-public-surface] FAIL\n- " + fails.join("\n- "));
   process.exit(1);

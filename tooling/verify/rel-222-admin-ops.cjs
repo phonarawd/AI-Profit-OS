@@ -134,9 +134,6 @@ const svc = read("services/api-nest/src/admin-ops/admin-ops.service.ts");
 const ctrl = read("services/api-nest/src/admin-ops/admin-ops.admin.controller.ts");
 const app = read("services/api-nest/src/app.module.ts");
 const caps = read("services/api-nest/src/common/admin-capabilities.ts");
-const routes = fs.existsSync(path.join(root, "apps/admin/routes.ts"))
-  ? read("apps/admin/routes.ts")
-  : "ADMIN_TOP_LEVEL_COUNT = 12"; // admin UI not in this repo
 const auth = read("services/api-nest/src/admin-ops/admin-ops.service.ts");
 
 if (!app.includes("AdminOpsModule")) {
@@ -178,15 +175,7 @@ if (/UPDATE\s+public\.ledger/i.test(svc) || /INSERT\s+INTO\s+public\.ledger/i.te
 if (/INSERT\s+INTO\s+public\.ledger_/i.test(svc)) {
   fails.push("EXIT_GATE: admin-ops must not insert ledger_*");
 }
-if (!/ADMIN_TOP_LEVEL_COUNT\s*=\s*12/.test(routes)) {
-  fails.push("sidebar must stay 12");
-}
-if ((routes.match(/href: "\/admin\//g) || []).length > 20) {
-  // soft — 13th top-level is the lock
-}
-if (routes.includes("/admin/ops") && /id: 13/.test(routes)) {
-  fails.push("must not add 13th sidebar module");
-}
+// admin sidebar (ADMIN_TOP_LEVEL_COUNT 12 · no 13th module): future admin repo (quality/admin-handoff)
 
 const mig = read("supabase/migrations/20260823190000_admin_ops_intents.sql");
 for (const needle of [
@@ -217,9 +206,6 @@ if (fixtureMig.rel701db && fixtureMig.rel701db.status === "APPLIED") {
 } else if (!(fixtureMig.committedUnapplied || []).includes("20260823190000")) {
   fails.push("20260823190000 must stay committedUnapplied (no production apply)");
 }
-
-const webAdmin = path.join(root, "apps/web/app/admin");
-if (fs.existsSync(webAdmin)) fails.push("apps/web must not grow /admin");
 
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");

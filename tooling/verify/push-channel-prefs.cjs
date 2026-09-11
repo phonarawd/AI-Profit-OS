@@ -32,7 +32,6 @@ const required = [
   "schemas/notification-prefs.v1.json",
   "schemas/push-channel-filter.v1.json",
   "governance/pwa/push-channel-filter.v1.json",
-  "packages/ui/components/settings/SettingsPanel.tsx",
   "tooling/pwa/pwa-push-channel-filter-harness.cjs",
   "tooling/pwa/pwa-push-channel-filter.spec.cjs",
 ];
@@ -113,24 +112,7 @@ if (dispatch && !dispatch.includes("channel-filter.cjs")) {
   fails.push("dispatcher must load channel-filter SSOT");
 }
 
-const settings = read("packages/ui/components/settings/SettingsPanel.tsx");
-if (settings && !settings.includes("/api/v1/me/notification-prefs")) {
-  fails.push("settings must stay on existing notification-prefs API");
-}
-for (const ch of contract) {
-  if (settings && !settings.includes(`data-notify-channel={key}`) && !settings.includes(`"${ch}"`)) {
-    fails.push(`settings missing channel ${ch}`);
-  }
-}
-if (settings && !settings.includes('key: "notice"')) {
-  fails.push("settings must expose notice");
-}
-if (settings && !settings.includes('key: "campaign"')) {
-  fails.push("settings must expose campaign");
-}
-if (settings && !settings.includes('key: "opportunity"')) {
-  fails.push("settings must expose opportunity");
-}
+// SettingsPanel (notification-prefs API use · 3 channel toggles): putduk-web (handoff 1d)
 
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");

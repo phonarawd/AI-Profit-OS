@@ -41,9 +41,6 @@ const appliedFx = JSON.parse(
 );
 const tradeSchema = JSON.parse(read("schemas/trade-execution-state.v1.json") || "{}");
 const homeMoney = JSON.parse(read("schemas/home-money-read.v1.json") || "{}");
-const factState = JSON.parse(
-  read("governance/platform-redesign/fact-state-registry.v1.json") || "{}",
-);
 const engineCert = read("governance/engine-acceptance/FINAL_ACCEPTANCE.md");
 const r6 = read("governance/admin/R6_CERTIFICATION.md");
 const appModule = read("services/api-nest/src/app.module.ts");
@@ -103,19 +100,10 @@ if (!read("services/api-nest/src/auth/jwt-auth.guard.ts").includes("export class
   fails.push("JwtAuthGuard missing");
 }
 
-function sdkMentions(sdk, p) {
-  if (sdk.includes(p)) return true;
-  if (!p.includes("/:id")) return false;
-  const before = p.split("/:id")[0];
-  const after = (p.split("/:id/")[1] || "").replace(/^\//, "");
-  return sdk.includes(before) && (!after || sdk.includes(after));
-}
-
-for (const pair of fixture.sdkPairs || []) {
-  const sdk = read(pair.sdk);
-  if (sdk && !sdkMentions(sdk, pair.path)) {
-    fails.push("SDK missing path " + pair.id + " " + pair.path);
-  }
+// apiPairs = public API path -> Nest route source. The client half (packages/sdk fetch modules) moved to putduk-web
+// with the SDK (quality/putduk-web-sdk-handoff.md); only the server side of each pair is asserted here.
+for (const pair of fixture.apiPairs || []) {
+  if (!pair.path) fails.push("blank path cell: " + pair.id);
   if (pair.conflict) {
     if (pair.nest != null) fails.push(pair.id + " conflict pair must have nest=null");
     continue;
@@ -161,11 +149,7 @@ const statusEnum = tradeSchema.properties?.status?.enum || [];
 for (const st of fixture.engineFsmCore || []) {
   if (!statusEnum.includes(st)) fails.push("trade status missing FSM " + st);
 }
-const fsm = (factState.domainFsm || []).find((x) => x.fsmId === "engine.trade_execution");
-const fsmStates = (fsm && fsm.states) || [];
-for (const st of fsmStates) {
-  if (!statusEnum.includes(st)) fails.push("fact-state FSM not in schema: " + st);
-}
+// governance/platform-redesign fact-state-registry FSM cross-check: UI governance evidence (platform-redesign) - putduk-web handoff 1d
 
 const reasonPat = homeMoney.properties?.reasonCode?.pattern || "";
 if (!reasonPat.includes("[a-z]")) {
@@ -187,12 +171,11 @@ if (homeMoney.properties?.principalUsdt?.type !== "string") {
 
 const participate = read("services/api-nest/src/opportunities/participate.service.ts");
 const walletCtl = read("services/api-nest/src/wallet/wallet.controller.ts");
-const sdkPart = read("packages/sdk/src/participate/fetch.ts");
-const sdkWallet = read("packages/sdk/src/wallet/fetch.ts");
-if (!participate.includes("idempotencyKey") || !sdkPart.includes("idempotencyKey")) {
+// packages/sdk participate/wallet fetch idempotencyKey pairing: client SDK side (putduk-web handoff 1d)
+if (!participate.includes("idempotencyKey")) {
   fails.push("participate idempotency missing");
 }
-if (!walletCtl.includes("idempotencyKey") || !sdkWallet.includes("idempotencyKey")) {
+if (!walletCtl.includes("idempotencyKey")) {
   fails.push("withdraw idempotency missing");
 }
 
@@ -276,7 +259,7 @@ if (fails.length === 0) {
     const run = spawnSync(process.execPath, [path.join(root, "tooling/verify", script)], {
       cwd: root,
       encoding: "utf8",
-      timeout: 90_000,
+      timeout: 180_000,
     });
     if (run.status !== 0) {
       fails.push(

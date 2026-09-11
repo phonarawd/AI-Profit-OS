@@ -270,17 +270,7 @@ if (adminSvc) {
   }
 }
 
-const adminPage = read("apps/admin/app/admin/adapters/page.tsx");
-if (adminPage) {
-  for (const id of ["amazon", "yahoo_jp"]) {
-    if (!adminPage.includes(id)) {
-      fails.push(`admin adapters page must list ${id}`);
-    }
-  }
-  if (!/공식 협력/.test(adminPage)) {
-    fails.push("admin adapters page must state 공식 협력");
-  }
-}
+// admin adapters page (amazon · yahoo_jp rows · partner label): future admin repo (quality/admin-handoff)
 
 // Day-1 pricing enum still excludes partner markets (auto-publish lock)
 const pricingSchema = JSON.parse(
