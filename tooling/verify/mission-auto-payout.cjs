@@ -21,7 +21,6 @@ const required = [
   "schemas/mission-accrual.v1.json",
   ".cursor/plans/ai_profit_os_01_money_c3d4e5f6.plan.md",
   ".cursor/plans/ai_profit_os_02_engine_b2c3d4e5.plan.md",
-  ".cursor/plans/ai_profit_os_03_ui_ux_d4e5f6a7.plan.md",
   "services/api-nest/src/missions/mission-reward.evaluator.ts",
   "services/api-nest/src/missions/settlement-completed.fanout.ts",
   "services/api-nest/src/missions/mission.accrual.service.ts",

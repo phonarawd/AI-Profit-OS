@@ -1043,14 +1043,6 @@ const RULES = [
   },
   {
     test: (f) =>
-      /^governance\/legacy-plan-migration\//.test(f) ||
-      /^tooling\/legacy-plan-stamp\.cjs$/.test(f) ||
-      /^tooling\/verify\/legacy-plan-migration\.cjs$/.test(f) ||
-      /^\.cursor\/plans\/.+\.plan\.md$/.test(f),
-    scripts: ["legacy-plan-migration.cjs"],
-  },
-  {
-    test: (f) =>
       /^apps\/web\/scripts\/asset-pipeline\//.test(f) ||
       /^tooling\/verify\/asset-production-pipeline\.cjs$/.test(f),
     scripts: ["asset-production-pipeline.cjs"],

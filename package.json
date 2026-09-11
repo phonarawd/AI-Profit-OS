@@ -176,7 +176,6 @@
     "pwa:generate-vapid": "node tooling/pwa/generate-vapid.mjs",
     "verify:user-ledger-query": "node tooling/verify/user-ledger-query.cjs",
     "verify:observability": "node tooling/verify/observability.cjs",
-    "verify:legacy-plan-migration": "node tooling/verify/legacy-plan-migration.cjs",
     "engine-acceptance:freeze-baseline": "node tooling/engine-acceptance/freeze-baseline.cjs",
     "engine-acceptance:kill-switch": "node tooling/engine-acceptance/kill-switch.cjs",
     "engine-acceptance:tiny-smoke": "node tooling/engine-acceptance/tiny-smoke.cjs",
