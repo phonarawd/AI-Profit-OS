@@ -148,6 +148,35 @@ CI 실행 결과(run URL · job 별 conclusion · 소요 시간)는 §9 에 기�
 
 다른 워크플로 (같은 SHA): `codeql` success · `release-integration-contract` success · `engine-evidence-refresh-check` **failure** — `Verify RC_FORMAL lock` (`rc-formal.cjs`: `HEAD diverges from RC binding outside governance/evidence: .github/actions/backend-setup/action.yml, .github/codeql/codeql-config.yml, AGENTS.md, TOOLCHAIN.md, apps/admin/...`) → RC_FORMAL 해시 범위가 삭제된 UI 트리와 루트 문서를 포함하는 SPLIT 검증기(§3 NOT_RUN 표) · 5단계 범위 재정의. 이 워크플로는 `rel-502/503` 검증기 경로 변경(gate.yml→backend-ci.yml 문자열)으로 트리거됐다.
 
+### 9.2 run 2 — `e8d0c371` (구성 결함 수정 후 · https://github.com/phonarawd/AI-Profit-OS/actions/runs/34563489024 · attempt 2 = 실패 job 재실행)
+
+| job | conclusion | 소요 | 비고 |
+|---|---|---:|---|
+| gate-fast | **success** | 65s | (a) 해소 — PR 모드 선택 검증기 52개 전부 PASS |
+| ledger-wallet | **success** | 28s | (a) 해소 — api-nest-build 뒤 runtime 검증기 PASS |
+| auth | success | 67s | |
+| unit | success | 36s | 10 test files · node:test |
+| integration | success | 29s | |
+| kyc | success | 17s | |
+| matching-membership | success | 31s | |
+| notification | success | 22s | pwa-push-badge 포함 |
+| ai-policy | success | 23s | |
+| admin-rbac | success | 18s | |
+| migration | success | 35s | |
+| api-contract | success | 33s | |
+| typecheck | success | 26s | api-nest tsc + KEEP workers 13개 tsc |
+| worker-build | success | 39s | wrangler --dry-run 15 workers (web-proxy · ops-proxy 포함 · 업로드 0) |
+| repository-boundary | failure | 29s | (b) `verify:backend-boundary` 865건 · 나머지 5 step PASS |
+| dependency-integrity | failure | 25s | (b) `pnpm dedupe --check` workers-types 중복 해석 |
+| security | failure | 21s | (b) `verify:pnpm-audit` qs moderate 2건 · 나머지 5 step PASS |
+| rust-engine | failure | 19s | (c·보호 범위) `cargo fmt --check` 만 · clippy/check/test PASS |
+| release-evidence | failure | 61s | (b/c) `verify:engine-acceptance` lockfile_hash drift 만 · attempt 1 에서 `rel-602-staging-rollback` 이 내부 재실행 `rel-601` 의 live staging 프로브로 1회 실패 → attempt 2 PASS (flaky 외부 프로브 · 코드 변경 0) |
+| backend-required | failure | 6s | 집계 = 위 5 red · NOT_RUN 0 · core NOT_RUN 0 |
+
+다른 워크플로: `codeql` success · `release-integration-contract` success · `engine-evidence-refresh-check` failure (rc-formal · 9.1 과 동일).
+
+**red 원인 = (b)/(c) 만.** (a) CI 구성 결함은 0. `backend-required` 는 §6 의 정리 전 항목이 해소될 때까지 red 이며, 룰셋 전환(§7)은 그 뒤에 진행한다.
+
 ## 10. 후속 단계 표기 (이 단계에서 하지 않은 것)
 
 - 미사용/순환 의존 검사 도구 없음 (knip/madge/depcheck 미설치) → 8단계 패키지 정리에서 도구 도입 여부 결정. `dependency-integrity` 는 lockfile 단일성 · workspace 참조 무결성 · `pnpm dedupe --check` 만.
