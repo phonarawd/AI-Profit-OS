@@ -221,3 +221,10 @@ Deleted UI-only verifiers/E2E/Playwright/responsive/pwa-client-sim in this backe
 ## Stage-4 SDK move (commit 2)
 
 Client package `@aipo/sdk` and pointer `@aipo/schemas` left this repo. See `quality/putduk-web-sdk-handoff.md`. `ledger-journal-reader.runtime.cjs` handed off with the SDK; Nest decimal/JWT stays in `user-ledger-query.cjs`. `packages/observability` stays.
+
+
+## 6단계 백엔드 잔여 (UI 읽기 제거)
+
+- pwa-day1-certification: backend checks push-dispatcher kill-switch + governance/pwa/webauthn-rp.v1.json · push-channel-filter.v1.json · push-kill.v1.json only. customer UI file reads 0. Lighthouse/cert UI rows stay HANDOFF above.
+- rel-601-staging-regression: live OpenNext/Home HTML/visual matrix/geometry assertions removed. fixture probes [] · liveSurfaceMatrixOwner putduk-web. backend keeps locks + extraVerifies (qa-env-isolation · rel-600) + CI wiring.
+- webauthn-rp.cjs: isWebAuthnSupported / optionalHaptic removed. loaders are loadDomainManifest · loadAuthWebauthnRp only.

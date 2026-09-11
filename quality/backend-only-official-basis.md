@@ -32,7 +32,7 @@
 - 룰셋 `main-gate-required` id `20576556` active · include `refs/heads/main` · rules: `deletion` · `non_fast_forward` · `required_status_checks` (`strict_required_status_checks_policy: true` · `do_not_enforce_on_create: true` · contexts `[verify-gate]`) · `pull_request` (`required_approving_review_count: 0` · `require_extra_approval_for_unattributed_changes: true`) · bypass `RepositoryRole 5 always` · updated_at `2026-08-21`.
 - 룰셋 `release-train-rel502-gate-required` id `21919415` active · include `refs/heads/release/train-production-v1` + `refs/heads/release/auth-wallet-rel502-v1-20260828` · 같은 규칙.
 - 계정 권한 admin=true (bypass always).
-- **드리프트 발견:** 레포의 `tooling/github/main-gate.ruleset.json`은 context `gate / verify-gate`로 남아 있고 라이브는 `verify-gate`다. `apply-main-gate.ps1`을 그대로 재실행하면 required check가 만족 불가한 이름으로 바뀐다 → 6단계에서 라이브 기준으로 파일을 먼저 갱신한다.
+- **드리프트 (6단계 실측):** 라이브 룰셋 20576556 context 는 여전히 `verify-gate`. 레포 초안 tooling/github/main-gate.ruleset.json context 는 `backend-required` (라이브 PUT 0). 옛 드리프트는 파일 `gate / verify-gate` vs 라이브 `verify-gate`. apply-main-gate.ps1 은 AIPO_APPLY_LIVE_RULESET=1 없으면 exit 1. rust-engine/release-evidence 가 같은 SHA 에서 Founder red 이면 PUT 금지.
 
 | 항목 | 공식 문서 내용 (확인) | 현재 레포 상태 | 적용한 결정 | 적용하지 않은 이유 | 검증 방법 |
 |---|---|---|---|---|---|

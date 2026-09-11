@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-09-11T20:06:24.903Z",
- "headSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
+ "generatedAt": "2026-09-11T20:38:12.455Z",
+ "headSha": "03211e64242ecdcc14ab9b95ba0db9d044a57564",
  "edgeKinds": [
   "import",
   "require",
@@ -1735,6 +1735,12 @@
    "decision": "KEEP"
   },
   {
+   "id": "quality/backend-ci-performance.md",
+   "type": "file",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP"
+  },
+  {
    "id": "quality/backend-ci.md",
    "type": "file",
    "class": "BACKEND_DOC",
@@ -1807,7 +1813,19 @@
    "decision": "KEEP"
   },
   {
+   "id": "quality/pr222-pr223-integration-evidence.md",
+   "type": "file",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP"
+  },
+  {
    "id": "quality/putduk-web-cloudflare-handoff.md",
+   "type": "file",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP"
+  },
+  {
+   "id": "quality/putduk-web-migration-gap.md",
    "type": "file",
    "class": "BACKEND_DOC",
    "decision": "KEEP"
@@ -13723,7 +13741,7 @@
   {
    "id": "dir:quality/**",
    "type": "glob",
-   "files": 18
+   "files": 21
   },
   {
    "id": "missing:apps/*",
@@ -13755,7 +13773,7 @@
   {
    "id": "dir:quality/*",
    "type": "glob",
-   "files": 17
+   "files": 20
   },
   {
    "id": "missing:quality/backend/",
@@ -14221,6 +14239,62 @@
   },
   {
    "id": "missing:scripts/deps",
+   "type": "missing-path"
+  },
+  {
+   "id": "deleted:packages/sdk/src/auth/types.ts",
+   "type": "deleted-ui-path"
+  },
+  {
+   "id": "missing:quality/route-inventory.json",
+   "type": "missing-path"
+  },
+  {
+   "id": "deleted:packages/ui/brand/assets/ai/home-v2/manifest.json",
+   "type": "deleted-ui-path"
+  },
+  {
+   "id": "deleted:packages/ui/brand/assets/ai/home-v2/peotteok-ai-robot-home-cta-v1.png",
+   "type": "deleted-ui-path"
+  },
+  {
+   "id": "deleted:packages/ui/brand/assets/ai/home-v2/peotteok-ai-robot-home-summary-v1-desktop.png",
+   "type": "deleted-ui-path"
+  },
+  {
+   "id": "deleted:packages/ui/brand/assets/ai/home-v2/peotteok-ai-robot-home-summary-v1-mobile.png",
+   "type": "deleted-ui-path"
+  },
+  {
+   "id": "deleted:packages/ui/brand/assets/ai/home-v2/peotteok-home-ai-summary-icon-chart-v1.svg",
+   "type": "deleted-ui-path"
+  },
+  {
+   "id": "deleted:packages/ui/brand/assets/ai/home-v2/peotteok-home-ai-summary-icon-clock-v1.svg",
+   "type": "deleted-ui-path"
+  },
+  {
+   "id": "deleted:packages/ui/brand/assets/ai/home-v2/peotteok-home-ai-summary-icon-search-v1.svg",
+   "type": "deleted-ui-path"
+  },
+  {
+   "id": "deleted:packages/ui/brand/assets/ai/home-v2/peotteok-home-hero-support-graphic-v1.png",
+   "type": "deleted-ui-path"
+  },
+  {
+   "id": "deleted:packages/ui/brand/assets/membership/README.md",
+   "type": "deleted-ui-path"
+  },
+  {
+   "id": "missing:quality/api-contract.lock.json",
+   "type": "missing-path"
+  },
+  {
+   "id": "deleted:packages/sdk/src/wallet/index.ts",
+   "type": "deleted-ui-path"
+  },
+  {
+   "id": "missing:.github/workflows/pr-quality.yml",
    "type": "missing-path"
   },
   {
@@ -63752,6 +63826,34 @@
    "kind": "doc-link"
   },
   {
+   "from": "quality/pr222-pr223-integration-evidence.md",
+   "to": "deleted:packages/sdk/src/auth/auth-release.test.ts",
+   "kind": "doc-link",
+   "spec": "packages/sdk/src/auth/auth-release.test.ts"
+  },
+  {
+   "from": "quality/pr222-pr223-integration-evidence.md",
+   "to": "deleted:packages/sdk/src/auth/fetch.ts",
+   "kind": "doc-link",
+   "spec": "packages/sdk/src/auth/fetch.ts"
+  },
+  {
+   "from": "quality/pr222-pr223-integration-evidence.md",
+   "to": "deleted:packages/sdk/src/auth/types.ts",
+   "kind": "doc-link",
+   "spec": "packages/sdk/src/auth/types.ts"
+  },
+  {
+   "from": "quality/pr222-pr223-integration-evidence.md",
+   "to": "tooling/verify/user-ledger-query.cjs",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/pr222-pr223-integration-evidence.md",
+   "to": "tooling/verify/backend/auth/auth-flows.cjs",
+   "kind": "doc-link"
+  },
+  {
    "from": "quality/putduk-web-cloudflare-handoff.md",
    "to": "missing:infra/web/wrangler.toml",
    "kind": "doc-link",
@@ -63796,6 +63898,269 @@
    "from": "quality/putduk-web-cloudflare-handoff.md",
    "to": "tooling/deploy/cf-origin-smoke.cjs",
    "kind": "doc-link"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "missing:quality/route-inventory.json",
+   "kind": "doc-link",
+   "spec": "quality/route-inventory.json"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/icons/app-icon-1024.png",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/icons/app-icon-1024.png"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/icons/maskable-source-1024.png",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/icons/maskable-source-1024.png"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/wordmark/wordmark-dark.png",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/wordmark/wordmark-dark.png"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/og/og-default.png",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/og/og-default.png"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/ai/avatar-512.png",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/ai/avatar-512.png"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/membership/core.svg",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/membership/core.svg"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/markets/amazon.svg",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/markets/amazon.svg"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/ai/hero-illustration-desktop.avif",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/ai/hero-illustration-desktop.avif"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/ai/hero-illustration-desktop.webp",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/ai/hero-illustration-desktop.webp"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/ai/hero-illustration-mobile.avif",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/ai/hero-illustration-mobile.avif"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/ai/hero-illustration-mobile.webp",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/ai/hero-illustration-mobile.webp"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/ai/home-v2/manifest.json",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/ai/home-v2/manifest.json"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/ai/home-v2/peotteok-ai-robot-home-cta-v1.png",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/ai/home-v2/peotteok-ai-robot-home-cta-v1.png"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/ai/home-v2/peotteok-ai-robot-home-summary-v1-desktop.png",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/ai/home-v2/peotteok-ai-robot-home-summary-v1-desktop.png"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/ai/home-v2/peotteok-ai-robot-home-summary-v1-mobile.png",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/ai/home-v2/peotteok-ai-robot-home-summary-v1-mobile.png"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/ai/home-v2/peotteok-home-ai-summary-icon-chart-v1.svg",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/ai/home-v2/peotteok-home-ai-summary-icon-chart-v1.svg"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/ai/home-v2/peotteok-home-ai-summary-icon-clock-v1.svg",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/ai/home-v2/peotteok-home-ai-summary-icon-clock-v1.svg"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/ai/home-v2/peotteok-home-ai-summary-icon-search-v1.svg",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/ai/home-v2/peotteok-home-ai-summary-icon-search-v1.svg"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/ai/home-v2/peotteok-home-hero-support-graphic-v1.png",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/ai/home-v2/peotteok-home-hero-support-graphic-v1.png"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/markets/README.md",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/markets/README.md"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/markets/coingecko.svg",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/markets/coingecko.svg"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/markets/ebay.svg",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/markets/ebay.svg"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/markets/frankfurter.svg",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/markets/frankfurter.svg"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/markets/manifest.json",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/markets/manifest.json"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/markets/pokemontcg.svg",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/markets/pokemontcg.svg"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/markets/yahoo-jp.svg",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/markets/yahoo-jp.svg"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/markets/ygoprodeck.svg",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/markets/ygoprodeck.svg"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/membership/README.md",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/membership/README.md"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/membership/entry.svg",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/membership/entry.svg"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/membership/high.svg",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/membership/high.svg"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/membership/manifest.json",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/membership/manifest.json"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/membership/sprout.svg",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/membership/sprout.svg"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets/membership/vip.svg",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets/membership/vip.svg"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "missing:quality/api-contract.lock.json",
+   "kind": "doc-link",
+   "spec": "quality/api-contract.lock.json"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/sdk",
+   "kind": "doc-link",
+   "spec": "packages/sdk"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/sdk/package.json",
+   "kind": "doc-link",
+   "spec": "packages/sdk/package.json"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/sdk/src/auth/index.ts",
+   "kind": "doc-link",
+   "spec": "packages/sdk/src/auth/index.ts"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/sdk/src/index.ts",
+   "kind": "doc-link",
+   "spec": "packages/sdk/src/index.ts"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/sdk/src/wallet/index.ts",
+   "kind": "doc-link",
+   "spec": "packages/sdk/src/wallet/index.ts"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "quality/putduk-web-sdk-handoff.md",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "dir:governance/pwa",
+   "kind": "doc-link",
+   "spec": "governance/pwa"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "missing:.github/workflows/pr-quality.yml",
+   "kind": "doc-link",
+   "spec": ".github/workflows/pr-quality.yml"
+  },
+  {
+   "from": "quality/putduk-web-migration-gap.md",
+   "to": "deleted:packages/ui/brand/assets",
+   "kind": "doc-link",
+   "spec": "packages/ui/brand/assets"
   },
   {
    "from": "quality/putduk-web-sdk-handoff.md",
@@ -63856,6 +64221,29 @@
    "to": "dir:packages/observability",
    "kind": "doc-link",
    "spec": "packages/observability"
+  },
+  {
+   "from": "quality/putduk-web-sdk-handoff.md",
+   "to": "deleted:packages/sdk/src/auth/index.ts",
+   "kind": "doc-link",
+   "spec": "packages/sdk/src/auth/index.ts"
+  },
+  {
+   "from": "quality/putduk-web-sdk-handoff.md",
+   "to": "deleted:packages/sdk/src/index.ts",
+   "kind": "doc-link",
+   "spec": "packages/sdk/src/index.ts"
+  },
+  {
+   "from": "quality/putduk-web-sdk-handoff.md",
+   "to": "deleted:packages/sdk/src/wallet/index.ts",
+   "kind": "doc-link",
+   "spec": "packages/sdk/src/wallet/index.ts"
+  },
+  {
+   "from": "quality/putduk-web-sdk-handoff.md",
+   "to": "quality/putduk-web-migration-gap.md",
+   "kind": "doc-link"
   },
   {
    "from": "quality/putduk-web-ui-assertions-handoff.md",
@@ -64099,6 +64487,11 @@
    "to": "dir:packages/observability",
    "kind": "doc-link",
    "spec": "packages/observability"
+  },
+  {
+   "from": "quality/putduk-web-ui-assertions-handoff.md",
+   "to": "governance/pwa/webauthn-rp.v1.json",
+   "kind": "doc-link"
   },
   {
    "from": "quality/putduk-web-ui-assertions-handoff.md",

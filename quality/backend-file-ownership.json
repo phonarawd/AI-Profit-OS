@@ -1,10 +1,10 @@
 {
- "generatedAt": "2026-09-11T20:06:24.903Z",
- "headSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
+ "generatedAt": "2026-09-11T20:38:12.455Z",
+ "headSha": "03211e64242ecdcc14ab9b95ba0db9d044a57564",
  "generator": "tooling/backend/ownership-graph.cjs",
  "overrides": "tooling/backend/ownership-overrides.json",
  "inputs": {
-  "gitLsFiles": 1376,
+  "gitLsFiles": 1379,
   "deletedUiPrefixes": [
    "apps/admin/",
    "apps/web/",
@@ -55,7 +55,7 @@
  "totals": {
   "byClass": {
    "BACKEND_INFRA": 238,
-   "BACKEND_DOC": 240,
+   "BACKEND_DOC": 243,
    "FUTURE_ADMIN_REQUIREMENT": 2,
    "BACKEND_TEST": 342,
    "BACKEND_CONTRACT": 83,
@@ -63,11 +63,11 @@
    "GENERATED": 5
   },
   "byDecision": {
-   "KEEP": 1376
+   "KEEP": 1379
   },
   "byClassDecision": {
    "BACKEND_INFRA/KEEP": 238,
-   "BACKEND_DOC/KEEP": 240,
+   "BACKEND_DOC/KEEP": 243,
    "FUTURE_ADMIN_REQUIREMENT/KEEP": 2,
    "BACKEND_TEST/KEEP": 342,
    "BACKEND_CONTRACT/KEEP": 83,
@@ -349,8 +349,8 @@
    "SPLIT": 0
   },
   "quality": {
-   "total": 17,
-   "KEEP": 17,
+   "total": 20,
+   "KEEP": 20,
    "DELETE": 0,
    "MOVE": 0,
    "SPLIT": 0
@@ -3265,6 +3265,7 @@
     "users": [
      ".cursor/hooks/pre0-git-gate-smoke.cjs",
      "docs/ADR-016-AGENT-AUTOMATION.md",
+     "quality/backend-ci-performance.md",
      "quality/backend-deletion-ledger.md",
      "quality/backend-only-inventory.md",
      "quality/backend-residual-report.md",
@@ -22979,6 +22980,7 @@
     "quality/backend-deletion-ledger.md|doc-link|governance/pwa",
     "quality/backend-only-inventory.md|doc-link|governance/pwa/**",
     "quality/backend-residual-report.md|doc-link|governance/**",
+    "quality/putduk-web-migration-gap.md|doc-link|governance/pwa",
     "quality/putduk-web-ui-assertions-handoff.md|doc-link|governance/**",
     "quality/putduk-web-ui-assertions-handoff.md|doc-link|governance/pwa",
     "tooling/backend/ownership-graph.cjs|verifier-reads|governance/**",
@@ -23025,6 +23027,7 @@
     "quality/backend-deletion-ledger.md|doc-link|governance/pwa",
     "quality/backend-only-inventory.md|doc-link|governance/pwa/**",
     "quality/backend-residual-report.md|doc-link|governance/**",
+    "quality/putduk-web-migration-gap.md|doc-link|governance/pwa",
     "quality/putduk-web-ui-assertions-handoff.md|doc-link|governance/**",
     "quality/putduk-web-ui-assertions-handoff.md|doc-link|governance/pwa",
     "tooling/backend/ownership-graph.cjs|verifier-reads|governance/**",
@@ -23067,6 +23070,7 @@
     "quality/backend-deletion-ledger.md|doc-link|governance/pwa",
     "quality/backend-only-inventory.md|doc-link|governance/pwa/**",
     "quality/backend-residual-report.md|doc-link|governance/**",
+    "quality/putduk-web-migration-gap.md|doc-link|governance/pwa",
     "quality/putduk-web-ui-assertions-handoff.md|doc-link|governance/**",
     "quality/putduk-web-ui-assertions-handoff.md|doc-link|governance/pwa",
     "tooling/backend/ownership-graph.cjs|verifier-reads|governance/**",
@@ -23112,8 +23116,10 @@
     "quality/backend-deletion-ledger.md|doc-link|governance/pwa",
     "quality/backend-only-inventory.md|doc-link|governance/pwa/**",
     "quality/backend-residual-report.md|doc-link|governance/**",
+    "quality/putduk-web-migration-gap.md|doc-link|governance/pwa",
     "quality/putduk-web-ui-assertions-handoff.md|doc-link|governance/**",
     "quality/putduk-web-ui-assertions-handoff.md|doc-link|governance/pwa",
+    "quality/putduk-web-ui-assertions-handoff.md|doc-link",
     "tooling/backend/ownership-graph.cjs|verifier-reads|governance/**",
     "tooling/backend/ownership-overrides.json|verifier-reads",
     "tooling/pwa/pwa-day1-certification-harness.cjs|test-ref",
@@ -31346,9 +31352,38 @@
     "tooling/verify/CATALOG.md|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-12T05:04:37+09:00",
-   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
+   "lastCommit": "2026-09-12T05:09:27+09:00",
+   "lastCommitSha": "03211e64242ecdcc14ab9b95ba0db9d044a57564",
    "sizeBytes": 470,
+   "refSummary": {
+    "deletedUiRefs": [],
+    "uiRefs": [],
+    "backendRefs": [],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
+   }
+  },
+  {
+   "path": "quality/backend-ci-performance.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "quality",
+   "reasons": [
+    "백엔드 전용 전환 문서"
+   ],
+   "evidence": [],
+   "referrers": [
+    "quality/backend-only-deletion-plan.md|doc-link|quality/**",
+    "quality/backend-only-deletion-plan.md|doc-link|quality/*",
+    "quality/backend-residual-report.md|doc-link|quality/**"
+   ],
+   "blockers": [],
+   "lastCommit": null,
+   "lastCommitSha": null,
+   "sizeBytes": 2061,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -32106,9 +32141,9 @@
     "tooling/backend/ownership-graph.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-12T05:04:37+09:00",
-   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
-   "sizeBytes": 2998319,
+   "lastCommit": "2026-09-12T05:09:27+09:00",
+   "lastCommitSha": "03211e64242ecdcc14ab9b95ba0db9d044a57564",
+   "sizeBytes": 2999341,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -32140,7 +32175,7 @@
    "blockers": [],
    "lastCommit": "2026-09-12T01:45:18+09:00",
    "lastCommitSha": "5407260f11359d674a70b7dcf603b92cae8f52b6",
-   "sizeBytes": 22397,
+   "sizeBytes": 22904,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -32172,9 +32207,9 @@
     "tooling/verify/workers-typecheck.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-12T05:04:37+09:00",
-   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
-   "sizeBytes": 4722172,
+   "lastCommit": "2026-09-12T05:09:27+09:00",
+   "lastCommitSha": "03211e64242ecdcc14ab9b95ba0db9d044a57564",
+   "sizeBytes": 4722767,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -32265,7 +32300,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "quality/** (18 files)"
+     "ref": "quality/** (21 files)"
     },
     {
      "kind": "doc-link",
@@ -32846,7 +32881,7 @@
    "blockers": [],
    "lastCommit": "2026-09-11T06:12:36+09:00",
    "lastCommitSha": "d127b0be169831e0aaf25c90408249209643d9e4",
-   "sizeBytes": 24456,
+   "sizeBytes": 24546,
    "refSummary": {
     "deletedUiRefs": [
      "apps/web/.open-next/worker.js",
@@ -33180,7 +33215,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "quality/** (18 files)"
+     "ref": "quality/** (21 files)"
     },
     {
      "kind": "doc-link",
@@ -33243,6 +33278,60 @@
     "sdkOnlyUi": false,
     "browserHarness": true,
     "uiMarkers": true
+   }
+  },
+  {
+   "path": "quality/pr222-pr223-integration-evidence.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "quality",
+   "reasons": [
+    "백엔드 전용 전환 문서"
+   ],
+   "evidence": [
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/sdk/src/auth/auth-release.test.ts"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/sdk/src/auth/fetch.ts"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/sdk/src/auth/types.ts"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "tooling/verify/user-ledger-query.cjs"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "tooling/verify/backend/auth/auth-flows.cjs"
+    }
+   ],
+   "referrers": [
+    "quality/backend-only-deletion-plan.md|doc-link|quality/**",
+    "quality/backend-only-deletion-plan.md|doc-link|quality/*",
+    "quality/backend-residual-report.md|doc-link|quality/**"
+   ],
+   "blockers": [],
+   "lastCommit": null,
+   "lastCommitSha": null,
+   "sizeBytes": 2819,
+   "refSummary": {
+    "deletedUiRefs": [
+     "packages/sdk/src/auth/auth-release.test.ts",
+     "packages/sdk/src/auth/fetch.ts",
+     "packages/sdk/src/auth/types.ts"
+    ],
+    "uiRefs": [],
+    "backendRefs": [],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
    }
   },
   {
@@ -33311,6 +33400,237 @@
    }
   },
   {
+   "path": "quality/putduk-web-migration-gap.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "quality",
+   "reasons": [
+    "백엔드 전용 전환 문서"
+   ],
+   "evidence": [
+    {
+     "kind": "doc-link",
+     "ref": "MISSING:quality/route-inventory.json"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/icons/app-icon-1024.png"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/icons/maskable-source-1024.png"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/wordmark/wordmark-dark.png"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/og/og-default.png"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/ai/avatar-512.png"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/membership/core.svg"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/markets/amazon.svg"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/ai/hero-illustration-desktop.avif"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/ai/hero-illustration-desktop.webp"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/ai/hero-illustration-mobile.avif"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/ai/hero-illustration-mobile.webp"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/ai/home-v2/manifest.json"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/ai/home-v2/peotteok-ai-robot-home-cta-v1.png"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/ai/home-v2/peotteok-ai-robot-home-summary-v1-desktop.png"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/ai/home-v2/peotteok-ai-robot-home-summary-v1-mobile.png"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/ai/home-v2/peotteok-home-ai-summary-icon-chart-v1.svg"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/ai/home-v2/peotteok-home-ai-summary-icon-clock-v1.svg"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/ai/home-v2/peotteok-home-ai-summary-icon-search-v1.svg"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/ai/home-v2/peotteok-home-hero-support-graphic-v1.png"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/markets/README.md"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/markets/coingecko.svg"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/markets/ebay.svg"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/markets/frankfurter.svg"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/markets/manifest.json"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/markets/pokemontcg.svg"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/markets/yahoo-jp.svg"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/markets/ygoprodeck.svg"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/membership/README.md"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/membership/entry.svg"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/membership/high.svg"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/membership/manifest.json"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/membership/sprout.svg"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui/brand/assets/membership/vip.svg"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "MISSING:quality/api-contract.lock.json"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/sdk"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/sdk/package.json"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/sdk/src/auth/index.ts"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/sdk/src/index.ts"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/sdk/src/wallet/index.ts"
+    }
+   ],
+   "referrers": [
+    "quality/backend-only-deletion-plan.md|doc-link|quality/**",
+    "quality/backend-only-deletion-plan.md|doc-link|quality/*",
+    "quality/backend-residual-report.md|doc-link|quality/**",
+    "quality/putduk-web-sdk-handoff.md|doc-link"
+   ],
+   "blockers": [],
+   "lastCommit": null,
+   "lastCommitSha": null,
+   "sizeBytes": 9152,
+   "refSummary": {
+    "deletedUiRefs": [
+     "packages/ui/brand/assets/icons/app-icon-1024.png",
+     "packages/ui/brand/assets/icons/maskable-source-1024.png",
+     "packages/ui/brand/assets/wordmark/wordmark-dark.png",
+     "packages/ui/brand/assets/og/og-default.png",
+     "packages/ui/brand/assets/ai/avatar-512.png",
+     "packages/ui/brand/assets/membership/core.svg",
+     "packages/ui/brand/assets/markets/amazon.svg",
+     "packages/ui/brand/assets/ai/hero-illustration-desktop.avif",
+     "packages/ui/brand/assets/ai/hero-illustration-desktop.webp",
+     "packages/ui/brand/assets/ai/hero-illustration-mobile.avif",
+     "packages/ui/brand/assets/ai/hero-illustration-mobile.webp",
+     "packages/ui/brand/assets/ai/home-v2/manifest.json",
+     "packages/ui/brand/assets/ai/home-v2/peotteok-ai-robot-home-cta-v1.png",
+     "packages/ui/brand/assets/ai/home-v2/peotteok-ai-robot-home-summary-v1-desktop.png",
+     "packages/ui/brand/assets/ai/home-v2/peotteok-ai-robot-home-summary-v1-mobile.png",
+     "packages/ui/brand/assets/ai/home-v2/peotteok-home-ai-summary-icon-chart-v1.svg",
+     "packages/ui/brand/assets/ai/home-v2/peotteok-home-ai-summary-icon-clock-v1.svg",
+     "packages/ui/brand/assets/ai/home-v2/peotteok-home-ai-summary-icon-search-v1.svg",
+     "packages/ui/brand/assets/ai/home-v2/peotteok-home-hero-support-graphic-v1.png",
+     "packages/ui/brand/assets/markets/README.md",
+     "packages/ui/brand/assets/markets/coingecko.svg",
+     "packages/ui/brand/assets/markets/ebay.svg",
+     "packages/ui/brand/assets/markets/frankfurter.svg",
+     "packages/ui/brand/assets/markets/manifest.json",
+     "packages/ui/brand/assets/markets/pokemontcg.svg",
+     "packages/ui/brand/assets/markets/yahoo-jp.svg",
+     "packages/ui/brand/assets/markets/ygoprodeck.svg",
+     "packages/ui/brand/assets/membership/README.md",
+     "packages/ui/brand/assets/membership/entry.svg",
+     "packages/ui/brand/assets/membership/high.svg",
+     "packages/ui/brand/assets/membership/manifest.json",
+     "packages/ui/brand/assets/membership/sprout.svg",
+     "packages/ui/brand/assets/membership/vip.svg",
+     "packages/sdk",
+     "packages/sdk/package.json",
+     "packages/sdk/src/auth/index.ts",
+     "packages/sdk/src/index.ts",
+     "packages/sdk/src/wallet/index.ts",
+     "packages/ui/brand/assets"
+    ],
+    "uiRefs": [],
+    "backendRefs": [],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": true,
+    "uiMarkers": true
+   }
+  },
+  {
    "path": "quality/putduk-web-sdk-handoff.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
@@ -33359,25 +33679,45 @@
     {
      "kind": "doc-link",
      "ref": "packages/observability/observability.core.cjs"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/sdk/src/auth/index.ts"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/sdk/src/index.ts"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/sdk/src/wallet/index.ts"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "quality/putduk-web-migration-gap.md"
     }
    ],
    "referrers": [
     "quality/backend-only-deletion-plan.md|doc-link|quality/**",
     "quality/backend-only-deletion-plan.md|doc-link|quality/*",
     "quality/backend-residual-report.md|doc-link|quality/**",
+    "quality/putduk-web-migration-gap.md|doc-link",
     "quality/putduk-web-ui-assertions-handoff.md|doc-link"
    ],
    "blockers": [],
    "lastCommit": "2026-09-11T20:19:48+09:00",
    "lastCommitSha": "3c3d3376b7bab8d042a1219aa55617f9fa574399",
-   "sizeBytes": 2136,
+   "sizeBytes": 2917,
    "refSummary": {
     "deletedUiRefs": [
      "packages/sdk",
      "packages/sdk/package.json",
      "apps/web",
      "apps/admin",
-     "packages/ui"
+     "packages/ui",
+     "packages/sdk/src/auth/index.ts",
+     "packages/sdk/src/index.ts",
+     "packages/sdk/src/wallet/index.ts"
     ],
     "uiRefs": [],
     "backendRefs": [],
@@ -33575,7 +33915,7 @@
    "blockers": [],
    "lastCommit": "2026-09-12T01:23:24+09:00",
    "lastCommitSha": "cc50e4cf971f2ba1510de9d57ffd30fad30fa6b1",
-   "sizeBytes": 61492,
+   "sizeBytes": 62132,
    "refSummary": {
     "deletedUiRefs": [
      "apps/web",
@@ -33595,7 +33935,9 @@
     "backendRefs": [
      "tooling/pwa/webauthn-rp.cjs"
     ],
-    "governanceBackendRefs": [],
+    "governanceBackendRefs": [
+     "governance/pwa/webauthn-rp.v1.json"
+    ],
     "sdkOnlyUi": false,
     "browserHarness": true,
     "uiMarkers": true
@@ -91035,6 +91377,7 @@
     "quality/backend-only-inventory.md|doc-link|tooling/*",
     "quality/backend-only-official-basis.md|doc-link|tooling/*",
     "quality/backend-residual-report.md|doc-link|tooling/verify/**",
+    "quality/pr222-pr223-integration-evidence.md|doc-link",
     "quality/putduk-web-ui-assertions-handoff.md|doc-link|tooling/verify/backend/",
     "quality/putduk-web-ui-assertions-handoff.md|doc-link|tooling/verify/backend/**",
     "tooling/backend/ownership-overrides.json|verifier-reads|tooling/verify/backend/**/*.cjs",
@@ -108038,6 +108381,7 @@
     "quality/backend-only-official-basis.md|doc-link|tooling/*",
     "quality/backend-residual-report.md|doc-link|tooling/verify/**",
     "quality/backend-residual-report.md|doc-link|tooling/verify/*.cjs",
+    "quality/pr222-pr223-integration-evidence.md|doc-link",
     "tooling/e2e/README.md|test-ref",
     "tooling/verify/CATALOG.md|verifier-reads",
     "package.json|pkg-script|verify:user-ledger-query",

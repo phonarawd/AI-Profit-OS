@@ -1,13 +1,13 @@
 {
- "generatedAt": "2026-09-11T20:06:32.883Z",
- "headSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
+ "generatedAt": "2026-09-11T20:38:22.532Z",
+ "headSha": "03211e64242ecdcc14ab9b95ba0db9d044a57564",
  "mode": "full",
  "scope": null,
  "ownershipSource": "ownership-graph.cjs build()",
- "elapsedMs": 4043,
+ "elapsedMs": 4242,
  "totals": {
   "violations": 0,
-  "filesChecked": 1376,
+  "filesChecked": 1379,
   "rules": 0
  },
  "byRule": {},

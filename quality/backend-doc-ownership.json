@@ -1,16 +1,22 @@
 {
- "generatedAt": "2026-09-11T16:07:28.391Z",
+ "generatedAt": "2026-09-11T20:27:13.153Z",
  "headSha": "cc50e4cf971f2ba1510de9d57ffd30fad30fa6b1",
  "generator": "tooling/backend/_p5-write-ownership.cjs",
  "note": "All remaining .md/.mdc paths. decision KEEP. UNKNOWN 0. boundary markdown rule reads keep[].path.",
  "totals": {
-  "docs": 129,
+  "docs": 132,
   "unknown": 0,
   "byClass": {
    "BACKEND_DOC": 129
   }
  },
  "keep": [
+  {
+   "path": ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "active backend plan or release-master YAML todos required by KEEP verifiers"
+  },
   {
    "path": ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md",
    "class": "BACKEND_DOC",
@@ -43,12 +49,6 @@
   },
   {
    "path": ".cursor/plans/ai_profit_os_06_infra_a7b8c9d0.plan.md",
-   "class": "BACKEND_DOC",
-   "decision": "KEEP",
-   "reason": "active backend plan or release-master YAML todos required by KEEP verifiers"
-  },
-  {
-   "path": ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
    "reason": "active backend plan or release-master YAML todos required by KEEP verifiers"
@@ -324,6 +324,18 @@
    "reason": "backend constitution (money/engine/admin/security)"
   },
   {
+   "path": "README.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend-only root readme"
+  },
+  {
+   "path": "TOOLCHAIN.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend-only agent/toolchain/readme"
+  },
+  {
    "path": "docs/ADR-016-AGENT-AUTOMATION.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
@@ -340,6 +352,12 @@
    "class": "BACKEND_DOC",
    "decision": "KEEP",
    "reason": "ADR or bootstrap record"
+  },
+  {
+   "path": "governance/admin/R6_CERTIFICATION.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "admin API/RBAC/audit evidence KEEP"
   },
   {
    "path": "governance/admin/admin-ops-3mode.md",
@@ -372,12 +390,6 @@
    "reason": "admin API/RBAC/audit evidence KEEP"
   },
   {
-   "path": "governance/admin/R6_CERTIFICATION.md",
-   "class": "BACKEND_DOC",
-   "decision": "KEEP",
-   "reason": "admin API/RBAC/audit evidence KEEP"
-  },
-  {
    "path": "governance/admin/rbac-audit-foundation.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
@@ -396,12 +408,6 @@
    "reason": "db recon evidence KEEP"
   },
   {
-   "path": "governance/engine-acceptance/acceptance-contract.v1.md",
-   "class": "BACKEND_DOC",
-   "decision": "KEEP",
-   "reason": "engine-acceptance evidence KEEP"
-  },
-  {
    "path": "governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
@@ -414,12 +420,6 @@
    "reason": "engine-acceptance evidence KEEP"
   },
   {
-   "path": "governance/engine-acceptance/invariants.v1.md",
-   "class": "BACKEND_DOC",
-   "decision": "KEEP",
-   "reason": "engine-acceptance evidence KEEP"
-  },
-  {
    "path": "governance/engine-acceptance/PROTECTED_SCOPE_STALE_WATCH.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
@@ -427,6 +427,18 @@
   },
   {
    "path": "governance/engine-acceptance/REBASE_EXECUTION_20260902.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "engine-acceptance evidence KEEP"
+  },
+  {
+   "path": "governance/engine-acceptance/acceptance-contract.v1.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "engine-acceptance evidence KEEP"
+  },
+  {
+   "path": "governance/engine-acceptance/invariants.v1.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
    "reason": "engine-acceptance evidence KEEP"
@@ -462,6 +474,12 @@
    "reason": "VAPID/push backend evidence KEEP"
   },
   {
+   "path": "governance/recovery/INTEGRATION_PACKET_20260904.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "recovery evidence KEEP"
+  },
+  {
    "path": "governance/recovery/archive/engine-pre-rebase-20260902.INDEX.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
@@ -469,12 +487,6 @@
   },
   {
    "path": "governance/recovery/founder-gates-executed-20260904.md",
-   "class": "BACKEND_DOC",
-   "decision": "KEEP",
-   "reason": "recovery evidence KEEP"
-  },
-  {
-   "path": "governance/recovery/INTEGRATION_PACKET_20260904.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
    "reason": "recovery evidence KEEP"
@@ -678,6 +690,12 @@
    "reason": "backend quality or putduk-web handoff KEEP"
   },
   {
+   "path": "quality/backend-ci-performance.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend quality or putduk-web handoff KEEP"
+  },
+  {
    "path": "quality/backend-ci.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
@@ -732,7 +750,19 @@
    "reason": "backend quality or putduk-web handoff KEEP"
   },
   {
+   "path": "quality/pr222-pr223-integration-evidence.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend quality or putduk-web handoff KEEP"
+  },
+  {
    "path": "quality/putduk-web-cloudflare-handoff.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend quality or putduk-web handoff KEEP"
+  },
+  {
+   "path": "quality/putduk-web-migration-gap.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
    "reason": "backend quality or putduk-web handoff KEEP"
@@ -750,25 +780,13 @@
    "reason": "backend quality or putduk-web handoff KEEP"
   },
   {
-   "path": "README.md",
-   "class": "BACKEND_DOC",
-   "decision": "KEEP",
-   "reason": "backend-only root readme"
-  },
-  {
-   "path": "TOOLCHAIN.md",
-   "class": "BACKEND_DOC",
-   "decision": "KEEP",
-   "reason": "backend-only agent/toolchain/readme"
-  },
-  {
-   "path": "tooling/e2e/money/red-team-report.v1.md",
+   "path": "tooling/e2e/README.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
    "reason": "backend tooling README KEEP"
   },
   {
-   "path": "tooling/e2e/README.md",
+   "path": "tooling/e2e/money/red-team-report.v1.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
    "reason": "backend tooling README KEEP"
