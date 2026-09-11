@@ -98,7 +98,9 @@
 | `security` | red 가능 (step `verify:pnpm-audit`) | `pnpm audit --prod --audit-level=moderate` 원시 결과 · 임계값 하향 0 | (b) | 9단계 보안 치유 |
 | `worker-build` | 확인 필요 | `web-proxy` `ops-proxy` 도 번들 대상 (9단계 삭제 예정) — 실패해도 수정하지 않음 | (b) | 9단계 |
 
-그 외 job(`gate-fast` `api-contract` `typecheck` `unit` `integration` `auth` `ledger-wallet` `kyc` `matching-membership` `notification` `ai-policy` `admin-rbac` `migration`)은 로컬 실행에서 전부 PASS 했다 (`push-dispatcher` TS7016 은 `src/lib/dispatch.d.cts` 선언 추가로 해소 — 설정 문제 · 런타임 변경 0).
+그 외 job(`gate-fast` `api-contract` `typecheck` `unit` `integration` `auth` `ledger-wallet` `kyc` `matching-membership` `notification` `ai-policy` `admin-rbac` `migration`)은 로컬 실행에서 전부 PASS 했다 (`push-dispatcher` TS7016 은 `src/lib/dispatch.d.cts` 선언 추가로 해소 — 설정 문제 · 런타임 변경 0). run 1 에서 드러난 CI 구성 결함 2건(gate-fast 의 PR 모드 UI 경로 규칙 · ledger-wallet 의 Nest dist 미빌드)은 §9.1 대로 수정했다.
+
+`gate-fast` 의 T0 규칙 필터: PR 모드에서 diff 는 `main…HEAD` 전체(이 PR 은 852 파일)라 삭제된 UI 트리 경로가 UI/SPLIT 검증기 61개를 추가로 선택했다. `domain-by-path.cjs` 에 `isUiTreePath` (`apps/web/` `apps/admin/` `packages/ui/`) 필터를 두어 이 레포에 존재하지 않는 트리의 경로는 규칙을 선택하지 않게 했다 — 백엔드 파일은 삭제를 포함해 그대로 자기 규칙을 탄다(마이그레이션 삭제 → migrations 검증기 실행 유지). 그 경로만 검사하던 규칙 test 는 4단계 UI 검증기 제거 때 함께 지운다.
 
 CI 실행 결과(run URL · job 별 conclusion · 소요 시간)는 §9 에 기록한다.
 
@@ -130,7 +132,21 @@ CI 실행 결과(run URL · job 별 conclusion · 소요 시간)는 §9 에 기�
 
 ## 9. CI 실행 기록
 
-(push 후 `gh run watch` 결과로 갱신)
+### 9.1 run 1 — `720e7d54` (커밋 B 직후 · https://github.com/phonarawd/AI-Profit-OS/actions/runs/34562423984)
+
+| job | conclusion | 소요 | red 원인 | 분류 |
+|---|---|---:|---|---|
+| gate-fast | failure | 38s | PR 모드 domain-by-path 가 base(main)…HEAD 852 파일을 보며 삭제된 `apps/web/**` `apps/admin/**` `packages/ui/**` 경로 규칙으로 UI/SPLIT 검증기 113개를 선택 → `rel-401-security-headers` 에서 중단 | (a) CI 구성 결함 → run 2 에서 수정: `domain-by-path.cjs` 가 UI 트리 경로를 규칙 매칭에서 제외 (`isUiTreePath`) · 선택 검증기 113 → 52 |
+| ledger-wallet | failure | 27s | `withdraw-stepup-security.runtime` `adapter-ingest-fail-closed.runtime` 이 `services/api-nest/dist/**` 를 require — job 에 Nest 빌드 없음 | (a) → run 2: job 첫 step 에 `verify:api-nest-build` (tsc emit) 추가 |
+| dependency-integrity | failure | 25s | `pnpm dedupe --check`: `@cloudflare/workers-types 5.20260808.1 → 5.20260809.1` (workers 13개) | (b) 8단계 lockfile 재생성 |
+| security | failure | 20s | `verify:pnpm-audit`: moderate 2건 `qs` (GHSA-x5fp-wj9c-mxmx · GHSA-4mjr-xmp4-gh2g · 경로 `services__api-nest>@nestjs/platform-express>express>qs` · patched >=6.16.0) · 나머지 step(secrets · rel-402 AIPO_AUDIT=1 · rel-408 · rel-403 · workflow-action-pin) PASS | (b) 9단계 보안 치유 (qs override 또는 express 상향 · 임계값 하향 0) |
+| repository-boundary | failure | 21s | `verify:backend-boundary` 865건 (§8) · drift/tiers-sync/domain-by-path-ci/project-boundary/night-guard PASS | (b) 4·5·7·8·9·10단계 |
+| rust-engine | failure | 18s | `cargo fmt -- --check` diff (settlement_rule.rs 테스트 블록) · clippy/check/test PASS (9 tests) | (c) 보호 범위 → controlled amendment |
+| release-evidence | failure | 68s | `verify:engine-acceptance` `baseline.lockfile_hash drift` · 그 외 23 step PASS | (b)/(c) engine-acceptance baseline rebase |
+| backend-required | failure | 10s | 위 7 job 집계 (NOT_RUN 0 · core NOT_RUN 0) | 집계 정상 동작 |
+| auth · unit · notification · kyc · matching-membership · integration · ai-policy · typecheck · migration · admin-rbac · api-contract · worker-build | success | 15~45s | — (worker-build: `workers/*/wrangler.toml` 15개 전부 번들 성공 · web-proxy/ops-proxy 포함) | — |
+
+다른 워크플로 (같은 SHA): `codeql` success · `release-integration-contract` success · `engine-evidence-refresh-check` **failure** — `Verify RC_FORMAL lock` (`rc-formal.cjs`: `HEAD diverges from RC binding outside governance/evidence: .github/actions/backend-setup/action.yml, .github/codeql/codeql-config.yml, AGENTS.md, TOOLCHAIN.md, apps/admin/...`) → RC_FORMAL 해시 범위가 삭제된 UI 트리와 루트 문서를 포함하는 SPLIT 검증기(§3 NOT_RUN 표) · 5단계 범위 재정의. 이 워크플로는 `rel-502/503` 검증기 경로 변경(gate.yml→backend-ci.yml 문자열)으로 트리거됐다.
 
 ## 10. 후속 단계 표기 (이 단계에서 하지 않은 것)
 

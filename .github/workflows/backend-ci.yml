@@ -259,6 +259,9 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - id: setup
         uses: ./.github/actions/backend-setup
+      - name: verify:api-nest-build (emits services/api-nest/dist for the runtime verifiers below)
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: pnpm verify:api-nest-build
       - name: verify:backend --domain ledger-wallet
         if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
         run: node tooling/verify/backend/run-all.cjs --domain ledger-wallet

@@ -1462,9 +1462,22 @@ function getChangedFiles(opts) {
   );
 }
 
+/**
+ * Trees that left this repository with the customer web / legacy admin (phonarawd/putduk-web owns them).
+ * A change under these prefixes (in practice: their deletion on the backend-only branch) cannot select a
+ * backend verifier — the rules that still mention them are stage-4 debris and are removed with the UI verifiers.
+ * Backend files keep their own rule matches, so deleting a migration or a Nest module still runs its domain check.
+ */
+const UI_TREE_PREFIXES = ["apps/web/", "apps/admin/", "packages/ui/"];
+
+function isUiTreePath(file) {
+  return UI_TREE_PREFIXES.some((p) => file.startsWith(p));
+}
+
 function scriptsForChangedFiles(files) {
   const scripts = new Set();
   for (const file of files) {
+    if (isUiTreePath(file)) continue;
     for (const rule of RULES) {
       if (rule.test(file)) {
         for (const script of rule.scripts) scripts.add(script);
@@ -1509,6 +1522,8 @@ if (require.main === module) {
   module.exports = {
     getChangedFiles,
     scriptsForChangedFiles,
+    isUiTreePath,
+    UI_TREE_PREFIXES,
     detectDiffMode,
     resolveCiRange,
   };

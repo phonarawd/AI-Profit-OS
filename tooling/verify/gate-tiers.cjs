@@ -97,6 +97,7 @@ const CI_JOBS = {
     "money-wallet-auth-remediation.cjs",
   ],
   "ledger-wallet": [
+    "api-nest-build.cjs",
     "backend/run-all.cjs#ledger-wallet",
     "backend/run-all.cjs#deposit-withdraw",
     "bucket-invariant.cjs",
