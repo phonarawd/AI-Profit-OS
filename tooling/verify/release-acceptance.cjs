@@ -754,13 +754,11 @@ if (/--filter[\s\S]{0,40}build:cf/.test(deployFrom)) fail("deploy-from-artifact 
 if (!/--no-rebuild/.test(deployFrom)) fail("deploy-from-artifact must force --no-rebuild");
 if (!/--no-bundle/.test(deployFrom)) fail("deploy-from-artifact must force worker --no-bundle");
 
-const webDeploy = fs.readFileSync(path.join(root, "tooling/deploy/cf-pages-web.cjs"), "utf8");
-const opsDeploy = fs.readFileSync(path.join(root, "tooling/deploy/cf-pages-ops.cjs"), "utf8");
-if (!/deployArgs = noRebuild[\s\S]*--no-bundle/.test(webDeploy)) {
-  fail("web no-rebuild deploy must pass --no-bundle");
+if (fs.existsSync(path.join(root, "tooling/deploy/cf-pages-web.cjs"))) {
+  fail("cf-pages-web.cjs must be removed (handed off)");
 }
-if (!/deployArgs = noRebuild[\s\S]*--no-bundle/.test(opsDeploy)) {
-  fail("ops no-rebuild deploy must pass --no-bundle");
+if (fs.existsSync(path.join(root, "tooling/deploy/cf-pages-ops.cjs"))) {
+  fail("cf-pages-ops.cjs must be removed (handed off)");
 }
 const workerDeploy = fs.readFileSync(path.join(root, "tooling/deploy/cf-workers.cjs"), "utf8");
 if (!/--no-bundle/.test(workerDeploy) || !/findPrebuiltEntry/.test(workerDeploy)) {

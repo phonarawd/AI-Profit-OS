@@ -141,7 +141,6 @@ const RULES = [
       /^\.github\/workflows\/release-acceptance\.yml$/.test(f) ||
       /^\.github\/workflows\/release-build\.yml$/.test(f) ||
       /^\.github\/workflows\/deploy-cloudflare\.yml$/.test(f) ||
-      /^tooling\/deploy\/cf-pages-(web|ops)\.cjs$/.test(f) ||
       /^tooling\/deploy\/cf-workers\.cjs$/.test(f),
     scripts: [
       "release-acceptance.cjs",
@@ -227,13 +226,12 @@ const RULES = [
   },
   {
     test: (f) =>
-      /^infra\/(web|ops)\//.test(f) ||
       /^infra\/domain\.manifest\.json$/.test(f) ||
-      /^tooling\/deploy\/cf-(pages-web|pages-ops|preflight|origin-smoke)/.test(f) ||
-      /^workers\/(web-proxy|ops-proxy|_shared)\//.test(f),
+      /^tooling\/deploy\/cf-(preflight|origin-smoke|domain-bridge|workers)/.test(f) ||
+      /^workers\/(api-stub|_shared)\//.test(f),
     scripts: [
       "domain-bootstrap.cjs",
-      "cf-deploy-packages.cjs",
+      "cf-infra.cjs",
     ],
   },
   {
@@ -765,7 +763,6 @@ const RULES = [
     test: (f) =>
       /^governance\/release-master\/REL-602-STAGING-ROLLBACK\.md$/.test(f) ||
       /^governance\/release-master\/ROLLBACK_RUNBOOK\.md$/.test(f) ||
-      /^tooling\/deploy\/cf-rollback-staging\.cjs$/.test(f) ||
       /^tooling\/verify\/rel-602-staging-rollback\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/rel-602-staging-rollback\.v1\.json$/.test(f),
     scripts: ["rel-602-staging-rollback.cjs"],

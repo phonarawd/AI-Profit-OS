@@ -43,7 +43,6 @@ const catalog = read("tooling/verify/CATALOG.md");
 const gate = read(".github/workflows/backend-ci.yml");
 const domain = read("tooling/verify/domain-by-path.cjs");
 const readme = read("tooling/e2e/README.md");
-const homeSpec = read("tooling/e2e/specs/home-closure.spec.cjs");
 const homeLock = readJson("governance/responsive/home-geometry-lock.v1.json");
 const largeScreen = readJson("governance/responsive/large-screen-safety.v1.json");
 const manifest = readJson("infra/domain.manifest.json");
@@ -77,21 +76,11 @@ for (const dep of fixture.deps || []) {
   if (!yamlCompleted(dep)) fails.push("EXIT_GATE: YAML STATUS not COMPLETED " + dep);
 }
 
-const staging = manifest.openNext && manifest.openNext.staging;
-if (!staging || staging.wranglerEnv !== "preview") {
-  fails.push("manifest staging wranglerEnv must be preview");
-}
 if (!fixture.stagingWeb || !fixture.stagingWeb.includes("ai-profit-web-preview")) {
   fails.push("fixture staging web must be preview workers");
 }
 if (!fixture.stagingOps || !fixture.stagingOps.includes("ai-profit-ops-preview")) {
   fails.push("fixture staging ops must be preview workers");
-}
-if (staging.web.workersDev !== "ai-profit-web-preview.ebay-adapter.workers.dev") {
-  fails.push("staging web origin drift");
-}
-if (staging.ops.workersDev !== "ai-profit-ops-preview.ebay-adapter.workers.dev") {
-  fails.push("staging ops origin drift");
 }
 
 for (const host of fixture.forbiddenLiveHosts || []) {
@@ -113,8 +102,11 @@ if (homeLock.rewrite !== "FORBIDDEN") fails.push("home-geometry-lock rewrite mus
 if (!Array.isArray(largeScreen.homeQaRels) || !largeScreen.homeQaRels.includes("REL-601")) {
   fails.push("large-screen-safety must keep REL-601 as QA owner");
 }
-for (const token of ["390", "1440", "2560", "3440", "3840"]) {
-  if (!homeSpec.includes(token)) fails.push("home-closure spec must keep viewport " + token);
+if (fs.existsSync(path.join(root, "tooling/e2e/specs/home-closure.spec.cjs"))) {
+  fails.push("home-closure.spec.cjs must stay handed off (putduk-web)");
+}
+if (!Array.isArray(largeScreen.viewports) || !largeScreen.viewports.includes(2560)) {
+  fails.push("large-screen-safety must keep desktop viewports");
 }
 
 if (!pkg.includes("verify:rel-601-staging-regression")) {

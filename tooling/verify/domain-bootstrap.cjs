@@ -37,51 +37,46 @@ if (manifest) {
   if (!manifest.cloudflare?.workersDevSubdomain) {
     fails.push("domain.manifest cloudflare.workersDevSubdomain required");
   }
-  if (!manifest.openNext || manifest.openNext.runtime !== "workers") {
-    fails.push("domain.manifest openNext.runtime must be workers");
+  if (manifest.openNext) {
+    fails.push("domain.manifest openNext must be handed off (customer web)");
   }
-  if (!manifest.openNext?.web?.workersDev || !manifest.openNext?.ops?.workersDev) {
-    fails.push("domain.manifest openNext web/ops workersDev required");
+  if (manifest.pages) {
+    fails.push("domain.manifest pages must be handed off (customer web)");
   }
-  if (!manifest.pages?.web?.project || !manifest.pages?.ops?.project) {
-    fails.push("domain.manifest pages web/ops projects required");
+  if (manifest.bridgeWorkers?.["web-proxy"] || manifest.bridgeWorkers?.["ops-proxy"]) {
+    fails.push("domain.manifest must not keep web-proxy/ops-proxy (handed off)");
   }
-  if (!manifest.pages?.web?.workersDev || !manifest.pages?.ops?.workersDev) {
-    fails.push("domain.manifest pages web/ops workersDev required (OpenNext Workers)");
+  if (!manifest.bridgeWorkers?.["api-stub"]) {
+    fails.push("domain.manifest bridgeWorkers api-stub required");
   }
-  if (
-    manifest.openNext?.web?.workersDev &&
-    manifest.pages?.web?.workersDev !== manifest.openNext.web.workersDev
-  ) {
-    fails.push("pages.web.workersDev must equal openNext.web.workersDev");
+  const apiStub = manifest.bridgeWorkers["api-stub"];
+  if (apiStub?.target && !String(apiStub.target).includes("onrender.com") && !String(apiStub.target).includes("hiptk.app")) {
+    fails.push("domain.manifest api-stub target must stay Nest origin");
   }
-  if (
-    manifest.openNext?.ops?.workersDev &&
-    manifest.pages?.ops?.workersDev !== manifest.openNext.ops.workersDev
-  ) {
-    fails.push("pages.ops.workersDev must equal openNext.ops.workersDev");
+  const forbidden = manifest.forbiddenDeploy || [];
+  if (!forbidden.some((x) => String(x).includes("wrangler pages deploy"))) {
+    fails.push("manifest forbiddenDeploy must include wrangler pages deploy");
   }
-  if (!fs.existsSync(path.join(root, "workers/_shared/opennext-origin.ts"))) {
-    fails.push("missing: workers/_shared/opennext-origin.ts");
+  const prodHosts = manifest.productionHosts || [];
+  for (const host of ["app.hiptk.app", "ops.hiptk.app", "api.hiptk.app", "hiptk.app"]) {
+    if (!prodHosts.includes(host)) fails.push("productionHosts missing " + host);
   }
-  const webProxy = manifest.bridgeWorkers?.["web-proxy"];
-  const opsProxy = manifest.bridgeWorkers?.["ops-proxy"];
-  if (!webProxy || !manifest.bridgeWorkers?.["api-stub"]) {
-    fails.push("domain.manifest bridgeWorkers web-proxy/api-stub required");
+  if (fs.existsSync(path.join(root, "workers/_shared/opennext-origin.ts"))) {
+    fails.push("workers/_shared/opennext-origin.ts must be removed");
   }
-  if (webProxy?.target && !String(webProxy.target).includes("workers.dev")) {
-    fails.push("domain.manifest web-proxy target must be workers.dev (not pages.dev)");
-  }
-  if (opsProxy?.target && !String(opsProxy.target).includes("workers.dev")) {
-    fails.push("domain.manifest ops-proxy target must be workers.dev (not pages.dev)");
-  }
-  for (const rel of [
+  for (const gone of [
+    "infra/web/wrangler.toml",
+    "infra/ops/wrangler.toml",
     "workers/web-proxy/wrangler.toml",
     "workers/ops-proxy/wrangler.toml",
+  ]) {
+    if (fs.existsSync(path.join(root, gone))) fails.push("must be removed: " + gone);
+  }
+  for (const keep of [
     "workers/api-stub/wrangler.toml",
     "tooling/deploy/cf-domain-bridge.cjs",
   ]) {
-    if (!fs.existsSync(path.join(root, rel))) fails.push(`missing: ${rel}`);
+    if (!fs.existsSync(path.join(root, keep))) fails.push("missing: " + keep);
   }
 }
 
@@ -98,19 +93,13 @@ if (envExample && !envExample.includes("ROOT_DOMAIN=hiptk.app")) {
   fails.push(".env.example must document ROOT_DOMAIN=hiptk.app for production");
 }
 
-for (const rel of ["infra/web/wrangler.toml", "infra/ops/wrangler.toml"]) {
-  const full = path.join(root, rel);
-  if (!fs.existsSync(full)) {
-    fails.push(`missing: ${rel}`);
-    continue;
-  }
-  const text = fs.readFileSync(full, "utf8");
-  if (!text.includes("account_id")) {
-    fails.push(`${rel}: account_id required (wrangler account pin)`);
-  }
-  if (manifest && !text.includes(manifest.cloudflare.accountId)) {
-    fails.push(`${rel}: account_id must match domain.manifest`);
-  }
+const apiTomlRel = "workers/api-stub/wrangler.toml";
+const apiToml = fs.readFileSync(path.join(root, apiTomlRel), "utf8");
+if (!apiToml.includes("account_id")) {
+  fails.push(apiTomlRel + ": account_id required (wrangler account pin)");
+}
+if (manifest && !apiToml.includes(manifest.cloudflare.accountId)) {
+  fails.push(apiTomlRel + ": account_id must match domain.manifest");
 }
 
 if (fails.length) {

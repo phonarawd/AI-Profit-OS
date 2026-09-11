@@ -619,7 +619,8 @@ function seedRules() {
   add('infra-web', re(/^infra\/web\//), 'CUSTOMER_WEB', 'DELETE', S.CLOUDFLARE_RESIDUE, 'OpenNext 고객 웹 wrangler (main=apps/web/.open-next — 소스 삭제됨)');
   add('infra-ops-access', re(/^infra\/ops\/access-policy\.json$/), 'FUTURE_ADMIN_REQUIREMENT', 'MOVE', S.CLOUDFLARE_RESIDUE, 'ops host CF Access 정책 템플릿 → quality/admin-handoff에 요약 후 제거');
   add('infra-ops', re(/^infra\/ops\//), 'LEGACY_ADMIN_UI', 'DELETE', S.CLOUDFLARE_RESIDUE, '레거시 어드민 OpenNext wrangler (main=apps/admin/.open-next — 소스 삭제됨)');
-  add('infra-manifests-mixed', re(/^infra\/(domain|hosts)\.manifest\.json$/), 'MIXED', 'SPLIT', S.CLOUDFLARE_RESIDUE, 'API host(api-stub)와 openNext web/ops · pages · bridgeWorkers web/ops-proxy 키가 한 파일에 공존');
+  add('infra-domain-manifest', (f) => f === 'infra/domain.manifest.json', 'BACKEND_INFRA', 'KEEP', S.NONE, 'hiptk.app DNS + api-stub + forbiddenDeploy + productionHosts');
+  add('infra-hosts-manifest', (f) => f === 'infra/hosts.manifest.json', 'BACKEND_INFRA', 'KEEP', S.NONE, 'Phase0 bus/DB/R2/API hosts');
   add('infra', re(/^infra\//), 'BACKEND_INFRA', 'KEEP', S.NONE, 'API/R2/workers 인프라 매니페스트');
   add('schemas', re(/^schemas\/[^/]+\.json$/), 'BACKEND_CONTRACT', 'KEEP', S.NONE, 'JSON 계약 SSOT (소비자 그래프로 재판정)');
 
@@ -633,7 +634,7 @@ function seedRules() {
   // tooling/verify — 세부는 evidence 단계에서 재판정
   add('verify-gate-core', re(/^tooling\/verify\/(gate|gate-fast|gate-push|gate-runner|gate-tiers|only-pnpm|secrets|plans-ssot|workflow-action-pin|domain-by-path-ci|domain-by-path\.selftest|night-guard|project-boundary|api-nest-build|pg-module-scan|bucket-invariant)\.cjs$/), 'BACKEND_INFRA', 'KEEP', S.NONE, '3-tier gate 코어 · 보안 게이트');
   add('verify-domain-by-path', re(/^tooling\/verify\/domain-by-path\.cjs$/), 'MIXED', 'SPLIT', S.UI_TEST_REMOVAL, 'T0 경로→검증기 매핑 SSOT · retired skip 제거·backend 포트 매핑 완료(5단계) · 4단계 UI 검증기 규칙의 apps/web·packages/ui 경로 test만 잔존');
-  add('verify-stack-lock', re(/^tooling\/verify\/stack-lock\.cjs$/), 'MIXED', 'SPLIT', S.MIXED_SPLIT, 'T0 · infra/web·infra/ops·packages/sdk·packages/schemas mustExist + next@16/Tailwind 문구 강제 → 백엔드 전용으로 개정');
+  add('verify-stack-lock', re(/^tooling\/verify\/stack-lock\.cjs$/), 'BACKEND_INFRA', 'KEEP', S.NONE, 'T0 backend stack lock (Nest · Rust · Cloudflare Workers · no UI packages)');
   add('verify-backend-runner', re(/^tooling\/verify\/backend\/run-all\.cjs$/), 'BACKEND_INFRA', 'KEEP', S.NONE, 'T1 backend 러너 · mixed 검증기 백엔드 포트(tooling/verify/backend/**) 전부 순차 실행 · skip 0');
   add('verify-backend-port', re(/^tooling\/verify\/backend\//), 'BACKEND_TEST', 'KEEP', S.NONE, 'mixed 검증기 백엔드 어서션 포트 (원본 SHA 86f15964 · UI 어서션은 quality/putduk-web-ui-assertions-handoff.md) · evidence 재판정 대상');
   add('verify-stubs-runner', re(/^tooling\/verify\/stubs\/run-all\.cjs$/), 'MIXED', 'SPLIT', S.UI_TEST_REMOVAL, 'T1 도메인 스텁 러너 · retired skip 제거(5단계) · live 목록에 4단계 UI 검증기 이름만 잔존');
@@ -666,7 +667,7 @@ function seedRules() {
   add('perf', re(/^tooling\/perf\//), 'OBSOLETE', 'DELETE', S.UI_TEST_REMOVAL, 'Lighthouse 정적 예산 (UI 성능)');
   add('scaffold', re(/^tooling\/scaffold\//), 'OBSOLETE', 'DELETE', S.PACKAGE_CLEANUP, 'apps/web·packages/ui 등 모노레포 스켈레톤 생성기 (삭제된 트리 재생성 코드)');
   add('deploy-pages', re(/^tooling\/deploy\/cf-(pages-web|pages-ops|deploy-staging|rollback-staging)\.cjs$/), 'OBSOLETE', 'DELETE', S.CLOUDFLARE_RESIDUE, 'OpenNext web/ops Workers 배포·롤백 (apps/* 산출물 필요)');
-  add('deploy-mixed', re(/^tooling\/deploy\/cf-(preflight|origin-smoke|deploy-all|domain-bridge)\.cjs$/), 'MIXED', 'SPLIT', S.CLOUDFLARE_RESIDUE, 'workers/api + web/ops surface가 한 스크립트에 공존');
+  add('deploy-backend', re(/^tooling\/deploy\/cf-(preflight|domain-bridge|origin-smoke)\.cjs$/), 'BACKEND_INFRA', 'KEEP', S.NONE, 'api-stub/workers preflight · remote origin liveness (mutation 0)');
   add('deploy', re(/^tooling\/deploy\//), 'BACKEND_INFRA', 'KEEP', S.NONE, 'Workers/API 배포 도구');
   add('release', re(/^tooling\/release\//), 'BACKEND_INFRA', 'KEEP', S.NONE, '릴리스 아티팩트/수락 도구 (evidence 재판정)');
   add('recovery', re(/^tooling\/recovery\//), 'BACKEND_INFRA', 'KEEP', S.NONE, '복구/증거 재구축 도구');

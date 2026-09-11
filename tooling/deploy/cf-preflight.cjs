@@ -21,12 +21,10 @@ loadDotEnv();
 requireNonProdApiIsolation(target, { root, env: process.env });
 
 const requiredInfra = [
-  "infra/web/wrangler.toml",
-  "infra/ops/wrangler.toml",
-  "infra/ops/access-policy.json",
   "infra/workers.manifest.json",
   "infra/domain.manifest.json",
-  "workers/_shared/opennext-origin.ts",
+  "workers/api-stub/wrangler.toml",
+  "workers/push-dispatcher/wrangler.toml",
   ".cursor/mcp.json",
 ];
 
@@ -37,25 +35,17 @@ for (const rel of requiredInfra) {
   }
 }
 
-const originLock = spawnSync(
-  "node",
-  [path.join(root, "tooling/verify/opennext-workers-origin.cjs")],
-  { cwd: root, stdio: "inherit" }
-);
-if (originLock.status !== 0) {
-  console.error("[cf:preflight] FAIL: verify:opennext-workers-origin");
-  process.exit(originLock.status || 1);
+if (surface === "web" || surface === "ops") {
+  console.error("[cf:preflight] FAIL: surface=" + surface + " handed off to putduk-web");
+  process.exit(1);
 }
-
-if (surface === "web") {
-  mustExist("apps/web/package.json", "apps/web");
-} else if (surface === "ops") {
-  mustExist("apps/admin/package.json", "apps/admin");
-} else if (surface === "all") {
-  const hasWeb = fs.existsSync(path.join(root, "apps/web/package.json"));
-  const hasOps = fs.existsSync(path.join(root, "apps/admin/package.json"));
-  if (!hasWeb) console.warn("[cf:preflight] skip apps/web — monorepo-skeleton pending");
-  if (!hasOps) console.warn("[cf:preflight] skip apps/admin — monorepo-skeleton pending");
+if (fs.existsSync(path.join(root, "apps/web"))) {
+  console.error("[cf:preflight] FAIL: apps/web must not exist in backend-only repo");
+  process.exit(1);
+}
+if (fs.existsSync(path.join(root, "apps/admin"))) {
+  console.error("[cf:preflight] FAIL: apps/admin must not exist in backend-only repo");
+  process.exit(1);
 }
 
 console.log(`[cf:preflight] PASS · target=${target} · surface=${surface}`);

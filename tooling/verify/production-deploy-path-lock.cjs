@@ -86,27 +86,17 @@ assert.match(deployFrom, /AIPO_ACCEPTED_ARTIFACT_DEPLOY/);
 assert.match(deployFrom, /AIPO_ACCEPTED_DEPLOY_SHA/);
 assert.match(deployFrom, /AIPO_ACCEPTED_ARTIFACT_DIGEST/);
 
-for (const rel of [
-  "tooling/deploy/cf-pages-web.cjs",
-  "tooling/deploy/cf-pages-ops.cjs",
-  "tooling/deploy/cf-workers.cjs",
-]) {
-  const src = read(rel);
-  assert.match(src, /requireAcceptedArtifactAuthority/);
-}
-
-assert.match(
-  read("tooling/deploy/cf-pages-web.cjs"),
-  /FAIL_CLOSED:production_rebuild_forbidden/,
-);
-assert.match(
-  read("tooling/deploy/cf-pages-ops.cjs"),
-  /FAIL_CLOSED:production_rebuild_forbidden/,
-);
+assert.match(read("tooling/deploy/cf-workers.cjs"), /requireAcceptedArtifactAuthority/);
 assert.match(
   read("tooling/deploy/cf-workers.cjs"),
   /FAIL_CLOSED:production_bundle_forbidden/,
 );
+for (const gone of [
+  "tooling/deploy/cf-pages-web.cjs",
+  "tooling/deploy/cf-pages-ops.cjs",
+]) {
+  assert.equal(fs.existsSync(path.join(root, gone)), false, gone + " must be removed");
+}
 
 const workflow = read(".github/workflows/deploy-cloudflare.yml");
 assert.match(workflow, /deploy-from-artifact\.cjs/);

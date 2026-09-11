@@ -39,3 +39,22 @@
 스키마: `schemas/admin-*.v1.json` 및 영역별 `schemas/*.v1.json`.
 
 레거시 `apps/admin/routes.ts`의 12모듈·child tab 목록은 화면 IA 기록일 뿐이며 새 UI에 복사하지 않는다.
+
+## ops-proxy (4단계 커밋 4)
+
+원격 `hiptk-ops-proxy` · `ai-profit-ops` · `ai-profit-ops-preview` · `ai-profit-ops-dedicated` 는 삭제하지 않았다.
+
+로컬에서 제거한 것:
+
+- `workers/ops-proxy`
+- `infra/ops/wrangler.toml`
+- `infra/ops/access-policy.json` (CF Access 템플릿)
+- `tooling/deploy/cf-pages-ops.cjs`
+
+복구:
+
+```
+git checkout 97b07908 -- workers/ops-proxy infra/ops tooling/deploy/cf-pages-ops.cjs
+```
+
+미래 어드민 레포가 ops 호스트(`ops.hiptk.app`) 라우팅을 인수하기 전까지 원격 프록시는 유지한다. 이 레포의 `bridgeWorkers` 는 `api-stub` 만 남긴다.

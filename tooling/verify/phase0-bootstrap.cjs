@@ -25,10 +25,8 @@ const required = [
   "infra/phase0-migration-playbook.md",
   "infra/api/runtime.json",
   "infra/r2/kyc-docs.toml",
-  "infra/web/wrangler.toml",
-  "infra/ops/wrangler.toml",
-  "infra/ops/access-policy.json",
   "infra/workers.manifest.json",
+  "workers/api-stub/wrangler.toml",
   "docker-compose.dev.yml",
   ".env.example",
   "services/api-nest/src/config/phase0.env.ts",
@@ -81,23 +79,6 @@ if (!Array.isArray(workers.phase0) || workers.phase0.join() !== "push-dispatcher
 }
 if (/nats/i.test(JSON.stringify(workers.phase0))) {
   fails.push("workers.manifest phase0 must not list NATS workers");
-}
-
-const webToml = read("infra/web/wrangler.toml");
-const opsToml = read("infra/ops/wrangler.toml");
-if (!webToml.includes("ai-profit-web")) fails.push("web wrangler missing ai-profit-web");
-if (!opsToml.includes("ai-profit-ops")) fails.push("ops wrangler missing ai-profit-ops");
-if (/^\s*pages_build_output_dir\s*=/m.test(webToml)) {
-  fails.push("web wrangler: pages_build_output_dir key forbidden (OpenNext → Workers)");
-}
-if (/^\s*pages_build_output_dir\s*=/m.test(opsToml)) {
-  fails.push("ops wrangler: pages_build_output_dir key forbidden (OpenNext → Workers)");
-}
-if (!webToml.includes(".open-next/worker.js") || !webToml.includes(".open-next/assets")) {
-  fails.push("web wrangler must point main+assets at apps/web/.open-next");
-}
-if (!opsToml.includes(".open-next/worker.js") || !opsToml.includes(".open-next/assets")) {
-  fails.push("ops wrangler must point main+assets at apps/admin/.open-next");
 }
 
 const r2 = read("infra/r2/kyc-docs.toml");

@@ -10,22 +10,26 @@ const required = [
   "infra/hosts.manifest.json",
   "infra/domain.manifest.json",
   "tooling/deploy/cf-domain-bootstrap.cjs",
-  "infra/web/wrangler.toml",
-  "infra/ops/wrangler.toml",
-  "infra/ops/access-policy.json",
   "infra/api/runtime.json",
   "infra/r2/kyc-docs.toml",
   "infra/r2/asset-images.toml",
   "infra/workers.manifest.json",
   "workers/push-dispatcher/wrangler.toml",
-  "workers/web-proxy/wrangler.toml",
-  "workers/ops-proxy/wrangler.toml",
   "workers/api-stub/wrangler.toml",
   "workers/push-dispatcher/src/index.ts",
   "workers/marketing-capi-dispatcher/wrangler.toml",
-  "tooling/deploy/cf-deploy-all.cjs",
+  "tooling/deploy/cf-workers.cjs",
   ".github/workflows/deploy-cloudflare.yml",
 ];
+for (const gone of [
+  "infra/web/wrangler.toml",
+  "infra/ops/wrangler.toml",
+  "workers/web-proxy/wrangler.toml",
+  "workers/ops-proxy/wrangler.toml",
+  "tooling/deploy/cf-deploy-all.cjs",
+]) {
+  if (fs.existsSync(path.join(root, gone))) fails.push("must be removed: " + gone);
+}
 
 for (const rel of required) {
   if (!fs.existsSync(path.join(root, rel))) fails.push(`missing: ${rel}`);

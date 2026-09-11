@@ -8,7 +8,7 @@ const { root, loadDotEnv, requireCloudflareCreds } = require("./lib/env.cjs");
 loadDotEnv();
 requireCloudflareCreds();
 
-const workers = ["workers/api-stub", "workers/web-proxy", "workers/ops-proxy"];
+const workers = ["workers/api-stub"];
 
 for (const rel of workers) {
   const dir = path.join(root, rel);

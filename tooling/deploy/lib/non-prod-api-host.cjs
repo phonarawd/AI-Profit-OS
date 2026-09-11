@@ -15,9 +15,7 @@ function loadDomainManifest(root) {
 
 function loadForbiddenHosts(root) {
   const manifest = loadDomainManifest(root);
-  const hosts = (manifest.openNext &&
-    manifest.openNext.staging &&
-    manifest.openNext.staging.forbiddenHosts) || [];
+  const hosts = manifest.productionHosts || [];
   return new Set(hosts);
 }
 

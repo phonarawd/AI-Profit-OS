@@ -13,20 +13,20 @@ const manifest = JSON.parse(
   fs.readFileSync(path.join(root, "infra/domain.manifest.json"), "utf8")
 );
 
+const REMOTE = {
+  production: {
+    web: "ai-profit-web.ebay-adapter.workers.dev",
+    ops: "ai-profit-ops.ebay-adapter.workers.dev",
+  },
+  staging: {
+    web: "ai-profit-web-preview.ebay-adapter.workers.dev",
+    ops: "ai-profit-ops-preview.ebay-adapter.workers.dev",
+  },
+};
 function hostFor(key) {
-  if (isStagingSlot(slotArg)) {
-    const staging = manifest.openNext && manifest.openNext.staging
-      ? manifest.openNext.staging[key]
-      : null;
-    if (!staging || !staging.workersDev) {
-      throw new Error("domain.manifest openNext.staging." + key + ".workersDev missing");
-    }
-    return staging.workersDev;
-  }
-  const host = manifest.openNext && manifest.openNext[key]
-    ? manifest.openNext[key].workersDev
-    : null;
-  if (!host) throw new Error("domain.manifest openNext." + key + ".workersDev missing");
+  const slot = isStagingSlot(slotArg) ? "staging" : "production";
+  const host = REMOTE[slot] && REMOTE[slot][key];
+  if (!host) throw new Error("unknown origin slot=" + slot + " key=" + key);
   return host;
 }
 
@@ -97,10 +97,6 @@ async function smokeOne(check) {
 }
 
 (async function main() {
-  if (!manifest.openNext || !manifest.openNext.web || !manifest.openNext.web.workersDev) {
-    console.error("[cf:origin-smoke] FAIL: domain.manifest openNext missing");
-    process.exit(1);
-  }
   try {
     for (const c of checks) await smokeOne(c);
   } catch (e) {

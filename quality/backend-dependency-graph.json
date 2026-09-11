@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-09-11T11:42:33.409Z",
- "headSha": "3c3d3376b7bab8d042a1219aa55617f9fa574399",
+ "generatedAt": "2026-09-11T12:20:15.823Z",
+ "headSha": "8bd0f46eeae97819680f64749fda3655331f4dc3",
  "edgeKinds": [
   "import",
   "require",
@@ -3159,26 +3159,14 @@
   {
    "id": "infra/domain.manifest.json",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": "infra/hosts.manifest.json",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
-  },
-  {
-   "id": "infra/ops/access-policy.json",
-   "type": "file",
-   "class": "FUTURE_ADMIN_REQUIREMENT",
-   "decision": "MOVE"
-  },
-  {
-   "id": "infra/ops/wrangler.toml",
-   "type": "file",
-   "class": "LEGACY_ADMIN_UI",
-   "decision": "DELETE"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": "infra/phase0-migration-playbook.md",
@@ -3197,12 +3185,6 @@
    "type": "file",
    "class": "BACKEND_INFRA",
    "decision": "KEEP"
-  },
-  {
-   "id": "infra/web/wrangler.toml",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "DELETE"
   },
   {
    "id": "infra/workers.manifest.json",
@@ -3260,6 +3242,12 @@
   },
   {
    "id": "quality/backend-deletion-ledger.md",
+   "type": "file",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP"
+  },
+  {
+   "id": "quality/backend-dep-overrides.md",
    "type": "file",
    "class": "BACKEND_DOC",
    "decision": "KEEP"
@@ -6889,18 +6877,6 @@
    "decision": "KEEP"
   },
   {
-   "id": "tooling/deploy/cf-deploy-all.cjs",
-   "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
-  },
-  {
-   "id": "tooling/deploy/cf-deploy-staging.cjs",
-   "type": "file",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
    "id": "tooling/deploy/cf-domain-bootstrap.cjs",
    "type": "file",
    "class": "BACKEND_INFRA",
@@ -6909,8 +6885,8 @@
   {
    "id": "tooling/deploy/cf-domain-bridge.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/deploy/cf-ebay-secrets.cjs",
@@ -6921,32 +6897,14 @@
   {
    "id": "tooling/deploy/cf-origin-smoke.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
-  },
-  {
-   "id": "tooling/deploy/cf-pages-ops.cjs",
-   "type": "file",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
-   "id": "tooling/deploy/cf-pages-web.cjs",
-   "type": "file",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/deploy/cf-preflight.cjs",
    "type": "file",
    "class": "MIXED",
    "decision": "SPLIT"
-  },
-  {
-   "id": "tooling/deploy/cf-rollback-staging.cjs",
-   "type": "file",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
   },
   {
    "id": "tooling/deploy/cf-workers.cjs",
@@ -7755,8 +7713,8 @@
   {
    "id": "tooling/release/deploy-from-artifact.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/release/fetch-acceptance-artifact.cjs",
@@ -8319,8 +8277,8 @@
   {
    "id": "tooling/verify/cf-infra.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/verify/coach-sse-error-canonical.cjs",
@@ -8385,8 +8343,8 @@
   {
    "id": "tooling/verify/domain-bootstrap.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/verify/domain-by-path-ci.cjs",
@@ -8883,8 +8841,8 @@
   {
    "id": "tooling/verify/production-deploy-path-lock.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/verify/production-release-decision.cjs",
@@ -9063,8 +9021,8 @@
   {
    "id": "tooling/verify/rel-506-r8-infra-core.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/verify/rel-508-current-fx-approx.cjs",
@@ -9075,8 +9033,8 @@
   {
    "id": "tooling/verify/rel-600-staging.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/verify/rel-601-staging-regression.cjs",
@@ -9087,14 +9045,14 @@
   {
    "id": "tooling/verify/rel-602-staging-rollback.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/verify/release-acceptance.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/verify/release-engine-truth-consistency.cjs",
@@ -9183,8 +9141,8 @@
   {
    "id": "tooling/verify/stack-lock.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/verify/staging-db-hardening-rehearsal.cjs",
@@ -9311,12 +9269,6 @@
    "type": "file",
    "class": "BACKEND_INFRA",
    "decision": "KEEP"
-  },
-  {
-   "id": "workers/_shared/opennext-origin.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
   },
   {
    "id": "workers/amazon-adapter/package.json",
@@ -9649,30 +9601,6 @@
    "decision": "KEEP"
   },
   {
-   "id": "workers/ops-proxy/package.json",
-   "type": "file",
-   "class": "LEGACY_ADMIN_UI",
-   "decision": "DELETE"
-  },
-  {
-   "id": "workers/ops-proxy/src/index.ts",
-   "type": "file",
-   "class": "LEGACY_ADMIN_UI",
-   "decision": "DELETE"
-  },
-  {
-   "id": "workers/ops-proxy/tsconfig.json",
-   "type": "file",
-   "class": "LEGACY_ADMIN_UI",
-   "decision": "DELETE"
-  },
-  {
-   "id": "workers/ops-proxy/wrangler.toml",
-   "type": "file",
-   "class": "LEGACY_ADMIN_UI",
-   "decision": "DELETE"
-  },
-  {
    "id": "workers/pokemontcg-adapter/package.json",
    "type": "file",
    "class": "BACKEND_INFRA",
@@ -9767,30 +9695,6 @@
    "type": "file",
    "class": "BACKEND_INFRA",
    "decision": "KEEP"
-  },
-  {
-   "id": "workers/web-proxy/package.json",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "workers/web-proxy/src/index.ts",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "workers/web-proxy/tsconfig.json",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
-  },
-  {
-   "id": "workers/web-proxy/wrangler.toml",
-   "type": "file",
-   "class": "CUSTOMER_WEB",
-   "decision": "MOVE"
   },
   {
    "id": "workers/yahoo-jp-adapter/package.json",
@@ -9965,9 +9869,8 @@
    "files": 4
   },
   {
-   "id": "dir:workers/ops-proxy",
-   "type": "directory",
-   "files": 4
+   "id": "missing:workers/ops-proxy",
+   "type": "missing-path"
   },
   {
    "id": "dir:services/api-nest/**",
@@ -10305,14 +10208,12 @@
    "type": "deleted-ui-path"
   },
   {
-   "id": "dir:infra/ops",
-   "type": "directory",
-   "files": 2
+   "id": "missing:infra/ops",
+   "type": "missing-path"
   },
   {
-   "id": "dir:infra/ops/**",
-   "type": "glob",
-   "files": 2
+   "id": "missing:infra/ops/**",
+   "type": "missing-path"
   },
   {
    "id": "deleted:apps/web/public/.well-known/assetlinks.json",
@@ -10407,9 +10308,8 @@
    "type": "deleted-ui-path"
   },
   {
-   "id": "dir:infra/ops/",
-   "type": "directory",
-   "files": 2
+   "id": "missing:infra/ops/",
+   "type": "missing-path"
   },
   {
    "id": "deleted:packages/ui/copy/ko/trust.ts",
@@ -10725,7 +10625,7 @@
   {
    "id": "dir:workers/*-adapter",
    "type": "glob",
-   "files": 94
+   "files": 85
   },
   {
    "id": "missing:assets/opportunities/execution_policies/trade_executions/ai_*",
@@ -11147,6 +11047,10 @@
    "type": "deleted-ui-path"
   },
   {
+   "id": "missing:infra/ops/access-policy.json",
+   "type": "missing-path"
+  },
+  {
    "id": "deleted:packages/ui/pwa-shell.css",
    "type": "deleted-ui-path"
   },
@@ -11288,7 +11192,7 @@
   {
    "id": "dir:workers/**",
    "type": "glob",
-   "files": 94
+   "files": 85
   },
   {
    "id": "deleted:packages/ui/copy/**",
@@ -11348,24 +11252,28 @@
    "files": 19
   },
   {
-   "id": "dir:tooling/deploy/cf-pages-*.cjs",
-   "type": "glob",
-   "files": 2
+   "id": "missing:infra/web/**",
+   "type": "missing-path"
   },
   {
-   "id": "dir:workers/web-proxy/**",
-   "type": "glob",
-   "files": 4
+   "id": "missing:tooling/deploy/cf-pages-*.cjs",
+   "type": "missing-path"
   },
   {
-   "id": "dir:workers/ops-proxy/**",
-   "type": "glob",
-   "files": 4
+   "id": "missing:workers/web-proxy/**",
+   "type": "missing-path"
   },
   {
-   "id": "dir:infra/web",
-   "type": "directory",
-   "files": 1
+   "id": "missing:workers/ops-proxy/**",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:workers/_shared/opennext-origin.ts",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:infra/web",
+   "type": "missing-path"
   },
   {
    "id": "deleted:packages/ui/performance/",
@@ -11515,6 +11423,14 @@
    "id": "dir:CONSTITUTION/*",
    "type": "glob",
    "files": 29
+  },
+  {
+   "id": "missing:infra/web/wrangler.toml",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:infra/ops/wrangler.toml",
+   "type": "missing-path"
   },
   {
    "id": "dir:tooling/verify/*",
@@ -12646,6 +12562,14 @@
   },
   {
    "id": "missing:.github/workflows/gpt-release-safety-stack-integration-ci.yml",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:tooling/deploy/cf-pages-ops.cjs",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:tooling/deploy/cf-pages-web.cjs",
    "type": "missing-path"
   },
   {
@@ -13993,14 +13917,13 @@
    "type": "missing-path"
   },
   {
-   "id": "dir:workers/web-proxy",
+   "id": "dir:workers/api-stub",
    "type": "directory",
    "files": 4
   },
   {
-   "id": "dir:workers/api-stub",
-   "type": "directory",
-   "files": 4
+   "id": "missing:workers/web-proxy",
+   "type": "missing-path"
   },
   {
    "id": "dir:services/api-nest/src/events",
@@ -14112,7 +14035,7 @@
   {
    "id": "dir:workers/*/wrangler.toml",
    "type": "glob",
-   "files": 14
+   "files": 12
   },
   {
    "id": "deleted:apps/web/.open-next",
@@ -14304,6 +14227,14 @@
    "type": "missing-path"
   },
   {
+   "id": "missing:tooling/deploy/cf-deploy-staging.cjs",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:tooling/deploy/cf-rollback-staging.cjs",
+   "type": "missing-path"
+  },
+  {
    "id": "deleted:apps/admin/package.json",
    "type": "deleted-ui-path"
   },
@@ -14321,6 +14252,22 @@
   },
   {
    "id": "missing:tooling/verify/responsive/tests/canon-structure.spec.cjs",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:workers/ops-proxy/package.json",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:workers/ops-proxy/src/index.ts",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:workers/ops-proxy/tsconfig.json",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:workers/ops-proxy/wrangler.toml",
    "type": "missing-path"
   },
   {
@@ -14380,6 +14327,22 @@
    "type": "deleted-ui-path"
   },
   {
+   "id": "missing:workers/web-proxy/package.json",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:workers/web-proxy/src/index.ts",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:workers/web-proxy/tsconfig.json",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:workers/web-proxy/wrangler.toml",
+   "type": "missing-path"
+  },
+  {
    "id": "dir:quality/admin-handoff",
    "type": "directory",
    "files": 1
@@ -14394,6 +14357,10 @@
   },
   {
    "id": "missing:tooling/verify/ledger-journal-reader.runtime.cjs",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:tooling/deploy/cf-deploy-all.cjs",
    "type": "missing-path"
   },
   {
@@ -14592,7 +14559,7 @@
   {
    "id": "dir:tooling/deploy",
    "type": "directory",
-   "files": 18
+   "files": 13
   },
   {
    "id": "dir:tooling/dev",
@@ -14662,7 +14629,7 @@
   {
    "id": "dir:workers/_shared",
    "type": "directory",
-   "files": 2
+   "files": 1
   },
   {
    "id": "dir:workers/coingecko-adapter",
@@ -14702,7 +14669,7 @@
   {
    "id": "dir:quality/**",
    "type": "glob",
-   "files": 14
+   "files": 15
   },
   {
    "id": "missing:apps/*",
@@ -14730,7 +14697,7 @@
   {
    "id": "dir:quality/*",
    "type": "glob",
-   "files": 13
+   "files": 14
   },
   {
    "id": "missing:quality/backend/",
@@ -14744,7 +14711,7 @@
   {
    "id": "dir:workers/*-proxy",
    "type": "glob",
-   "files": 94
+   "files": 85
   },
   {
    "id": "deleted:apps/web/public/kyb",
@@ -15131,7 +15098,7 @@
   {
    "id": "dir:infra/**",
    "type": "glob",
-   "files": 11
+   "files": 8
   },
   {
    "id": "dir:services/**/*.runtime.test.ts",
@@ -15534,18 +15501,6 @@
   {
    "id": "env:CLOUDFLARE_ACCOUNT_ID",
    "type": "env-var"
-  },
-  {
-   "id": "deleted:apps/admin/.open-next/worker.js",
-   "type": "deleted-ui-path"
-  },
-  {
-   "id": "deleted:apps/admin/.open-next/assets",
-   "type": "deleted-ui-path"
-  },
-  {
-   "id": "deleted:apps/web/.open-next/assets",
-   "type": "deleted-ui-path"
   },
   {
    "id": "env:ROOT_DOMAIN",
@@ -16160,7 +16115,7 @@
   {
    "id": "dir:workers/**/*.test.cjs",
    "type": "glob",
-   "files": 94
+   "files": 85
   },
   {
    "id": "dir:services/**/*.test.cjs",
@@ -16186,7 +16141,7 @@
   {
    "id": "dir:workers/*/tsconfig.json",
    "type": "glob",
-   "files": 14
+   "files": 12
   },
   {
    "id": "missing:workers/${name}/tsconfig.json",
@@ -16407,8 +16362,8 @@
    "type": "npm-script",
    "package": "package.json",
    "command": "node tooling/verify/stack-lock.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": "script:verify:secrets",
@@ -16447,8 +16402,8 @@
    "type": "npm-script",
    "package": "package.json",
    "command": "node tooling/verify/cf-infra.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "script:verify:workers-types",
@@ -16495,8 +16450,8 @@
    "type": "npm-script",
    "package": "package.json",
    "command": "node tooling/deploy/cf-origin-smoke.cjs all",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": "script:verify:rel-400-admin-control-plane",
@@ -16663,16 +16618,16 @@
    "type": "npm-script",
    "package": "package.json",
    "command": "node tooling/verify/rel-506-r8-infra-core.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "script:verify:rel-600-staging",
    "type": "npm-script",
    "package": "package.json",
    "command": "node tooling/verify/rel-600-staging.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "script:verify:staging-topology-readiness",
@@ -16703,8 +16658,8 @@
    "type": "npm-script",
    "package": "package.json",
    "command": "node tooling/verify/rel-602-staging-rollback.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "script:release:id",
@@ -17351,8 +17306,8 @@
    "type": "npm-script",
    "package": "package.json",
    "command": "node tooling/verify/release-acceptance.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "script:verify:fetch-acceptance-artifact",
@@ -17495,8 +17450,8 @@
    "type": "npm-script",
    "package": "package.json",
    "command": "node tooling/verify/production-deploy-path-lock.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "script:verify:pwa-push-badge",
@@ -17819,44 +17774,12 @@
    "decision": "KEEP"
   },
   {
-   "id": "script:cf:deploy:all",
-   "type": "npm-script",
-   "package": "package.json",
-   "command": "node tooling/deploy/cf-deploy-all.cjs preview",
-   "class": "MIXED",
-   "decision": "SPLIT"
-  },
-  {
-   "id": "script:cf:deploy:all:prod",
-   "type": "npm-script",
-   "package": "package.json",
-   "command": "node tooling/deploy/cf-deploy-all.cjs production",
-   "class": "MIXED",
-   "decision": "SPLIT"
-  },
-  {
-   "id": "script:cf:deploy:staging",
-   "type": "npm-script",
-   "package": "package.json",
-   "command": "node tooling/deploy/cf-deploy-staging.cjs staging",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
-   "id": "script:cf:rollback:staging",
-   "type": "npm-script",
-   "package": "package.json",
-   "command": "node tooling/deploy/cf-rollback-staging.cjs staging",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
    "id": "script:cf:origin-smoke:staging",
    "type": "npm-script",
    "package": "package.json",
    "command": "node tooling/deploy/cf-origin-smoke.cjs all staging",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": "script:cf:domain:bootstrap",
@@ -17871,16 +17794,16 @@
    "type": "npm-script",
    "package": "package.json",
    "command": "node tooling/deploy/cf-domain-bridge.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": "script:verify:domain-bootstrap",
    "type": "npm-script",
    "package": "package.json",
    "command": "node tooling/verify/domain-bootstrap.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "script:verify:domain-clock",
@@ -18127,24 +18050,6 @@
    "command": "node ../../tooling/deploy/forbid-direct-wrangler-prod.cjs"
   },
   {
-   "id": "script:hiptk-ops-proxy#dev",
-   "type": "npm-script",
-   "package": "workers/ops-proxy/package.json",
-   "command": "wrangler dev --config wrangler.toml"
-  },
-  {
-   "id": "script:hiptk-ops-proxy#deploy",
-   "type": "npm-script",
-   "package": "workers/ops-proxy/package.json",
-   "command": "node ../../tooling/deploy/forbid-direct-wrangler-prod.cjs"
-  },
-  {
-   "id": "script:hiptk-ops-proxy#deploy:prod",
-   "type": "npm-script",
-   "package": "workers/ops-proxy/package.json",
-   "command": "node ../../tooling/deploy/forbid-direct-wrangler-prod.cjs"
-  },
-  {
    "id": "script:@aipo/pokemontcg-adapter#dev",
    "type": "npm-script",
    "package": "workers/pokemontcg-adapter/package.json",
@@ -18178,24 +18083,6 @@
    "id": "script:@ai-profit-os/push-dispatcher#deploy:prod",
    "type": "npm-script",
    "package": "workers/push-dispatcher/package.json",
-   "command": "node ../../tooling/deploy/forbid-direct-wrangler-prod.cjs"
-  },
-  {
-   "id": "script:hiptk-web-proxy#dev",
-   "type": "npm-script",
-   "package": "workers/web-proxy/package.json",
-   "command": "wrangler dev --config wrangler.toml"
-  },
-  {
-   "id": "script:hiptk-web-proxy#deploy",
-   "type": "npm-script",
-   "package": "workers/web-proxy/package.json",
-   "command": "node ../../tooling/deploy/forbid-direct-wrangler-prod.cjs"
-  },
-  {
-   "id": "script:hiptk-web-proxy#deploy:prod",
-   "type": "npm-script",
-   "package": "workers/web-proxy/package.json",
    "command": "node ../../tooling/deploy/forbid-direct-wrangler-prod.cjs"
   },
   {
@@ -18275,24 +18162,6 @@
    "type": "github-action"
   },
   {
-   "id": "worker:ai-profit-ops",
-   "type": "cloudflare-worker",
-   "config": "infra/ops/wrangler.toml",
-   "envs": [
-    "preview",
-    "production"
-   ]
-  },
-  {
-   "id": "worker:ai-profit-web",
-   "type": "cloudflare-worker",
-   "config": "infra/web/wrangler.toml",
-   "envs": [
-    "preview",
-    "production"
-   ]
-  },
-  {
    "id": "worker:amazon-adapter",
    "type": "cloudflare-worker",
    "config": "workers/amazon-adapter/wrangler.toml",
@@ -18369,18 +18238,6 @@
    ]
   },
   {
-   "id": "route:ops.hiptk.app",
-   "type": "route"
-  },
-  {
-   "id": "worker:hiptk-ops-proxy",
-   "type": "cloudflare-worker",
-   "config": "workers/ops-proxy/wrangler.toml",
-   "envs": [
-    "production"
-   ]
-  },
-  {
    "id": "worker:pokemontcg-adapter",
    "type": "cloudflare-worker",
    "config": "workers/pokemontcg-adapter/wrangler.toml",
@@ -18396,26 +18253,6 @@
    "envs": [
     "production",
     "preview"
-   ]
-  },
-  {
-   "id": "route:app.hiptk.app",
-   "type": "route"
-  },
-  {
-   "id": "route:hiptk.app",
-   "type": "route"
-  },
-  {
-   "id": "route:go.hiptk.app",
-   "type": "route"
-  },
-  {
-   "id": "worker:hiptk-web-proxy",
-   "type": "cloudflare-worker",
-   "config": "workers/web-proxy/wrangler.toml",
-   "envs": [
-    "production"
    ]
   },
   {
@@ -18743,7 +18580,7 @@
   },
   {
    "from": ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md",
-   "to": "dir:workers/ops-proxy",
+   "to": "missing:workers/ops-proxy",
    "kind": "doc-link",
    "spec": "workers/ops-proxy"
   },
@@ -19395,13 +19232,13 @@
   },
   {
    "from": ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md",
-   "to": "dir:infra/ops",
+   "to": "missing:infra/ops",
    "kind": "doc-link",
    "spec": "infra/ops"
   },
   {
    "from": ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md",
-   "to": "dir:infra/ops/**",
+   "to": "missing:infra/ops/**",
    "kind": "doc-link",
    "spec": "infra/ops/**"
   },
@@ -19642,7 +19479,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md",
-   "to": "dir:infra/ops/",
+   "to": "missing:infra/ops/",
    "kind": "doc-link",
    "spec": "infra/ops/"
   },
@@ -21803,8 +21640,9 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_04_admin_e5f6a7b8.plan.md",
-   "to": "infra/ops/access-policy.json",
-   "kind": "doc-link"
+   "to": "missing:infra/ops/access-policy.json",
+   "kind": "doc-link",
+   "spec": "infra/ops/access-policy.json"
   },
   {
    "from": ".cursor/plans/ai_profit_os_04_admin_e5f6a7b8.plan.md",
@@ -22570,8 +22408,9 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_launch_54c1261e.plan.md",
-   "to": "infra/ops/access-policy.json",
-   "kind": "doc-link"
+   "to": "missing:infra/ops/access-policy.json",
+   "kind": "doc-link",
+   "spec": "infra/ops/access-policy.json"
   },
   {
    "from": ".cursor/plans/ai_profit_os_launch_54c1261e.plan.md",
@@ -22741,7 +22580,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_launch_54c1261e.plan.md",
-   "to": "dir:infra/ops/",
+   "to": "missing:infra/ops/",
    "kind": "doc-link",
    "spec": "infra/ops/"
   },
@@ -23447,13 +23286,13 @@
   },
   {
    "from": ".cursor/rules/opennext-workers-origin.mdc",
-   "to": "infra/web/wrangler.toml",
+   "to": "missing:infra/web/**",
    "kind": "doc-link",
    "spec": "infra/web/**"
   },
   {
    "from": ".cursor/rules/opennext-workers-origin.mdc",
-   "to": "dir:infra/ops/**",
+   "to": "missing:infra/ops/**",
    "kind": "doc-link",
    "spec": "infra/ops/**"
   },
@@ -23464,7 +23303,7 @@
   },
   {
    "from": ".cursor/rules/opennext-workers-origin.mdc",
-   "to": "dir:tooling/deploy/cf-pages-*.cjs",
+   "to": "missing:tooling/deploy/cf-pages-*.cjs",
    "kind": "doc-link",
    "spec": "tooling/deploy/cf-pages-*.cjs"
   },
@@ -23480,24 +23319,25 @@
   },
   {
    "from": ".cursor/rules/opennext-workers-origin.mdc",
-   "to": "dir:workers/web-proxy/**",
+   "to": "missing:workers/web-proxy/**",
    "kind": "doc-link",
    "spec": "workers/web-proxy/**"
   },
   {
    "from": ".cursor/rules/opennext-workers-origin.mdc",
-   "to": "dir:workers/ops-proxy/**",
+   "to": "missing:workers/ops-proxy/**",
    "kind": "doc-link",
    "spec": "workers/ops-proxy/**"
   },
   {
    "from": ".cursor/rules/opennext-workers-origin.mdc",
-   "to": "workers/_shared/opennext-origin.ts",
-   "kind": "doc-link"
+   "to": "missing:workers/_shared/opennext-origin.ts",
+   "kind": "doc-link",
+   "spec": "workers/_shared/opennext-origin.ts"
   },
   {
    "from": ".cursor/rules/opennext-workers-origin.mdc",
-   "to": "dir:infra/web",
+   "to": "missing:infra/web",
    "kind": "doc-link",
    "spec": "infra/web"
   },
@@ -24855,7 +24695,7 @@
   },
   {
    "from": "CONSTITUTION/40_ADMIN_ISOLATED_OPS_PLATFORM.md",
-   "to": "dir:infra/ops/",
+   "to": "missing:infra/ops/",
    "kind": "doc-link",
    "spec": "infra/ops/"
   },
@@ -25075,13 +24915,15 @@
   },
   {
    "from": "TOOLCHAIN.md",
-   "to": "infra/web/wrangler.toml",
-   "kind": "doc-link"
+   "to": "missing:infra/web/wrangler.toml",
+   "kind": "doc-link",
+   "spec": "infra/web/wrangler.toml"
   },
   {
    "from": "TOOLCHAIN.md",
-   "to": "infra/ops/wrangler.toml",
-   "kind": "doc-link"
+   "to": "missing:infra/ops/wrangler.toml",
+   "kind": "doc-link",
+   "spec": "infra/ops/wrangler.toml"
   },
   {
    "from": "TOOLCHAIN.md",
@@ -52639,7 +52481,7 @@
   },
   {
    "from": "governance/platform-redesign/change-control.v1.md",
-   "to": "dir:infra/web",
+   "to": "missing:infra/web",
    "kind": "doc-link",
    "spec": "infra/web"
   },
@@ -54293,13 +54135,15 @@
   },
   {
    "from": "governance/recovery/chatgpt-takeover-20260903/pr-transplant-audit.json",
-   "to": "tooling/deploy/cf-pages-ops.cjs",
-   "kind": "verifier-reads"
+   "to": "missing:tooling/deploy/cf-pages-ops.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/deploy/cf-pages-ops.cjs"
   },
   {
    "from": "governance/recovery/chatgpt-takeover-20260903/pr-transplant-audit.json",
-   "to": "tooling/deploy/cf-pages-web.cjs",
-   "kind": "verifier-reads"
+   "to": "missing:tooling/deploy/cf-pages-web.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/deploy/cf-pages-web.cjs"
   },
   {
    "from": "governance/recovery/chatgpt-takeover-20260903/pr-transplant-audit.json",
@@ -55046,13 +54890,15 @@
   },
   {
    "from": "governance/recovery/chatgpt-takeover-20260903/staged-paths.txt",
-   "to": "tooling/deploy/cf-pages-ops.cjs",
-   "kind": "doc-link"
+   "to": "missing:tooling/deploy/cf-pages-ops.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/deploy/cf-pages-ops.cjs"
   },
   {
    "from": "governance/recovery/chatgpt-takeover-20260903/staged-paths.txt",
-   "to": "tooling/deploy/cf-pages-web.cjs",
-   "kind": "doc-link"
+   "to": "missing:tooling/deploy/cf-pages-web.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/deploy/cf-pages-web.cjs"
   },
   {
    "from": "governance/recovery/chatgpt-takeover-20260903/staged-paths.txt",
@@ -56005,13 +55851,15 @@
   },
   {
    "from": "governance/recovery/current-local-state.v1.json",
-   "to": "infra/ops/wrangler.toml",
-   "kind": "verifier-reads"
+   "to": "missing:infra/ops/wrangler.toml",
+   "kind": "verifier-reads",
+   "spec": "infra/ops/wrangler.toml"
   },
   {
    "from": "governance/recovery/current-local-state.v1.json",
-   "to": "infra/web/wrangler.toml",
-   "kind": "verifier-reads"
+   "to": "missing:infra/web/wrangler.toml",
+   "kind": "verifier-reads",
+   "spec": "infra/web/wrangler.toml"
   },
   {
    "from": "governance/recovery/current-local-state.v1.json",
@@ -56834,13 +56682,15 @@
   },
   {
    "from": "governance/recovery/current-local-state.v1.json",
-   "to": "tooling/deploy/cf-pages-ops.cjs",
-   "kind": "verifier-reads"
+   "to": "missing:tooling/deploy/cf-pages-ops.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/deploy/cf-pages-ops.cjs"
   },
   {
    "from": "governance/recovery/current-local-state.v1.json",
-   "to": "tooling/deploy/cf-pages-web.cjs",
-   "kind": "verifier-reads"
+   "to": "missing:tooling/deploy/cf-pages-web.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/deploy/cf-pages-web.cjs"
   },
   {
    "from": "governance/recovery/current-local-state.v1.json",
@@ -59002,13 +58852,15 @@
   },
   {
    "from": "governance/release-master/R8_INFRA_CORE.md",
-   "to": "infra/web/wrangler.toml",
-   "kind": "doc-link"
+   "to": "missing:infra/web/wrangler.toml",
+   "kind": "doc-link",
+   "spec": "infra/web/wrangler.toml"
   },
   {
    "from": "governance/release-master/R8_INFRA_CORE.md",
-   "to": "infra/ops/wrangler.toml",
-   "kind": "doc-link"
+   "to": "missing:infra/ops/wrangler.toml",
+   "kind": "doc-link",
+   "spec": "infra/ops/wrangler.toml"
   },
   {
    "from": "governance/release-master/R8_INFRA_CORE.md",
@@ -59963,13 +59815,15 @@
   },
   {
    "from": "governance/release-master/r8-cache-inventory.v1.json",
-   "to": "infra/web/wrangler.toml",
-   "kind": "verifier-reads"
+   "to": "missing:infra/web/wrangler.toml",
+   "kind": "verifier-reads",
+   "spec": "infra/web/wrangler.toml"
   },
   {
    "from": "governance/release-master/r8-cache-inventory.v1.json",
-   "to": "infra/ops/wrangler.toml",
-   "kind": "verifier-reads"
+   "to": "missing:infra/ops/wrangler.toml",
+   "kind": "verifier-reads",
+   "spec": "infra/ops/wrangler.toml"
   },
   {
    "from": "governance/release-master/r8-cache-inventory.v1.json",
@@ -60252,40 +60106,6 @@
   },
   {
    "from": "infra/domain.manifest.json",
-   "to": "deleted:apps/web",
-   "kind": "verifier-reads",
-   "spec": "apps/web"
-  },
-  {
-   "from": "infra/domain.manifest.json",
-   "to": "infra/web/wrangler.toml",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "infra/domain.manifest.json",
-   "to": "deleted:apps/admin",
-   "kind": "verifier-reads",
-   "spec": "apps/admin"
-  },
-  {
-   "from": "infra/domain.manifest.json",
-   "to": "infra/ops/wrangler.toml",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "infra/domain.manifest.json",
-   "to": "dir:workers/web-proxy",
-   "kind": "verifier-reads",
-   "spec": "workers/web-proxy"
-  },
-  {
-   "from": "infra/domain.manifest.json",
-   "to": "dir:workers/ops-proxy",
-   "kind": "verifier-reads",
-   "spec": "workers/ops-proxy"
-  },
-  {
-   "from": "infra/domain.manifest.json",
    "to": "dir:workers/api-stub",
    "kind": "verifier-reads",
    "spec": "workers/api-stub"
@@ -60296,35 +60116,50 @@
    "kind": "verifier-reads"
   },
   {
+   "from": "infra/domain.manifest.json",
+   "to": "missing:infra/web",
+   "kind": "verifier-reads",
+   "spec": "infra/web"
+  },
+  {
+   "from": "infra/domain.manifest.json",
+   "to": "missing:infra/ops",
+   "kind": "verifier-reads",
+   "spec": "infra/ops"
+  },
+  {
+   "from": "infra/domain.manifest.json",
+   "to": "missing:workers/web-proxy",
+   "kind": "verifier-reads",
+   "spec": "workers/web-proxy"
+  },
+  {
+   "from": "infra/domain.manifest.json",
+   "to": "missing:workers/ops-proxy",
+   "kind": "verifier-reads",
+   "spec": "workers/ops-proxy"
+  },
+  {
+   "from": "infra/domain.manifest.json",
+   "to": "missing:workers/_shared/opennext-origin.ts",
+   "kind": "verifier-reads",
+   "spec": "workers/_shared/opennext-origin.ts"
+  },
+  {
+   "from": "infra/domain.manifest.json",
+   "to": "missing:tooling/deploy/cf-pages-web.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/deploy/cf-pages-web.cjs"
+  },
+  {
+   "from": "infra/domain.manifest.json",
+   "to": "missing:tooling/deploy/cf-pages-ops.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/deploy/cf-pages-ops.cjs"
+  },
+  {
    "from": "infra/hosts.manifest.json",
    "to": "infra/domain.manifest.json",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "infra/hosts.manifest.json",
-   "to": "deleted:apps/web",
-   "kind": "verifier-reads",
-   "spec": "apps/web"
-  },
-  {
-   "from": "infra/hosts.manifest.json",
-   "to": "infra/web/wrangler.toml",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "infra/hosts.manifest.json",
-   "to": "deleted:apps/admin",
-   "kind": "verifier-reads",
-   "spec": "apps/admin"
-  },
-  {
-   "from": "infra/hosts.manifest.json",
-   "to": "infra/ops/wrangler.toml",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "infra/hosts.manifest.json",
-   "to": "infra/ops/access-policy.json",
    "kind": "verifier-reads"
   },
   {
@@ -60347,22 +60182,6 @@
    "from": "infra/hosts.manifest.json",
    "to": "docker-compose.dev.yml",
    "kind": "verifier-reads"
-  },
-  {
-   "from": "infra/ops/access-policy.json",
-   "to": "deleted:apps/web",
-   "kind": "verifier-reads",
-   "spec": "apps/web"
-  },
-  {
-   "from": "infra/ops/wrangler.toml",
-   "to": "infra/ops/access-policy.json",
-   "kind": "wrangler-main"
-  },
-  {
-   "from": "infra/ops/wrangler.toml",
-   "to": "infra/domain.manifest.json",
-   "kind": "wrangler-main"
   },
   {
    "from": "infra/phase0-migration-playbook.md",
@@ -60420,11 +60239,6 @@
    "to": "deleted:apps/web",
    "kind": "verifier-reads",
    "spec": "apps/web"
-  },
-  {
-   "from": "infra/web/wrangler.toml",
-   "to": "infra/domain.manifest.json",
-   "kind": "wrangler-main"
   },
   {
    "from": "package.json",
@@ -61403,21 +61217,6 @@
   },
   {
    "from": "package.json",
-   "to": "tooling/deploy/cf-deploy-all.cjs",
-   "kind": "pkg-script"
-  },
-  {
-   "from": "package.json",
-   "to": "tooling/deploy/cf-deploy-staging.cjs",
-   "kind": "pkg-script"
-  },
-  {
-   "from": "package.json",
-   "to": "tooling/deploy/cf-rollback-staging.cjs",
-   "kind": "pkg-script"
-  },
-  {
-   "from": "package.json",
    "to": "tooling/deploy/cf-domain-bootstrap.cjs",
    "kind": "pkg-script"
   },
@@ -61541,6 +61340,36 @@
    "to": "deleted:apps/admin/routes.ts",
    "kind": "doc-link",
    "spec": "apps/admin/routes.ts"
+  },
+  {
+   "from": "quality/admin-handoff/README.md",
+   "to": "missing:workers/ops-proxy",
+   "kind": "doc-link",
+   "spec": "workers/ops-proxy"
+  },
+  {
+   "from": "quality/admin-handoff/README.md",
+   "to": "missing:infra/ops/wrangler.toml",
+   "kind": "doc-link",
+   "spec": "infra/ops/wrangler.toml"
+  },
+  {
+   "from": "quality/admin-handoff/README.md",
+   "to": "missing:infra/ops/access-policy.json",
+   "kind": "doc-link",
+   "spec": "infra/ops/access-policy.json"
+  },
+  {
+   "from": "quality/admin-handoff/README.md",
+   "to": "missing:tooling/deploy/cf-pages-ops.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/deploy/cf-pages-ops.cjs"
+  },
+  {
+   "from": "quality/admin-handoff/README.md",
+   "to": "missing:infra/ops",
+   "kind": "doc-link",
+   "spec": "infra/ops"
   },
   {
    "from": "quality/backend-api-contract-map.md",
@@ -61875,13 +61704,13 @@
   },
   {
    "from": "quality/backend-ci.md",
-   "to": "dir:infra/web",
+   "to": "missing:infra/web",
    "kind": "doc-link",
    "spec": "infra/web"
   },
   {
    "from": "quality/backend-ci.md",
-   "to": "dir:infra/ops",
+   "to": "missing:infra/ops",
    "kind": "doc-link",
    "spec": "infra/ops"
   },
@@ -61996,13 +61825,13 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "dir:infra/web",
+   "to": "missing:infra/web",
    "kind": "doc-link",
    "spec": "infra/web"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "dir:infra/ops",
+   "to": "missing:infra/ops",
    "kind": "doc-link",
    "spec": "infra/ops"
   },
@@ -62323,23 +62152,27 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "tooling/deploy/cf-deploy-staging.cjs",
-   "kind": "doc-link"
+   "to": "missing:tooling/deploy/cf-deploy-staging.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/deploy/cf-deploy-staging.cjs"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "tooling/deploy/cf-pages-ops.cjs",
-   "kind": "doc-link"
+   "to": "missing:tooling/deploy/cf-pages-ops.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/deploy/cf-pages-ops.cjs"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "tooling/deploy/cf-pages-web.cjs",
-   "kind": "doc-link"
+   "to": "missing:tooling/deploy/cf-pages-web.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/deploy/cf-pages-web.cjs"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "tooling/deploy/cf-rollback-staging.cjs",
-   "kind": "doc-link"
+   "to": "missing:tooling/deploy/cf-rollback-staging.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/deploy/cf-rollback-staging.cjs"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
@@ -62403,23 +62236,27 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "workers/ops-proxy/package.json",
-   "kind": "doc-link"
+   "to": "missing:workers/ops-proxy/package.json",
+   "kind": "doc-link",
+   "spec": "workers/ops-proxy/package.json"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "workers/ops-proxy/src/index.ts",
-   "kind": "doc-link"
+   "to": "missing:workers/ops-proxy/src/index.ts",
+   "kind": "doc-link",
+   "spec": "workers/ops-proxy/src/index.ts"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "workers/ops-proxy/tsconfig.json",
-   "kind": "doc-link"
+   "to": "missing:workers/ops-proxy/tsconfig.json",
+   "kind": "doc-link",
+   "spec": "workers/ops-proxy/tsconfig.json"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "workers/ops-proxy/wrangler.toml",
-   "kind": "doc-link"
+   "to": "missing:workers/ops-proxy/wrangler.toml",
+   "kind": "doc-link",
+   "spec": "workers/ops-proxy/wrangler.toml"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
@@ -62866,13 +62703,15 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "infra/ops/wrangler.toml",
-   "kind": "doc-link"
+   "to": "missing:infra/ops/wrangler.toml",
+   "kind": "doc-link",
+   "spec": "infra/ops/wrangler.toml"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "infra/web/wrangler.toml",
-   "kind": "doc-link"
+   "to": "missing:infra/web/wrangler.toml",
+   "kind": "doc-link",
+   "spec": "infra/web/wrangler.toml"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
@@ -62928,23 +62767,27 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "workers/web-proxy/package.json",
-   "kind": "doc-link"
+   "to": "missing:workers/web-proxy/package.json",
+   "kind": "doc-link",
+   "spec": "workers/web-proxy/package.json"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "workers/web-proxy/src/index.ts",
-   "kind": "doc-link"
+   "to": "missing:workers/web-proxy/src/index.ts",
+   "kind": "doc-link",
+   "spec": "workers/web-proxy/src/index.ts"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "workers/web-proxy/tsconfig.json",
-   "kind": "doc-link"
+   "to": "missing:workers/web-proxy/tsconfig.json",
+   "kind": "doc-link",
+   "spec": "workers/web-proxy/tsconfig.json"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "workers/web-proxy/wrangler.toml",
-   "kind": "doc-link"
+   "to": "missing:workers/web-proxy/wrangler.toml",
+   "kind": "doc-link",
+   "spec": "workers/web-proxy/wrangler.toml"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
@@ -62973,8 +62816,9 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "infra/ops/access-policy.json",
-   "kind": "doc-link"
+   "to": "missing:infra/ops/access-policy.json",
+   "kind": "doc-link",
+   "spec": "infra/ops/access-policy.json"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
@@ -63002,8 +62846,9 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "workers/_shared/opennext-origin.ts",
-   "kind": "doc-link"
+   "to": "missing:workers/_shared/opennext-origin.ts",
+   "kind": "doc-link",
+   "spec": "workers/_shared/opennext-origin.ts"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
@@ -63048,8 +62893,9 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "tooling/deploy/cf-deploy-all.cjs",
-   "kind": "doc-link"
+   "to": "missing:tooling/deploy/cf-deploy-all.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/deploy/cf-deploy-all.cjs"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
@@ -64000,13 +63846,13 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "dir:workers/ops-proxy",
+   "to": "missing:workers/ops-proxy",
    "kind": "doc-link",
    "spec": "workers/ops-proxy"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "dir:workers/web-proxy",
+   "to": "missing:workers/web-proxy",
    "kind": "doc-link",
    "spec": "workers/web-proxy"
   },
@@ -64483,6 +64329,11 @@
    "kind": "doc-link"
   },
   {
+   "from": "quality/backend-dep-overrides.md",
+   "to": "services/api-nest/src/compliance/kyc.controller.ts",
+   "kind": "doc-link"
+  },
+  {
    "from": "quality/backend-only-deletion-plan.md",
    "to": "quality/backend-only-inventory.md",
    "kind": "doc-link"
@@ -64636,8 +64487,9 @@
   },
   {
    "from": "quality/backend-only-deletion-plan.md",
-   "to": "infra/web/wrangler.toml",
-   "kind": "doc-link"
+   "to": "missing:infra/web/wrangler.toml",
+   "kind": "doc-link",
+   "spec": "infra/web/wrangler.toml"
   },
   {
    "from": "quality/backend-only-deletion-plan.md",
@@ -64653,8 +64505,9 @@
   },
   {
    "from": "quality/backend-only-deletion-plan.md",
-   "to": "infra/ops/wrangler.toml",
-   "kind": "doc-link"
+   "to": "missing:infra/ops/wrangler.toml",
+   "kind": "doc-link",
+   "spec": "infra/ops/wrangler.toml"
   },
   {
    "from": "quality/backend-only-deletion-plan.md",
@@ -64712,13 +64565,13 @@
   },
   {
    "from": "quality/backend-only-deletion-plan.md",
-   "to": "dir:workers/web-proxy",
+   "to": "missing:workers/web-proxy",
    "kind": "doc-link",
    "spec": "workers/web-proxy"
   },
   {
    "from": "quality/backend-only-deletion-plan.md",
-   "to": "dir:workers/ops-proxy",
+   "to": "missing:workers/ops-proxy",
    "kind": "doc-link",
    "spec": "workers/ops-proxy"
   },
@@ -64769,13 +64622,13 @@
   },
   {
    "from": "quality/backend-only-deletion-plan.md",
-   "to": "dir:infra/web",
+   "to": "missing:infra/web",
    "kind": "doc-link",
    "spec": "infra/web"
   },
   {
    "from": "quality/backend-only-deletion-plan.md",
-   "to": "dir:infra/ops",
+   "to": "missing:infra/ops",
    "kind": "doc-link",
    "spec": "infra/ops"
   },
@@ -65077,8 +64930,9 @@
   },
   {
    "from": "quality/backend-only-inventory.md",
-   "to": "infra/web/wrangler.toml",
-   "kind": "doc-link"
+   "to": "missing:infra/web/wrangler.toml",
+   "kind": "doc-link",
+   "spec": "infra/web/wrangler.toml"
   },
   {
    "from": "quality/backend-only-inventory.md",
@@ -65214,8 +65068,9 @@
   },
   {
    "from": "quality/backend-only-inventory.md",
-   "to": "infra/ops/wrangler.toml",
-   "kind": "doc-link"
+   "to": "missing:infra/ops/wrangler.toml",
+   "kind": "doc-link",
+   "spec": "infra/ops/wrangler.toml"
   },
   {
    "from": "quality/backend-only-inventory.md",
@@ -65441,8 +65296,9 @@
   },
   {
    "from": "quality/backend-only-inventory.md",
-   "to": "infra/ops/access-policy.json",
-   "kind": "doc-link"
+   "to": "missing:infra/ops/access-policy.json",
+   "kind": "doc-link",
+   "spec": "infra/ops/access-policy.json"
   },
   {
    "from": "quality/backend-only-inventory.md",
@@ -65477,13 +65333,13 @@
   },
   {
    "from": "quality/backend-only-inventory.md",
-   "to": "dir:workers/web-proxy/**",
+   "to": "missing:workers/web-proxy/**",
    "kind": "doc-link",
    "spec": "workers/web-proxy/**"
   },
   {
    "from": "quality/backend-only-inventory.md",
-   "to": "dir:workers/ops-proxy/**",
+   "to": "missing:workers/ops-proxy/**",
    "kind": "doc-link",
    "spec": "workers/ops-proxy/**"
   },
@@ -65767,13 +65623,13 @@
   },
   {
    "from": "quality/backend-only-inventory.md",
-   "to": "dir:workers/web-proxy",
+   "to": "missing:workers/web-proxy",
    "kind": "doc-link",
    "spec": "workers/web-proxy"
   },
   {
    "from": "quality/backend-only-inventory.md",
-   "to": "dir:workers/ops-proxy",
+   "to": "missing:workers/ops-proxy",
    "kind": "doc-link",
    "spec": "workers/ops-proxy"
   },
@@ -65986,13 +65842,15 @@
   },
   {
    "from": "quality/backend-only-official-basis.md",
-   "to": "infra/web/wrangler.toml",
-   "kind": "doc-link"
+   "to": "missing:infra/web/wrangler.toml",
+   "kind": "doc-link",
+   "spec": "infra/web/wrangler.toml"
   },
   {
    "from": "quality/backend-only-official-basis.md",
-   "to": "infra/ops/wrangler.toml",
-   "kind": "doc-link"
+   "to": "missing:infra/ops/wrangler.toml",
+   "kind": "doc-link",
+   "spec": "infra/ops/wrangler.toml"
   },
   {
    "from": "quality/backend-only-official-basis.md",
@@ -66008,13 +65866,13 @@
   },
   {
    "from": "quality/backend-only-official-basis.md",
-   "to": "dir:workers/web-proxy",
+   "to": "missing:workers/web-proxy",
    "kind": "doc-link",
    "spec": "workers/web-proxy"
   },
   {
    "from": "quality/backend-only-official-basis.md",
-   "to": "dir:workers/ops-proxy",
+   "to": "missing:workers/ops-proxy",
    "kind": "doc-link",
    "spec": "workers/ops-proxy"
   },
@@ -66071,20 +65929,21 @@
   },
   {
    "from": "quality/backend-only-official-basis.md",
-   "to": "dir:infra/web",
+   "to": "missing:infra/web",
    "kind": "doc-link",
    "spec": "infra/web"
   },
   {
    "from": "quality/backend-only-official-basis.md",
-   "to": "dir:infra/ops",
+   "to": "missing:infra/ops",
    "kind": "doc-link",
    "spec": "infra/ops"
   },
   {
    "from": "quality/backend-only-official-basis.md",
-   "to": "workers/_shared/opennext-origin.ts",
-   "kind": "doc-link"
+   "to": "missing:workers/_shared/opennext-origin.ts",
+   "kind": "doc-link",
+   "spec": "workers/_shared/opennext-origin.ts"
   },
   {
    "from": "quality/backend-only-official-basis.md",
@@ -66305,7 +66164,7 @@
   },
   {
    "from": "quality/backend-residual-report.md",
-   "to": "dir:workers/web-proxy",
+   "to": "missing:workers/web-proxy",
    "kind": "doc-link",
    "spec": "workers/web-proxy"
   },
@@ -66604,19 +66463,19 @@
   },
   {
    "from": "quality/backend-residual-report.md",
-   "to": "dir:workers/ops-proxy",
+   "to": "missing:workers/ops-proxy",
    "kind": "doc-link",
    "spec": "workers/ops-proxy"
   },
   {
    "from": "quality/backend-residual-report.md",
-   "to": "dir:infra/ops",
+   "to": "missing:infra/ops",
    "kind": "doc-link",
    "spec": "infra/ops"
   },
   {
    "from": "quality/backend-residual-report.md",
-   "to": "dir:infra/web",
+   "to": "missing:infra/web",
    "kind": "doc-link",
    "spec": "infra/web"
   },
@@ -76783,6 +76642,16 @@
   },
   {
    "from": "tooling/backend/ownership-graph.cjs",
+   "to": "infra/domain.manifest.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/backend/ownership-graph.cjs",
+   "to": "infra/hosts.manifest.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/backend/ownership-graph.cjs",
    "to": "missing:assets/.gitkeep",
    "kind": "verifier-reads",
    "spec": "assets/.gitkeep"
@@ -77109,13 +76978,13 @@
   },
   {
    "from": "tooling/backend/ownership-overrides.json",
-   "to": "dir:infra/web",
+   "to": "missing:infra/web",
    "kind": "verifier-reads",
    "spec": "infra/web"
   },
   {
    "from": "tooling/backend/ownership-overrides.json",
-   "to": "dir:infra/ops",
+   "to": "missing:infra/ops",
    "kind": "verifier-reads",
    "spec": "infra/ops"
   },
@@ -77803,24 +77672,6 @@
    "kind": "env"
   },
   {
-   "from": "tooling/deploy/cf-deploy-all.cjs",
-   "to": "deleted:apps/web/package.json",
-   "kind": "deploy-cmd",
-   "spec": "apps/web/package.json"
-  },
-  {
-   "from": "tooling/deploy/cf-deploy-all.cjs",
-   "to": "deleted:apps/admin/package.json",
-   "kind": "deploy-cmd",
-   "spec": "apps/admin/package.json"
-  },
-  {
-   "from": "tooling/deploy/cf-deploy-staging.cjs",
-   "to": "tooling/deploy/lib/env.cjs",
-   "kind": "require",
-   "spec": "./lib/env.cjs"
-  },
-  {
    "from": "tooling/deploy/cf-domain-bootstrap.cjs",
    "to": "tooling/deploy/lib/env.cjs",
    "kind": "require",
@@ -77854,18 +77705,6 @@
    "spec": "workers/api-stub"
   },
   {
-   "from": "tooling/deploy/cf-domain-bridge.cjs",
-   "to": "dir:workers/web-proxy",
-   "kind": "deploy-cmd",
-   "spec": "workers/web-proxy"
-  },
-  {
-   "from": "tooling/deploy/cf-domain-bridge.cjs",
-   "to": "dir:workers/ops-proxy",
-   "kind": "deploy-cmd",
-   "spec": "workers/ops-proxy"
-  },
-  {
    "from": "tooling/deploy/cf-ebay-secrets.cjs",
    "to": "dir:workers/ebay-adapter",
    "kind": "deploy-cmd",
@@ -77883,107 +77722,10 @@
    "kind": "deploy-cmd"
   },
   {
-   "from": "tooling/deploy/cf-pages-ops.cjs",
-   "to": "tooling/deploy/lib/env.cjs",
-   "kind": "require",
-   "spec": "./lib/env.cjs"
-  },
-  {
-   "from": "tooling/deploy/cf-pages-ops.cjs",
-   "to": "tooling/deploy/lib/accepted-artifact-authority.cjs",
-   "kind": "require",
-   "spec": "./lib/accepted-artifact-authority.cjs"
-  },
-  {
-   "from": "tooling/deploy/cf-pages-ops.cjs",
-   "to": "deleted:apps/admin/package.json",
-   "kind": "deploy-cmd",
-   "spec": "apps/admin/package.json"
-  },
-  {
-   "from": "tooling/deploy/cf-pages-ops.cjs",
-   "to": "deleted:apps/admin",
-   "kind": "deploy-cmd",
-   "spec": "apps/admin"
-  },
-  {
-   "from": "tooling/deploy/cf-pages-ops.cjs",
-   "to": "infra/ops/wrangler.toml",
-   "kind": "deploy-cmd"
-  },
-  {
-   "from": "tooling/deploy/cf-pages-ops.cjs",
-   "to": "deleted:apps/admin/.open-next/worker.js",
-   "kind": "deploy-cmd",
-   "spec": "apps/admin/.open-next/worker.js"
-  },
-  {
-   "from": "tooling/deploy/cf-pages-ops.cjs",
-   "to": "deleted:apps/admin/.open-next/assets",
-   "kind": "deploy-cmd",
-   "spec": "apps/admin/.open-next/assets"
-  },
-  {
-   "from": "tooling/deploy/cf-pages-web.cjs",
-   "to": "tooling/deploy/lib/env.cjs",
-   "kind": "require",
-   "spec": "./lib/env.cjs"
-  },
-  {
-   "from": "tooling/deploy/cf-pages-web.cjs",
-   "to": "tooling/deploy/lib/accepted-artifact-authority.cjs",
-   "kind": "require",
-   "spec": "./lib/accepted-artifact-authority.cjs"
-  },
-  {
-   "from": "tooling/deploy/cf-pages-web.cjs",
-   "to": "deleted:apps/web/package.json",
-   "kind": "deploy-cmd",
-   "spec": "apps/web/package.json"
-  },
-  {
-   "from": "tooling/deploy/cf-pages-web.cjs",
-   "to": "deleted:apps/web",
-   "kind": "deploy-cmd",
-   "spec": "apps/web"
-  },
-  {
-   "from": "tooling/deploy/cf-pages-web.cjs",
-   "to": "infra/web/wrangler.toml",
-   "kind": "deploy-cmd"
-  },
-  {
-   "from": "tooling/deploy/cf-pages-web.cjs",
-   "to": "deleted:apps/web/.open-next/worker.js",
-   "kind": "deploy-cmd",
-   "spec": "apps/web/.open-next/worker.js"
-  },
-  {
-   "from": "tooling/deploy/cf-pages-web.cjs",
-   "to": "deleted:apps/web/.open-next/assets",
-   "kind": "deploy-cmd",
-   "spec": "apps/web/.open-next/assets"
-  },
-  {
    "from": "tooling/deploy/cf-preflight.cjs",
    "to": "tooling/deploy/lib/env.cjs",
    "kind": "require",
    "spec": "./lib/env.cjs"
-  },
-  {
-   "from": "tooling/deploy/cf-preflight.cjs",
-   "to": "infra/web/wrangler.toml",
-   "kind": "deploy-cmd"
-  },
-  {
-   "from": "tooling/deploy/cf-preflight.cjs",
-   "to": "infra/ops/wrangler.toml",
-   "kind": "deploy-cmd"
-  },
-  {
-   "from": "tooling/deploy/cf-preflight.cjs",
-   "to": "infra/ops/access-policy.json",
-   "kind": "deploy-cmd"
   },
   {
    "from": "tooling/deploy/cf-preflight.cjs",
@@ -77997,7 +77739,12 @@
   },
   {
    "from": "tooling/deploy/cf-preflight.cjs",
-   "to": "workers/_shared/opennext-origin.ts",
+   "to": "workers/api-stub/wrangler.toml",
+   "kind": "deploy-cmd"
+  },
+  {
+   "from": "tooling/deploy/cf-preflight.cjs",
+   "to": "workers/push-dispatcher/wrangler.toml",
    "kind": "deploy-cmd"
   },
   {
@@ -78007,27 +77754,9 @@
   },
   {
    "from": "tooling/deploy/cf-preflight.cjs",
-   "to": "missing:tooling/verify/opennext-workers-origin.cjs",
-   "kind": "deploy-cmd",
-   "spec": "tooling/verify/opennext-workers-origin.cjs"
-  },
-  {
-   "from": "tooling/deploy/cf-preflight.cjs",
-   "to": "deleted:apps/web/package.json",
-   "kind": "deploy-cmd",
-   "spec": "apps/web/package.json"
-  },
-  {
-   "from": "tooling/deploy/cf-preflight.cjs",
    "to": "deleted:apps/web",
    "kind": "deploy-cmd",
    "spec": "apps/web"
-  },
-  {
-   "from": "tooling/deploy/cf-preflight.cjs",
-   "to": "deleted:apps/admin/package.json",
-   "kind": "deploy-cmd",
-   "spec": "apps/admin/package.json"
   },
   {
    "from": "tooling/deploy/cf-preflight.cjs",
@@ -78039,22 +77768,6 @@
    "from": "tooling/deploy/cf-preflight.cjs",
    "to": "env:ROOT_DOMAIN",
    "kind": "env"
-  },
-  {
-   "from": "tooling/deploy/cf-rollback-staging.cjs",
-   "to": "tooling/deploy/lib/env.cjs",
-   "kind": "require",
-   "spec": "./lib/env.cjs"
-  },
-  {
-   "from": "tooling/deploy/cf-rollback-staging.cjs",
-   "to": "infra/web/wrangler.toml",
-   "kind": "deploy-cmd"
-  },
-  {
-   "from": "tooling/deploy/cf-rollback-staging.cjs",
-   "to": "infra/ops/wrangler.toml",
-   "kind": "deploy-cmd"
   },
   {
    "from": "tooling/deploy/cf-workers.cjs",
@@ -82060,21 +81773,6 @@
    "kind": "deploy-cmd"
   },
   {
-   "from": "tooling/release/deploy-from-artifact.cjs",
-   "to": "tooling/deploy/cf-preflight.cjs",
-   "kind": "deploy-cmd"
-  },
-  {
-   "from": "tooling/release/deploy-from-artifact.cjs",
-   "to": "tooling/deploy/cf-pages-web.cjs",
-   "kind": "deploy-cmd"
-  },
-  {
-   "from": "tooling/release/deploy-from-artifact.cjs",
-   "to": "tooling/deploy/cf-pages-ops.cjs",
-   "kind": "deploy-cmd"
-  },
-  {
    "from": "tooling/release/fetch-acceptance-artifact.cjs",
    "to": "env:GITHUB_REPOSITORY",
    "kind": "env"
@@ -83146,8 +82844,9 @@
   },
   {
    "from": "tooling/verify/CATALOG.md",
-   "to": "tooling/deploy/cf-rollback-staging.cjs",
-   "kind": "verifier-reads"
+   "to": "missing:tooling/deploy/cf-rollback-staging.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/deploy/cf-rollback-staging.cjs"
   },
   {
    "from": "tooling/verify/CATALOG.md",
@@ -86874,21 +86573,6 @@
   },
   {
    "from": "tooling/verify/cf-infra.cjs",
-   "to": "infra/web/wrangler.toml",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/cf-infra.cjs",
-   "to": "infra/ops/wrangler.toml",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/cf-infra.cjs",
-   "to": "infra/ops/access-policy.json",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/cf-infra.cjs",
    "to": "infra/api/runtime.json",
    "kind": "verifier-reads"
   },
@@ -86914,16 +86598,6 @@
   },
   {
    "from": "tooling/verify/cf-infra.cjs",
-   "to": "workers/web-proxy/wrangler.toml",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/cf-infra.cjs",
-   "to": "workers/ops-proxy/wrangler.toml",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/cf-infra.cjs",
    "to": "workers/api-stub/wrangler.toml",
    "kind": "verifier-reads"
   },
@@ -86939,13 +86613,43 @@
   },
   {
    "from": "tooling/verify/cf-infra.cjs",
-   "to": "tooling/deploy/cf-deploy-all.cjs",
+   "to": "tooling/deploy/cf-workers.cjs",
    "kind": "verifier-reads"
   },
   {
    "from": "tooling/verify/cf-infra.cjs",
    "to": ".github/workflows/deploy-cloudflare.yml",
    "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/cf-infra.cjs",
+   "to": "missing:infra/web/wrangler.toml",
+   "kind": "verifier-reads",
+   "spec": "infra/web/wrangler.toml"
+  },
+  {
+   "from": "tooling/verify/cf-infra.cjs",
+   "to": "missing:infra/ops/wrangler.toml",
+   "kind": "verifier-reads",
+   "spec": "infra/ops/wrangler.toml"
+  },
+  {
+   "from": "tooling/verify/cf-infra.cjs",
+   "to": "missing:workers/web-proxy/wrangler.toml",
+   "kind": "verifier-reads",
+   "spec": "workers/web-proxy/wrangler.toml"
+  },
+  {
+   "from": "tooling/verify/cf-infra.cjs",
+   "to": "missing:workers/ops-proxy/wrangler.toml",
+   "kind": "verifier-reads",
+   "spec": "workers/ops-proxy/wrangler.toml"
+  },
+  {
+   "from": "tooling/verify/cf-infra.cjs",
+   "to": "missing:tooling/deploy/cf-deploy-all.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/deploy/cf-deploy-all.cjs"
   },
   {
    "from": "tooling/verify/coach-sse-error-canonical.cjs",
@@ -87196,18 +86900,33 @@
   },
   {
    "from": "tooling/verify/domain-bootstrap.cjs",
-   "to": "workers/_shared/opennext-origin.ts",
-   "kind": "verifier-reads"
+   "to": "missing:workers/_shared/opennext-origin.ts",
+   "kind": "verifier-reads",
+   "spec": "workers/_shared/opennext-origin.ts"
   },
   {
    "from": "tooling/verify/domain-bootstrap.cjs",
-   "to": "workers/web-proxy/wrangler.toml",
-   "kind": "verifier-reads"
+   "to": "missing:infra/web/wrangler.toml",
+   "kind": "verifier-reads",
+   "spec": "infra/web/wrangler.toml"
   },
   {
    "from": "tooling/verify/domain-bootstrap.cjs",
-   "to": "workers/ops-proxy/wrangler.toml",
-   "kind": "verifier-reads"
+   "to": "missing:infra/ops/wrangler.toml",
+   "kind": "verifier-reads",
+   "spec": "infra/ops/wrangler.toml"
+  },
+  {
+   "from": "tooling/verify/domain-bootstrap.cjs",
+   "to": "missing:workers/web-proxy/wrangler.toml",
+   "kind": "verifier-reads",
+   "spec": "workers/web-proxy/wrangler.toml"
+  },
+  {
+   "from": "tooling/verify/domain-bootstrap.cjs",
+   "to": "missing:workers/ops-proxy/wrangler.toml",
+   "kind": "verifier-reads",
+   "spec": "workers/ops-proxy/wrangler.toml"
   },
   {
    "from": "tooling/verify/domain-bootstrap.cjs",
@@ -87217,16 +86936,6 @@
   {
    "from": "tooling/verify/domain-bootstrap.cjs",
    "to": "tooling/deploy/cf-domain-bridge.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/domain-bootstrap.cjs",
-   "to": "infra/web/wrangler.toml",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/domain-bootstrap.cjs",
-   "to": "infra/ops/wrangler.toml",
    "kind": "verifier-reads"
   },
   {
@@ -88232,8 +87941,9 @@
   },
   {
    "from": "tooling/verify/fixtures/rel-602-staging-rollback.v1.json",
-   "to": "tooling/deploy/cf-rollback-staging.cjs",
-   "kind": "verifier-reads"
+   "to": "missing:tooling/deploy/cf-rollback-staging.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/deploy/cf-rollback-staging.cjs"
   },
   {
    "from": "tooling/verify/fx-snapshot-formula.cjs",
@@ -89506,22 +89216,12 @@
   },
   {
    "from": "tooling/verify/phase0-bootstrap.cjs",
-   "to": "infra/web/wrangler.toml",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/phase0-bootstrap.cjs",
-   "to": "infra/ops/wrangler.toml",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/phase0-bootstrap.cjs",
-   "to": "infra/ops/access-policy.json",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/phase0-bootstrap.cjs",
    "to": "infra/workers.manifest.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/phase0-bootstrap.cjs",
+   "to": "workers/api-stub/wrangler.toml",
    "kind": "verifier-reads"
   },
   {
@@ -89789,18 +89489,20 @@
   },
   {
    "from": "tooling/verify/production-deploy-path-lock.cjs",
-   "to": "tooling/deploy/cf-pages-web.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/production-deploy-path-lock.cjs",
-   "to": "tooling/deploy/cf-pages-ops.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/production-deploy-path-lock.cjs",
    "to": "tooling/deploy/cf-workers.cjs",
    "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/production-deploy-path-lock.cjs",
+   "to": "missing:tooling/deploy/cf-pages-web.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/deploy/cf-pages-web.cjs"
+  },
+  {
+   "from": "tooling/verify/production-deploy-path-lock.cjs",
+   "to": "missing:tooling/deploy/cf-pages-ops.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/deploy/cf-pages-ops.cjs"
   },
   {
    "from": "tooling/verify/production-deploy-path-lock.cjs",
@@ -91427,16 +91129,6 @@
   },
   {
    "from": "tooling/verify/rel-506-r8-infra-core.cjs",
-   "to": "infra/web/wrangler.toml",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-506-r8-infra-core.cjs",
-   "to": "infra/ops/wrangler.toml",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-506-r8-infra-core.cjs",
    "to": "infra/r2/kyc-docs.toml",
    "kind": "verifier-reads"
   },
@@ -91452,17 +91144,7 @@
   },
   {
    "from": "tooling/verify/rel-506-r8-infra-core.cjs",
-   "to": "tooling/deploy/cf-pages-web.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-506-r8-infra-core.cjs",
-   "to": "tooling/deploy/cf-pages-ops.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-506-r8-infra-core.cjs",
-   "to": "tooling/deploy/cf-deploy-all.cjs",
+   "to": "tooling/deploy/cf-workers.cjs",
    "kind": "verifier-reads"
   },
   {
@@ -91598,21 +91280,6 @@
   },
   {
    "from": "tooling/verify/rel-600-staging.cjs",
-   "to": "tooling/deploy/cf-pages-web.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-600-staging.cjs",
-   "to": "tooling/deploy/cf-pages-ops.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-600-staging.cjs",
-   "to": "tooling/deploy/cf-deploy-staging.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-600-staging.cjs",
    "to": ".github/workflows/deploy-cloudflare.yml",
    "kind": "verifier-reads"
   },
@@ -91625,6 +91292,30 @@
    "from": "tooling/verify/rel-600-staging.cjs",
    "to": "governance/engine-acceptance/FINAL_ACCEPTANCE.md",
    "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/rel-600-staging.cjs",
+   "to": "missing:tooling/deploy/cf-pages-web.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/deploy/cf-pages-web.cjs"
+  },
+  {
+   "from": "tooling/verify/rel-600-staging.cjs",
+   "to": "missing:tooling/deploy/cf-pages-ops.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/deploy/cf-pages-ops.cjs"
+  },
+  {
+   "from": "tooling/verify/rel-600-staging.cjs",
+   "to": "missing:tooling/deploy/cf-deploy-staging.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/deploy/cf-deploy-staging.cjs"
+  },
+  {
+   "from": "tooling/verify/rel-600-staging.cjs",
+   "to": "missing:.github/workflows/deploy-staging.yml",
+   "kind": "verifier-reads",
+   "spec": ".github/workflows/deploy-staging.yml"
   },
   {
    "from": "tooling/verify/rel-600-staging.cjs",
@@ -91761,11 +91452,6 @@
   },
   {
    "from": "tooling/verify/rel-602-staging-rollback.cjs",
-   "to": "tooling/deploy/cf-rollback-staging.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-602-staging-rollback.cjs",
    "to": "infra/domain.manifest.json",
    "kind": "verifier-reads"
   },
@@ -91773,6 +91459,12 @@
    "from": "tooling/verify/rel-602-staging-rollback.cjs",
    "to": ".github/workflows/deploy-cloudflare.yml",
    "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/rel-602-staging-rollback.cjs",
+   "to": "missing:tooling/deploy/cf-rollback-staging.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/deploy/cf-rollback-staging.cjs"
   },
   {
    "from": "tooling/verify/rel-602-staging-rollback.cjs",
@@ -91882,13 +91574,15 @@
   },
   {
    "from": "tooling/verify/release-acceptance.cjs",
-   "to": "tooling/deploy/cf-pages-web.cjs",
-   "kind": "verifier-reads"
+   "to": "missing:tooling/deploy/cf-pages-web.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/deploy/cf-pages-web.cjs"
   },
   {
    "from": "tooling/verify/release-acceptance.cjs",
-   "to": "tooling/deploy/cf-pages-ops.cjs",
-   "kind": "verifier-reads"
+   "to": "missing:tooling/deploy/cf-pages-ops.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/deploy/cf-pages-ops.cjs"
   },
   {
    "from": "tooling/verify/release-acceptance.cjs",
@@ -92020,17 +91714,17 @@
   },
   {
    "from": "tooling/verify/root-domain-env.cjs",
-   "to": "infra/web/wrangler.toml",
+   "to": "infra/domain.manifest.json",
    "kind": "verifier-reads"
   },
   {
    "from": "tooling/verify/root-domain-env.cjs",
-   "to": "infra/ops/wrangler.toml",
+   "to": "infra/hosts.manifest.json",
    "kind": "verifier-reads"
   },
   {
    "from": "tooling/verify/root-domain-env.cjs",
-   "to": "infra/ops/access-policy.json",
+   "to": "workers/api-stub/wrangler.toml",
    "kind": "verifier-reads"
   },
   {
@@ -92413,12 +92107,17 @@
   },
   {
    "from": "tooling/verify/stack-lock.cjs",
-   "to": "infra/web/wrangler.toml",
+   "to": "infra/domain.manifest.json",
    "kind": "verifier-reads"
   },
   {
    "from": "tooling/verify/stack-lock.cjs",
-   "to": "infra/ops/wrangler.toml",
+   "to": "workers/api-stub/wrangler.toml",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/stack-lock.cjs",
+   "to": "workers/push-dispatcher/wrangler.toml",
    "kind": "verifier-reads"
   },
   {
@@ -93417,12 +93116,6 @@
    "spec": "./constants"
   },
   {
-   "from": "workers/ops-proxy/src/index.ts",
-   "to": "workers/_shared/opennext-origin.ts",
-   "kind": "import",
-   "spec": "../../_shared/opennext-origin"
-  },
-  {
    "from": "workers/pokemontcg-adapter/src/client.ts",
    "to": "workers/pokemontcg-adapter/src/constants.ts",
    "kind": "import",
@@ -93457,12 +93150,6 @@
    "to": "dir:tooling/pwa",
    "kind": "verifier-reads",
    "spec": "tooling/pwa"
-  },
-  {
-   "from": "workers/web-proxy/src/index.ts",
-   "to": "workers/_shared/opennext-origin.ts",
-   "kind": "import",
-   "spec": "../../_shared/opennext-origin"
   },
   {
    "from": "workers/yahoo-jp-adapter/src/auction-api.ts",
@@ -95938,54 +95625,6 @@
   },
   {
    "from": "package.json",
-   "to": "script:cf:deploy:all",
-   "kind": "pkg-script",
-   "spec": "cf:deploy:all"
-  },
-  {
-   "from": "script:cf:deploy:all",
-   "to": "tooling/deploy/cf-deploy-all.cjs",
-   "kind": "pkg-script",
-   "spec": "node tooling/deploy/cf-deploy-all.cjs preview"
-  },
-  {
-   "from": "package.json",
-   "to": "script:cf:deploy:all:prod",
-   "kind": "pkg-script",
-   "spec": "cf:deploy:all:prod"
-  },
-  {
-   "from": "script:cf:deploy:all:prod",
-   "to": "tooling/deploy/cf-deploy-all.cjs",
-   "kind": "pkg-script",
-   "spec": "node tooling/deploy/cf-deploy-all.cjs production"
-  },
-  {
-   "from": "package.json",
-   "to": "script:cf:deploy:staging",
-   "kind": "pkg-script",
-   "spec": "cf:deploy:staging"
-  },
-  {
-   "from": "script:cf:deploy:staging",
-   "to": "tooling/deploy/cf-deploy-staging.cjs",
-   "kind": "pkg-script",
-   "spec": "node tooling/deploy/cf-deploy-staging.cjs staging"
-  },
-  {
-   "from": "package.json",
-   "to": "script:cf:rollback:staging",
-   "kind": "pkg-script",
-   "spec": "cf:rollback:staging"
-  },
-  {
-   "from": "script:cf:rollback:staging",
-   "to": "tooling/deploy/cf-rollback-staging.cjs",
-   "kind": "pkg-script",
-   "spec": "node tooling/deploy/cf-rollback-staging.cjs staging"
-  },
-  {
-   "from": "package.json",
    "to": "script:cf:origin-smoke:staging",
    "kind": "pkg-script",
    "spec": "cf:origin-smoke:staging"
@@ -96579,42 +96218,6 @@
    "spec": "devDependencies:^4.120.0"
   },
   {
-   "from": "workers/ops-proxy/package.json",
-   "to": "script:hiptk-ops-proxy#dev",
-   "kind": "pkg-script",
-   "spec": "dev"
-  },
-  {
-   "from": "workers/ops-proxy/package.json",
-   "to": "script:hiptk-ops-proxy#deploy",
-   "kind": "pkg-script",
-   "spec": "deploy"
-  },
-  {
-   "from": "workers/ops-proxy/package.json",
-   "to": "script:hiptk-ops-proxy#deploy:prod",
-   "kind": "pkg-script",
-   "spec": "deploy:prod"
-  },
-  {
-   "from": "workers/ops-proxy/package.json",
-   "to": "pkg:@cloudflare/workers-types",
-   "kind": "pkg-dep",
-   "spec": "devDependencies:^5.20260809.1"
-  },
-  {
-   "from": "workers/ops-proxy/package.json",
-   "to": "pkg:typescript",
-   "kind": "pkg-dep",
-   "spec": "devDependencies:^5.9.2"
-  },
-  {
-   "from": "workers/ops-proxy/package.json",
-   "to": "pkg:wrangler",
-   "kind": "pkg-dep",
-   "spec": "devDependencies:^4.120.0"
-  },
-  {
    "from": "workers/pokemontcg-adapter/package.json",
    "to": "script:@aipo/pokemontcg-adapter#dev",
    "kind": "pkg-script",
@@ -96682,42 +96285,6 @@
   },
   {
    "from": "workers/push-dispatcher/package.json",
-   "to": "pkg:wrangler",
-   "kind": "pkg-dep",
-   "spec": "devDependencies:^4.120.0"
-  },
-  {
-   "from": "workers/web-proxy/package.json",
-   "to": "script:hiptk-web-proxy#dev",
-   "kind": "pkg-script",
-   "spec": "dev"
-  },
-  {
-   "from": "workers/web-proxy/package.json",
-   "to": "script:hiptk-web-proxy#deploy",
-   "kind": "pkg-script",
-   "spec": "deploy"
-  },
-  {
-   "from": "workers/web-proxy/package.json",
-   "to": "script:hiptk-web-proxy#deploy:prod",
-   "kind": "pkg-script",
-   "spec": "deploy:prod"
-  },
-  {
-   "from": "workers/web-proxy/package.json",
-   "to": "pkg:@cloudflare/workers-types",
-   "kind": "pkg-dep",
-   "spec": "devDependencies:^5.20260809.1"
-  },
-  {
-   "from": "workers/web-proxy/package.json",
-   "to": "pkg:typescript",
-   "kind": "pkg-dep",
-   "spec": "devDependencies:^5.9.2"
-  },
-  {
-   "from": "workers/web-proxy/package.json",
    "to": "pkg:wrangler",
    "kind": "pkg-dep",
    "spec": "devDependencies:^4.120.0"
@@ -99549,42 +99116,6 @@
    "spec": "actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6"
   },
   {
-   "from": "infra/ops/wrangler.toml",
-   "to": "deleted:apps/admin/.open-next/worker.js",
-   "kind": "wrangler-main",
-   "spec": "../../apps/admin/.open-next/worker.js"
-  },
-  {
-   "from": "infra/ops/wrangler.toml",
-   "to": "deleted:apps/admin/.open-next/assets",
-   "kind": "wrangler-main",
-   "spec": "assets.directory"
-  },
-  {
-   "from": "infra/ops/wrangler.toml",
-   "to": "worker:ai-profit-ops",
-   "kind": "wrangler-main",
-   "spec": "name"
-  },
-  {
-   "from": "infra/web/wrangler.toml",
-   "to": "deleted:apps/web/.open-next/worker.js",
-   "kind": "wrangler-main",
-   "spec": "../../apps/web/.open-next/worker.js"
-  },
-  {
-   "from": "infra/web/wrangler.toml",
-   "to": "deleted:apps/web/.open-next/assets",
-   "kind": "wrangler-main",
-   "spec": "assets.directory"
-  },
-  {
-   "from": "infra/web/wrangler.toml",
-   "to": "worker:ai-profit-web",
-   "kind": "wrangler-main",
-   "spec": "name"
-  },
-  {
    "from": "workers/amazon-adapter/wrangler.toml",
    "to": "workers/amazon-adapter/src/index.ts",
    "kind": "wrangler-main",
@@ -99687,24 +99218,6 @@
    "spec": "name"
   },
   {
-   "from": "workers/ops-proxy/wrangler.toml",
-   "to": "workers/ops-proxy/src/index.ts",
-   "kind": "wrangler-main",
-   "spec": "src/index.ts"
-  },
-  {
-   "from": "workers/ops-proxy/wrangler.toml",
-   "to": "route:ops.hiptk.app",
-   "kind": "route",
-   "spec": "ops.hiptk.app"
-  },
-  {
-   "from": "workers/ops-proxy/wrangler.toml",
-   "to": "worker:hiptk-ops-proxy",
-   "kind": "wrangler-main",
-   "spec": "name"
-  },
-  {
    "from": "workers/pokemontcg-adapter/wrangler.toml",
    "to": "workers/pokemontcg-adapter/src/index.ts",
    "kind": "wrangler-main",
@@ -99725,36 +99238,6 @@
   {
    "from": "workers/push-dispatcher/wrangler.toml",
    "to": "worker:push-dispatcher",
-   "kind": "wrangler-main",
-   "spec": "name"
-  },
-  {
-   "from": "workers/web-proxy/wrangler.toml",
-   "to": "workers/web-proxy/src/index.ts",
-   "kind": "wrangler-main",
-   "spec": "src/index.ts"
-  },
-  {
-   "from": "workers/web-proxy/wrangler.toml",
-   "to": "route:app.hiptk.app",
-   "kind": "route",
-   "spec": "app.hiptk.app"
-  },
-  {
-   "from": "workers/web-proxy/wrangler.toml",
-   "to": "route:hiptk.app",
-   "kind": "route",
-   "spec": "hiptk.app"
-  },
-  {
-   "from": "workers/web-proxy/wrangler.toml",
-   "to": "route:go.hiptk.app",
-   "kind": "route",
-   "spec": "go.hiptk.app"
-  },
-  {
-   "from": "workers/web-proxy/wrangler.toml",
-   "to": "worker:hiptk-web-proxy",
    "kind": "wrangler-main",
    "spec": "name"
   },

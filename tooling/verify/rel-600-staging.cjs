@@ -37,9 +37,6 @@ const catalog = read("tooling/verify/CATALOG.md");
 const gate = read(".github/workflows/backend-ci.yml");
 const domain = read("tooling/verify/domain-by-path.cjs");
 const manifest = readJson("infra/domain.manifest.json");
-const webDeploy = read("tooling/deploy/cf-pages-web.cjs");
-const opsDeploy = read("tooling/deploy/cf-pages-ops.cjs");
-const stagingDeploy = read("tooling/deploy/cf-deploy-staging.cjs");
 const prodWorkflow = read(".github/workflows/deploy-cloudflare.yml");
 const preflight = read("tooling/deploy/cf-preflight.cjs");
 
@@ -119,55 +116,28 @@ for (const dep of fixture.deps || []) {
   if (!yamlCompleted(dep)) fails.push("EXIT_GATE: YAML STATUS not COMPLETED " + dep);
 }
 
-const staging = manifest.openNext && manifest.openNext.staging;
-if (!staging || staging.wranglerEnv !== "preview") {
-  fails.push("manifest staging wranglerEnv must be preview");
+if (manifest.openNext) {
+  fails.push("domain.manifest openNext must be handed off");
 }
-if (!staging || staging.web.workersDev !== "ai-profit-web-preview.ebay-adapter.workers.dev") {
-  fails.push("staging web origin drift");
-}
-if (!staging || staging.ops.workersDev !== "ai-profit-ops-preview.ebay-adapter.workers.dev") {
-  fails.push("staging ops origin drift");
-}
-if (manifest.openNext.web.workersDev !== "ai-profit-web.ebay-adapter.workers.dev") {
-  fails.push("production web origin must stay unchanged");
-}
-if (manifest.openNext.ops.workersDev !== "ai-profit-ops.ebay-adapter.workers.dev") {
-  fails.push("production ops origin must stay unchanged");
+if (manifest.bridgeWorkers && (manifest.bridgeWorkers["web-proxy"] || manifest.bridgeWorkers["ops-proxy"])) {
+  fails.push("domain.manifest must not keep web-proxy/ops-proxy");
 }
 if (manifest.env.APP_HOST !== "app.hiptk.app") fails.push("APP_HOST must stay app.hiptk.app");
 if (manifest.env.OPS_HOST !== "ops.hiptk.app") fails.push("OPS_HOST must stay ops.hiptk.app");
 if (manifest.env.API_HOST !== "api.hiptk.app") fails.push("API_HOST must stay api.hiptk.app");
-if (manifest.bridgeWorkers["web-proxy"].target !== "https://ai-profit-web.ebay-adapter.workers.dev") {
-  fails.push("web-proxy target must stay production origin");
+if (!listContainsExactHost(manifest.productionHosts || [], "ai-profit-os.onrender.com")) {
+  fails.push("productionHosts must include production Render API host");
 }
-if (manifest.bridgeWorkers["ops-proxy"].target !== "https://ai-profit-ops.ebay-adapter.workers.dev") {
-  fails.push("ops-proxy target must stay production origin");
+if (!listContainsExactHost(manifest.productionHosts || [], "api.hiptk.app")) {
+  fails.push("productionHosts must include api.hiptk.app");
 }
-
-if (!webDeploy.includes("resolveWranglerEnv") || !webDeploy.includes("--env=")) {
-  fails.push("web deploy must pass wrangler env");
-}
-if (!opsDeploy.includes("resolveWranglerEnv") || !opsDeploy.includes("--env=")) {
-  fails.push("ops deploy must pass wrangler env");
-}
-if (stagingDeploy.includes("production") && /isProdTarget\(target\)/.test(stagingDeploy) === false) {
-  fails.push("staging orchestrator must refuse production");
-}
-if (!stagingDeploy.includes("cf-pages-web.cjs") || !stagingDeploy.includes("cf-pages-ops.cjs")) {
-  fails.push("staging orchestrator must deploy web and ops");
-}
-if (stagingDeploy.includes("cf-workers.cjs") || stagingDeploy.includes("cf-domain-bridge")) {
-  fails.push("staging orchestrator must not deploy production bridge workers");
-}
-
-// dedicated web/ops staging workflow (deploy-staging.yml) moved to phonarawd/putduk-web with the OpenNext surface;
-// the backend contract that remains here is the deploy-cloudflare preview API-host isolation checked below.
-if (!listContainsExactHost((staging && staging.forbiddenHosts) || [], "ai-profit-os.onrender.com")) {
-  fails.push("staging.forbiddenHosts must include production Render API host");
-}
-if (!listContainsExactHost((staging && staging.forbiddenHosts) || [], "api.hiptk.app")) {
-  fails.push("staging.forbiddenHosts must include api.hiptk.app");
+for (const gone of [
+  "tooling/deploy/cf-pages-web.cjs",
+  "tooling/deploy/cf-pages-ops.cjs",
+  "tooling/deploy/cf-deploy-staging.cjs",
+  ".github/workflows/deploy-staging.yml",
+]) {
+  if (fs.existsSync(path.join(root, gone))) fails.push("must be removed: " + gone);
 }
 if (prodWorkflow.includes("workflow_dispatch") === false) {
   fails.push("production workflow_dispatch must remain on deploy-cloudflare.yml");
@@ -197,25 +167,11 @@ if (isolationTest.status !== 0) {
   );
 }
 
-for (const rel of [
-  "tooling/deploy/cf-pages-web.cjs",
-  "tooling/deploy/cf-pages-ops.cjs",
-  "tooling/deploy/cf-deploy-staging.cjs",
-]) {
-  const body = read(rel);
-  if (/\bwrangler\s+pages\s+deploy\b/.test(body) || /\bpages\s+deploy\b/.test(body)) {
-    fails.push("pages deploy path present: " + rel);
-  }
-  if (/\bvercel\s+deploy\b/.test(body) || /npx\s+vercel/.test(body)) {
-    fails.push("vercel deploy path present: " + rel);
-  }
-}
-
 if (!pkg.includes("verify:rel-600-staging")) {
   fails.push("package.json missing verify:rel-600-staging");
 }
-if (!pkg.includes("cf:deploy:staging")) {
-  fails.push("package.json missing cf:deploy:staging");
+if (pkg.includes("cf:deploy:staging")) {
+  fails.push("package.json must not keep cf:deploy:staging");
 }
 if (!catalog.includes("rel-600-staging")) {
   fails.push("CATALOG missing rel-600-staging");
