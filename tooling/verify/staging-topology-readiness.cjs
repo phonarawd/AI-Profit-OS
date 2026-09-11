@@ -183,10 +183,6 @@ got = evaluateStagingTopology(missingProdEnv);
 assert.equal(got.ready, false);
 assert.ok(got.blockers.includes("production_render_environment_id_missing"));
 
-const stagingWorkflow = fs.readFileSync(
-  path.join(root, ".github/workflows/deploy-staging.yml"),
-  "utf8",
-);
 const nonProdHost = fs.readFileSync(
   path.join(root, "tooling/deploy/lib/non-prod-api-host.cjs"),
   "utf8",
@@ -198,8 +194,6 @@ const b3 = JSON.parse(
   ),
 );
 
-assert.match(stagingWorkflow, /STAGING_API_HOST/);
-assert.doesNotMatch(stagingWorkflow, /secrets\.API_HOST/);
 assert.match(nonProdHost, /production API_HOST inheritance forbidden/);
 assert.equal(b3.isolated_verify_db.exists, "YES");
 assert.equal(b3.isolated_verify_db.usable, "YES");

@@ -27,7 +27,7 @@ const fixture = JSON.parse(
 const cert = read(psm.CERT_REL);
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
-const gate = read(".github/workflows/gate.yml");
+const gate = read(".github/workflows/backend-ci.yml");
 const domain = read("tooling/verify/domain-by-path.cjs");
 const rebasePolicy = read("governance/engine-acceptance/product-rebases.v1.json");
 
@@ -132,7 +132,7 @@ if (!catalog.includes("rel-502-final-engine-acceptance")) {
   fails.push("CATALOG missing rel-502-final-engine-acceptance");
 }
 if (!gate.includes("verify:rel-502-final-engine-acceptance")) {
-  fails.push("gate.yml must run verify:rel-502-final-engine-acceptance");
+  fails.push("backend-ci.yml must run verify:rel-502-final-engine-acceptance");
 }
 if (!domain.includes("rel-502-final-engine-acceptance.cjs")) {
   fails.push("domain-by-path must trigger rel-502");

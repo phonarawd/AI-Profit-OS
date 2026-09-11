@@ -88,7 +88,7 @@ pnpm lowspec:status       # RAM/Docker/Cursor 압력 확인 (이 PC=Celeron 2C/8
 - Cursor hooks: `.cursor/hooks.json` (project isolation only · `preToolUse` + `beforeTabFileRead`)
 - Plan SSOT: 워크스페이스 `.cursor/plans` only · `verify:plans-ssot` in T0 · stale home aliases quarantine
 - Husky: pre-commit → `verify:gate:fast` · pre-push → `verify:gate:push`
-- CI: `.github/workflows/gate.yml` → T2 `verify:gate`
+- CI: `.github/workflows/backend-ci.yml` → T2 `verify:gate`
 - Rules: always ≤7 + domain globs · catalog `tooling/verify/CATALOG.md`
 - Git: **슬라이스=T0 commit** · **push=세션 stop/명시** = `.cursor/rules/git-auto-commit-push.mdc`
 

@@ -40,7 +40,7 @@ const matrixMd = read("governance/visual-reconciliation/PUTDUK_UI_VISUAL_MATRIX.
 const matrixJson = read("governance/visual-reconciliation/PUTDUK_UI_VISUAL_MATRIX.json");
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
-const gate = read(".github/workflows/gate.yml");
+const gate = read(".github/workflows/backend-ci.yml");
 const domain = read("tooling/verify/domain-by-path.cjs");
 const readme = read("tooling/e2e/README.md");
 const homeSpec = read("tooling/e2e/specs/home-closure.spec.cjs");
@@ -124,7 +124,7 @@ if (!catalog.includes("rel-601-staging-regression")) {
   fails.push("CATALOG missing rel-601-staging-regression");
 }
 if (!gate.includes("verify:rel-601-staging-regression")) {
-  fails.push("gate.yml must run verify:rel-601-staging-regression");
+  fails.push("backend-ci.yml must run verify:rel-601-staging-regression");
 }
 if (!domain.includes("rel-601-staging-regression.cjs")) {
   fails.push("domain-by-path must trigger rel-601");

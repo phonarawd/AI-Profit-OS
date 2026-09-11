@@ -26,7 +26,7 @@ const evidence = read("governance/release-master/REL-508-CURRENT-FX-APPROX.md");
 const r7 = read("governance/release-master/R7_BACKEND_ALIGNMENT.md");
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
-const gate = read(".github/workflows/gate.yml");
+const gate = read(".github/workflows/backend-ci.yml");
 const domain = read("tooling/verify/domain-by-path.cjs");
 const routes = read("services/api-nest/src/opportunities/current-fx-approx.user.routes.ts");
 const ctl = read("services/api-nest/src/opportunities/current-fx-approx.user.controller.ts");
@@ -125,7 +125,7 @@ if (!catalog.includes("rel-508-current-fx-approx")) {
   fails.push("CATALOG missing rel-508-current-fx-approx");
 }
 if (!gate.includes("verify:rel-508-current-fx-approx")) {
-  fails.push("gate.yml must run verify:rel-508-current-fx-approx");
+  fails.push("backend-ci.yml must run verify:rel-508-current-fx-approx");
 }
 if (!domain.includes("rel-508-current-fx-approx.cjs")) {
   fails.push("domain-by-path must trigger rel-508");

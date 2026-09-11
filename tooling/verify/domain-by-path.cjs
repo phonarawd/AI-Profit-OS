@@ -88,9 +88,7 @@ const RULES = [
   {
     test: (f) =>
       /^tooling\/e2e\//.test(f) ||
-      /^tooling\/verify\/qa-env-isolation-guard\.cjs$/.test(f) ||
-      /^\.github\/workflows\/critical-cross-browser\.yml$/.test(f) ||
-      /^\.github\/workflows\/critical-axe\.yml$/.test(f),
+      /^tooling\/verify\/qa-env-isolation-guard\.cjs$/.test(f),
     scripts: [
       "qa-env-isolation-guard.cjs",
       "auth-rate-limit.cjs",
@@ -235,10 +233,8 @@ const RULES = [
       /^infra\/(web|ops)\//.test(f) ||
       /^infra\/domain\.manifest\.json$/.test(f) ||
       /^tooling\/deploy\/cf-(pages-web|pages-ops|preflight|origin-smoke)/.test(f) ||
-      /^workers\/(web-proxy|ops-proxy|_shared)\//.test(f) ||
-      /^tooling\/verify\/opennext-workers-origin\.cjs$/.test(f),
+      /^workers\/(web-proxy|ops-proxy|_shared)\//.test(f),
     scripts: [
-      "opennext-workers-origin.cjs",
       "domain-bootstrap.cjs",
       "cf-deploy-packages.cjs",
     ],
@@ -595,7 +591,7 @@ const RULES = [
       /^governance\/release-master\/REL-402-DEPENDENCY-AUDIT\.md$/.test(f) ||
       /^tooling\/security\/dependency-audit\.cjs$/.test(f) ||
       /^tooling\/verify\/rel-402-dependency-audit\.cjs$/.test(f) ||
-      /^\.github\/workflows\/gate\.yml$/.test(f),
+      /^\.github\/workflows\/backend-ci\.yml$/.test(f),
     scripts: ["rel-402-dependency-audit.cjs"],
   },
   {
@@ -605,15 +601,6 @@ const RULES = [
       /^tooling\/release\/version-id\.cjs$/.test(f) ||
       /^tooling\/verify\/rel-403-versioning\.cjs$/.test(f),
     scripts: ["rel-403-versioning.cjs"],
-  },
-  {
-    test: (f) =>
-      /^governance\/performance\//.test(f) ||
-      /^governance\/release-master\/REL-404-LIGHTHOUSE-BUDGET\.md$/.test(f) ||
-      /^tooling\/perf\/lighthouse\.ci\.cjs$/.test(f) ||
-      /^tooling\/verify\/rel-404-lighthouse-budget\.cjs$/.test(f) ||
-      /^\.github\/workflows\/lighthouse\.yml$/.test(f),
-    scripts: ["rel-404-lighthouse-budget.cjs"],
   },
   {
     test: (f) =>
@@ -708,16 +695,6 @@ const RULES = [
   },
   {
     test: (f) =>
-      /^tooling\/e2e\/expansion\//.test(f) ||
-      /^tooling\/e2e\/lib\/qa-lab-expansion\.cjs$/.test(f) ||
-      /^tooling\/e2e\/specs\/qa-lab-expansion\.spec\.cjs$/.test(f) ||
-      /^governance\/release-master\/REL-500-QA-LAB-EXPANSION\.md$/.test(f) ||
-      /^tooling\/verify\/rel-500-qa-lab-expansion\.cjs$/.test(f) ||
-      /^tooling\/verify\/fixtures\/rel-500-qa-lab-expansion\.v1\.json$/.test(f),
-    scripts: ["rel-500-qa-lab-expansion.cjs"],
-  },
-  {
-    test: (f) =>
       /^tooling\/e2e\/money\//.test(f) ||
       /^tooling\/e2e\/lib\/money-red-team\.cjs$/.test(f) ||
       /^tooling\/e2e\/specs\/money-red-team\.spec\.cjs$/.test(f) ||
@@ -777,15 +754,6 @@ const RULES = [
   },
   {
     test: (f) =>
-      /^tooling\/e2e\/specs\/production-loop\.spec\.cjs$/.test(f) ||
-      /^tooling\/e2e\/lib\/production-loop\.cjs$/.test(f) ||
-      /^governance\/release-master\/REL-507-PRODUCTION-E2E\.md$/.test(f) ||
-      /^tooling\/verify\/rel-507-production-e2e\.cjs$/.test(f) ||
-      /^tooling\/verify\/fixtures\/rel-507-production-e2e\.v1\.json$/.test(f),
-    scripts: ["rel-507-production-e2e.cjs"],
-  },
-  {
-    test: (f) =>
       /^governance\/release-master\/REL-600-STAGING\.md$/.test(f) ||
       /^infra\/domain\.manifest\.json$/.test(f) ||
       /^tooling\/deploy\/cf-(pages-web|pages-ops|deploy-staging|origin-smoke|preflight)\.cjs$/.test(f) ||
@@ -795,8 +763,7 @@ const RULES = [
       /^tooling\/release\/staging-topology-readiness\.cjs$/.test(f) ||
       /^governance\/release-master\/staging-topology\.current\.v1\.json$/.test(f) ||
       /^\.github\/workflows\/deploy-cloudflare\.yml$/.test(f) ||
-      /^tooling\/verify\/fixtures\/rel-600-staging\.v1\.json$/.test(f) ||
-      /^\.github\/workflows\/deploy-staging\.yml$/.test(f),
+      /^tooling\/verify\/fixtures\/rel-600-staging\.v1\.json$/.test(f),
     scripts: ["rel-600-staging.cjs", "staging-topology-readiness.cjs"],
   },
   {
@@ -816,14 +783,6 @@ const RULES = [
       /^tooling\/verify\/rel-602-staging-rollback\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/rel-602-staging-rollback\.v1\.json$/.test(f),
     scripts: ["rel-602-staging-rollback.cjs"],
-  },
-  {
-    test: (f) =>
-      /^governance\/release-master\/AGE_SPOTCHECK\.md$/.test(f) ||
-      /^tooling\/e2e\/specs\/rel-603-age-usability-spotcheck\.spec\.cjs$/.test(f) ||
-      /^tooling\/verify\/rel-603-age-usability-spotcheck\.cjs$/.test(f) ||
-      /^tooling\/verify\/fixtures\/rel-603-age-usability-spotcheck\.v1\.json$/.test(f),
-    scripts: ["rel-603-age-usability-spotcheck.cjs"],
   },
   {
     test: (f) =>
@@ -1297,7 +1256,7 @@ const RULES = [
       /^tooling\/verify\/domain-by-path\.cjs$/.test(f) ||
       /^tooling\/verify\/domain-by-path\.selftest\.cjs$/.test(f) ||
       /^tooling\/verify\/domain-by-path-ci\.cjs$/.test(f) ||
-      /^\.github\/workflows\/gate\.yml$/.test(f),
+      /^\.github\/workflows\/backend-ci\.yml$/.test(f),
     scripts: ["domain-by-path-ci.cjs"],
   },
   {
@@ -1306,6 +1265,13 @@ const RULES = [
       /^tooling\/verify\/wallet-reader-http\.runtime\.cjs$/.test(f) ||
       /^apps\/web\/lib\/use-withdraw-kyc-gate\.ts$/.test(f),
     scripts: ["backend/kyc/kyc-withdraw-only.cjs"],
+  },
+  {
+    test: (f) =>
+      /^\.github\/workflows\/backend-ci\.yml$/.test(f) ||
+      /^\.github\/actions\//.test(f) ||
+      /^tooling\/verify\/(gate-tiers|backend-ci-tiers-sync|stubs\/run-all|backend\/run-all)\.cjs$/.test(f),
+    scripts: ["backend-ci-tiers-sync.cjs"],
   },
   {
     test: (f) => /^tooling\/verify\/backend\//.test(f),

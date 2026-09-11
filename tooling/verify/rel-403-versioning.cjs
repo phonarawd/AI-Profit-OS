@@ -28,7 +28,7 @@ const spec = loadSpec();
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
 const versioning = read("governance/release-master/VERSIONING.md");
-const gate = read(".github/workflows/gate.yml");
+const gate = read(".github/workflows/backend-ci.yml");
 const deploy = read(".github/workflows/deploy-cloudflare.yml");
 
 if (spec.rel !== "REL-403") fails.push("spec.rel must be REL-403");
@@ -95,7 +95,7 @@ if (!catalog.includes("rel-403-versioning")) {
 }
 
 if (/\bgit\s+tag\b/.test(gate) || /push\s+--tags/.test(gate)) {
-  fails.push("gate.yml must not auto-tag");
+  fails.push("backend-ci.yml must not auto-tag");
 }
 if (!deploy.includes("workflow_dispatch")) {
   fails.push("deploy-cloudflare.yml must stay HUMAN workflow_dispatch");

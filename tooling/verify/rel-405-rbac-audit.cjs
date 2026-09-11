@@ -228,7 +228,7 @@ const denied = core.buildDeniedEvent({
 
   const pkg = read("package.json");
   const catalog = read("tooling/verify/CATALOG.md");
-  const gate = read(".github/workflows/gate.yml");
+  const gate = read(".github/workflows/backend-ci.yml");
   const spec = read("governance/admin/rbac-audit-foundation.md");
   const evidence = read("governance/release-master/REL-405-RBAC-AUDIT.md");
   if (!pkg.includes("verify:rel-405-rbac-audit")) {
@@ -238,7 +238,7 @@ const denied = core.buildDeniedEvent({
     fails.push("CATALOG missing rel-405-rbac-audit");
   }
   if (!gate.includes("verify:rel-405-rbac-audit")) {
-    fails.push("gate.yml must run verify:rel-405-rbac-audit");
+    fails.push("backend-ci.yml must run verify:rel-405-rbac-audit");
   }
   for (const needle of [
     "LOCKED_ROLES = 5",

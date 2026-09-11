@@ -147,7 +147,7 @@ if (fs.existsSync(webAdmin)) fails.push("apps/web must not grow /admin");
 
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
-const gate = read(".github/workflows/gate.yml");
+const gate = read(".github/workflows/backend-ci.yml");
 const spec = read("governance/admin/source-policy-version.md");
 const evidence = read("governance/release-master/REL-224-SOURCE-POLICY.md");
 if (!pkg.includes("verify:rel-224-source-policy")) {
@@ -157,7 +157,7 @@ if (!catalog.includes("rel-224-source-policy")) {
   fails.push("CATALOG missing rel-224-source-policy");
 }
 if (!gate.includes("verify:rel-224-source-policy")) {
-  fails.push("gate.yml must run verify:rel-224-source-policy");
+  fails.push("backend-ci.yml must run verify:rel-224-source-policy");
 }
 for (const needle of [
   "LOCKED_LABELS = 3",

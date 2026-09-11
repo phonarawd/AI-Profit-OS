@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-09-11T02:47:39.855Z",
- "headSha": "6b959d8ef2956e667a506c3220567fb70b6c78e9",
+ "generatedAt": "2026-09-11T04:15:51.776Z",
+ "headSha": "e0ff73e124ad078a5343ae23b1074b40f692d6db",
  "edgeKinds": [
   "import",
   "require",
@@ -319,13 +319,25 @@
    "decision": "SPLIT"
   },
   {
+   "id": ".github/actions/backend-setup/action.yml",
+   "type": "file",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
+  },
+  {
    "id": ".github/codeql/codeql-config.yml",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": ".github/dependabot.yml",
+   "type": "file",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
+  },
+  {
+   "id": ".github/workflows/backend-ci.yml",
    "type": "file",
    "class": "BACKEND_INFRA",
    "decision": "KEEP"
@@ -337,34 +349,10 @@
    "decision": "KEEP"
   },
   {
-   "id": ".github/workflows/consumer-spark-worldclass.yml",
-   "type": "file",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
-   "id": ".github/workflows/critical-axe.yml",
-   "type": "file",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
-   "id": ".github/workflows/critical-cross-browser.yml",
-   "type": "file",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
    "id": ".github/workflows/deploy-cloudflare.yml",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
-  },
-  {
-   "id": ".github/workflows/deploy-staging.yml",
-   "type": "file",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": ".github/workflows/ebay-fault-injection.yml",
@@ -397,18 +385,6 @@
    "decision": "KEEP"
   },
   {
-   "id": ".github/workflows/gate.yml",
-   "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
-  },
-  {
-   "id": ".github/workflows/lighthouse.yml",
-   "type": "file",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
    "id": ".github/workflows/provision-ebay-adapter-secrets.yml",
    "type": "file",
    "class": "BACKEND_INFRA",
@@ -423,20 +399,14 @@
   {
    "id": ".github/workflows/release-build.yml",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": ".github/workflows/release-integration-contract.yml",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
-  },
-  {
-   "id": ".github/workflows/spark-global-ui-qa.yml",
-   "type": "file",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": ".gitignore",
@@ -3652,6 +3622,12 @@
    "id": "quality/backend-boundary-violations-baseline.json",
    "type": "file",
    "class": "GENERATED",
+   "decision": "KEEP"
+  },
+  {
+   "id": "quality/backend-ci.md",
+   "type": "file",
+   "class": "BACKEND_DOC",
    "decision": "KEEP"
   },
   {
@@ -7219,6 +7195,12 @@
    "decision": "KEEP"
   },
   {
+   "id": "tooling/backend/ci-aggregate.cjs",
+   "type": "file",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
+  },
+  {
    "id": "tooling/backend/ownership-graph.cjs",
    "type": "file",
    "class": "BACKEND_INFRA",
@@ -8821,10 +8803,22 @@
    "decision": "KEEP"
   },
   {
+   "id": "tooling/verify/backend-ci-tiers-sync.cjs",
+   "type": "file",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
    "id": "tooling/verify/backend-data-alignment.cjs",
    "type": "file",
    "class": "MIXED",
    "decision": "SPLIT"
+  },
+  {
+   "id": "tooling/verify/backend-ownership-drift.cjs",
+   "type": "file",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/verify/backend/admin-rbac/admin-controller-guards.cjs",
@@ -9211,6 +9205,12 @@
    "decision": "KEEP"
   },
   {
+   "id": "tooling/verify/dependency-integrity.cjs",
+   "type": "file",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
    "id": "tooling/verify/deposit-config-bootstrap-fail-closed.runtime.mts",
    "type": "file",
    "class": "BACKEND_TEST",
@@ -9403,12 +9403,6 @@
    "decision": "KEEP"
   },
   {
-   "id": "tooling/verify/fixtures/rel-500-qa-lab-expansion.v1.json",
-   "type": "file",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
    "id": "tooling/verify/fixtures/rel-501-money-red-team.v1.json",
    "type": "file",
    "class": "BACKEND_TEST",
@@ -9445,12 +9439,6 @@
    "decision": "KEEP"
   },
   {
-   "id": "tooling/verify/fixtures/rel-507-production-e2e.v1.json",
-   "type": "file",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
    "id": "tooling/verify/fixtures/rel-508-current-fx-approx.v1.json",
    "type": "file",
    "class": "BACKEND_TEST",
@@ -9473,12 +9461,6 @@
    "type": "file",
    "class": "BACKEND_TEST",
    "decision": "KEEP"
-  },
-  {
-   "id": "tooling/verify/fixtures/rel-603-age-usability-spotcheck.v1.json",
-   "type": "file",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
   },
   {
    "id": "tooling/verify/fx-snapshot-formula.cjs",
@@ -9733,6 +9715,12 @@
    "decision": "KEEP"
   },
   {
+   "id": "tooling/verify/migrations-static.cjs",
+   "type": "file",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
    "id": "tooling/verify/min-holding-scope.cjs",
    "type": "file",
    "class": "BACKEND_TEST",
@@ -9949,6 +9937,12 @@
    "decision": "DELETE"
   },
   {
+   "id": "tooling/verify/pnpm-audit.cjs",
+   "type": "file",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
    "id": "tooling/verify/price-denomination-contract.cjs",
    "type": "file",
    "class": "BACKEND_TEST",
@@ -10011,8 +10005,8 @@
   {
    "id": "tooling/verify/pwa-push-badge.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/verify/qa-env-isolation-guard.cjs",
@@ -10099,12 +10093,6 @@
    "decision": "KEEP"
   },
   {
-   "id": "tooling/verify/rel-404-lighthouse-budget.cjs",
-   "type": "file",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
    "id": "tooling/verify/rel-405-rbac-audit.cjs",
    "type": "file",
    "class": "MIXED",
@@ -10133,12 +10121,6 @@
    "type": "file",
    "class": "MIXED",
    "decision": "SPLIT"
-  },
-  {
-   "id": "tooling/verify/rel-500-qa-lab-expansion.cjs",
-   "type": "file",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
   },
   {
    "id": "tooling/verify/rel-501-money-red-team.cjs",
@@ -10177,12 +10159,6 @@
    "decision": "SPLIT"
   },
   {
-   "id": "tooling/verify/rel-507-production-e2e.cjs",
-   "type": "file",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
    "id": "tooling/verify/rel-508-current-fx-approx.cjs",
    "type": "file",
    "class": "MIXED",
@@ -10205,12 +10181,6 @@
    "type": "file",
    "class": "MIXED",
    "decision": "SPLIT"
-  },
-  {
-   "id": "tooling/verify/rel-603-age-usability-spotcheck.cjs",
-   "type": "file",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
   },
   {
    "id": "tooling/verify/release-acceptance.cjs",
@@ -10286,6 +10256,18 @@
   },
   {
    "id": "tooling/verify/routing-coverage.cjs",
+   "type": "file",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
+   "id": "tooling/verify/rust-engine.cjs",
+   "type": "file",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
+   "id": "tooling/verify/schemas-contract.cjs",
    "type": "file",
    "class": "BACKEND_TEST",
    "decision": "KEEP"
@@ -10399,6 +10381,12 @@
    "decision": "KEEP"
   },
   {
+   "id": "tooling/verify/unit-tests.cjs",
+   "type": "file",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
    "id": "tooling/verify/usdt-deposit-closure.cjs",
    "type": "file",
    "class": "OBSOLETE",
@@ -10484,6 +10472,18 @@
   },
   {
    "id": "tooling/verify/withdraw-stepup-security.runtime.cjs",
+   "type": "file",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
+   "id": "tooling/verify/worker-build.cjs",
+   "type": "file",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
+   "id": "tooling/verify/workers-typecheck.cjs",
    "type": "file",
    "class": "BACKEND_TEST",
    "decision": "KEEP"
@@ -10945,6 +10945,12 @@
    "decision": "KEEP"
   },
   {
+   "id": "workers/push-dispatcher/src/lib/dispatch.d.cts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
    "id": "workers/push-dispatcher/tsconfig.json",
    "type": "file",
    "class": "BACKEND_INFRA",
@@ -11135,7 +11141,7 @@
   {
    "id": "dir:workers/push-dispatcher",
    "type": "directory",
-   "files": 8
+   "files": 9
   },
   {
    "id": "deleted:apps/admin/app/page.tsx",
@@ -11205,7 +11211,7 @@
   {
    "id": "dir:tooling/verify",
    "type": "directory",
-   "files": 307
+   "files": 310
   },
   {
    "id": "deleted:packages/ui/tokens",
@@ -11408,6 +11414,10 @@
   {
    "id": "deleted:apps/admin/app/admin/audit",
    "type": "deleted-ui-path"
+  },
+  {
+   "id": "missing:.github/workflows/gate.yml",
+   "type": "missing-path"
   },
   {
    "id": "missing:supabase/api-nest",
@@ -11656,7 +11666,7 @@
   {
    "id": "dir:workers/push-dispatcher/",
    "type": "directory",
-   "files": 8
+   "files": 9
   },
   {
    "id": "missing:packages/sdk/opportunity-stream/",
@@ -11905,7 +11915,7 @@
   {
    "id": "dir:workers/*-adapter",
    "type": "glob",
-   "files": 93
+   "files": 94
   },
   {
    "id": "missing:assets/opportunities/execution_policies/trade_executions/ai_*",
@@ -11947,7 +11957,7 @@
   {
    "id": "dir:tooling/verify/",
    "type": "directory",
-   "files": 307
+   "files": 310
   },
   {
    "id": "deleted:packages/ui/brand/assets/markets/manifest.json",
@@ -12104,7 +12114,7 @@
   {
    "id": "dir:tooling/verify/*.cjs",
    "type": "glob",
-   "files": 224
+   "files": 230
   },
   {
    "id": "missing:supabase/migrations/20260809144409_catalog_runtime_day1_fx_bootstrap.sql",
@@ -12442,7 +12452,7 @@
   {
    "id": "dir:.github/workflows/**",
    "type": "glob",
-   "files": 18
+   "files": 12
   },
   {
    "id": "dir:services/**/ai/**",
@@ -12464,7 +12474,7 @@
   {
    "id": "dir:workers/**",
    "type": "glob",
-   "files": 93
+   "files": 94
   },
   {
    "id": "dir:packages/**",
@@ -12605,6 +12615,10 @@
    "type": "missing-path"
   },
   {
+   "id": "missing:services/engine-rust/target",
+   "type": "missing-path"
+  },
+  {
    "id": "dir:workers/ebay-adapter/**",
    "type": "glob",
    "files": 10
@@ -12631,22 +12645,6 @@
    "id": "dir:governance/recovery/",
    "type": "directory",
    "files": 42
-  },
-  {
-   "id": "deleted:apps/web/.open-next/worker.js",
-   "type": "deleted-ui-path"
-  },
-  {
-   "id": "deleted:apps/web/.open-next/assets",
-   "type": "deleted-ui-path"
-  },
-  {
-   "id": "deleted:apps/admin/.open-next/worker.js",
-   "type": "deleted-ui-path"
-  },
-  {
-   "id": "deleted:apps/admin/.open-next/assets",
-   "type": "deleted-ui-path"
   },
   {
    "id": "missing:services/api-nest/dist/api-release-manifest.json",
@@ -12709,7 +12707,7 @@
   {
    "id": "dir:tooling/verify/*",
    "type": "glob",
-   "files": 227
+   "files": 233
   },
   {
    "id": "deleted:packages/ui/brand/brand.manifest.json",
@@ -12882,6 +12880,10 @@
    "id": "dir:workers/frankfurter-adapter",
    "type": "directory",
    "files": 6
+  },
+  {
+   "id": "missing:.github/workflows/lighthouse.yml",
+   "type": "missing-path"
   },
   {
    "id": "deleted:packages/ui/performance/ppe-ladder.ts",
@@ -14316,6 +14318,10 @@
    "type": "missing-path"
   },
   {
+   "id": "missing:tooling/verify/rel-603-age-usability-spotcheck.cjs",
+   "type": "missing-path"
+  },
+  {
    "id": "deleted:apps/web/public/sw.js",
    "type": "deleted-ui-path"
   },
@@ -14800,6 +14806,10 @@
    "type": "missing-path"
   },
   {
+   "id": "missing:tooling/verify/fixtures/rel-603-age-usability-spotcheck.v1.json",
+   "type": "missing-path"
+  },
+  {
    "id": "missing:governance/verify/e2e/workflow",
    "type": "missing-path"
   },
@@ -14893,6 +14903,14 @@
    "id": "dir:governance/release-master/rel-119-history-detail/",
    "type": "directory",
    "files": 2
+  },
+  {
+   "id": "missing:tooling/verify/rel-404-lighthouse-budget.cjs",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:.github/workflows/deploy-staging.yml",
+   "type": "missing-path"
   },
   {
    "id": "deleted:apps/web/scripts/asset-pipeline/",
@@ -15030,6 +15048,57 @@
    "type": "missing-path"
   },
   {
+   "id": "missing:apps/*/.open-next",
+   "type": "missing-path"
+  },
+  {
+   "id": "dir:workers/push-dispatcher/**",
+   "type": "glob",
+   "files": 9
+  },
+  {
+   "id": "missing:governance/evidence",
+   "type": "missing-path"
+  },
+  {
+   "id": "deleted:apps/admin/",
+   "type": "deleted-ui-path"
+  },
+  {
+   "id": "dir:.github/workflows",
+   "type": "directory",
+   "files": 12
+  },
+  {
+   "id": "dir:.cursor/rules",
+   "type": "directory",
+   "files": 29
+  },
+  {
+   "id": "dir:tooling/e2e/playwright*.config.cjs",
+   "type": "glob",
+   "files": 2
+  },
+  {
+   "id": "dir:governance/release-master",
+   "type": "directory",
+   "files": 206
+  },
+  {
+   "id": "dir:governance/visual-reconciliation",
+   "type": "directory",
+   "files": 46
+  },
+  {
+   "id": "dir:governance/consumer-home-approval",
+   "type": "directory",
+   "files": 15
+  },
+  {
+   "id": "deleted:apps/web/.open-next",
+   "type": "deleted-ui-path"
+  },
+  {
    "id": "dir:packages/schemas",
    "type": "directory",
    "files": 4
@@ -15037,16 +15106,11 @@
   {
    "id": "dir:tooling/verify/**",
    "type": "glob",
-   "files": 307
+   "files": 310
   },
   {
    "id": "dir:governance/release-master/**",
    "type": "glob",
-   "files": 206
-  },
-  {
-   "id": "dir:governance/release-master",
-   "type": "directory",
    "files": 206
   },
   {
@@ -15062,11 +15126,6 @@
   {
    "id": "dir:governance/consumer-home-approval/**",
    "type": "glob",
-   "files": 15
-  },
-  {
-   "id": "dir:governance/consumer-home-approval",
-   "type": "directory",
    "files": 15
   },
   {
@@ -15150,11 +15209,6 @@
    "files": 13
   },
   {
-   "id": "dir:.github/workflows",
-   "type": "directory",
-   "files": 18
-  },
-  {
    "id": "dir:governance/release-master/rel-105-guest-visual/**",
    "type": "glob",
    "files": 6
@@ -15173,11 +15227,6 @@
    "id": "dir:governance/release-master/rel-106-profits",
    "type": "directory",
    "files": 6
-  },
-  {
-   "id": "dir:.cursor/rules",
-   "type": "directory",
-   "files": 29
   },
   {
    "id": "dir:governance/platform-redesign/**",
@@ -15230,6 +15279,22 @@
   {
    "id": "deleted:apps/web/public/sw.j",
    "type": "deleted-ui-path"
+  },
+  {
+   "id": "missing:tooling/verify/fixtures/rel-500-qa-lab-expansion.v1.json",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:tooling/verify/fixtures/rel-507-production-e2e.v1.json",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:tooling/verify/rel-500-qa-lab-expansion.cjs",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:tooling/verify/rel-507-production-e2e.cjs",
+   "type": "missing-path"
   },
   {
    "id": "dir:packages/sdk/**",
@@ -15382,7 +15447,7 @@
   {
    "id": "dir:tooling/backend",
    "type": "directory",
-   "files": 3
+   "files": 4
   },
   {
    "id": "dir:tooling/cleanup",
@@ -15462,7 +15527,7 @@
   {
    "id": "dir:tooling/verify/fixtures",
    "type": "directory",
-   "files": 23
+   "files": 20
   },
   {
    "id": "dir:workers/_shared",
@@ -15507,7 +15572,7 @@
   {
    "id": "dir:quality/**",
    "type": "glob",
-   "files": 12
+   "files": 13
   },
   {
    "id": "missing:apps/*",
@@ -15528,10 +15593,6 @@
    "files": 1
   },
   {
-   "id": "deleted:apps/admin/",
-   "type": "deleted-ui-path"
-  },
-  {
    "id": "dir:tooling/e2e/specs/*closure*",
    "type": "glob",
    "files": 25
@@ -15539,7 +15600,7 @@
   {
    "id": "dir:quality/*",
    "type": "glob",
-   "files": 11
+   "files": 12
   },
   {
    "id": "missing:quality/backend/",
@@ -15548,12 +15609,12 @@
   {
    "id": "dir:.github/workflows/*",
    "type": "glob",
-   "files": 18
+   "files": 12
   },
   {
    "id": "dir:workers/*-proxy",
    "type": "glob",
-   "files": 93
+   "files": 94
   },
   {
    "id": "deleted:apps/web/public/kyb",
@@ -15768,7 +15829,7 @@
   {
    "id": "dir:.github/workflows/",
    "type": "directory",
-   "files": 18
+   "files": 12
   },
   {
    "id": "dir:infra/*.manifest.json",
@@ -15778,7 +15839,7 @@
   {
    "id": "dir:tooling/verify/fixtures/**",
    "type": "glob",
-   "files": 23
+   "files": 20
   },
   {
    "id": "missing:tooling/verify/fixtures/packages-ui-typecheck-negative.fixture.tsx",
@@ -15838,6 +15899,14 @@
    "files": 2
   },
   {
+   "id": "missing:.github/workflows/critical-cross-browser.yml",
+   "type": "missing-path"
+  },
+  {
+   "id": "deleted:apps/web/.open-next/worker.js",
+   "type": "deleted-ui-path"
+  },
+  {
    "id": "dir:workers/*/wrangler.toml",
    "type": "glob",
    "files": 14
@@ -15889,7 +15958,7 @@
   {
    "id": "dir:tooling/backend/**",
    "type": "glob",
-   "files": 3
+   "files": 4
   },
   {
    "id": "missing:tooling/migrations/**",
@@ -15917,7 +15986,7 @@
   {
    "id": "dir:.github/**",
    "type": "glob",
-   "files": 20
+   "files": 15
   },
   {
    "id": "missing:.cursor/{hooks",
@@ -15995,6 +16064,14 @@
   {
    "id": "missing:governance/recovery/leftover-browser-evidence",
    "type": "missing-path"
+  },
+  {
+   "id": "deleted:apps/web/components/pwa/PushOptIn.tsx",
+   "type": "deleted-ui-path"
+  },
+  {
+   "id": "deleted:apps/web/components/pwa/copy.ts",
+   "type": "deleted-ui-path"
   },
   {
    "id": "dir:tooling/verify/backend/**",
@@ -16170,6 +16247,26 @@
    "type": "missing-path"
   },
   {
+   "id": "env:NEEDS_JSON",
+   "type": "env-var"
+  },
+  {
+   "id": "env:GITHUB_REPOSITORY",
+   "type": "env-var"
+  },
+  {
+   "id": "env:GITHUB_RUN_ID",
+   "type": "env-var"
+  },
+  {
+   "id": "env:GITHUB_TOKEN",
+   "type": "env-var"
+  },
+  {
+   "id": "env:GITHUB_STEP_SUMMARY",
+   "type": "env-var"
+  },
+  {
    "id": "dir:governance/consumer-home-approval/",
    "type": "directory",
    "files": 15
@@ -16311,6 +16408,18 @@
    "type": "env-var"
   },
   {
+   "id": "deleted:apps/admin/.open-next/worker.js",
+   "type": "deleted-ui-path"
+  },
+  {
+   "id": "deleted:apps/admin/.open-next/assets",
+   "type": "deleted-ui-path"
+  },
+  {
+   "id": "deleted:apps/web/.open-next/assets",
+   "type": "deleted-ui-path"
+  },
+  {
    "id": "env:ROOT_DOMAIN",
    "type": "env-var"
   },
@@ -16376,7 +16485,7 @@
    "id": "pkg:@playwright/test",
    "type": "external-package",
    "rootDevDependency": "1.62.1",
-   "decision": "KEEP"
+   "decision": "DELETE"
   },
   {
    "id": "env:AXE_BROWSER",
@@ -16424,10 +16533,6 @@
   },
   {
    "id": "env:ADAPTER_INGEST_TOKEN",
-   "type": "env-var"
-  },
-  {
-   "id": "env:GITHUB_RUN_ID",
    "type": "env-var"
   },
   {
@@ -16633,18 +16738,10 @@
    "type": "missing-path"
   },
   {
-   "id": "deleted:apps/web/.open-next",
-   "type": "deleted-ui-path"
-  },
-  {
    "id": "pkg:wrangler",
    "type": "external-package",
    "rootDevDependency": "^4.120.0",
    "decision": "KEEP"
-  },
-  {
-   "id": "env:GITHUB_REPOSITORY",
-   "type": "env-var"
   },
   {
    "id": "env:PUTDUK_RELEASE_ID",
@@ -16786,11 +16883,6 @@
    "type": "deleted-ui-path"
   },
   {
-   "id": "dir:workers/push-dispatcher/**",
-   "type": "glob",
-   "files": 8
-  },
-  {
    "id": "dir:services/api-nest/src/push/**",
    "type": "glob",
    "files": 8
@@ -16884,11 +16976,6 @@
    "id": "dir:services/api-nest/src/source-policy/**",
    "type": "glob",
    "files": 4
-  },
-  {
-   "id": "dir:tooling/e2e/expansion/**",
-   "type": "glob",
-   "files": 3
   },
   {
    "id": "dir:tooling/e2e/money/**",
@@ -17252,11 +17339,6 @@
    "type": "env-var"
   },
   {
-   "id": "dir:governance/visual-reconciliation",
-   "type": "directory",
-   "files": 46
-  },
-  {
    "id": "env:CAPTURE_SCOPE",
    "type": "env-var"
   },
@@ -17374,15 +17456,7 @@
    "type": "deleted-ui-path"
   },
   {
-   "id": "deleted:apps/web/components/pwa/copy.ts",
-   "type": "deleted-ui-path"
-  },
-  {
    "id": "deleted:packages/ui/components/home/HomeHero.tsx",
-   "type": "deleted-ui-path"
-  },
-  {
-   "id": "deleted:apps/web/components/pwa/PushOptIn.tsx",
    "type": "deleted-ui-path"
   },
   {
@@ -17397,10 +17471,6 @@
   },
   {
    "id": "env:AIPO_AUDIT",
-   "type": "env-var"
-  },
-  {
-   "id": "env:AIPO_LOWSPEC_SKIP_HEAVY",
    "type": "env-var"
   },
   {
@@ -17521,6 +17591,21 @@
    "type": "env-var"
   },
   {
+   "id": "dir:services/**/*.test.ts",
+   "type": "glob",
+   "files": 9
+  },
+  {
+   "id": "dir:workers/**/*.test.cjs",
+   "type": "glob",
+   "files": 94
+  },
+  {
+   "id": "dir:services/**/*.test.cjs",
+   "type": "glob",
+   "files": 437
+  },
+  {
    "id": "env:USDT_DEPOSIT_CLOSURE_STATIC_ONLY",
    "type": "env-var"
   },
@@ -17561,8 +17646,23 @@
    "type": "env-var"
   },
   {
+   "id": "dir:workers/*/tsconfig.json",
+   "type": "glob",
+   "files": 14
+  },
+  {
    "id": "missing:workers/${name}/tsconfig.json",
    "type": "missing-path"
+  },
+  {
+   "id": "dir:.github/actions",
+   "type": "directory",
+   "files": 1
+  },
+  {
+   "id": "dir:.github/actions/",
+   "type": "directory",
+   "files": 1
   },
   {
    "id": "script:preinstall",
@@ -17642,6 +17742,110 @@
    "package": "package.json",
    "command": "node tooling/backend/repository-boundary.cjs",
    "class": "BACKEND_INFRA",
+   "decision": "KEEP"
+  },
+  {
+   "id": "script:verify:backend-ownership-drift",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/verify/backend-ownership-drift.cjs",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
+   "id": "script:verify:backend-ci-tiers-sync",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/verify/backend-ci-tiers-sync.cjs",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
+   "id": "script:verify:dependency-integrity",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/verify/dependency-integrity.cjs",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
+   "id": "script:verify:schemas-contract",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/verify/schemas-contract.cjs",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
+   "id": "script:verify:workers-typecheck",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/verify/workers-typecheck.cjs",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
+   "id": "script:verify:unit-tests",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/verify/unit-tests.cjs",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
+   "id": "script:verify:migrations-static",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/verify/migrations-static.cjs",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
+   "id": "script:verify:production-schema-parity",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/verify/production-schema-parity.cjs",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
+   "id": "script:verify:staging-db-hardening-rehearsal",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/verify/staging-db-hardening-rehearsal.cjs",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
+   "id": "script:verify:qa-env-isolation-staging",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/verify/qa-env-isolation-staging.cjs",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
+   "id": "script:verify:rust-engine",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/verify/rust-engine.cjs",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
+   "id": "script:verify:worker-build",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/verify/worker-build.cjs",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
+   "id": "script:verify:pnpm-audit",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/verify/pnpm-audit.cjs",
+   "class": "BACKEND_TEST",
    "decision": "KEEP"
   },
   {
@@ -17781,14 +17985,6 @@
    "decision": "KEEP"
   },
   {
-   "id": "script:verify:rel-404-lighthouse-budget",
-   "type": "npm-script",
-   "package": "package.json",
-   "command": "node tooling/verify/rel-404-lighthouse-budget.cjs",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
    "id": "script:verify:rel-403-versioning",
    "type": "npm-script",
    "package": "package.json",
@@ -17859,14 +18055,6 @@
    "command": "node tooling/verify/rel-409-r6-cert.cjs",
    "class": "MIXED",
    "decision": "SPLIT"
-  },
-  {
-   "id": "script:verify:rel-500-qa-lab-expansion",
-   "type": "npm-script",
-   "package": "package.json",
-   "command": "node tooling/verify/rel-500-qa-lab-expansion.cjs",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
   },
   {
    "id": "script:verify:rel-501-money-red-team",
@@ -17941,14 +18129,6 @@
    "decision": "SPLIT"
   },
   {
-   "id": "script:verify:rel-507-production-e2e",
-   "type": "npm-script",
-   "package": "package.json",
-   "command": "node tooling/verify/rel-507-production-e2e.cjs",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
    "id": "script:verify:rel-600-staging",
    "type": "npm-script",
    "package": "package.json",
@@ -17987,14 +18167,6 @@
    "command": "node tooling/verify/rel-602-staging-rollback.cjs",
    "class": "MIXED",
    "decision": "SPLIT"
-  },
-  {
-   "id": "script:verify:rel-603-age-usability-spotcheck",
-   "type": "npm-script",
-   "package": "package.json",
-   "command": "node tooling/verify/rel-603-age-usability-spotcheck.cjs",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
   },
   {
    "id": "script:release:id",
@@ -19073,8 +19245,8 @@
    "type": "npm-script",
    "package": "package.json",
    "command": "node tooling/verify/pwa-push-badge.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "script:verify:push-channel-prefs",
@@ -19873,6 +20045,26 @@
    "type": "github-action"
   },
   {
+   "id": "action:./.github/actions/backend-setup",
+   "type": "github-action"
+  },
+  {
+   "id": "action:actions/upload-artifact",
+   "type": "github-action"
+  },
+  {
+   "id": "action:dtolnay/rust-toolchain",
+   "type": "github-action"
+  },
+  {
+   "id": "action:actions/cache",
+   "type": "github-action"
+  },
+  {
+   "id": "action:actions/setup-node",
+   "type": "github-action"
+  },
+  {
    "id": "action:github/codeql-action/init",
    "type": "github-action"
   },
@@ -19885,30 +20077,8 @@
    "type": "github-action"
   },
   {
-   "id": "action:actions/setup-node",
-   "type": "github-action"
-  },
-  {
-   "id": "action:actions/upload-artifact",
-   "type": "github-action"
-  },
-  {
    "id": "action:actions/download-artifact",
    "type": "github-action"
-  },
-  {
-   "id": "action:dtolnay/rust-toolchain",
-   "type": "github-action"
-  },
-  {
-   "id": "pkg:@aipo/web",
-   "type": "workspace-package",
-   "missing": true
-  },
-  {
-   "id": "pkg:@aipo/admin",
-   "type": "workspace-package",
-   "missing": true
   },
   {
    "id": "worker:ai-profit-ops",
@@ -20874,8 +21044,9 @@
   },
   {
    "from": ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md",
-   "to": ".github/workflows/gate.yml",
-   "kind": "doc-link"
+   "to": "missing:.github/workflows/gate.yml",
+   "kind": "doc-link",
+   "spec": ".github/workflows/gate.yml"
   },
   {
    "from": ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md",
@@ -21612,8 +21783,9 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md",
-   "to": ".github/workflows/gate.yml",
-   "kind": "doc-link"
+   "to": "missing:.github/workflows/gate.yml",
+   "kind": "doc-link",
+   "spec": ".github/workflows/gate.yml"
   },
   {
    "from": ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md",
@@ -25480,6 +25652,42 @@
    "kind": "verifier-reads"
   },
   {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "tooling/verify/gate-tiers.cjs",
+   "kind": "workflow-run"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "quality/backend-ci.md",
+   "kind": "workflow-run"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "tooling/verify/backend/run-all.cjs",
+   "kind": "workflow-run"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "missing:services/engine-rust/target",
+   "kind": "workflow-run",
+   "spec": "services/engine-rust/target"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "services/engine-rust/Cargo.lock",
+   "kind": "workflow-run"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "tooling/verify/rust-engine.cjs",
+   "kind": "workflow-run"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "tooling/backend/ci-aggregate.cjs",
+   "kind": "workflow-run"
+  },
+  {
    "from": ".github/workflows/codeql.yml",
    "to": ".github/codeql/codeql-config.yml",
    "kind": "workflow-run"
@@ -25517,58 +25725,6 @@
   {
    "from": ".github/workflows/deploy-cloudflare.yml",
    "to": "tooling/release/deploy-from-artifact.cjs",
-   "kind": "workflow-run"
-  },
-  {
-   "from": ".github/workflows/deploy-cloudflare.yml",
-   "to": "deleted:apps/web",
-   "kind": "workflow-run",
-   "spec": "apps/web"
-  },
-  {
-   "from": ".github/workflows/deploy-cloudflare.yml",
-   "to": "tooling/deploy/cf-preflight.cjs",
-   "kind": "workflow-run"
-  },
-  {
-   "from": ".github/workflows/deploy-cloudflare.yml",
-   "to": "tooling/deploy/cf-pages-web.cjs",
-   "kind": "workflow-run"
-  },
-  {
-   "from": ".github/workflows/deploy-cloudflare.yml",
-   "to": "deleted:apps/admin",
-   "kind": "workflow-run",
-   "spec": "apps/admin"
-  },
-  {
-   "from": ".github/workflows/deploy-cloudflare.yml",
-   "to": "tooling/deploy/cf-pages-ops.cjs",
-   "kind": "workflow-run"
-  },
-  {
-   "from": ".github/workflows/deploy-cloudflare.yml",
-   "to": "tooling/deploy/cf-origin-smoke.cjs",
-   "kind": "workflow-run"
-  },
-  {
-   "from": ".github/workflows/deploy-staging.yml",
-   "to": "infra/domain.manifest.json",
-   "kind": "workflow-run"
-  },
-  {
-   "from": ".github/workflows/deploy-staging.yml",
-   "to": "tooling/deploy/cf-preflight.cjs",
-   "kind": "workflow-run"
-  },
-  {
-   "from": ".github/workflows/deploy-staging.yml",
-   "to": "tooling/deploy/cf-pages-web.cjs",
-   "kind": "workflow-run"
-  },
-  {
-   "from": ".github/workflows/deploy-staging.yml",
-   "to": "tooling/deploy/cf-pages-ops.cjs",
    "kind": "workflow-run"
   },
   {
@@ -25965,12 +26121,6 @@
    "kind": "workflow-run"
   },
   {
-   "from": ".github/workflows/gate.yml",
-   "to": "dir:services/engine-rust",
-   "kind": "workflow-run",
-   "spec": "services/engine-rust"
-  },
-  {
    "from": ".github/workflows/provision-ebay-adapter-secrets.yml",
    "to": "tooling/deploy/cf-ebay-secrets.cjs",
    "kind": "workflow-run"
@@ -26004,30 +26154,6 @@
    "from": ".github/workflows/release-acceptance.yml",
    "to": "tooling/release/release-acceptance-verdict.cjs",
    "kind": "workflow-run"
-  },
-  {
-   "from": ".github/workflows/release-build.yml",
-   "to": "deleted:apps/web/.open-next/worker.js",
-   "kind": "workflow-run",
-   "spec": "apps/web/.open-next/worker.js"
-  },
-  {
-   "from": ".github/workflows/release-build.yml",
-   "to": "deleted:apps/web/.open-next/assets",
-   "kind": "workflow-run",
-   "spec": "apps/web/.open-next/assets"
-  },
-  {
-   "from": ".github/workflows/release-build.yml",
-   "to": "deleted:apps/admin/.open-next/worker.js",
-   "kind": "workflow-run",
-   "spec": "apps/admin/.open-next/worker.js"
-  },
-  {
-   "from": ".github/workflows/release-build.yml",
-   "to": "deleted:apps/admin/.open-next/assets",
-   "kind": "workflow-run",
-   "spec": "apps/admin/.open-next/assets"
   },
   {
    "from": ".github/workflows/release-build.yml",
@@ -26071,16 +26197,6 @@
   {
    "from": ".github/workflows/release-integration-contract.yml",
    "to": ".github/workflows/release-integration-contract.yml",
-   "kind": "workflow-run"
-  },
-  {
-   "from": ".github/workflows/release-integration-contract.yml",
-   "to": ".github/workflows/critical-cross-browser.yml",
-   "kind": "workflow-run"
-  },
-  {
-   "from": ".github/workflows/release-integration-contract.yml",
-   "to": "tooling/e2e/specs/critical-cross-browser.spec.cjs",
    "kind": "workflow-run"
   },
   {
@@ -26801,7 +26917,7 @@
   },
   {
    "from": "TOOLCHAIN.md",
-   "to": ".github/workflows/gate.yml",
+   "to": ".github/workflows/backend-ci.yml",
    "kind": "doc-link"
   },
   {
@@ -26881,8 +26997,9 @@
   },
   {
    "from": "docs/ADR-016-AGENT-AUTOMATION.md",
-   "to": ".github/workflows/gate.yml",
-   "kind": "doc-link"
+   "to": "missing:.github/workflows/gate.yml",
+   "kind": "doc-link",
+   "spec": ".github/workflows/gate.yml"
   },
   {
    "from": "docs/ADR-016-AGENT-AUTOMATION.md",
@@ -51235,8 +51352,9 @@
   },
   {
    "from": "governance/engine-acceptance/product-rebases.v1.json",
-   "to": ".github/workflows/gate.yml",
-   "kind": "verifier-reads"
+   "to": "missing:.github/workflows/gate.yml",
+   "kind": "verifier-reads",
+   "spec": ".github/workflows/gate.yml"
   },
   {
    "from": "governance/engine-acceptance/product-rebases.v1.json",
@@ -52162,8 +52280,9 @@
   },
   {
    "from": "governance/performance/LIGHTHOUSE.md",
-   "to": ".github/workflows/lighthouse.yml",
-   "kind": "doc-link"
+   "to": "missing:.github/workflows/lighthouse.yml",
+   "kind": "doc-link",
+   "spec": ".github/workflows/lighthouse.yml"
   },
   {
    "from": "governance/performance/budgets.v1.json",
@@ -52183,8 +52302,9 @@
   },
   {
    "from": "governance/performance/budgets.v1.json",
-   "to": ".github/workflows/lighthouse.yml",
-   "kind": "verifier-reads"
+   "to": "missing:.github/workflows/lighthouse.yml",
+   "kind": "verifier-reads",
+   "spec": ".github/workflows/lighthouse.yml"
   },
   {
    "from": "governance/performance/budgets.v1.json",
@@ -54457,8 +54577,9 @@
   },
   {
    "from": "governance/platform-redesign/governance-observations.v1.json",
-   "to": ".github/workflows/gate.yml",
-   "kind": "verifier-reads"
+   "to": "missing:.github/workflows/gate.yml",
+   "kind": "verifier-reads",
+   "spec": ".github/workflows/gate.yml"
   },
   {
    "from": "governance/platform-redesign/governance-observations.v1.json",
@@ -57319,8 +57440,9 @@
   },
   {
    "from": "governance/recovery/current-local-state.v1.json",
-   "to": ".github/workflows/gate.yml",
-   "kind": "verifier-reads"
+   "to": "missing:.github/workflows/gate.yml",
+   "kind": "verifier-reads",
+   "spec": ".github/workflows/gate.yml"
   },
   {
    "from": "governance/recovery/current-local-state.v1.json",
@@ -59311,8 +59433,9 @@
   },
   {
    "from": "governance/recovery/ghas-pr114-open.20260902-tip-7b72ed9a.v1.json",
-   "to": "tooling/verify/rel-603-age-usability-spotcheck.cjs",
-   "kind": "verifier-reads"
+   "to": "missing:tooling/verify/rel-603-age-usability-spotcheck.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/verify/rel-603-age-usability-spotcheck.cjs"
   },
   {
    "from": "governance/recovery/ghas-pr114-open.20260902.v1.json",
@@ -59367,8 +59490,9 @@
   },
   {
    "from": "governance/recovery/ghas-pr114-open.20260902.v1.json",
-   "to": "tooling/verify/rel-603-age-usability-spotcheck.cjs",
-   "kind": "verifier-reads"
+   "to": "missing:tooling/verify/rel-603-age-usability-spotcheck.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/verify/rel-603-age-usability-spotcheck.cjs"
   },
   {
    "from": "governance/recovery/ghas-pr114-open.20260902.v1.json",
@@ -60557,8 +60681,9 @@
   },
   {
    "from": "governance/release-master/AGE_SPOTCHECK.md",
-   "to": "tooling/verify/fixtures/rel-603-age-usability-spotcheck.v1.json",
-   "kind": "doc-link"
+   "to": "missing:tooling/verify/fixtures/rel-603-age-usability-spotcheck.v1.json",
+   "kind": "doc-link",
+   "spec": "tooling/verify/fixtures/rel-603-age-usability-spotcheck.v1.json"
   },
   {
    "from": "governance/release-master/AGE_SPOTCHECK.md",
@@ -61299,8 +61424,9 @@
   },
   {
    "from": "governance/release-master/REL-402-DEPENDENCY-AUDIT.md",
-   "to": ".github/workflows/gate.yml",
-   "kind": "doc-link"
+   "to": "missing:.github/workflows/gate.yml",
+   "kind": "doc-link",
+   "spec": ".github/workflows/gate.yml"
   },
   {
    "from": "governance/release-master/REL-404-LIGHTHOUSE-BUDGET.md",
@@ -61319,8 +61445,9 @@
   },
   {
    "from": "governance/release-master/REL-404-LIGHTHOUSE-BUDGET.md",
-   "to": "tooling/verify/rel-404-lighthouse-budget.cjs",
-   "kind": "doc-link"
+   "to": "missing:tooling/verify/rel-404-lighthouse-budget.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/verify/rel-404-lighthouse-budget.cjs"
   },
   {
    "from": "governance/release-master/REL-405-RBAC-AUDIT.md",
@@ -61415,8 +61542,9 @@
   },
   {
    "from": "governance/release-master/REL-600-STAGING.md",
-   "to": ".github/workflows/deploy-staging.yml",
-   "kind": "doc-link"
+   "to": "missing:.github/workflows/deploy-staging.yml",
+   "kind": "doc-link",
+   "spec": ".github/workflows/deploy-staging.yml"
   },
   {
    "from": "governance/release-master/REL-601-STAGING-REGRESSION.md",
@@ -61461,8 +61589,9 @@
   },
   {
    "from": "governance/release-master/REL-601-STAGING-REGRESSION.md",
-   "to": "tooling/verify/rel-404-lighthouse-budget.cjs",
-   "kind": "doc-link"
+   "to": "missing:tooling/verify/rel-404-lighthouse-budget.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/verify/rel-404-lighthouse-budget.cjs"
   },
   {
    "from": "governance/release-master/REL-601-STAGING-REGRESSION.md",
@@ -62070,6 +62199,71 @@
   },
   {
    "from": "package.json",
+   "to": "tooling/verify/backend-ownership-drift.cjs",
+   "kind": "pkg-script"
+  },
+  {
+   "from": "package.json",
+   "to": "tooling/verify/backend-ci-tiers-sync.cjs",
+   "kind": "pkg-script"
+  },
+  {
+   "from": "package.json",
+   "to": "tooling/verify/dependency-integrity.cjs",
+   "kind": "pkg-script"
+  },
+  {
+   "from": "package.json",
+   "to": "tooling/verify/schemas-contract.cjs",
+   "kind": "pkg-script"
+  },
+  {
+   "from": "package.json",
+   "to": "tooling/verify/workers-typecheck.cjs",
+   "kind": "pkg-script"
+  },
+  {
+   "from": "package.json",
+   "to": "tooling/verify/unit-tests.cjs",
+   "kind": "pkg-script"
+  },
+  {
+   "from": "package.json",
+   "to": "tooling/verify/migrations-static.cjs",
+   "kind": "pkg-script"
+  },
+  {
+   "from": "package.json",
+   "to": "tooling/verify/production-schema-parity.cjs",
+   "kind": "pkg-script"
+  },
+  {
+   "from": "package.json",
+   "to": "tooling/verify/staging-db-hardening-rehearsal.cjs",
+   "kind": "pkg-script"
+  },
+  {
+   "from": "package.json",
+   "to": "tooling/verify/qa-env-isolation-staging.cjs",
+   "kind": "pkg-script"
+  },
+  {
+   "from": "package.json",
+   "to": "tooling/verify/rust-engine.cjs",
+   "kind": "pkg-script"
+  },
+  {
+   "from": "package.json",
+   "to": "tooling/verify/worker-build.cjs",
+   "kind": "pkg-script"
+  },
+  {
+   "from": "package.json",
+   "to": "tooling/verify/pnpm-audit.cjs",
+   "kind": "pkg-script"
+  },
+  {
+   "from": "package.json",
    "to": "tooling/backend/ownership-graph.cjs",
    "kind": "pkg-script"
   },
@@ -62155,11 +62349,6 @@
   },
   {
    "from": "package.json",
-   "to": "tooling/verify/rel-404-lighthouse-budget.cjs",
-   "kind": "pkg-script"
-  },
-  {
-   "from": "package.json",
    "to": "tooling/verify/rel-403-versioning.cjs",
    "kind": "pkg-script"
   },
@@ -62201,11 +62390,6 @@
   {
    "from": "package.json",
    "to": "tooling/verify/rel-409-r6-cert.cjs",
-   "kind": "pkg-script"
-  },
-  {
-   "from": "package.json",
-   "to": "tooling/verify/rel-500-qa-lab-expansion.cjs",
    "kind": "pkg-script"
   },
   {
@@ -62255,11 +62439,6 @@
   },
   {
    "from": "package.json",
-   "to": "tooling/verify/rel-507-production-e2e.cjs",
-   "kind": "pkg-script"
-  },
-  {
-   "from": "package.json",
    "to": "tooling/verify/rel-600-staging.cjs",
    "kind": "pkg-script"
   },
@@ -62281,11 +62460,6 @@
   {
    "from": "package.json",
    "to": "tooling/verify/rel-602-staging-rollback.cjs",
-   "kind": "pkg-script"
-  },
-  {
-   "from": "package.json",
-   "to": "tooling/verify/rel-603-age-usability-spotcheck.cjs",
    "kind": "pkg-script"
   },
   {
@@ -63990,6 +64164,252 @@
    "kind": "doc-link"
   },
   {
+   "from": "quality/backend-ci.md",
+   "to": "quality/backend-only-official-basis.md",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "tooling/verify/gate-tiers.cjs",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": ".github/actions/backend-setup/action.yml",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": ".github/actions/backend-setup/action.yml",
+   "kind": "doc-link",
+   "spec": ".github/actions/**"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "missing:apps/*/.open-next",
+   "kind": "doc-link",
+   "spec": "apps/*/.open-next"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "missing:tooling/verify/rel-404-lighthouse-budget.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/verify/rel-404-lighthouse-budget.cjs"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "tooling/verify/pwa-push-badge.cjs",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "quality/putduk-web-ui-assertions-handoff.md",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "dir:workers/push-dispatcher/**",
+   "kind": "doc-link",
+   "spec": "workers/push-dispatcher/**"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "tooling/verify/opennext-workers-origin.cjs",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "tooling/verify/backend/run-all.cjs",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "tooling/backend/ci-aggregate.cjs",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "governance/security/workflow-action-pins.v1.json",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "dir:tooling/verify",
+   "kind": "doc-link",
+   "spec": "tooling/verify"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "deleted:packages/ui/canon/surfaces/admin-adapters.wire.json",
+   "kind": "doc-link",
+   "spec": "packages/ui/canon/surfaces/admin-adapters.wire.json"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "deleted:apps/admin/app/admin/ai-logs/page.tsx",
+   "kind": "doc-link",
+   "spec": "apps/admin/app/admin/ai-logs/page.tsx"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "deleted:apps/admin/app/admin/ledger/page.tsx",
+   "kind": "doc-link",
+   "spec": "apps/admin/app/admin/ledger/page.tsx"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "deleted:apps/web",
+   "kind": "doc-link",
+   "spec": "apps/web"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "missing:governance/evidence",
+   "kind": "doc-link",
+   "spec": "governance/evidence"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "deleted:apps/admin/",
+   "kind": "doc-link",
+   "spec": "apps/admin/"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "scripts/hook-stability-stress.mjs",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "dir:.github/workflows",
+   "kind": "doc-link",
+   "spec": ".github/workflows"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "services/engine-rust/src/settlement_rule.rs",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "tooling/github/main-gate.ruleset.json",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "quality/backend-boundary-violations-baseline.json",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "tooling/backend/repository-boundary.cjs",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "tooling/release/artifact-provenance.cjs",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "dir:.cursor/rules",
+   "kind": "doc-link",
+   "spec": ".cursor/rules"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "dir:tooling/e2e/playwright*.config.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/e2e/playwright*.config.cjs"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "tooling/verify/responsive/playwright.config.cjs",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "deleted:apps/admin",
+   "kind": "doc-link",
+   "spec": "apps/admin"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "deleted:packages/ui",
+   "kind": "doc-link",
+   "spec": "packages/ui"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "dir:packages/sdk",
+   "kind": "doc-link",
+   "spec": "packages/sdk"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "tooling/legacy-plan-stamp.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/*"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "dir:infra/web",
+   "kind": "doc-link",
+   "spec": "infra/web"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "dir:infra/ops",
+   "kind": "doc-link",
+   "spec": "infra/ops"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "dir:governance/release-master",
+   "kind": "doc-link",
+   "spec": "governance/release-master"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "dir:governance/visual-reconciliation",
+   "kind": "doc-link",
+   "spec": "governance/visual-reconciliation"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "dir:tooling/e2e",
+   "kind": "doc-link",
+   "spec": "tooling/e2e"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "dir:governance/consumer-home-approval",
+   "kind": "doc-link",
+   "spec": "governance/consumer-home-approval"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "dir:.cursor/plans",
+   "kind": "doc-link",
+   "spec": ".cursor/plans"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "deleted:apps/web/.open-next",
+   "kind": "doc-link",
+   "spec": "apps/web/.open-next"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "package.json",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-ci.md",
+   "to": "pnpm-workspace.yaml",
+   "kind": "doc-link"
+  },
+  {
    "from": "quality/backend-deletion-ledger.md",
    "to": "tooling/backend/ownership-graph.cjs",
    "kind": "doc-link"
@@ -64570,28 +64990,33 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "tooling/verify/fixtures/rel-500-qa-lab-expansion.v1.json",
-   "kind": "doc-link"
+   "to": "missing:tooling/verify/fixtures/rel-500-qa-lab-expansion.v1.json",
+   "kind": "doc-link",
+   "spec": "tooling/verify/fixtures/rel-500-qa-lab-expansion.v1.json"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "tooling/verify/fixtures/rel-507-production-e2e.v1.json",
-   "kind": "doc-link"
+   "to": "missing:tooling/verify/fixtures/rel-507-production-e2e.v1.json",
+   "kind": "doc-link",
+   "spec": "tooling/verify/fixtures/rel-507-production-e2e.v1.json"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "tooling/verify/fixtures/rel-603-age-usability-spotcheck.v1.json",
-   "kind": "doc-link"
+   "to": "missing:tooling/verify/fixtures/rel-603-age-usability-spotcheck.v1.json",
+   "kind": "doc-link",
+   "spec": "tooling/verify/fixtures/rel-603-age-usability-spotcheck.v1.json"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "tooling/verify/rel-500-qa-lab-expansion.cjs",
-   "kind": "doc-link"
+   "to": "missing:tooling/verify/rel-500-qa-lab-expansion.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/verify/rel-500-qa-lab-expansion.cjs"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "tooling/verify/rel-507-production-e2e.cjs",
-   "kind": "doc-link"
+   "to": "missing:tooling/verify/rel-507-production-e2e.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/verify/rel-507-production-e2e.cjs"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
@@ -65025,8 +65450,9 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": ".github/workflows/gate.yml",
-   "kind": "doc-link"
+   "to": "missing:.github/workflows/gate.yml",
+   "kind": "doc-link",
+   "spec": ".github/workflows/gate.yml"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
@@ -65947,8 +66373,9 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "tooling/verify/rel-404-lighthouse-budget.cjs",
-   "kind": "doc-link"
+   "to": "missing:tooling/verify/rel-404-lighthouse-budget.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/verify/rel-404-lighthouse-budget.cjs"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
@@ -65972,8 +66399,9 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "tooling/verify/rel-603-age-usability-spotcheck.cjs",
-   "kind": "doc-link"
+   "to": "missing:tooling/verify/rel-603-age-usability-spotcheck.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/verify/rel-603-age-usability-spotcheck.cjs"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
@@ -66514,8 +66942,9 @@
   },
   {
    "from": "quality/backend-only-deletion-plan.md",
-   "to": ".github/workflows/gate.yml",
-   "kind": "doc-link"
+   "to": "missing:.github/workflows/gate.yml",
+   "kind": "doc-link",
+   "spec": ".github/workflows/gate.yml"
   },
   {
    "from": "quality/backend-only-deletion-plan.md",
@@ -66675,8 +67104,9 @@
   },
   {
    "from": "quality/backend-only-deletion-plan.md",
-   "to": ".github/workflows/lighthouse.yml",
-   "kind": "doc-link"
+   "to": "missing:.github/workflows/lighthouse.yml",
+   "kind": "doc-link",
+   "spec": ".github/workflows/lighthouse.yml"
   },
   {
    "from": "quality/backend-only-deletion-plan.md",
@@ -67484,8 +67914,9 @@
   },
   {
    "from": "quality/backend-only-inventory.md",
-   "to": ".github/workflows/gate.yml",
-   "kind": "doc-link"
+   "to": "missing:.github/workflows/gate.yml",
+   "kind": "doc-link",
+   "spec": ".github/workflows/gate.yml"
   },
   {
    "from": "quality/backend-only-inventory.md",
@@ -67839,8 +68270,9 @@
   },
   {
    "from": "quality/backend-only-official-basis.md",
-   "to": ".github/workflows/critical-cross-browser.yml",
-   "kind": "doc-link"
+   "to": "missing:.github/workflows/critical-cross-browser.yml",
+   "kind": "doc-link",
+   "spec": ".github/workflows/critical-cross-browser.yml"
   },
   {
    "from": "quality/backend-only-official-basis.md",
@@ -68032,8 +68464,9 @@
   },
   {
    "from": "quality/backend-only-official-basis.md",
-   "to": ".github/workflows/gate.yml",
-   "kind": "doc-link"
+   "to": "missing:.github/workflows/gate.yml",
+   "kind": "doc-link",
+   "spec": ".github/workflows/gate.yml"
   },
   {
    "from": "quality/backend-only-official-basis.md",
@@ -68874,6 +69307,29 @@
    "to": "missing:governance/recovery/leftover-browser-evidence",
    "kind": "doc-link",
    "spec": "governance/recovery/leftover-browser-evidence"
+  },
+  {
+   "from": "quality/putduk-web-ui-assertions-handoff.md",
+   "to": "packages/sdk/src/push/subscribe.ts",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/putduk-web-ui-assertions-handoff.md",
+   "to": "deleted:apps/web/components/pwa/PushOptIn.tsx",
+   "kind": "doc-link",
+   "spec": "apps/web/components/pwa/PushOptIn.tsx"
+  },
+  {
+   "from": "quality/putduk-web-ui-assertions-handoff.md",
+   "to": "deleted:apps/web/public/sw.js",
+   "kind": "doc-link",
+   "spec": "apps/web/public/sw.js"
+  },
+  {
+   "from": "quality/putduk-web-ui-assertions-handoff.md",
+   "to": "deleted:apps/web/components/pwa/copy.ts",
+   "kind": "doc-link",
+   "spec": "apps/web/components/pwa/copy.ts"
   },
   {
    "from": "quality/putduk-web-ui-assertions-handoff.md",
@@ -78479,6 +78935,31 @@
    "spec": "supabase/migrations"
   },
   {
+   "from": "tooling/backend/ci-aggregate.cjs",
+   "to": "env:NEEDS_JSON",
+   "kind": "env"
+  },
+  {
+   "from": "tooling/backend/ci-aggregate.cjs",
+   "to": "env:GITHUB_REPOSITORY",
+   "kind": "env"
+  },
+  {
+   "from": "tooling/backend/ci-aggregate.cjs",
+   "to": "env:GITHUB_RUN_ID",
+   "kind": "env"
+  },
+  {
+   "from": "tooling/backend/ci-aggregate.cjs",
+   "to": "env:GITHUB_TOKEN",
+   "kind": "env"
+  },
+  {
+   "from": "tooling/backend/ci-aggregate.cjs",
+   "to": "env:GITHUB_STEP_SUMMARY",
+   "kind": "env"
+  },
+  {
    "from": "tooling/backend/ownership-graph.cjs",
    "to": "quality/backend-file-ownership.json",
    "kind": "verifier-reads"
@@ -79290,11 +79771,6 @@
   },
   {
    "from": "tooling/backend/ownership-overrides.json",
-   "to": ".github/codeql/codeql-config.yml",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/backend/ownership-overrides.json",
    "to": "tooling/release/artifact-provenance.cjs",
    "kind": "verifier-reads"
   },
@@ -79976,8 +80452,9 @@
   },
   {
    "from": "tooling/e2e/README.md",
-   "to": "tooling/verify/rel-500-qa-lab-expansion.cjs",
-   "kind": "test-ref"
+   "to": "missing:tooling/verify/rel-500-qa-lab-expansion.cjs",
+   "kind": "test-ref",
+   "spec": "tooling/verify/rel-500-qa-lab-expansion.cjs"
   },
   {
    "from": "tooling/e2e/README.md",
@@ -80008,13 +80485,15 @@
   },
   {
    "from": "tooling/e2e/README.md",
-   "to": "tooling/verify/rel-507-production-e2e.cjs",
-   "kind": "test-ref"
+   "to": "missing:tooling/verify/rel-507-production-e2e.cjs",
+   "kind": "test-ref",
+   "spec": "tooling/verify/rel-507-production-e2e.cjs"
   },
   {
    "from": "tooling/e2e/README.md",
-   "to": "tooling/verify/rel-603-age-usability-spotcheck.cjs",
-   "kind": "test-ref"
+   "to": "missing:tooling/verify/rel-603-age-usability-spotcheck.cjs",
+   "kind": "test-ref",
+   "spec": "tooling/verify/rel-603-age-usability-spotcheck.cjs"
   },
   {
    "from": "tooling/e2e/expansion/qa-lab-expansion.v1.json",
@@ -81722,8 +82201,9 @@
   },
   {
    "from": "tooling/e2e/specs/rel-603-age-usability-spotcheck.spec.cjs",
-   "to": "tooling/verify/fixtures/rel-603-age-usability-spotcheck.v1.json",
-   "kind": "test-ref"
+   "to": "missing:tooling/verify/fixtures/rel-603-age-usability-spotcheck.v1.json",
+   "kind": "test-ref",
+   "spec": "tooling/verify/fixtures/rel-603-age-usability-spotcheck.v1.json"
   },
   {
    "from": "tooling/e2e/specs/rel-603-age-usability-spotcheck.spec.cjs",
@@ -86649,6 +87129,11 @@
   },
   {
    "from": "tooling/verify/CATALOG.md",
+   "to": ".github/workflows/backend-ci.yml",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/CATALOG.md",
    "to": "tooling/verify/domain-by-path.cjs",
    "kind": "verifier-reads"
   },
@@ -86657,6 +87142,45 @@
    "to": "deleted:apps/web",
    "kind": "verifier-reads",
    "spec": "apps/web"
+  },
+  {
+   "from": "tooling/verify/CATALOG.md",
+   "to": "tooling/verify/gate-tiers.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/CATALOG.md",
+   "to": "quality/backend-ci.md",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/CATALOG.md",
+   "to": "quality/backend-boundary-violations-baseline.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/CATALOG.md",
+   "to": "dir:schemas/*.json",
+   "kind": "verifier-reads",
+   "spec": "schemas/*.json"
+  },
+  {
+   "from": "tooling/verify/CATALOG.md",
+   "to": "dir:services/**/*.runtime.test.ts",
+   "kind": "verifier-reads",
+   "spec": "services/**/*.runtime.test.ts"
+  },
+  {
+   "from": "tooling/verify/CATALOG.md",
+   "to": "tooling/deploy/lib/non-prod-api-host.runtime.test.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/**/*.runtime.test.cjs"
+  },
+  {
+   "from": "tooling/verify/CATALOG.md",
+   "to": "dir:workers/*/wrangler.toml",
+   "kind": "verifier-reads",
+   "spec": "workers/*/wrangler.toml"
   },
   {
    "from": "tooling/verify/CATALOG.md",
@@ -86746,11 +87270,6 @@
   {
    "from": "tooling/verify/CATALOG.md",
    "to": "tooling/verify/domain-by-path-ci.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/CATALOG.md",
-   "to": ".github/workflows/gate.yml",
    "kind": "verifier-reads"
   },
   {
@@ -87227,22 +87746,6 @@
   },
   {
    "from": "tooling/verify/CATALOG.md",
-   "to": "dir:governance/performance/**",
-   "kind": "verifier-reads",
-   "spec": "governance/performance/**"
-  },
-  {
-   "from": "tooling/verify/CATALOG.md",
-   "to": "tooling/perf/lighthouse.ci.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/CATALOG.md",
-   "to": ".github/workflows/lighthouse.yml",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/CATALOG.md",
    "to": "schemas/admin-audit.v1.json",
    "kind": "verifier-reads"
   },
@@ -87400,22 +87903,6 @@
   },
   {
    "from": "tooling/verify/CATALOG.md",
-   "to": "dir:tooling/e2e/expansion/**",
-   "kind": "verifier-reads",
-   "spec": "tooling/e2e/expansion/**"
-  },
-  {
-   "from": "tooling/verify/CATALOG.md",
-   "to": "tooling/e2e/lib/qa-lab-expansion.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/CATALOG.md",
-   "to": "tooling/verify/rel-500-qa-lab-expansion.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/CATALOG.md",
    "to": "dir:tooling/e2e/money/**",
    "kind": "verifier-reads",
    "spec": "tooling/e2e/money/**"
@@ -87563,21 +88050,6 @@
   },
   {
    "from": "tooling/verify/CATALOG.md",
-   "to": "tooling/e2e/specs/production-loop.spec.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/CATALOG.md",
-   "to": "tooling/e2e/lib/production-loop.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/CATALOG.md",
-   "to": "tooling/verify/rel-507-production-e2e.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/CATALOG.md",
    "to": "governance/release-master/REL-600-STAGING.md",
    "kind": "verifier-reads"
   },
@@ -87609,21 +88081,6 @@
   {
    "from": "tooling/verify/CATALOG.md",
    "to": "tooling/verify/rel-602-staging-rollback.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/CATALOG.md",
-   "to": "governance/release-master/AGE_SPOTCHECK.md",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/CATALOG.md",
-   "to": "tooling/e2e/specs/rel-603-age-usability-spotcheck.spec.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/CATALOG.md",
-   "to": "tooling/verify/rel-603-age-usability-spotcheck.cjs",
    "kind": "verifier-reads"
   },
   {
@@ -89079,6 +89536,40 @@
    "kind": "verifier-reads"
   },
   {
+   "from": "tooling/verify/backend-ci-tiers-sync.cjs",
+   "to": "tooling/backend/ownership-graph.cjs",
+   "kind": "require",
+   "spec": "../backend/ownership-graph.cjs"
+  },
+  {
+   "from": "tooling/verify/backend-ci-tiers-sync.cjs",
+   "to": "tooling/verify/gate-tiers.cjs",
+   "kind": "require",
+   "spec": "./gate-tiers.cjs"
+  },
+  {
+   "from": "tooling/verify/backend-ci-tiers-sync.cjs",
+   "to": "tooling/verify/backend/run-all.cjs",
+   "kind": "require",
+   "spec": "./backend/run-all.cjs"
+  },
+  {
+   "from": "tooling/verify/backend-ci-tiers-sync.cjs",
+   "to": ".github/workflows/backend-ci.yml",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/backend-ci-tiers-sync.cjs",
+   "to": "dir:tooling/verify",
+   "kind": "verifier-reads",
+   "spec": "tooling/verify"
+  },
+  {
+   "from": "tooling/verify/backend-ci-tiers-sync.cjs",
+   "to": "package.json",
+   "kind": "verifier-reads"
+  },
+  {
    "from": "tooling/verify/backend-data-alignment.cjs",
    "to": "tooling/verify/fixtures/backend-data-alignment.v1.json",
    "kind": "verifier-reads"
@@ -89176,6 +89667,11 @@
    "to": "dir:tooling/verify",
    "kind": "verifier-reads",
    "spec": "tooling/verify"
+  },
+  {
+   "from": "tooling/verify/backend-ownership-drift.cjs",
+   "to": "tooling/backend/ownership-graph.cjs",
+   "kind": "verifier-reads"
   },
   {
    "from": "tooling/verify/backend/admin-rbac/admin-controller-guards.cjs",
@@ -92133,6 +92629,31 @@
    "spec": "services/api-nest/dist/db/postgres-recovery.selftest.js"
   },
   {
+   "from": "tooling/verify/dependency-integrity.cjs",
+   "to": "pnpm-lock.yaml",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/dependency-integrity.cjs",
+   "to": "package.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/dependency-integrity.cjs",
+   "to": "pnpm-workspace.yaml",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/dependency-integrity.cjs",
+   "to": ".npmrc",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/dependency-integrity.cjs",
+   "to": ".nvmrc",
+   "kind": "verifier-reads"
+  },
+  {
    "from": "tooling/verify/deposit-confirm-stages.cjs",
    "to": "schemas/usdt-deposit-event.v1.json",
    "kind": "verifier-reads"
@@ -93542,65 +94063,6 @@
    "kind": "verifier-reads"
   },
   {
-   "from": "tooling/verify/fixtures/rel-500-qa-lab-expansion.v1.json",
-   "to": "deleted:apps/web/app/HomeDesktopClient.tsx",
-   "kind": "verifier-reads",
-   "spec": "apps/web/app/HomeDesktopClient.tsx"
-  },
-  {
-   "from": "tooling/verify/fixtures/rel-500-qa-lab-expansion.v1.json",
-   "to": "deleted:apps/web/app/HomePageClient.tsx",
-   "kind": "verifier-reads",
-   "spec": "apps/web/app/HomePageClient.tsx"
-  },
-  {
-   "from": "tooling/verify/fixtures/rel-500-qa-lab-expansion.v1.json",
-   "to": "deleted:apps/web/components/spark-dash-home/HomeDesktop.tsx",
-   "kind": "verifier-reads",
-   "spec": "apps/web/components/spark-dash-home/HomeDesktop.tsx"
-  },
-  {
-   "from": "tooling/verify/fixtures/rel-500-qa-lab-expansion.v1.json",
-   "to": "deleted:apps/web/components/spark-dash-home/HomeMobile.tsx",
-   "kind": "verifier-reads",
-   "spec": "apps/web/components/spark-dash-home/HomeMobile.tsx"
-  },
-  {
-   "from": "tooling/verify/fixtures/rel-500-qa-lab-expansion.v1.json",
-   "to": "governance/responsive/home-geometry-lock.v1.json",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/fixtures/rel-500-qa-lab-expansion.v1.json",
-   "to": "tooling/e2e/README.md",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/fixtures/rel-500-qa-lab-expansion.v1.json",
-   "to": "tooling/e2e/playwright.config.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/fixtures/rel-500-qa-lab-expansion.v1.json",
-   "to": "tooling/e2e/lib/qa-env-isolation-guard.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/fixtures/rel-500-qa-lab-expansion.v1.json",
-   "to": "tooling/e2e/lib/money-mutation-gate.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/fixtures/rel-500-qa-lab-expansion.v1.json",
-   "to": "tooling/e2e/persona/qa-lab-seed.v1.md",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/fixtures/rel-500-qa-lab-expansion.v1.json",
-   "to": "tooling/e2e/specs/happy-path.placeholder.spec.cjs",
-   "kind": "verifier-reads"
-  },
-  {
    "from": "tooling/verify/fixtures/rel-504-migration-readiness.v1.json",
    "to": "services/api-nest/src/opportunities/opportunity-reprice.service.ts",
    "kind": "verifier-reads"
@@ -93628,16 +94090,6 @@
   {
    "from": "tooling/verify/fixtures/rel-602-staging-rollback.v1.json",
    "to": "tooling/deploy/cf-rollback-staging.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/fixtures/rel-603-age-usability-spotcheck.v1.json",
-   "to": "tooling/e2e/specs/rel-603-age-usability-spotcheck.spec.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/fixtures/rel-603-age-usability-spotcheck.v1.json",
-   "to": "governance/release-master/AGE_SPOTCHECK.md",
    "kind": "verifier-reads"
   },
   {
@@ -93694,6 +94146,23 @@
    "to": "tooling/verify/domain-by-path.cjs",
    "kind": "require",
    "spec": "./domain-by-path.cjs"
+  },
+  {
+   "from": "tooling/verify/gate-tiers.cjs",
+   "to": "tooling/verify/stubs/run-all.cjs",
+   "kind": "require",
+   "spec": "./stubs/run-all.cjs"
+  },
+  {
+   "from": "tooling/verify/gate-tiers.cjs",
+   "to": "tooling/verify/backend/run-all.cjs",
+   "kind": "require",
+   "spec": "./backend/run-all.cjs"
+  },
+  {
+   "from": "tooling/verify/gate-tiers.cjs",
+   "to": ".github/workflows/backend-ci.yml",
+   "kind": "verifier-reads"
   },
   {
    "from": "tooling/verify/gate.cjs",
@@ -95563,6 +96032,23 @@
    "spec": "supabase/migrations"
   },
   {
+   "from": "tooling/verify/migrations-static.cjs",
+   "to": "dir:supabase/migrations",
+   "kind": "verifier-reads",
+   "spec": "supabase/migrations"
+  },
+  {
+   "from": "tooling/verify/migrations-static.cjs",
+   "to": "dir:supabase/staging",
+   "kind": "verifier-reads",
+   "spec": "supabase/staging"
+  },
+  {
+   "from": "tooling/verify/migrations-static.cjs",
+   "to": "supabase/config.toml",
+   "kind": "verifier-reads"
+  },
+  {
    "from": "tooling/verify/min-holding-scope.cjs",
    "to": "schemas/deposit-config.v1.json",
    "kind": "verifier-reads"
@@ -96845,6 +97331,11 @@
    "kind": "verifier-reads"
   },
   {
+   "from": "tooling/verify/pnpm-audit.cjs",
+   "to": "tooling/security/dependency-audit.cjs",
+   "kind": "verifier-reads"
+  },
+  {
    "from": "tooling/verify/price-denomination-contract.cjs",
    "to": "services/market-intelligence/src/money.cjs",
    "kind": "require"
@@ -97356,17 +97847,6 @@
   },
   {
    "from": "tooling/verify/pwa-push-badge.cjs",
-   "to": "packages/sdk/src/push/subscribe.ts",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/pwa-push-badge.cjs",
-   "to": "deleted:apps/web/components/pwa/PushOptIn.tsx",
-   "kind": "verifier-reads",
-   "spec": "apps/web/components/pwa/PushOptIn.tsx"
-  },
-  {
-   "from": "tooling/verify/pwa-push-badge.cjs",
    "to": "tooling/pwa/pwa-push-badge-harness.cjs",
    "kind": "verifier-reads"
   },
@@ -97377,25 +97857,8 @@
   },
   {
    "from": "tooling/verify/pwa-push-badge.cjs",
-   "to": "deleted:apps/web/public/sw.js",
-   "kind": "verifier-reads",
-   "spec": "apps/web/public/sw.js"
-  },
-  {
-   "from": "tooling/verify/pwa-push-badge.cjs",
    "to": "tooling/verify/fixtures/migrations-applied.v1.json",
    "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/pwa-push-badge.cjs",
-   "to": "packages/sdk/package.json",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/pwa-push-badge.cjs",
-   "to": "deleted:apps/web/components/pwa/copy.ts",
-   "kind": "verifier-reads",
-   "spec": "apps/web/components/pwa/copy.ts"
   },
   {
    "from": "tooling/verify/pwa-push-badge.cjs",
@@ -97831,7 +98294,7 @@
   },
   {
    "from": "tooling/verify/rel-222-admin-ops.cjs",
-   "to": ".github/workflows/gate.yml",
+   "to": ".github/workflows/backend-ci.yml",
    "kind": "verifier-reads"
   },
   {
@@ -97933,7 +98396,7 @@
   },
   {
    "from": "tooling/verify/rel-223-match-control.cjs",
-   "to": ".github/workflows/gate.yml",
+   "to": ".github/workflows/backend-ci.yml",
    "kind": "verifier-reads"
   },
   {
@@ -98030,7 +98493,7 @@
   },
   {
    "from": "tooling/verify/rel-224-source-policy.cjs",
-   "to": ".github/workflows/gate.yml",
+   "to": ".github/workflows/backend-ci.yml",
    "kind": "verifier-reads"
   },
   {
@@ -98144,7 +98607,7 @@
   },
   {
    "from": "tooling/verify/rel-402-dependency-audit.cjs",
-   "to": ".github/workflows/gate.yml",
+   "to": ".github/workflows/backend-ci.yml",
    "kind": "verifier-reads"
   },
   {
@@ -98190,7 +98653,7 @@
   },
   {
    "from": "tooling/verify/rel-403-versioning.cjs",
-   "to": ".github/workflows/gate.yml",
+   "to": ".github/workflows/backend-ci.yml",
    "kind": "verifier-reads"
   },
   {
@@ -98207,52 +98670,6 @@
    "from": "tooling/verify/rel-403-versioning.cjs",
    "to": "env:PUTDUK_RELEASE_ID",
    "kind": "env"
-  },
-  {
-   "from": "tooling/verify/rel-404-lighthouse-budget.cjs",
-   "to": "tooling/perf/lighthouse.ci.cjs",
-   "kind": "require",
-   "spec": "../perf/lighthouse.ci.cjs"
-  },
-  {
-   "from": "tooling/verify/rel-404-lighthouse-budget.cjs",
-   "to": "tooling/verify/CATALOG.md",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-404-lighthouse-budget.cjs",
-   "to": ".github/workflows/gate.yml",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-404-lighthouse-budget.cjs",
-   "to": ".github/workflows/lighthouse.yml",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-404-lighthouse-budget.cjs",
-   "to": "governance/performance/LIGHTHOUSE.md",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-404-lighthouse-budget.cjs",
-   "to": "governance/release-master/REL-404-LIGHTHOUSE-BUDGET.md",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-404-lighthouse-budget.cjs",
-   "to": "governance/performance/budgets.v1.json",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-404-lighthouse-budget.cjs",
-   "to": "tooling/perf/lighthouse.ci.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-404-lighthouse-budget.cjs",
-   "to": "package.json",
-   "kind": "verifier-reads"
   },
   {
    "from": "tooling/verify/rel-405-rbac-audit.cjs",
@@ -98328,7 +98745,7 @@
   },
   {
    "from": "tooling/verify/rel-405-rbac-audit.cjs",
-   "to": ".github/workflows/gate.yml",
+   "to": ".github/workflows/backend-ci.yml",
    "kind": "verifier-reads"
   },
   {
@@ -98455,7 +98872,7 @@
   },
   {
    "from": "tooling/verify/rel-406-kill-switch.cjs",
-   "to": ".github/workflows/gate.yml",
+   "to": ".github/workflows/backend-ci.yml",
    "kind": "verifier-reads"
   },
   {
@@ -98551,7 +98968,7 @@
   },
   {
    "from": "tooling/verify/rel-407-price-override.cjs",
-   "to": ".github/workflows/gate.yml",
+   "to": ".github/workflows/backend-ci.yml",
    "kind": "verifier-reads"
   },
   {
@@ -98611,7 +99028,7 @@
   },
   {
    "from": "tooling/verify/rel-408-security-baseline.cjs",
-   "to": ".github/workflows/gate.yml",
+   "to": ".github/workflows/backend-ci.yml",
    "kind": "verifier-reads"
   },
   {
@@ -98665,87 +99082,11 @@
   },
   {
    "from": "tooling/verify/rel-409-r6-cert.cjs",
-   "to": ".github/workflows/gate.yml",
+   "to": ".github/workflows/backend-ci.yml",
    "kind": "verifier-reads"
   },
   {
    "from": "tooling/verify/rel-409-r6-cert.cjs",
-   "to": "package.json",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-500-qa-lab-expansion.cjs",
-   "to": "tooling/e2e/lib/qa-lab-expansion.cjs",
-   "kind": "require"
-  },
-  {
-   "from": "tooling/verify/rel-500-qa-lab-expansion.cjs",
-   "to": "tooling/verify/fixtures/rel-500-qa-lab-expansion.v1.json",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-500-qa-lab-expansion.cjs",
-   "to": ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-500-qa-lab-expansion.cjs",
-   "to": "tooling/e2e/README.md",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-500-qa-lab-expansion.cjs",
-   "to": "tooling/e2e/specs/qa-lab-expansion.spec.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-500-qa-lab-expansion.cjs",
-   "to": "tooling/e2e/lib/qa-lab-expansion.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-500-qa-lab-expansion.cjs",
-   "to": "tooling/e2e/expansion/qa-lab-personas.v1.md",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-500-qa-lab-expansion.cjs",
-   "to": "tooling/e2e/expansion/qa-lab-expansion.v1.md",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-500-qa-lab-expansion.cjs",
-   "to": "governance/release-master/REL-500-QA-LAB-EXPANSION.md",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-500-qa-lab-expansion.cjs",
-   "to": "tooling/verify/CATALOG.md",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-500-qa-lab-expansion.cjs",
-   "to": ".github/workflows/gate.yml",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-500-qa-lab-expansion.cjs",
-   "to": "tooling/e2e/playwright.config.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-500-qa-lab-expansion.cjs",
-   "to": "governance/responsive/home-geometry-lock.v1.json",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-500-qa-lab-expansion.cjs",
-   "to": "dir:tooling/verify",
-   "kind": "verifier-reads",
-   "spec": "tooling/verify"
-  },
-  {
-   "from": "tooling/verify/rel-500-qa-lab-expansion.cjs",
    "to": "package.json",
    "kind": "verifier-reads"
   },
@@ -98796,7 +99137,7 @@
   },
   {
    "from": "tooling/verify/rel-501-money-red-team.cjs",
-   "to": ".github/workflows/gate.yml",
+   "to": ".github/workflows/backend-ci.yml",
    "kind": "verifier-reads"
   },
   {
@@ -98828,7 +99169,7 @@
   },
   {
    "from": "tooling/verify/rel-502-final-engine-acceptance.cjs",
-   "to": ".github/workflows/gate.yml",
+   "to": ".github/workflows/backend-ci.yml",
    "kind": "verifier-reads"
   },
   {
@@ -98885,7 +99226,7 @@
   },
   {
    "from": "tooling/verify/rel-503-protected-scope-watch.cjs",
-   "to": ".github/workflows/gate.yml",
+   "to": ".github/workflows/backend-ci.yml",
    "kind": "verifier-reads"
   },
   {
@@ -98936,7 +99277,7 @@
   },
   {
    "from": "tooling/verify/rel-504-migration-readiness.cjs",
-   "to": ".github/workflows/gate.yml",
+   "to": ".github/workflows/backend-ci.yml",
    "kind": "verifier-reads"
   },
   {
@@ -98982,7 +99323,7 @@
   },
   {
    "from": "tooling/verify/rel-505-r7-backend-alignment.cjs",
-   "to": ".github/workflows/gate.yml",
+   "to": ".github/workflows/backend-ci.yml",
    "kind": "verifier-reads"
   },
   {
@@ -99032,7 +99373,7 @@
   },
   {
    "from": "tooling/verify/rel-506-r8-infra-core.cjs",
-   "to": ".github/workflows/gate.yml",
+   "to": ".github/workflows/backend-ci.yml",
    "kind": "verifier-reads"
   },
   {
@@ -99127,67 +99468,6 @@
    "kind": "verifier-reads"
   },
   {
-   "from": "tooling/verify/rel-507-production-e2e.cjs",
-   "to": "tooling/e2e/lib/production-loop.cjs",
-   "kind": "require"
-  },
-  {
-   "from": "tooling/verify/rel-507-production-e2e.cjs",
-   "to": "tooling/verify/fixtures/rel-507-production-e2e.v1.json",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-507-production-e2e.cjs",
-   "to": ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-507-production-e2e.cjs",
-   "to": "tooling/e2e/specs/production-loop.spec.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-507-production-e2e.cjs",
-   "to": "tooling/e2e/lib/production-loop.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-507-production-e2e.cjs",
-   "to": "tooling/e2e/README.md",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-507-production-e2e.cjs",
-   "to": "governance/release-master/REL-507-PRODUCTION-E2E.md",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-507-production-e2e.cjs",
-   "to": "tooling/verify/CATALOG.md",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-507-production-e2e.cjs",
-   "to": ".github/workflows/gate.yml",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-507-production-e2e.cjs",
-   "to": "tooling/verify/domain-by-path.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-507-production-e2e.cjs",
-   "to": "dir:tooling/verify",
-   "kind": "verifier-reads",
-   "spec": "tooling/verify"
-  },
-  {
-   "from": "tooling/verify/rel-507-production-e2e.cjs",
-   "to": "package.json",
-   "kind": "verifier-reads"
-  },
-  {
    "from": "tooling/verify/rel-508-current-fx-approx.cjs",
    "to": "tooling/verify/fixtures/rel-508-current-fx-approx.v1.json",
    "kind": "verifier-reads"
@@ -99214,7 +99494,7 @@
   },
   {
    "from": "tooling/verify/rel-508-current-fx-approx.cjs",
-   "to": ".github/workflows/gate.yml",
+   "to": ".github/workflows/backend-ci.yml",
    "kind": "verifier-reads"
   },
   {
@@ -99294,7 +99574,7 @@
   },
   {
    "from": "tooling/verify/rel-600-staging.cjs",
-   "to": ".github/workflows/gate.yml",
+   "to": ".github/workflows/backend-ci.yml",
    "kind": "verifier-reads"
   },
   {
@@ -99320,11 +99600,6 @@
   {
    "from": "tooling/verify/rel-600-staging.cjs",
    "to": "tooling/deploy/cf-deploy-staging.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-600-staging.cjs",
-   "to": ".github/workflows/deploy-staging.yml",
    "kind": "verifier-reads"
   },
   {
@@ -99390,7 +99665,7 @@
   },
   {
    "from": "tooling/verify/rel-601-staging-regression.cjs",
-   "to": ".github/workflows/gate.yml",
+   "to": ".github/workflows/backend-ci.yml",
    "kind": "verifier-reads"
   },
   {
@@ -99461,7 +99736,7 @@
   },
   {
    "from": "tooling/verify/rel-602-staging-rollback.cjs",
-   "to": ".github/workflows/gate.yml",
+   "to": ".github/workflows/backend-ci.yml",
    "kind": "verifier-reads"
   },
   {
@@ -99499,73 +99774,6 @@
    "from": "tooling/verify/rel-602-staging-rollback.cjs",
    "to": "package.json",
    "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-603-age-usability-spotcheck.cjs",
-   "to": "tooling/verify/fixtures/rel-603-age-usability-spotcheck.v1.json",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-603-age-usability-spotcheck.cjs",
-   "to": ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-603-age-usability-spotcheck.cjs",
-   "to": "governance/release-master/AGE_SPOTCHECK.md",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-603-age-usability-spotcheck.cjs",
-   "to": "tooling/verify/CATALOG.md",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-603-age-usability-spotcheck.cjs",
-   "to": ".github/workflows/gate.yml",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-603-age-usability-spotcheck.cjs",
-   "to": "tooling/verify/domain-by-path.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-603-age-usability-spotcheck.cjs",
-   "to": "tooling/e2e/README.md",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-603-age-usability-spotcheck.cjs",
-   "to": "tooling/e2e/specs/rel-603-age-usability-spotcheck.spec.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-603-age-usability-spotcheck.cjs",
-   "to": "deleted:apps/web/package.json",
-   "kind": "verifier-reads",
-   "spec": "apps/web/package.json"
-  },
-  {
-   "from": "tooling/verify/rel-603-age-usability-spotcheck.cjs",
-   "to": "dir:tooling/verify",
-   "kind": "verifier-reads",
-   "spec": "tooling/verify"
-  },
-  {
-   "from": "tooling/verify/rel-603-age-usability-spotcheck.cjs",
-   "to": "package.json",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-603-age-usability-spotcheck.cjs",
-   "to": "env:CI",
-   "kind": "env"
-  },
-  {
-   "from": "tooling/verify/rel-603-age-usability-spotcheck.cjs",
-   "to": "env:AIPO_LOWSPEC_SKIP_HEAVY",
-   "kind": "env"
   },
   {
    "from": "tooling/verify/release-acceptance.cjs",
@@ -99621,8 +99829,9 @@
   },
   {
    "from": "tooling/verify/release-acceptance.cjs",
-   "to": ".github/workflows/gate.yml",
-   "kind": "verifier-reads"
+   "to": "missing:.github/workflows/gate.yml",
+   "kind": "verifier-reads",
+   "spec": ".github/workflows/gate.yml"
   },
   {
    "from": "tooling/verify/release-acceptance.cjs",
@@ -99975,6 +100184,23 @@
   {
    "from": "tooling/verify/routing-coverage.cjs",
    "to": "package.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/rust-engine.cjs",
+   "to": "dir:services/engine-rust",
+   "kind": "verifier-reads",
+   "spec": "services/engine-rust"
+  },
+  {
+   "from": "tooling/verify/schemas-contract.cjs",
+   "to": "dir:schemas/*.json",
+   "kind": "verifier-reads",
+   "spec": "schemas/*.json"
+  },
+  {
+   "from": "tooling/verify/schemas-contract.cjs",
+   "to": "schemas/manifest.day1.json",
    "kind": "verifier-reads"
   },
   {
@@ -100672,11 +100898,6 @@
   },
   {
    "from": "tooling/verify/staging-topology-readiness.cjs",
-   "to": ".github/workflows/deploy-staging.yml",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/staging-topology-readiness.cjs",
    "to": "tooling/deploy/lib/non-prod-api-host.cjs",
    "kind": "verifier-reads"
   },
@@ -101147,6 +101368,36 @@
    "from": "tooling/verify/twin-fact-separation.cjs",
    "to": "package.json",
    "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/unit-tests.cjs",
+   "to": "dir:services/**/*.runtime.test.ts",
+   "kind": "verifier-reads",
+   "spec": "services/**/*.runtime.test.ts"
+  },
+  {
+   "from": "tooling/verify/unit-tests.cjs",
+   "to": "dir:services/**/*.test.ts",
+   "kind": "verifier-reads",
+   "spec": "services/**/*.test.ts"
+  },
+  {
+   "from": "tooling/verify/unit-tests.cjs",
+   "to": "tooling/deploy/lib/non-prod-api-host.runtime.test.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/**/*.runtime.test.cjs"
+  },
+  {
+   "from": "tooling/verify/unit-tests.cjs",
+   "to": "dir:workers/**/*.test.cjs",
+   "kind": "verifier-reads",
+   "spec": "workers/**/*.test.cjs"
+  },
+  {
+   "from": "tooling/verify/unit-tests.cjs",
+   "to": "dir:services/**/*.test.cjs",
+   "kind": "verifier-reads",
+   "spec": "services/**/*.test.cjs"
   },
   {
    "from": "tooling/verify/usdt-deposit-closure.cjs",
@@ -101834,6 +102085,28 @@
    "kind": "env"
   },
   {
+   "from": "tooling/verify/worker-build.cjs",
+   "to": "dir:workers/*/wrangler.toml",
+   "kind": "verifier-reads",
+   "spec": "workers/*/wrangler.toml"
+  },
+  {
+   "from": "tooling/verify/worker-build.cjs",
+   "to": "quality/backend-file-ownership.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/workers-typecheck.cjs",
+   "to": "dir:workers/*/tsconfig.json",
+   "kind": "verifier-reads",
+   "spec": "workers/*/tsconfig.json"
+  },
+  {
+   "from": "tooling/verify/workers-typecheck.cjs",
+   "to": "quality/backend-file-ownership.json",
+   "kind": "verifier-reads"
+  },
+  {
    "from": "tooling/verify/workers-types.cjs",
    "to": "workers/tsconfig.base.json",
    "kind": "verifier-reads"
@@ -101870,6 +102143,18 @@
    "from": "tooling/verify/workflow-action-pin.cjs",
    "to": ".github/dependabot.yml",
    "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/workflow-action-pin.cjs",
+   "to": "dir:.github/actions",
+   "kind": "verifier-reads",
+   "spec": ".github/actions"
+  },
+  {
+   "from": "tooling/verify/workflow-action-pin.cjs",
+   "to": "dir:.github/actions/",
+   "kind": "verifier-reads",
+   "spec": ".github/actions/"
   },
   {
    "from": "tooling/verify/workflow-action-pin.cjs",
@@ -102193,6 +102478,12 @@
    "spec": "./channel-filter.cjs"
   },
   {
+   "from": "workers/push-dispatcher/src/lib/dispatch.d.cts",
+   "to": "dir:tooling/pwa",
+   "kind": "verifier-reads",
+   "spec": "tooling/pwa"
+  },
+  {
    "from": "workers/web-proxy/src/index.ts",
    "to": "workers/_shared/opennext-origin.ts",
    "kind": "import",
@@ -102359,6 +102650,162 @@
    "to": "tooling/backend/repository-boundary.cjs",
    "kind": "pkg-script",
    "spec": "node tooling/backend/repository-boundary.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:verify:backend-ownership-drift",
+   "kind": "pkg-script",
+   "spec": "verify:backend-ownership-drift"
+  },
+  {
+   "from": "script:verify:backend-ownership-drift",
+   "to": "tooling/verify/backend-ownership-drift.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/verify/backend-ownership-drift.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:verify:backend-ci-tiers-sync",
+   "kind": "pkg-script",
+   "spec": "verify:backend-ci-tiers-sync"
+  },
+  {
+   "from": "script:verify:backend-ci-tiers-sync",
+   "to": "tooling/verify/backend-ci-tiers-sync.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/verify/backend-ci-tiers-sync.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:verify:dependency-integrity",
+   "kind": "pkg-script",
+   "spec": "verify:dependency-integrity"
+  },
+  {
+   "from": "script:verify:dependency-integrity",
+   "to": "tooling/verify/dependency-integrity.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/verify/dependency-integrity.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:verify:schemas-contract",
+   "kind": "pkg-script",
+   "spec": "verify:schemas-contract"
+  },
+  {
+   "from": "script:verify:schemas-contract",
+   "to": "tooling/verify/schemas-contract.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/verify/schemas-contract.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:verify:workers-typecheck",
+   "kind": "pkg-script",
+   "spec": "verify:workers-typecheck"
+  },
+  {
+   "from": "script:verify:workers-typecheck",
+   "to": "tooling/verify/workers-typecheck.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/verify/workers-typecheck.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:verify:unit-tests",
+   "kind": "pkg-script",
+   "spec": "verify:unit-tests"
+  },
+  {
+   "from": "script:verify:unit-tests",
+   "to": "tooling/verify/unit-tests.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/verify/unit-tests.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:verify:migrations-static",
+   "kind": "pkg-script",
+   "spec": "verify:migrations-static"
+  },
+  {
+   "from": "script:verify:migrations-static",
+   "to": "tooling/verify/migrations-static.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/verify/migrations-static.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:verify:production-schema-parity",
+   "kind": "pkg-script",
+   "spec": "verify:production-schema-parity"
+  },
+  {
+   "from": "script:verify:production-schema-parity",
+   "to": "tooling/verify/production-schema-parity.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/verify/production-schema-parity.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:verify:staging-db-hardening-rehearsal",
+   "kind": "pkg-script",
+   "spec": "verify:staging-db-hardening-rehearsal"
+  },
+  {
+   "from": "script:verify:staging-db-hardening-rehearsal",
+   "to": "tooling/verify/staging-db-hardening-rehearsal.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/verify/staging-db-hardening-rehearsal.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:verify:qa-env-isolation-staging",
+   "kind": "pkg-script",
+   "spec": "verify:qa-env-isolation-staging"
+  },
+  {
+   "from": "script:verify:qa-env-isolation-staging",
+   "to": "tooling/verify/qa-env-isolation-staging.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/verify/qa-env-isolation-staging.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:verify:rust-engine",
+   "kind": "pkg-script",
+   "spec": "verify:rust-engine"
+  },
+  {
+   "from": "script:verify:rust-engine",
+   "to": "tooling/verify/rust-engine.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/verify/rust-engine.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:verify:worker-build",
+   "kind": "pkg-script",
+   "spec": "verify:worker-build"
+  },
+  {
+   "from": "script:verify:worker-build",
+   "to": "tooling/verify/worker-build.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/verify/worker-build.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:verify:pnpm-audit",
+   "kind": "pkg-script",
+   "spec": "verify:pnpm-audit"
+  },
+  {
+   "from": "script:verify:pnpm-audit",
+   "to": "tooling/verify/pnpm-audit.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/verify/pnpm-audit.cjs"
   },
   {
    "from": "package.json",
@@ -102566,18 +103013,6 @@
   },
   {
    "from": "package.json",
-   "to": "script:verify:rel-404-lighthouse-budget",
-   "kind": "pkg-script",
-   "spec": "verify:rel-404-lighthouse-budget"
-  },
-  {
-   "from": "script:verify:rel-404-lighthouse-budget",
-   "to": "tooling/verify/rel-404-lighthouse-budget.cjs",
-   "kind": "pkg-script",
-   "spec": "node tooling/verify/rel-404-lighthouse-budget.cjs"
-  },
-  {
-   "from": "package.json",
    "to": "script:verify:rel-403-versioning",
    "kind": "pkg-script",
    "spec": "verify:rel-403-versioning"
@@ -102683,18 +103118,6 @@
    "to": "tooling/verify/rel-409-r6-cert.cjs",
    "kind": "pkg-script",
    "spec": "node tooling/verify/rel-409-r6-cert.cjs"
-  },
-  {
-   "from": "package.json",
-   "to": "script:verify:rel-500-qa-lab-expansion",
-   "kind": "pkg-script",
-   "spec": "verify:rel-500-qa-lab-expansion"
-  },
-  {
-   "from": "script:verify:rel-500-qa-lab-expansion",
-   "to": "tooling/verify/rel-500-qa-lab-expansion.cjs",
-   "kind": "pkg-script",
-   "spec": "node tooling/verify/rel-500-qa-lab-expansion.cjs"
   },
   {
    "from": "package.json",
@@ -102806,18 +103229,6 @@
   },
   {
    "from": "package.json",
-   "to": "script:verify:rel-507-production-e2e",
-   "kind": "pkg-script",
-   "spec": "verify:rel-507-production-e2e"
-  },
-  {
-   "from": "script:verify:rel-507-production-e2e",
-   "to": "tooling/verify/rel-507-production-e2e.cjs",
-   "kind": "pkg-script",
-   "spec": "node tooling/verify/rel-507-production-e2e.cjs"
-  },
-  {
-   "from": "package.json",
    "to": "script:verify:rel-600-staging",
    "kind": "pkg-script",
    "spec": "verify:rel-600-staging"
@@ -102875,18 +103286,6 @@
    "to": "tooling/verify/rel-602-staging-rollback.cjs",
    "kind": "pkg-script",
    "spec": "node tooling/verify/rel-602-staging-rollback.cjs"
-  },
-  {
-   "from": "package.json",
-   "to": "script:verify:rel-603-age-usability-spotcheck",
-   "kind": "pkg-script",
-   "spec": "verify:rel-603-age-usability-spotcheck"
-  },
-  {
-   "from": "script:verify:rel-603-age-usability-spotcheck",
-   "to": "tooling/verify/rel-603-age-usability-spotcheck.cjs",
-   "kind": "pkg-script",
-   "spec": "node tooling/verify/rel-603-age-usability-spotcheck.cjs"
   },
   {
    "from": "package.json",
@@ -105955,6 +106354,1230 @@
    "spec": "devDependencies:^4.120.0"
   },
   {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:gate:fast",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:gate:fast"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:backend-boundary",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:backend-boundary"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:backend-ownership-drift",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:backend-ownership-drift"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:backend-ci-tiers-sync",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:backend-ci-tiers-sync"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:domain-by-path-ci",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:domain-by-path-ci"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:project-boundary",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:project-boundary"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:night-guard",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:night-guard"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:dependency-integrity",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:dependency-integrity"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:workers-types",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:workers-types"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:schemas-contract",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:schemas-contract"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:price-denomination-contract",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:price-denomination-contract"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:home-money-read-contract",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:home-money-read-contract"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:no-fake-zero-status",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:no-fake-zero-status"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:llm-adapter-contract",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:llm-adapter-contract"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:coach-sse-error-canonical",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:coach-sse-error-canonical"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:api-runtime-qa-canonical",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:api-runtime-qa-canonical"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:settlement-rule-parity",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:settlement-rule-parity"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:user-opportunity-feed",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:user-opportunity-feed"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:catalog-runtime-seed",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:catalog-runtime-seed"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:listing-legs-day1",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:listing-legs-day1"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:signup-ready-adapters",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:signup-ready-adapters"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:market-partner-adapters",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:market-partner-adapters"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:market-partner-trust",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:market-partner-trust"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:pricing-formula",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:pricing-formula"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:fx-snapshot-formula",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:fx-snapshot-formula"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:operator-footer",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:operator-footer"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:api-nest-build",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:api-nest-build"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:workers-typecheck",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:workers-typecheck"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:unit-tests",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:unit-tests"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:nest-production-provenance",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:nest-production-provenance"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:auth-rate-limit",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:auth-rate-limit"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:user-ledger-query",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:user-ledger-query"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:rel-501-money-red-team",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:rel-501-money-red-team"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:qa-env-isolation-guard",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:qa-env-isolation-guard"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:participate-http",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:participate-http"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:execute-rule-loop",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:execute-rule-loop"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:auth-jwt-runtime",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:auth-jwt-runtime"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:auth-session-cookie",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:auth-session-cookie"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:wallet-kyc-session-auth",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:wallet-kyc-session-auth"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:auth-identity-proof",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:auth-identity-proof"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:passkey-registration-hijack",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:passkey-registration-hijack"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:webauthn-user-presence",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:webauthn-user-presence"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:webauthn-fallback-pointer",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:webauthn-fallback-pointer"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:privacy-purge",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:privacy-purge"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:admin-csrf-double-submit",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:admin-csrf-double-submit"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:money-wallet-auth-remediation",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:money-wallet-auth-remediation"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:bucket-invariant",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:bucket-invariant"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:pg-module-scan",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:pg-module-scan"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:min-holding-scope",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:min-holding-scope"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:deposit-confirm-stages",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:deposit-confirm-stages"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:no-per-address-poll",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:no-per-address-poll"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:idempotency-conflict-detection",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:idempotency-conflict-detection"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:committed-event-publication-durability",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:committed-event-publication-durability"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:tron-hd-derivation-fail-closed",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:tron-hd-derivation-fail-closed"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:withdraw-stepup-security",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:withdraw-stepup-security"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:withdraw-stepup-security-runtime",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:withdraw-stepup-security-runtime"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:usdt-ingest-machine-auth",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:usdt-ingest-machine-auth"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:adapter-ingest-fail-closed",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:adapter-ingest-fail-closed"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:adapter-ingest-fail-closed-runtime",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:adapter-ingest-fail-closed-runtime"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:kyc-r2-only",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:kyc-r2-only"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:match-success-rule",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:match-success-rule"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:no-success-rate-as-rule",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:no-success-rate-as-rule"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:domain-clock",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:domain-clock"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:referral-ledger",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:referral-ledger"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:referral-ladder",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:referral-ladder"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:referral-idempotency",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:referral-idempotency"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:mission-auto-payout",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:mission-auto-payout"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:mission-idempotency",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:mission-idempotency"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:mission-no-manual-grant",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:mission-no-manual-grant"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:benefit-g4-ledger-separation",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:benefit-g4-ledger-separation"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:ebay-resilience",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:ebay-resilience"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:growth-public-surface",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:growth-public-surface"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:notification-prefs-default-on",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:notification-prefs-default-on"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:push-channel-prefs",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:push-channel-prefs"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:email-provider-resend",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:email-provider-resend"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:pwa-push-badge",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:pwa-push-badge"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:llm-quota-degrade",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:llm-quota-degrade"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:ai-coach-no-autonomy",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:ai-coach-no-autonomy"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:ai-general-no-money-tools",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:ai-general-no-money-tools"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:ai-lane-router",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:ai-lane-router"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:routing-coverage",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:routing-coverage"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:ai-scope-guard",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:ai-scope-guard"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:ai-guard-authority",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:ai-guard-authority"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:numeric-grounding",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:numeric-grounding"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:fact-freshness",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:fact-freshness"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:answer-trace",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:answer-trace"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:conversation-state-bounded",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:conversation-state-bounded"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:reference-resolution",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:reference-resolution"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:no-ai-data-in-git",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:no-ai-data-in-git"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:twin-fact-separation",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:twin-fact-separation"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:age-tone-surfaces",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:age-tone-surfaces"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:rel-400-admin-control-plane",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:rel-400-admin-control-plane"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:rel-405-rbac-audit",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:rel-405-rbac-audit"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:rel-406-kill-switch",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:rel-406-kill-switch"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:rel-407-price-override",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:rel-407-price-override"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:rel-222-admin-ops",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:rel-222-admin-ops"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:rel-223-match-control",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:rel-223-match-control"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:rel-224-source-policy",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:rel-224-source-policy"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:rel-409-r6-cert",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:rel-409-r6-cert"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:migrations-static",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:migrations-static"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:migrations-applied-parity",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:migrations-applied-parity"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:rel-504-migration-readiness",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:rel-504-migration-readiness"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:staging-db-hardening",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:staging-db-hardening"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:db-hardening-readiness",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:db-hardening-readiness"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:db-recovery",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:db-recovery"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:db-recon-inventory",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:db-recon-inventory"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:live-schema-forensic",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:live-schema-forensic"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:b3-promotion",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:b3-promotion"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:staging-topology-readiness",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:staging-topology-readiness"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:production-schema-parity",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:production-schema-parity"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:staging-db-hardening-rehearsal",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:staging-db-hardening-rehearsal"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:qa-env-isolation-staging",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:qa-env-isolation-staging"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:worker-build",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:worker-build"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:cf-infra",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:cf-infra"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:ebay-worker-deploy-path",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:ebay-worker-deploy-path"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:p0-ebay-secret-provisioning",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:p0-ebay-secret-provisioning"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:phase0-bootstrap",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:phase0-bootstrap"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:root-domain-env",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:root-domain-env"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:domain-bootstrap",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:domain-bootstrap"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:secrets",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:secrets"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:rel-402-dependency-audit",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:rel-402-dependency-audit"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:pnpm-audit",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:pnpm-audit"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:rel-408-security-baseline",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:rel-408-security-baseline"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:rel-403-versioning",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:rel-403-versioning"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:workflow-action-pin",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:workflow-action-pin"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:rel-502-final-engine-acceptance",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:rel-502-final-engine-acceptance"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:rel-503-protected-scope-watch",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:rel-503-protected-scope-watch"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:rel-505-r7-backend-alignment",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:rel-505-r7-backend-alignment"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:rel-508-current-fx-approx",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:rel-508-current-fx-approx"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:rel-506-r8-infra-core",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:rel-506-r8-infra-core"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:rel-600-staging",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:rel-600-staging"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:rel-601-staging-regression",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:rel-601-staging-regression"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:rel-602-staging-rollback",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:rel-602-staging-rollback"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:release-engine-truth-consistency",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:release-engine-truth-consistency"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:engine-acceptance",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:engine-acceptance"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:engine-drift-inventory",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:engine-drift-inventory"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:release-acceptance",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:release-acceptance"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:release-manifest-identity-lock",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:release-manifest-identity-lock"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:production-deploy-path-lock",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:production-deploy-path-lock"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:api-artifact-provenance",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:api-artifact-provenance"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:api-artifact-runtime-qa",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:api-artifact-runtime-qa"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:fetch-acceptance-artifact",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:fetch-acceptance-artifact"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:require-accepted-sha",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:require-accepted-sha"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:release-fetch-deploy-hardening",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:release-fetch-deploy-hardening"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:render-rollback-provenance",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:render-rollback-provenance"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:render-api-promotion-readiness",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:render-api-promotion-readiness"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:production-release-decision",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:production-release-decision"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:governance-observation-registry",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:governance-observation-registry"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "script:verify:observability",
+   "kind": "workflow-run",
+   "spec": "pnpm verify:observability"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "tooling/verify/backend/run-all.cjs",
+   "kind": "workflow-run",
+   "spec": "node tooling/verify/backend/run-all.cjs"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "tooling/verify/backend/run-all.cjs",
+   "kind": "workflow-run",
+   "spec": "node tooling/verify/backend/run-all.cjs"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "tooling/verify/backend/run-all.cjs",
+   "kind": "workflow-run",
+   "spec": "node tooling/verify/backend/run-all.cjs"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "tooling/verify/backend/run-all.cjs",
+   "kind": "workflow-run",
+   "spec": "node tooling/verify/backend/run-all.cjs"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "tooling/verify/backend/run-all.cjs",
+   "kind": "workflow-run",
+   "spec": "node tooling/verify/backend/run-all.cjs"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "tooling/verify/backend/run-all.cjs",
+   "kind": "workflow-run",
+   "spec": "node tooling/verify/backend/run-all.cjs"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "tooling/verify/backend/run-all.cjs",
+   "kind": "workflow-run",
+   "spec": "node tooling/verify/backend/run-all.cjs"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "tooling/verify/backend/run-all.cjs",
+   "kind": "workflow-run",
+   "spec": "node tooling/verify/backend/run-all.cjs"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "tooling/verify/backend/run-all.cjs",
+   "kind": "workflow-run",
+   "spec": "node tooling/verify/backend/run-all.cjs"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "tooling/verify/backend/run-all.cjs",
+   "kind": "workflow-run",
+   "spec": "node tooling/verify/backend/run-all.cjs"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "tooling/verify/rust-engine.cjs",
+   "kind": "workflow-run",
+   "spec": "node tooling/verify/rust-engine.cjs"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "tooling/backend/ci-aggregate.cjs",
+   "kind": "workflow-run",
+   "spec": "node tooling/backend/ci-aggregate.cjs"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/checkout",
+   "kind": "workflow-run",
+   "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:./.github/actions/backend-setup",
+   "kind": "workflow-run",
+   "spec": "./.github/actions/backend-setup"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/checkout",
+   "kind": "workflow-run",
+   "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:./.github/actions/backend-setup",
+   "kind": "workflow-run",
+   "spec": "./.github/actions/backend-setup"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/upload-artifact",
+   "kind": "workflow-run",
+   "spec": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/checkout",
+   "kind": "workflow-run",
+   "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:./.github/actions/backend-setup",
+   "kind": "workflow-run",
+   "spec": "./.github/actions/backend-setup"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/checkout",
+   "kind": "workflow-run",
+   "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:./.github/actions/backend-setup",
+   "kind": "workflow-run",
+   "spec": "./.github/actions/backend-setup"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/checkout",
+   "kind": "workflow-run",
+   "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:./.github/actions/backend-setup",
+   "kind": "workflow-run",
+   "spec": "./.github/actions/backend-setup"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/checkout",
+   "kind": "workflow-run",
+   "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:./.github/actions/backend-setup",
+   "kind": "workflow-run",
+   "spec": "./.github/actions/backend-setup"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/checkout",
+   "kind": "workflow-run",
+   "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:./.github/actions/backend-setup",
+   "kind": "workflow-run",
+   "spec": "./.github/actions/backend-setup"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/checkout",
+   "kind": "workflow-run",
+   "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:./.github/actions/backend-setup",
+   "kind": "workflow-run",
+   "spec": "./.github/actions/backend-setup"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/checkout",
+   "kind": "workflow-run",
+   "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:./.github/actions/backend-setup",
+   "kind": "workflow-run",
+   "spec": "./.github/actions/backend-setup"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/checkout",
+   "kind": "workflow-run",
+   "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:./.github/actions/backend-setup",
+   "kind": "workflow-run",
+   "spec": "./.github/actions/backend-setup"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/checkout",
+   "kind": "workflow-run",
+   "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:./.github/actions/backend-setup",
+   "kind": "workflow-run",
+   "spec": "./.github/actions/backend-setup"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/checkout",
+   "kind": "workflow-run",
+   "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:./.github/actions/backend-setup",
+   "kind": "workflow-run",
+   "spec": "./.github/actions/backend-setup"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/checkout",
+   "kind": "workflow-run",
+   "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:./.github/actions/backend-setup",
+   "kind": "workflow-run",
+   "spec": "./.github/actions/backend-setup"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/checkout",
+   "kind": "workflow-run",
+   "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:./.github/actions/backend-setup",
+   "kind": "workflow-run",
+   "spec": "./.github/actions/backend-setup"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/checkout",
+   "kind": "workflow-run",
+   "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:./.github/actions/backend-setup",
+   "kind": "workflow-run",
+   "spec": "./.github/actions/backend-setup"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/checkout",
+   "kind": "workflow-run",
+   "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:dtolnay/rust-toolchain",
+   "kind": "workflow-run",
+   "spec": "dtolnay/rust-toolchain@4360b52568e2003a75bf9bc1d59f33a8e3fc893c # stable"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/cache",
+   "kind": "workflow-run",
+   "spec": "actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/setup-node",
+   "kind": "workflow-run",
+   "spec": "actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/checkout",
+   "kind": "workflow-run",
+   "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:./.github/actions/backend-setup",
+   "kind": "workflow-run",
+   "spec": "./.github/actions/backend-setup"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/checkout",
+   "kind": "workflow-run",
+   "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:./.github/actions/backend-setup",
+   "kind": "workflow-run",
+   "spec": "./.github/actions/backend-setup"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/checkout",
+   "kind": "workflow-run",
+   "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:./.github/actions/backend-setup",
+   "kind": "workflow-run",
+   "spec": "./.github/actions/backend-setup"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/checkout",
+   "kind": "workflow-run",
+   "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "action:actions/setup-node",
+   "kind": "workflow-run",
+   "spec": "actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6"
+  },
+  {
    "from": ".github/workflows/codeql.yml",
    "to": "action:actions/checkout",
    "kind": "workflow-run",
@@ -106028,48 +107651,6 @@
   },
   {
    "from": ".github/workflows/deploy-cloudflare.yml",
-   "to": "tooling/deploy/cf-preflight.cjs",
-   "kind": "workflow-run",
-   "spec": "node tooling/deploy/cf-preflight.cjs"
-  },
-  {
-   "from": ".github/workflows/deploy-cloudflare.yml",
-   "to": "tooling/deploy/cf-pages-web.cjs",
-   "kind": "workflow-run",
-   "spec": "node tooling/deploy/cf-pages-web.cjs"
-  },
-  {
-   "from": ".github/workflows/deploy-cloudflare.yml",
-   "to": "tooling/deploy/cf-preflight.cjs",
-   "kind": "workflow-run",
-   "spec": "node tooling/deploy/cf-preflight.cjs"
-  },
-  {
-   "from": ".github/workflows/deploy-cloudflare.yml",
-   "to": "tooling/deploy/cf-pages-ops.cjs",
-   "kind": "workflow-run",
-   "spec": "node tooling/deploy/cf-pages-ops.cjs"
-  },
-  {
-   "from": ".github/workflows/deploy-cloudflare.yml",
-   "to": "tooling/deploy/cf-origin-smoke.cjs",
-   "kind": "workflow-run",
-   "spec": "node tooling/deploy/cf-origin-smoke.cjs"
-  },
-  {
-   "from": ".github/workflows/deploy-cloudflare.yml",
-   "to": "tooling/deploy/cf-origin-smoke.cjs",
-   "kind": "workflow-run",
-   "spec": "node tooling/deploy/cf-origin-smoke.cjs"
-  },
-  {
-   "from": ".github/workflows/deploy-cloudflare.yml",
-   "to": "tooling/deploy/cf-origin-smoke.cjs",
-   "kind": "workflow-run",
-   "spec": "node tooling/deploy/cf-origin-smoke.cjs"
-  },
-  {
-   "from": ".github/workflows/deploy-cloudflare.yml",
    "to": "action:actions/checkout",
    "kind": "workflow-run",
    "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
@@ -106082,48 +107663,6 @@
   },
   {
    "from": ".github/workflows/deploy-cloudflare.yml",
-   "to": "action:actions/setup-node",
-   "kind": "workflow-run",
-   "spec": "actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6"
-  },
-  {
-   "from": ".github/workflows/deploy-staging.yml",
-   "to": "tooling/deploy/cf-preflight.cjs",
-   "kind": "workflow-run",
-   "spec": "node tooling/deploy/cf-preflight.cjs"
-  },
-  {
-   "from": ".github/workflows/deploy-staging.yml",
-   "to": "tooling/deploy/cf-pages-web.cjs",
-   "kind": "workflow-run",
-   "spec": "node tooling/deploy/cf-pages-web.cjs"
-  },
-  {
-   "from": ".github/workflows/deploy-staging.yml",
-   "to": "tooling/deploy/cf-preflight.cjs",
-   "kind": "workflow-run",
-   "spec": "node tooling/deploy/cf-preflight.cjs"
-  },
-  {
-   "from": ".github/workflows/deploy-staging.yml",
-   "to": "tooling/deploy/cf-pages-ops.cjs",
-   "kind": "workflow-run",
-   "spec": "node tooling/deploy/cf-pages-ops.cjs"
-  },
-  {
-   "from": ".github/workflows/deploy-staging.yml",
-   "to": "action:actions/checkout",
-   "kind": "workflow-run",
-   "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
-  },
-  {
-   "from": ".github/workflows/deploy-staging.yml",
-   "to": "action:pnpm/action-setup",
-   "kind": "workflow-run",
-   "spec": "pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6"
-  },
-  {
-   "from": ".github/workflows/deploy-staging.yml",
    "to": "action:actions/setup-node",
    "kind": "workflow-run",
    "spec": "actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6"
@@ -107263,204 +108802,6 @@
    "spec": "actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6"
   },
   {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:rel-402-dependency-audit",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-402-dependency-audit"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:rel-404-lighthouse-budget",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-404-lighthouse-budget"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:rel-405-rbac-audit",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-405-rbac-audit"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:rel-406-kill-switch",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-406-kill-switch"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:rel-407-price-override",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-407-price-override"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:rel-408-security-baseline",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-408-security-baseline"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:rel-222-admin-ops",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-222-admin-ops"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:rel-223-match-control",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-223-match-control"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:rel-224-source-policy",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-224-source-policy"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:rel-409-r6-cert",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-409-r6-cert"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:rel-500-qa-lab-expansion",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-500-qa-lab-expansion"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:rel-501-money-red-team",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-501-money-red-team"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:rel-502-final-engine-acceptance",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-502-final-engine-acceptance"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:rel-503-protected-scope-watch",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-503-protected-scope-watch"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:rel-504-migration-readiness",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-504-migration-readiness"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:rel-505-r7-backend-alignment",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-505-r7-backend-alignment"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:rel-508-current-fx-approx",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-508-current-fx-approx"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:rel-506-r8-infra-core",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-506-r8-infra-core"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:rel-507-production-e2e",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-507-production-e2e"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:rel-600-staging",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-600-staging"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:rel-601-staging-regression",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-601-staging-regression"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:rel-602-staging-rollback",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-602-staging-rollback"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:rel-603-age-usability-spotcheck",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-603-age-usability-spotcheck"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "script:verify:gate",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:gate"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "action:actions/checkout",
-   "kind": "workflow-run",
-   "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "action:pnpm/action-setup",
-   "kind": "workflow-run",
-   "spec": "pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "action:actions/setup-node",
-   "kind": "workflow-run",
-   "spec": "actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "action:dtolnay/rust-toolchain",
-   "kind": "workflow-run",
-   "spec": "dtolnay/rust-toolchain@4360b52568e2003a75bf9bc1d59f33a8e3fc893c # stable"
-  },
-  {
-   "from": ".github/workflows/gate.yml",
-   "to": "dir:services/engine-rust",
-   "kind": "workflow-run",
-   "spec": "working-directory:services/engine-rust"
-  },
-  {
-   "from": ".github/workflows/lighthouse.yml",
-   "to": "script:verify:rel-404-lighthouse-budget",
-   "kind": "workflow-run",
-   "spec": "pnpm verify:rel-404-lighthouse-budget"
-  },
-  {
-   "from": ".github/workflows/lighthouse.yml",
-   "to": "action:actions/checkout",
-   "kind": "workflow-run",
-   "spec": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6"
-  },
-  {
-   "from": ".github/workflows/lighthouse.yml",
-   "to": "action:pnpm/action-setup",
-   "kind": "workflow-run",
-   "spec": "pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6"
-  },
-  {
-   "from": ".github/workflows/lighthouse.yml",
-   "to": "action:actions/setup-node",
-   "kind": "workflow-run",
-   "spec": "actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6"
-  },
-  {
    "from": ".github/workflows/provision-ebay-adapter-secrets.yml",
    "to": "tooling/deploy/cf-ebay-secrets.cjs",
    "kind": "workflow-run",
@@ -107549,18 +108890,6 @@
    "to": "action:actions/upload-artifact",
    "kind": "workflow-run",
    "spec": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4"
-  },
-  {
-   "from": ".github/workflows/release-build.yml",
-   "to": "pkg:@aipo/web",
-   "kind": "workflow-run",
-   "spec": "pnpm --filter @aipo/web build:cf"
-  },
-  {
-   "from": ".github/workflows/release-build.yml",
-   "to": "pkg:@aipo/admin",
-   "kind": "workflow-run",
-   "spec": "pnpm --filter @aipo/admin build:cf"
   },
   {
    "from": ".github/workflows/release-build.yml",
@@ -107663,18 +108992,6 @@
    "to": ".github/workflows/release-integration-contract.yml",
    "kind": "workflow-run",
    "spec": "paths:.github/workflows/release-integration-contract.yml"
-  },
-  {
-   "from": ".github/workflows/release-integration-contract.yml",
-   "to": ".github/workflows/critical-cross-browser.yml",
-   "kind": "workflow-run",
-   "spec": "paths:.github/workflows/critical-cross-browser.yml"
-  },
-  {
-   "from": ".github/workflows/release-integration-contract.yml",
-   "to": "tooling/e2e/specs/critical-cross-browser.spec.cjs",
-   "kind": "workflow-run",
-   "spec": "paths:tooling/e2e/specs/critical-cross-browser.spec.cjs"
   },
   {
    "from": ".github/workflows/release-integration-contract.yml",

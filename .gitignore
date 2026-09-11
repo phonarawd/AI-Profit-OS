@@ -8,6 +8,8 @@ node_modules/
 # Builds
 dist/
 dist-selftest/
+dist-ci/
+_tmp_backend_boundary/
 build/
 .next/
 .turbo/

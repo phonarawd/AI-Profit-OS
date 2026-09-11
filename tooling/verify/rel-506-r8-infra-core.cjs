@@ -35,7 +35,7 @@ const plan = read(".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md");
 const cert = read("governance/release-master/R8_INFRA_CORE.md");
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
-const gate = read(".github/workflows/gate.yml");
+const gate = read(".github/workflows/backend-ci.yml");
 const domain = read("tooling/verify/domain-by-path.cjs");
 const manifest = readJson("infra/domain.manifest.json");
 const sink = readJson("governance/observability/error-sink.v1.json");
@@ -263,7 +263,7 @@ if (!catalog.includes("rel-506-r8-infra-core")) {
   fails.push("CATALOG missing rel-506-r8-infra-core");
 }
 if (!gate.includes("verify:rel-506-r8-infra-core")) {
-  fails.push("gate.yml must run verify:rel-506-r8-infra-core");
+  fails.push("backend-ci.yml must run verify:rel-506-r8-infra-core");
 }
 if (!domain.includes("rel-506-r8-infra-core.cjs")) {
   fails.push("domain-by-path must trigger rel-506");

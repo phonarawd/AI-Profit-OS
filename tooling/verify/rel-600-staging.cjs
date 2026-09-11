@@ -34,13 +34,12 @@ const plan = read(".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md");
 const evidence = read("governance/release-master/REL-600-STAGING.md");
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
-const gate = read(".github/workflows/gate.yml");
+const gate = read(".github/workflows/backend-ci.yml");
 const domain = read("tooling/verify/domain-by-path.cjs");
 const manifest = readJson("infra/domain.manifest.json");
 const webDeploy = read("tooling/deploy/cf-pages-web.cjs");
 const opsDeploy = read("tooling/deploy/cf-pages-ops.cjs");
 const stagingDeploy = read("tooling/deploy/cf-deploy-staging.cjs");
-const stagingWorkflow = read(".github/workflows/deploy-staging.yml");
 const prodWorkflow = read(".github/workflows/deploy-cloudflare.yml");
 const preflight = read("tooling/deploy/cf-preflight.cjs");
 
@@ -162,31 +161,8 @@ if (stagingDeploy.includes("cf-workers.cjs") || stagingDeploy.includes("cf-domai
   fails.push("staging orchestrator must not deploy production bridge workers");
 }
 
-if (!stagingWorkflow.includes("name: deploy-staging")) {
-  fails.push("dedicated staging workflow missing");
-}
-if (/inputs:\s*\n\s*target:/.test(stagingWorkflow) && stagingWorkflow.includes("production")) {
-  fails.push("staging workflow must not accept production target");
-}
-if (stagingWorkflow.includes("environment: production")) {
-  fails.push("staging workflow must not use production GitHub environment");
-}
-if (
-  textContainsExactHost(stagingWorkflow, "ai-profit-os.onrender.com") ||
-  /API_HOST:-\s*https:\/\/ai-profit-os\.onrender\.com/.test(stagingWorkflow) ||
-  /API="\$\{API_HOST:-/.test(stagingWorkflow)
-) {
-  fails.push("staging workflow must not default API_HOST to production Render");
-}
-if (stagingWorkflow.includes("secrets.API_HOST")) {
-  fails.push("staging workflow must not inherit production API_HOST secret");
-}
-if (!stagingWorkflow.includes("STAGING_API_HOST")) {
-  fails.push("staging workflow must require STAGING_API_HOST");
-}
-if (!stagingWorkflow.includes("forbiddenHosts")) {
-  fails.push("staging workflow must deny manifest forbiddenHosts");
-}
+// dedicated web/ops staging workflow (deploy-staging.yml) moved to phonarawd/putduk-web with the OpenNext surface;
+// the backend contract that remains here is the deploy-cloudflare preview API-host isolation checked below.
 if (!listContainsExactHost((staging && staging.forbiddenHosts) || [], "ai-profit-os.onrender.com")) {
   fails.push("staging.forbiddenHosts must include production Render API host");
 }
@@ -225,7 +201,6 @@ for (const rel of [
   "tooling/deploy/cf-pages-web.cjs",
   "tooling/deploy/cf-pages-ops.cjs",
   "tooling/deploy/cf-deploy-staging.cjs",
-  ".github/workflows/deploy-staging.yml",
 ]) {
   const body = read(rel);
   if (/\bwrangler\s+pages\s+deploy\b/.test(body) || /\bpages\s+deploy\b/.test(body)) {
@@ -246,7 +221,7 @@ if (!catalog.includes("rel-600-staging")) {
   fails.push("CATALOG missing rel-600-staging");
 }
 if (!gate.includes("verify:rel-600-staging")) {
-  fails.push("gate.yml must run verify:rel-600-staging");
+  fails.push("backend-ci.yml must run verify:rel-600-staging");
 }
 if (!domain.includes("rel-600-staging.cjs")) {
   fails.push("domain-by-path must trigger rel-600");

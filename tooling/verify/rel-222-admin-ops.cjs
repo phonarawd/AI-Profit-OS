@@ -223,7 +223,7 @@ if (fs.existsSync(webAdmin)) fails.push("apps/web must not grow /admin");
 
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
-const gate = read(".github/workflows/gate.yml");
+const gate = read(".github/workflows/backend-ci.yml");
 const spec = read("governance/admin/admin-ops-3mode.md");
 const evidence = read("governance/release-master/REL-222-ADMIN-OPS.md");
 const lockedTerms = read("governance/admin/control-plane-superset.md");
@@ -234,7 +234,7 @@ if (!catalog.includes("rel-222-admin-ops")) {
   fails.push("CATALOG missing rel-222-admin-ops");
 }
 if (!gate.includes("verify:rel-222-admin-ops")) {
-  fails.push("gate.yml must run verify:rel-222-admin-ops");
+  fails.push("backend-ci.yml must run verify:rel-222-admin-ops");
 }
 if (!lockedTerms.includes("IMPLEMENTATION_IN_THIS_REL: 0")) {
   fails.push("REL-400 lock file must keep IMPLEMENTATION_IN_THIS_REL: 0");

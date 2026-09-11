@@ -240,7 +240,7 @@ if (/UPDATE\s+public\.listings/i.test(mig)) {
 
   const pkg = read("package.json");
   const catalog = read("tooling/verify/CATALOG.md");
-  const gate = read(".github/workflows/gate.yml");
+  const gate = read(".github/workflows/backend-ci.yml");
   const spec = read("governance/admin/price-override-layers.md");
   const evidence = read("governance/release-master/REL-407-PRICE-OVERRIDE.md");
   if (!pkg.includes("verify:rel-407-price-override")) {
@@ -250,7 +250,7 @@ if (/UPDATE\s+public\.listings/i.test(mig)) {
     fails.push("CATALOG missing rel-407-price-override");
   }
   if (!gate.includes("verify:rel-407-price-override")) {
-    fails.push("gate.yml must run verify:rel-407-price-override");
+    fails.push("backend-ci.yml must run verify:rel-407-price-override");
   }
   for (const needle of [
     "LOCKED_LAYERS = 4",

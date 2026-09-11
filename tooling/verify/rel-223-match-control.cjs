@@ -198,7 +198,7 @@ if (fs.existsSync(webAdmin)) fails.push("apps/web must not grow /admin");
 
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
-const gate = read(".github/workflows/gate.yml");
+const gate = read(".github/workflows/backend-ci.yml");
 const spec = read("governance/admin/match-control.md");
 const evidence = read("governance/release-master/REL-223-MATCH-CONTROL.md");
 if (!pkg.includes("verify:rel-223-match-control")) {
@@ -208,7 +208,7 @@ if (!catalog.includes("rel-223-match-control")) {
   fails.push("CATALOG missing rel-223-match-control");
 }
 if (!gate.includes("verify:rel-223-match-control")) {
-  fails.push("gate.yml must run verify:rel-223-match-control");
+  fails.push("backend-ci.yml must run verify:rel-223-match-control");
 }
 for (const needle of [
   "LOCKED_VERBS = 5",

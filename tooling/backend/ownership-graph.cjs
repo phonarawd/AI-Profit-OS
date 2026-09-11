@@ -624,12 +624,9 @@ function seedRules() {
   add('schemas', re(/^schemas\/[^/]+\.json$/), 'BACKEND_CONTRACT', 'KEEP', S.NONE, 'JSON 계약 SSOT (소비자 그래프로 재판정)');
 
   // .github
-  add('wf-noop-ui', re(/^\.github\/workflows\/(consumer-spark-worldclass|critical-axe|critical-cross-browser|spark-global-ui-qa|lighthouse)\.yml$/), 'OBSOLETE', 'DELETE', S.CI_REPLACE, 'UI 이름만 남은 workflow (echo no-op 또는 Lighthouse) · main 룰셋 required context는 verify-gate 하나뿐이라 삭제 가능');
-  add('wf-deploy-staging', re(/^\.github\/workflows\/deploy-staging\.yml$/), 'OBSOLETE', 'DELETE', S.CI_REPLACE, 'OpenNext web/ops staging preview 배포 전용 (surface=web|ops)');
-  add('wf-gate', re(/^\.github\/workflows\/gate\.yml$/), 'MIXED', 'SPLIT', S.CI_REPLACE, 'verify-gate job(required check) 유지 · OpenNext echo step · REL-404/603 UI step 제거');
-  add('wf-release-build', re(/^\.github\/workflows\/release-build\.yml$/), 'MIXED', 'SPLIT', S.CI_REPLACE, '@aipo/web·@aipo/admin build:cf + apps/*/.open-next 검사(삭제된 패키지) 제거 · api-nest artifact + workers prebuild 유지');
-  add('wf-release-integration', re(/^\.github\/workflows\/release-integration-contract\.yml$/), 'MIXED', 'SPLIT', S.CI_REPLACE, 'release-contract-static job 유지 · strict-webkit echo no-op job 제거');
-  add('wf-deploy-cf', re(/^\.github\/workflows\/deploy-cloudflare\.yml$/), 'MIXED', 'SPLIT', S.CI_REPLACE, 'workers 배포 유지 · surface=web|ops(cf-pages-web/ops · opennext origin) 입력/step 제거');
+  add('wf-release-build', re(/^\.github\/workflows\/release-build\.yml$/), 'BACKEND_INFRA', 'KEEP', S.NONE, 'api-nest artifact + workers prebuild only (web/admin build:cf removed in the CI replacement stage)');
+  add('wf-release-integration', re(/^\.github\/workflows\/release-integration-contract\.yml$/), 'BACKEND_INFRA', 'KEEP', S.NONE, 'release-contract-static job only (strict-webkit no-op job removed in the CI replacement stage)');
+  add('wf-deploy-cf', re(/^\.github\/workflows\/deploy-cloudflare\.yml$/), 'BACKEND_INFRA', 'KEEP', S.NONE, 'workers deploy only (surface=web|ops steps removed in the CI replacement stage)');
   add('workflows', re(/^\.github\/workflows\//), 'BACKEND_INFRA', 'KEEP', S.NONE, '백엔드 CI/배포 workflow');
   add('github-misc', re(/^\.github\//), 'BACKEND_INFRA', 'KEEP', S.NONE, 'GitHub 설정');
 

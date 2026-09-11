@@ -136,6 +136,12 @@
 | `rel-220-admin-growth-whale.cjs` | 86f15964 | apps/admin growth/whale 리다이렉트 + 허브 탭 | unit (admin UI) | HANDOFF |
 | `rel-221-admin-growth-content.cjs` | 86f15964 | apps/admin growth/content 리다이렉트 + 허브 content 패널 + tax-disclaimer 잠금 | unit (admin UI) | HANDOFF |
 
+### 1c. 3단계(CI 교체)에서 추가 분리한 mixed 검증기 (in-place split · 파일 유지)
+
+| 원본 파일 (tooling/verify/) | 원본 SHA | UI 어서션 요약 (무엇을 검사했는가) | putduk-web 권장 위치 | 상태 |
+|---|---|---|---|---|
+| `pwa-push-badge.cjs` (파일 유지 · 백엔드 어서션만 실행 · CI job notification) | 6b959d8e | packages/sdk/src/push/subscribe.ts 존재 · apps/web/components/pwa/PushOptIn.tsx 존재 · apps/web/public/sw.js push 리스너/setAppBadge(applyBadge)/WebAuthn 혼용 0 · packages/sdk package.json exports ./push · apps/web/components/pwa/copy.ts 에 IT 용어(API·PWA·VAPID·Service Worker·NATS) 0 | unit (sdk exports + sw.js + pwa copy) | HANDOFF |
+
 ## 2. 백엔드 어서션 이동 매핑 (원본 → 새 파일)
 
 새 파일은 전부 `tooling/verify/backend/` 아래. 각 파일 머리말에 원본 이름과 SHA 를 남겼다. 실행: `pnpm verify:backend` (러너 `tooling/verify/backend/run-all.cjs` · T1 `gate-tiers.cjs` `T1_PUSH` 등재 · `domain-by-path.cjs` 는 기존 경로 규칙의 스크립트 항목을 새 경로로 치환 + `tooling/verify/backend/**` 변경 시 러너 실행).

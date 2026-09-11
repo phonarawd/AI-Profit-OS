@@ -6,7 +6,7 @@
 |------|------|------|------|
 | **T0** | `pnpm verify:gate:fast` | commit · Husky pre-commit | `gate-fast.cjs` · `domain-by-path.cjs` |
 | **T1** | `pnpm verify:gate:push` | push · Husky pre-push | `gate-push.cjs` (= T0 + infra + stubs) |
-| **T2** | `pnpm verify:gate` | CI · main merge | `gate.cjs` (= T1 + next-build + opennext-build) |
+| **T2** | `pnpm verify:gate` | CI · main merge | `gate.cjs` (= T1 + CI 전용 검사 · `gate-tiers.cjs` CI_JOBS = `.github/workflows/backend-ci.yml` job 매핑 SSOT · `verify:backend-ci-tiers-sync` 가 동일 집합 검사) |
 
 경로 기반 T0 도메인 = `tooling/verify/domain-by-path.cjs` (변경 파일 → 해당 `verify:*`만).
 
@@ -28,7 +28,6 @@
 | phase0-bootstrap | `verify:phase0-bootstrap` | T1 | ✅ live |
 | root-domain-env | `verify:root-domain-env` | T1 | ✅ live |
 | domain-bootstrap | `verify:domain-bootstrap` | T1 | ✅ live |
-| opennext-workers-origin | `verify:opennext-workers-origin` | T1 | ✅ live (Workers SSOT · pages deploy 0 · proxy/manifest lock · deploy smoke hook) |
 | next-major-pin | `verify:next-major-pin` | T1 | ✅ live |
 | tailwind-v4 | `verify:tailwind-v4` | T1 | ✅ live |
 | lux-theme-sync | `verify:lux-theme-sync` | T1 | ✅ live |
@@ -43,7 +42,6 @@
 | leftover-shared-states | `verify:leftover-shared-states` | T0 path | live (app error.tsx · RecoveryRetry · PermissionDenied · execute receipt KEEP) |
 | rel-402-dependency-audit | `verify:rel-402-dependency-audit` | T0 path + CI | ✅ live (REL-402 · pnpm audit high+ · local full scan 0 · exception ledger) |
 | rel-403-versioning | `verify:rel-403-versioning` | T0 path | ✅ live (REL-403 · semver + manual tag · HUMAN deploy · REL-602) |
-| rel-404-lighthouse-budget | `verify:rel-404-lighthouse-budget` | T0 path + CI | ✅ live (REL-404 · bundle/image/lazy budget · local full LH 0 · Home freeze) |
 | rel-405-rbac-audit | `verify:rel-405-rbac-audit` | T0 path + CI | ✅ live (REL-405 · 5-role lock · audit write/deny · invented roles 0) |
 | rel-406-kill-switch | `verify:rel-406-kill-switch` | T0 path + CI | live (REL-406 · 9 kill IDs · path enforce · audit · invented switches 0) |
 | rel-407-price-override | `verify:rel-407-price-override` | T0 path + CI | live (REL-407 · 4 price layers · mix 0 · reason/audit · USER_VISIBLE=EFFECTIVE) |
@@ -52,7 +50,6 @@
 | rel-223-match-control | `verify:rel-223-match-control` | T0 path + CI | live (REL-223 · 5 verbs · preview LIVE · ledger verbs 0) |
 | rel-224-source-policy | `verify:rel-224-source-policy` | T0 path + CI | live (REL-224 · V1-V3 · overwrite 0 · founder HIGH) |
 | rel-409-r6-cert | `verify:rel-409-r6-cert` | T0 path + CI | live (REL-409 · 12+2b · deps re-run · P0-P3 0) |
-| rel-500-qa-lab-expansion | `verify:rel-500-qa-lab-expansion` | T0 path + CI | live (REL-500 · risk-based matrix · MCP-only 0 · local full 0) |
 | rel-501-money-red-team | `verify:rel-501-money-red-team` | T0 path + CI | live (REL-501 · 7 money modes · guard abort · ledger write 0) |
 | rel-502-final-engine-acceptance | `verify:rel-502-final-engine-acceptance` | T0 path + CI | live (REL-502 · PSM collect · drift fail-closed · REL-004 substitute 0) |
 | rel-503-protected-scope-watch | `verify:rel-503-protected-scope-watch` | T0 path + CI | live (REL-503 · ISSUED+drift=STALE · simulated 1-file · concealment 0) |
@@ -69,11 +66,9 @@
 | production-deploy-path-lock | `verify:production-deploy-path-lock` | T0 path | live (low-level prod helpers gated, acceptance required, rebuild/bundle forbidden) |
 | rel-508-current-fx-approx | `verify:rel-508-current-fx-approx` | T0 path + CI | live (REL-508 · Nest approx · null not 0 · STALE pending REL-502) |
 | rel-506-r8-infra-core | `verify:rel-506-r8-infra-core` | T0 path + CI | live (REL-506 · R8 Core · pages deploy 0 · Ads excluded · rum/tag deferred) |
-| rel-507-production-e2e | `verify:rel-507-production-e2e` | T0 path + CI | live (REL-507 · production-loop · isolation · invented success 0) |
 | rel-600-staging | `verify:rel-600-staging` | T0 path + CI | live (REL-600 staging preview workers) |
 | rel-601-staging-regression | `verify:rel-601-staging-regression` | T0 path + CI | live (REL-601 Surface Matrix staging preview · Home redesign 0 · local full 0) |
 | rel-602-staging-rollback | `verify:rel-602-staging-rollback` | T0 path + CI | live (REL-602 real preview rollback + read-only regression + forward deploy · production/DB/money 0) |
-| rel-603-age-usability-spotcheck | `verify:rel-603-age-usability-spotcheck` | T0 path + CI | live (REL-603 automated 9 cohort x 4 staging Playwright · human 0 · production/money 0) |
 | web-remote-patterns | `verify:web-remote-patterns` | T0 path | ✅ live (REL-013 · next/image 최소 allowlist · used hosts match · https-all 0) |
 | pwa-native-shell | `verify:pwa-native-shell` | T0 path | ✅ live (REL-014 · E-PWA-001 · manifest+icons+동등 SW+install/update · store-bridge 0 · push=REL-020) |
 | pwa-push-badge | `verify:pwa-push-badge` | T0 path | ✅ live (REL-020 · E-PWA-002 · VAPID path · dispatcher 실연결 · subscribe+SW badge · Admin kill · secret 0) |
@@ -85,12 +80,26 @@
 | asset-production-pipeline | `verify:asset-production-pipeline` | T0 path | ✅ live (REL-018 · source→optimize→hash→public→review · partner AI 0 · Home lock) |
 | device-tier-system | `verify:device-tier-system` | T0 path | ✅ live (REL-019 · detectDeviceTier 재사용 · 2560/3440/3840 안전 문서 · Home geometry lock) |
 
-## T2 CI-only (heavy build)
+## T2 CI-only (backend-ci.yml · 로컬 T2 = CI 합집합)
+
+CI job ↔ 검증기 매핑 = `tooling/verify/gate-tiers.cjs` `CI_JOBS` · 문서 = `quality/backend-ci.md`. 아래는 T2 에서만 도는 신설 래퍼(REL·도메인 검증기는 CI 에서 항상 실행되며 각 절에 그대로 남아 있다).
 
 | id | 스크립트 | tier | 상태 |
 |----|----------|------|------|
-| next-build | `verify:next-build` | T2 | ✅ live (web + admin `next build`) |
-| opennext-build | `verify:opennext-build` | T2 | ✅ live (Windows=SKIP · CI ubuntu=full) |
+| backend-boundary | `verify:backend-boundary` | T2 (repository-boundary) | live (7규칙 · 내용 기반 · 지금 트리 FAIL 정상 → quality/backend-boundary-violations-baseline.json) |
+| backend-ownership-drift | `verify:backend-ownership-drift` | T2 (repository-boundary) | live (ownership-graph --check · UNKNOWN 0 · drift 0) |
+| backend-ci-tiers-sync | `verify:backend-ci-tiers-sync` | T0 path + T2 (repository-boundary) | live (backend-ci.yml job ↔ CI_JOBS 양방향 동일 · 도메인 10/10 · backend-required needs 전부) |
+| dependency-integrity | `verify:dependency-integrity` | T2 (dependency-integrity) | live (lockfile 단일 · workspace:* 해석 · pnpm dedupe --check) |
+| schemas-contract | `verify:schemas-contract` | T2 (api-contract) | live (schemas/*.json draft 2020-12 · unique id · required ⊂ properties · ref 해석) |
+| workers-typecheck | `verify:workers-typecheck` | T2 (typecheck) | live (KEEP workers tsc --noEmit) |
+| unit-tests | `verify:unit-tests` | T2 (unit) | live (services/**/*.runtime.test.ts + tooling/**/*.runtime.test.cjs · node:test) |
+| migrations-static | `verify:migrations-static` | T2 (migration) | live (파일명 규약 · 순번 중복 0 · BOM 0 · 문 1+ · DROP DATABASE 0) |
+| production-schema-parity | `verify:production-schema-parity` | T2 (migration) | live (release-integration-contract 와 공유) |
+| staging-db-hardening-rehearsal | `verify:staging-db-hardening-rehearsal` | T2 (migration) | live |
+| qa-env-isolation-staging | `verify:qa-env-isolation-staging` | T2 (migration) | live |
+| rust-engine | `verify:rust-engine` | T2 (rust-engine) | live (cargo fmt --check · clippy -D warnings · check --locked · test --locked · 로컬은 cargo check 만) |
+| worker-build | `verify:worker-build` | T2 (worker-build) | live (workers/*/wrangler.toml 전부 wrangler deploy --dry-run --outdir dist-ci · 업로드 0) |
+| pnpm-audit | `verify:pnpm-audit` | T2 (security) | live (pnpm audit --prod --audit-level=moderate · 임계값 하향 0) |
 
 ## T0 path-trigger domain (변경 시에만)
 
@@ -100,7 +109,7 @@
 | `governance/engine-acceptance/**` (FINAL_ACCEPTANCE.md 제외) · `tooling/engine-acceptance/**` · `tooling/verify/engine-acceptance.cjs` · `.github/workflows/engine-acceptance.yml` | engine-acceptance |
 | `governance/figma/**` · `tooling/verify/figma-project-registry.cjs` | figma-project-registry |
 | `governance/visual-reconciliation/**` · `tooling/verify/locked-visual-reconciliation.cjs` · locked Account Hub `/me` | locked-visual-reconciliation |
-| `tooling/verify/domain-by-path.cjs` · `tooling/verify/domain-by-path.selftest.cjs` · `tooling/verify/domain-by-path-ci.cjs` · `.github/workflows/gate.yml` | domain-by-path-ci |
+| `tooling/verify/domain-by-path.cjs` · `tooling/verify/domain-by-path.selftest.cjs` · `tooling/verify/domain-by-path-ci.cjs` · `.github/workflows/backend-ci.yml` | domain-by-path-ci |
 | `.cursor/hooks/**` · `.cursor/hooks.json` · `scripts/verify-night-guard.mjs` · `tooling/verify/night-guard.cjs` · `scripts/verify-project-boundary.mjs` | night-guard · project-boundary |
 | `tooling/e2e/**` · `tooling/verify/qa-env-isolation-guard.cjs` | qa-env-isolation-guard |
 | `governance/db-recon/**` · b1-push-rls-design · b2-ownership-design · `tooling/verify/db-recon-inventory.cjs` · `tooling/verify/live-schema-forensic.cjs` | db-recon-inventory · live-schema-forensic |
@@ -124,9 +133,8 @@
 | `packages/sdk/src/device-tier.ts` · `packages/ui/tokens/device-tier-contract.ts` · `governance/responsive/**` · `tooling/verify/device-tier-system.cjs` · `tooling/verify/ux-design-system.cjs` | device-tier-system · ux-design-system |
 | `governance/admin/**` · `tooling/verify/rel-400-admin-control-plane.cjs` | rel-400-admin-control-plane |
 | `governance/security/http-headers` · `tooling/security/http-headers.cjs` · web/admin next.config · api-nest security-headers | rel-401-security-headers |
-| `governance/security/dependency-audit` · `governance/security/AUDIT_EXCEPTIONS.md` · `tooling/security/dependency-audit.cjs` · `.github/workflows/gate.yml` | rel-402-dependency-audit |
+| `governance/security/dependency-audit` · `governance/security/AUDIT_EXCEPTIONS.md` · `tooling/security/dependency-audit.cjs` · `.github/workflows/backend-ci.yml` | rel-402-dependency-audit |
 | `governance/release-master/VERSIONING.md` · `governance/release-master/versioning.v1.json` · `tooling/release/version-id.cjs` | rel-403-versioning |
-| `governance/performance/**` · `tooling/perf/lighthouse.ci.cjs` · `.github/workflows/lighthouse.yml` | rel-404-lighthouse-budget |
 | `schemas/admin-audit.v1.json` · `services/api-nest/admin-audit.core.cjs` · `services/api-nest/src/audit/**` · `governance/admin/rbac-audit*` | rel-405-rbac-audit |
 | `schemas/admin-kill-switch.v1.json` · `services/api-nest/admin-kill-switch.core.cjs` · `services/api-nest/src/kill-switch/**` · `governance/admin/kill-switch*` | rel-406-kill-switch |
 | `schemas/price-override-layers.v1.json` · `services/api-nest/price-override.core.cjs` · `services/api-nest/src/price-override/**` · `governance/admin/price-override*` | rel-407-price-override |
@@ -135,7 +143,6 @@
 | `schemas/admin-match-control.v1.json` · `services/api-nest/admin-match-control.core.cjs` · `services/api-nest/src/match-control/**` · `governance/admin/match-control*` | rel-223-match-control |
 | `schemas/admin-policy-version.v1.json` · `services/api-nest/admin-policy-version.core.cjs` · `services/api-nest/src/source-policy/**` · `governance/admin/source-policy*` | rel-224-source-policy |
 | `governance/admin/R6_CERTIFICATION.md` · `tooling/verify/rel-409-r6-cert.cjs` | rel-409-r6-cert |
-| `tooling/e2e/expansion/**` · `tooling/e2e/lib/qa-lab-expansion.cjs` · `tooling/verify/rel-500-qa-lab-expansion.cjs` | rel-500-qa-lab-expansion |
 | `tooling/e2e/money/**` · `tooling/e2e/lib/money-red-team.cjs` · `tooling/verify/rel-501-money-red-team.cjs` | rel-501-money-red-team |
 | `governance/engine-acceptance/FINAL_ACCEPTANCE.md` · `tooling/verify/rel-502-final-engine-acceptance.cjs` · `tooling/verify/lib/rel-502-psm.cjs` | rel-502-final-engine-acceptance |
 | `governance/engine-acceptance/PROTECTED_SCOPE_STALE_WATCH.md` · `tooling/engine-acceptance/protected-scope-watch.cjs` · `tooling/verify/rel-503-protected-scope-watch.cjs` | rel-503-protected-scope-watch |
@@ -150,11 +157,9 @@
 | `tooling/verify/production-deploy-path-lock.cjs` · `tooling/deploy/lib/accepted-artifact-authority.cjs` | production-deploy-path-lock |
 | `governance/release-master/REL-508-CURRENT-FX-APPROX.md` · `services/api-nest/src/opportunities/current-fx-approx*` · `schemas/current-fx-approx.v1.json` | rel-508-current-fx-approx |
 | `governance/release-master/R8_INFRA_CORE.md` · `governance/release-master/r8-cache-inventory.v1.json` · `tooling/verify/rel-506-r8-infra-core.cjs` | rel-506-r8-infra-core |
-| `tooling/e2e/specs/production-loop.spec.cjs` · `tooling/e2e/lib/production-loop.cjs` · `tooling/verify/rel-507-production-e2e.cjs` | rel-507-production-e2e |
 | `governance/release-master/REL-600-STAGING.md` · staging origin · `tooling/verify/rel-600-staging.cjs` | rel-600-staging |
 | `governance/release-master/REL-601-STAGING-REGRESSION.md` · Surface Matrix · `tooling/verify/rel-601-staging-regression.cjs` | rel-601-staging-regression |
 | `governance/release-master/REL-602-STAGING-ROLLBACK.md` · `tooling/deploy/cf-rollback-staging.cjs` · `tooling/verify/rel-602-staging-rollback.cjs` | rel-602-staging-rollback |
-| `governance/release-master/AGE_SPOTCHECK.md` · `tooling/e2e/specs/rel-603-age-usability-spotcheck.spec.cjs` · `tooling/verify/rel-603-age-usability-spotcheck.cjs` | rel-603-age-usability-spotcheck |
 | `apps/admin/**` | no-admin-in-web · admin-routes · admin-novice-ui · rel-201-admin-dashboard · rel-202-admin-users · rel-203-admin-user-detail · rel-204-admin-user-finance · rel-205-admin-ledger · rel-206-admin-wallet · rel-207-admin-compliance · rel-208-admin-risk · rel-209-admin-execution-policy · rel-210-admin-opportunities · rel-211-admin-adapters · rel-212-admin-support · rel-213-admin-system-control · rel-214-admin-audit · rel-215-admin-ai-logs · rel-216-admin-financial · rel-217-admin-growth · rel-218-admin-growth-deposit · rel-219-admin-growth-ticker · rel-220-admin-growth-whale · rel-221-admin-growth-content |
 | rel-2xx admin UI verifiers · admin-entry-e2e | Admin 화면 어서션 = putduk-web 인계(`quality/putduk-web-ui-assertions-handoff.md`) · Nest admin controller 계약 = `backend/admin-rbac/admin-controller-guards.cjs` (`verify:backend`) |
 | opportunity UI/copy/canon | balance-aware-feed · opportunity-scan · margin-compare · asset-image · cta-earn-profit |

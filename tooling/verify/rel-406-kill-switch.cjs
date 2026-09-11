@@ -269,7 +269,7 @@ if (mig.includes("CREATE TABLE public.money_circuit")) {
 
   const pkg = read("package.json");
   const catalog = read("tooling/verify/CATALOG.md");
-  const gate = read(".github/workflows/gate.yml");
+  const gate = read(".github/workflows/backend-ci.yml");
   const spec = read("governance/admin/kill-switch-9.md");
   const evidence = read("governance/release-master/REL-406-KILL-SWITCH.md");
   const control = read("governance/admin/control-plane-superset.md");
@@ -280,7 +280,7 @@ if (mig.includes("CREATE TABLE public.money_circuit")) {
     fails.push("CATALOG missing rel-406-kill-switch");
   }
   if (!gate.includes("verify:rel-406-kill-switch")) {
-    fails.push("gate.yml must run verify:rel-406-kill-switch");
+    fails.push("backend-ci.yml must run verify:rel-406-kill-switch");
   }
   for (const needle of [
     "LOCKED_SWITCHES = 9",

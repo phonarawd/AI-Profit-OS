@@ -35,16 +35,11 @@ jobs:
           SHA="${{ github.sha }}"
           test "${#SHA}" -eq 40
 
+      # backend-only: customer web (OpenNext) lives in phonarawd/putduk-web; only the Nest API artifact is built here.
       - name: Build once
         run: |
           set -euo pipefail
-          pnpm --filter @aipo/web build:cf
-          pnpm --filter @aipo/admin build:cf
           pnpm --filter @aipo/api-nest... build
-          test -f apps/web/.open-next/worker.js
-          test -d apps/web/.open-next/assets
-          test -f apps/admin/.open-next/worker.js
-          test -d apps/admin/.open-next/assets
           test -f services/api-nest/dist/main.js
 
       - name: Bind Nest API artifact to source SHA

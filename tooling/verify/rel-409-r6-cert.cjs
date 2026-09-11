@@ -92,7 +92,7 @@ for (const mod of modules) {
 
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
-const gate = read(".github/workflows/gate.yml");
+const gate = read(".github/workflows/backend-ci.yml");
 if (!pkg.includes("verify:rel-409-r6-cert")) {
   fails.push("package.json missing verify:rel-409-r6-cert");
 }
@@ -100,7 +100,7 @@ if (!catalog.includes("rel-409-r6-cert")) {
   fails.push("CATALOG missing rel-409-r6-cert");
 }
 if (!gate.includes("verify:rel-409-r6-cert")) {
-  fails.push("gate.yml must run verify:rel-409-r6-cert");
+  fails.push("backend-ci.yml must run verify:rel-409-r6-cert");
 }
 for (const needle of [
   "STATUS = COMPLETED",
