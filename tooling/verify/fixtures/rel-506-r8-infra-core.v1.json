@@ -24,7 +24,6 @@
     "observability.cjs",
     "auth-session-cookie.cjs",
     "kyc-r2-only.cjs",
-    "rel-403-versioning.cjs",
-    "rel-404-lighthouse-budget.cjs"
+    "rel-403-versioning.cjs"
   ]
 }

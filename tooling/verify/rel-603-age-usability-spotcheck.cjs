@@ -287,7 +287,8 @@ async function liveScenario(scenario) {
 }
 
 function runPlaywright() {
-  if (!fs.existsSync(path.join(root, "apps/web"))) {
+  // tracked-file guard: a leftover ignored apps/web/node_modules dir must not re-enable the customer-web Playwright run
+  if (!fs.existsSync(path.join(root, "apps/web/package.json"))) {
     console.log("[verify:rel-603-age-usability-spotcheck] SKIP playwright — customer web is putduk-web");
     return;
   }
@@ -352,11 +353,6 @@ function runPlaywright() {
 
   if (fails.length === 0) {
     for (const script of fixture.extraVerifies || []) {
-    const { isRetiredUiStub } = require("./lib/retired-ui-stubs.cjs");
-    if (isRetiredUiStub(script)) {
-      console.log("[verify] SKIP retired UI extraVerify " + script);
-      continue;
-    }
       const run = spawnSync(
         process.execPath,
         [path.join(root, "tooling/verify", script)],

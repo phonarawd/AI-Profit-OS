@@ -292,11 +292,6 @@ function runVerify(script) {
 
   if (fails.length === 0) {
     for (const script of fixture.extraVerifies || []) {
-    const { isRetiredUiStub } = require("./lib/retired-ui-stubs.cjs");
-    if (isRetiredUiStub(script)) {
-      console.log("[verify] SKIP retired UI extraVerify " + script);
-      continue;
-    }
       const run = runVerify(script);
       if (run.status !== 0) {
         fails.push("re-run FAIL " + script + ": " + String(run.stderr || run.stdout || "").split("\n")[0]);

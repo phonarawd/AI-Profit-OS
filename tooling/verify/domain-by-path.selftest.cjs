@@ -334,18 +334,18 @@ expect(
 );
 
 {
-  const adminCopy = "packages/ui/copy/ko/admin.ts";
-  const scripts = scriptsForChangedFiles([adminCopy]);
+  const backendTest = "tooling/verify/backend/kyc/kyc-withdraw-only.cjs";
+  const scripts = scriptsForChangedFiles([backendTest]);
   expect(
-        "retired admin UI copy maps to no domain verify",
-    scripts.length === 0,
+    "backend test change maps to backend runner (run-all executes every port)",
+    scripts.includes("backend/run-all.cjs"),
     scripts.join(","),
   );
-  const verifierScripts = scriptsForChangedFiles(["tooling/verify/admin-novice-ui.cjs"]);
+  const runnerScripts = scriptsForChangedFiles(["tooling/verify/backend/run-all.cjs"]);
   expect(
-    "admin-novice verifier still self-runs",
-    verifierScripts.includes("admin-novice-ui.cjs"),
-    verifierScripts.join(","),
+    "backend runner change maps to backend runner",
+    runnerScripts.includes("backend/run-all.cjs"),
+    runnerScripts.join(","),
   );
 }
 

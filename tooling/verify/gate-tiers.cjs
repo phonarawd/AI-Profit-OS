@@ -1,7 +1,7 @@
 /**
  * 3-tier gate SSOT (ADR-016) · backend-only repository
  * T0 fast  — commit
- * T1 push  — backend extras (no Next/Tailwind/admin-ui)
+ * T1 push  — backend extras (no Next/Tailwind/admin-ui) + backend/run-all (mixed verifier ports)
  * T2 full  — CI · api-nest-build (customer Next lives in putduk-web)
  */
 const { scriptsForChangedFiles, getChangedFiles } = require("./domain-by-path.cjs");
@@ -32,6 +32,7 @@ const T1_PUSH = [
   "privacy-purge.cjs",
   "api-nest-build.cjs",
   "stubs/run-all.cjs",
+  "backend/run-all.cjs",
 ];
 
 /** @type {string[]} */

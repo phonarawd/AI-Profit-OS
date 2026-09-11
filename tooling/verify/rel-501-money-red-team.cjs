@@ -63,11 +63,6 @@ for (const needle of ["STATUS = COMPLETED","ISOLATION_GUARD = 1","PRODUCTION_DB_
 }
 if (fails.length === 0) {
   for (const script of fixture.extraVerifies || []) {
-    const { isRetiredUiStub } = require("./lib/retired-ui-stubs.cjs");
-    if (isRetiredUiStub(script)) {
-      console.log("[verify] SKIP retired UI extraVerify " + script);
-      continue;
-    }
     const run = spawnSync(process.execPath, [path.join(root, "tooling/verify", script)], { cwd: root, encoding: "utf8", timeout: 60000 });
     if (run.status !== 0) fails.push("re-run FAIL " + script + ": " + String(run.stderr || run.stdout || "").split("\n")[0]);
   }

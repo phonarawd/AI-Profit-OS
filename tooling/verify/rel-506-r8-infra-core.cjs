@@ -271,11 +271,6 @@ if (!domain.includes("rel-506-r8-infra-core.cjs")) {
 
 if (fails.length === 0) {
   for (const script of fixture.extraVerifies || []) {
-    const { isRetiredUiStub } = require("./lib/retired-ui-stubs.cjs");
-    if (isRetiredUiStub(script)) {
-      console.log("[verify] SKIP retired UI extraVerify " + script);
-      continue;
-    }
     const run = spawnSync(process.execPath, [path.join(root, "tooling/verify", script)], {
       cwd: root,
       encoding: "utf8",

@@ -11,4 +11,4 @@ alwaysApply: false
 - 버킷: principal / profit / locked / practice — 합=부채
 - practice → profit/출금 승격 금지
 - 출금 기본 `mode=profit` · 원금 숨김 금지
-- CI: `verify:bucket-invariant` · `verify:withdraw-mode-default`
+- CI: `verify:bucket-invariant` · `verify:backend`(deposit-withdraw/withdraw-mode-default)

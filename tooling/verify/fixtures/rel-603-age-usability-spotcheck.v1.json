@@ -39,5 +39,5 @@
   ],
   "playwrightSpec": "tooling/e2e/specs/rel-603-age-usability-spotcheck.spec.cjs",
   "evidence": "governance/release-master/AGE_SPOTCHECK.md",
-  "extraVerifies": ["qa-env-isolation-guard.cjs", "rel-601-staging-regression.cjs", "axe-harness.cjs"]
+  "extraVerifies": ["qa-env-isolation-guard.cjs", "rel-601-staging-regression.cjs"]
 }

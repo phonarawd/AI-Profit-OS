@@ -84,10 +84,8 @@ for (const mod of modules) {
   if (fs.existsSync(path.join(root, "apps/admin/routes.ts")) && !routes.includes('"' + mod.href + '"')) {
     fails.push("routes missing " + mod.href);
   }
-  if (fs.existsSync(path.join(root, "apps/admin")) && !fs.existsSync(path.join(root, mod.page))) {
-    fails.push("missing page " + mod.page);
-  }
-  if (!fs.existsSync(path.join(root, "tooling/verify", mod.verify))) {
+  // admin UI pages moved to putduk-web; backend contract verify (if any) must exist and run
+  if (mod.verify && !fs.existsSync(path.join(root, "tooling/verify", mod.verify))) {
     fails.push("missing verify " + mod.verify);
   }
 }
@@ -119,10 +117,11 @@ for (const needle of [
 }
 
 const scripts = new Set();
-for (const mod of modules) scripts.add(mod.verify);
+for (const mod of modules) if (mod.verify) scripts.add(mod.verify);
 for (const extra of fixture.extraVerifies || []) scripts.add(extra);
 
-if (fails.length === 0 && fs.existsSync(path.join(root, "apps/admin"))) {
+// re-run is unconditional: backend admin-controller contract + admin REL verifies (no UI dir dependency)
+if (fails.length === 0) {
   for (const script of scripts) {
     const abs = path.join(root, "tooling/verify", script);
     const run = spawnSync(process.execPath, [abs], {

@@ -18,9 +18,7 @@
   ],
   "deps": ["REL-006", "REL-012", "REL-019"],
   "extraVerifies": [
-    "qa-env-isolation-guard.cjs",
-    "axe-harness.cjs",
-    "money-unavailable.cjs"
+    "qa-env-isolation-guard.cjs"
   ],
   "homeFilesForbidden": [
     "apps/web/app/HomeDesktopClient.tsx",

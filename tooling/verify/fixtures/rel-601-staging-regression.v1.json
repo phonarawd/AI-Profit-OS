@@ -27,11 +27,10 @@
   ],
   "extraVerifies": [
     "qa-env-isolation-guard.cjs",
-    "rel-404-lighthouse-budget.cjs",
     "rel-600-staging.cjs"
   ],
-  "homeClosureStatic": "home-closure.cjs",
   "skippedExtraVerifies": {
+    "rel-404-lighthouse-budget.cjs": "customer web Lighthouse budget reads deleted shared UI package (tooling/perf/lighthouse.ci.cjs) -> putduk-web owns; removed from re-run in stage 5 mixed split, verifier itself is a stage-4 UI deletion target",
     "device-tier-system.cjs": "HOME_LOCK_CRLF_ARTIFACT + REL-105 HomeDesktopClient post-lock; lock rewrite FORBIDDEN this REL",
     "asset-production-pipeline.cjs": "same Home asset lock CRLF artifact; no Home asset rewrite this REL",
     "rel-500-qa-lab-expansion.cjs": "nested axe-harness needs axe-core; local full matrix remains 0"
