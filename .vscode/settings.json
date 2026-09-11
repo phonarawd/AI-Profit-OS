@@ -101,23 +101,11 @@
     ".git",
     "node_modules",
     "target",
-    ".next",
     "dist"
-  ],
-
-  "tailwindCSS.files.exclude": [
-    "**/.git/**",
-    "**/node_modules/**",
-    "**/.next/**",
-    "**/dist/**",
-    "**/target/**",
-    "**/.cursor/**",
-    "**/CONSTITUTION/**"
   ],
 
   "files.watcherExclude": {
     "**/node_modules/**": true,
-    "**/.next/**": true,
     "**/dist/**": true,
     "**/target/**": true,
     "**/.turbo/**": true,
@@ -125,9 +113,7 @@
     "**/coverage/**": true,
     "**/.git/objects/**": true,
     "**/.git/subtree-cache/**": true,
-    "**/playwright-report/**": true,
     "**/test-results/**": true,
-    "**/.open-next/**": true,
     "**/pnpm-lock.yaml": true,
     "**/CONSTITUTION/**": true,
     "**/.cursor/plans/**": true,
@@ -137,14 +123,11 @@
   "search.exclude": {
     "**/node_modules": true,
     "**/target": true,
-    "**/.next": true,
     "**/dist": true,
     "**/.turbo": true,
     "**/.wrangler": true,
     "**/coverage": true,
-    "**/playwright-report": true,
     "**/test-results": true,
-    "**/.open-next": true,
     "**/pnpm-lock.yaml": true,
     "**/CONSTITUTION": true,
     "**/docs": true,
@@ -152,14 +135,11 @@
   },
   "files.exclude": {
     "**/node_modules": true,
-    "**/.next": true,
     "**/dist": true,
     "**/target": true,
     "**/.wrangler": true,
     "**/coverage": true,
     "**/.turbo": true,
-    "**/.open-next": true,
-    "**/playwright-report": true,
     "**/test-results": true
   }
 }

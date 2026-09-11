@@ -516,73 +516,73 @@
   },
   {
    "path": ".gitignore",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "8단계 패키지 정리",
-   "reason": ".next/·.open-next/·playwright-report/ 등 UI 산출물 무시 규칙만 제거 · 나머지 유지."
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "UI artifact ignore rules (.next/.open-next/playwright-report) removed. Remaining ignores are backend/toolchain."
   },
   {
    "path": ".cursorignore",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "8단계 패키지 정리",
-   "reason": ".next/·.open-next/·playwright-report/ 무시 규칙만 제거."
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "UI artifact ignore rules (.next/.open-next/playwright-report) removed. Agent index skip list is backend-only."
   },
   {
    "path": ".env.example",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "8단계 패키지 정리",
-   "reason": "NEXT_PUBLIC_* (SUPABASE_URL/ANON_KEY·OAUTH_KAKAO_ENABLED·VAPID_PUBLIC_KEY) 고객 웹 변수 제거 · Nest/Workers 변수 유지 · root-domain-env.cjs가 ROOT_DOMAIN= 존재를 검사."
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "NEXT_PUBLIC_* customer-web vars removed. Nest/Workers/VAPID server vars + ROOT_DOMAIN remain."
   },
   {
    "path": ".husky/pre-push",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "8단계 패키지 정리",
-   "reason": "NEXT_DEV_WEBPACK=1 export(Next 전용) 제거 · pnpm verify:gate:push 유지."
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "NEXT_DEV_WEBPACK export removed. Hook runs pnpm verify:gate:push only."
   },
   {
    "path": ".vscode/settings.json",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "8단계 패키지 정리",
-   "reason": "tailwindCSS.files.exclude·.next/.open-next/playwright-report exclude 항목 제거 · markdownlint/TS server 설정 유지."
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "tailwindCSS.files.exclude and UI artifact exclude entries removed. markdownlint/TS server/low-spec settings remain."
   },
   {
    "path": ".vscode/extensions.json",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "8단계 패키지 정리",
-   "reason": "bradlc.vscode-tailwindcss 추천 제거."
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "bradlc.vscode-tailwindcss recommendation removed."
   },
   {
    "path": "tooling/release/artifact-provenance.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "6단계 CI 교체",
-   "reason": "sha256·copyTree·manifest 헬퍼를 release 스크립트 8개(build-once-artifact·prebuild-workers·fetch-release-bundle·bind-qa-artifact·release-acceptance-verdict·require-accepted-sha·api-artifact-runtime-qa·deploy/cf-workers)가 require 하는 공용 라이브러리 · apps/web·apps/admin .open-next 아티팩트 목록만 제거하고 헬퍼는 유지."
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "API/worker provenance helpers only. not_web_kind guard kept (API artifact must declare it is not a web bundle)."
   },
   {
    "path": "tooling/github/main-gate.ruleset.json",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "6단계 CI 교체",
-   "reason": "레포 JSON의 required context는 gate / verify-gate 인데 라이브 룰셋 20576556(2026-08-21 갱신)은 verify-gate 로 드리프트 · 이 파일을 apply-main-gate.ps1로 재적용하면 required check가 만족 불가 이름으로 바뀜 · 6단계 backend-required 전환 시 rules 배열 전체를 라이브 기준으로 재작성."
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "Draft body for official-basis 9.1: context backend-required. Live PUT blocked by apply-main-gate.ps1 until AIPO_APPLY_LIVE_RULESET=1."
   },
   {
    "path": "tooling/verify/root-domain-env.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "5단계 mixed 분리",
-   "reason": "T1 + deploy-cloudflare production step · SCAN_PATHS가 infra/web·infra/ops·access-policy(삭제 대상)만 · .env.example ROOT_DOMAIN 검사와 API(api-stub wrangler) 스캔으로 재정의."
+   "class": "BACKEND_TEST",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "T1 + deploy-cloudflare. SCAN_PATHS are domain.manifest / hosts.manifest / api-stub wrangler. ROOT_DOMAIN required in .env.example."
   },
   {
    "path": "tooling/schemas/_write-trade-license-html.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "8단계 패키지 정리",
-   "reason": "docs/kyb/trade-license HTML 생성(법무 문서 도구 · 유지) + apps/web/public/kyb 복사 단계(삭제 대상) 공존."
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "Writes docs/kyb/trade-license HTML only. Customer-web public/kyb copy removed."
   },
   {
    "path": "governance/pwa/DAY1_CERTIFICATION.md",
@@ -786,6 +786,13 @@
    "decision": "KEEP",
    "stage": "-",
    "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "tooling/verify/governance-observation-registry.cjs",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "Backend observation registry (money/engine gaps). platform-redesign JSON files it reads are KEEP BACKEND_DOC."
   }
  ]
 }

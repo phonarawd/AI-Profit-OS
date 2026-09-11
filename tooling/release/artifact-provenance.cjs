@@ -247,7 +247,6 @@ function shouldSkipRel(rel) {
     /(^|\/)\.wrangler(\/|$)/.test(p) ||
     (!isCanonicalApiDist && /(^|\/)dist(\/|$)/.test(p)) ||
     /(^|\/)dist-selftest(\/|$)/.test(p) ||
-    /(^|\/)\.open-next\/cache(\/|$)/.test(p) ||
     /(^|\/)\.git(\/|$)/.test(p)
   );
 }

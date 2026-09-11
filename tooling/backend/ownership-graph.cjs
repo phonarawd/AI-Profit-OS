@@ -348,7 +348,7 @@ function extractRefs(file, text, ctx) {
     const cleaned = lit.replace(/[.,;:)\]]+$/, "");
     if (!cleaned || cleaned.length > 200) return;
     const { targets, kind: k } = ctx.resolver.expandLiteral(cleaned);
-    refs.push({ kind, spec: cleaned, targets, resolvedAs: k, deleted: isDeleted(cleaned) });
+    refs.push({ kind, spec: cleaned, targets, resolvedAs: k, deleted: isDeleted(cleaned), absence: false });
   }
 
   if (isCode) {
@@ -408,6 +408,22 @@ function extractRefs(file, text, ctx) {
     if (seen.has(m[1])) continue;
     seen.add(m[1]);
     pushLiteral(m[1], litKind);
+  }
+  const lines = text.split(/\r?\n/);
+  const absenceSpecs = new Set();
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (!/existsSync/.test(line)) continue;
+    const window = [line].concat(lines.slice(i + 1, i + 5)).join("\n");
+    if (!/(must not (exist|contain)|handed off|FAIL: apps\/(web|admin)|fails\.push\(|must not contain apps\/)/.test(window)) {
+      continue;
+    }
+    const pathRe = new RegExp("[\"'`](" + TOP_DIRS + "\\/" + PATH_CHARS + ")[\"'`]", "g");
+    let pm;
+    while ((pm = pathRe.exec(window))) absenceSpecs.add(pm[1]);
+  }
+  for (const r of refs) {
+    if (r.deleted && absenceSpecs.has(r.spec)) r.absence = true;
   }
   return { refs, envs: [...envs] };
 }
@@ -633,15 +649,15 @@ function seedRules() {
 
   // tooling/verify — 세부는 evidence 단계에서 재판정
   add('verify-gate-core', re(/^tooling\/verify\/(gate|gate-fast|gate-push|gate-runner|gate-tiers|only-pnpm|secrets|plans-ssot|workflow-action-pin|domain-by-path-ci|domain-by-path\.selftest|night-guard|project-boundary|api-nest-build|pg-module-scan|bucket-invariant)\.cjs$/), 'BACKEND_INFRA', 'KEEP', S.NONE, '3-tier gate 코어 · 보안 게이트');
-  add('verify-domain-by-path', re(/^tooling\/verify\/domain-by-path\.cjs$/), 'MIXED', 'SPLIT', S.UI_TEST_REMOVAL, 'T0 경로→검증기 매핑 SSOT · retired skip 제거·backend 포트 매핑 완료(5단계) · 4단계 UI 검증기 규칙의 apps/web·packages/ui 경로 test만 잔존');
+  add('verify-domain-by-path', re(/^tooling\/verify\/domain-by-path\.cjs$/), 'BACKEND_INFRA', 'KEEP', S.NONE, 'T0 path-to-verifier map · handed-off customer-web prefixes are skipped so deleted trees do not select removed UI checkers');
   add('verify-stack-lock', re(/^tooling\/verify\/stack-lock\.cjs$/), 'BACKEND_INFRA', 'KEEP', S.NONE, 'T0 backend stack lock (Nest · Rust · Cloudflare Workers · no UI packages)');
   add('verify-backend-runner', re(/^tooling\/verify\/backend\/run-all\.cjs$/), 'BACKEND_INFRA', 'KEEP', S.NONE, 'T1 backend 러너 · mixed 검증기 백엔드 포트(tooling/verify/backend/**) 전부 순차 실행 · skip 0');
   add('verify-backend-port', re(/^tooling\/verify\/backend\//), 'BACKEND_TEST', 'KEEP', S.NONE, 'mixed 검증기 백엔드 어서션 포트 (원본 SHA 86f15964 · UI 어서션은 quality/putduk-web-ui-assertions-handoff.md) · evidence 재판정 대상');
-  add('verify-stubs-runner', re(/^tooling\/verify\/stubs\/run-all\.cjs$/), 'MIXED', 'SPLIT', S.UI_TEST_REMOVAL, 'T1 도메인 스텁 러너 · retired skip 제거(5단계) · live 목록에 4단계 UI 검증기 이름만 잔존');
+  add('verify-stubs-runner', re(/^tooling\/verify\/stubs\/run-all\.cjs$/), 'BACKEND_INFRA', 'KEEP', S.NONE, 'T1 domain stub runner · live list is backend checkers only');
   add('verify-lib-ui-capture', re(/^tooling\/verify\/lib\/(capture-admin-visual|capture-visual-reconciliation|platform-redesign-measure|run-account-spec)\.cjs$/), 'OBSOLETE', 'DELETE', S.UI_TEST_REMOVAL, '브라우저 캡처/시각 측정 라이브러리');
   add('verify-catalog', re(/^tooling\/verify\/CATALOG\.md$/), 'MIXED', 'SPLIT', S.MARKDOWN_CLEANUP, '검증기 카탈로그 · UI 행 제거 (stack-lock mustExist)');
   add('verify-responsive', re(/^tooling\/verify\/responsive\//), 'OBSOLETE', 'DELETE', S.UI_TEST_REMOVAL, 'Canon 뷰포트 Playwright 시각 회귀 하네스 (브라우저)');
-  add('verify-rc-formal', re(/^tooling\/verify\/rc-formal\.cjs$/), 'MIXED', 'SPLIT', S.MIXED_SPLIT, 'RC_FORMAL 잠금 검증기 · 해시 범위에 tooling/e2e/ 등 삭제 예정 트리 포함 → 범위 재정의 필요 (engine-evidence-refresh-check.yml 실행)');
+  add('verify-rc-formal', re(/^tooling\/verify\/rc-formal\.cjs$/), 'BACKEND_TEST', 'KEEP', S.NONE, 'RC_FORMAL lock verifier · evidence-only allowlist includes remaining HTTP harness under tooling/e2e');
   add('legacy-plan-verify', re(/^tooling\/verify\/legacy-plan-migration\.cjs$/), 'OBSOLETE', 'DELETE', S.MARKDOWN_CLEANUP, 'REL-017 레거시 플랜 레지스트리(21파일 · executionAuthority=NO 스탬프) 검증기 — 플랜·레지스트리·스탬프와 함께 제거 (domain-by-path 매핑도 함께 삭제)');
   add('verify-fixture', re(/^tooling\/verify\/fixtures\//), 'BACKEND_TEST', 'KEEP', S.NONE, '검증기 픽스처 (소비 검증기 class 상속)');
   add('verify', re(/^tooling\/verify\//), 'BACKEND_TEST', 'KEEP', S.NONE, '검증기 (evidence 재판정)');
@@ -649,7 +665,8 @@ function seedRules() {
   // tooling/e2e · engine-acceptance · pwa · perf · scaffold · deploy · release · recovery · misc
   add('e2e-harness-spec', re(/^tooling\/e2e\/specs\/(auth-rate-limit|ledger-user-query|money-red-team)\.spec\.cjs$/), 'BACKEND_TEST', 'KEEP', S.PACKAGE_CLEANUP, '브라우저 0 · HTTP/in-process 하네스 · @playwright/test는 러너로만 사용 → 8단계에서 node:test 러너로 교체');
   add('e2e-money-unavailable', re(/^tooling\/e2e\/(specs\/money-unavailable\.spec\.cjs|lib\/money-unavailable\.cjs)$/), 'CUSTOMER_WEB', 'MOVE', S.UI_TEST_REMOVAL, 'moneyDisplayState = 화면 표시 상태 규칙(UNAVAILABLE vs 0) · 백엔드 소비자 0 · putduk-web 인계');
-  add('e2e-qa-lab', re(/^tooling\/e2e\/(specs\/qa-lab-expansion\.spec\.cjs|lib\/qa-lab-expansion\.cjs|expansion\/|specs\/happy-path\.placeholder\.spec\.cjs|helpers\/auth-session\.cjs|persona\/)/), 'OBSOLETE', 'DELETE', S.UI_TEST_REMOVAL, 'REL-500 QA Lab 매트릭스: 셀이 브라우저 closure spec 파일에 바인딩(assertBoundSpecs) · 스펙 삭제 후 성립 불가');
+  add('e2e-auth-session', re(/^tooling\/e2e\/helpers\/auth-session(\.runtime\.test)?\.cjs$/), 'BACKEND_TEST', 'KEEP', S.NONE, 'in-process QA isolation session helper + node:test (no browser)');
+  add('e2e-qa-lab', re(/^tooling\/e2e\/(specs\/qa-lab-expansion\.spec\.cjs|lib\/qa-lab-expansion\.cjs|expansion\/|specs\/happy-path\.placeholder\.spec\.cjs|persona\/)/), 'OBSOLETE', 'DELETE', S.UI_TEST_REMOVAL, 'REL-500 QA Lab matrix bound to deleted browser closure specs');
   add('e2e-browser-spec', re(/^tooling\/e2e\/specs\/.*\.spec\.cjs$/), 'OBSOLETE', 'DELETE', S.UI_TEST_REMOVAL, 'Playwright page.* 브라우저 E2E (고객 웹/어드민 화면)');
   add('e2e-lib-backend', re(/^tooling\/e2e\/lib\/(auth-rate-limit-harness|ledger-user-query-harness|money-mutation-gate|money-red-team|qa-env-isolation-guard)\.cjs$/), 'BACKEND_TEST', 'KEEP', S.NONE, 'HTTP/in-process 하네스 (브라우저 0)');
   add('e2e-fixture-qa', re(/^tooling\/e2e\/fixtures\/qa-allowlist\.v1\.json$/), 'BACKEND_TEST', 'KEEP', S.NONE, 'QA 격리 allowlist (qa-env-isolation-guard · release-integration-contract paths)');
@@ -659,9 +676,9 @@ function seedRules() {
   add('engine-acceptance', re(/^tooling\/engine-acceptance\//), 'BACKEND_TEST', 'KEEP', S.NONE, 'Engine Acceptance QA 하네스 (engine-acceptance*.yml)');
   add('ebay-resilience', re(/^tooling\/ebay-resilience\//), 'BACKEND_TEST', 'KEEP', S.NONE, 'eBay fault-injection (ebay-fault-injection.yml)');
   add('pwa-vapid', re(/^tooling\/pwa\/generate-vapid\.mjs$/), 'BACKEND_INFRA', 'KEEP', S.NONE, 'Web Push VAPID 키 생성 (서버 발송 측)');
-  add('pwa-webauthn-rp', re(/^tooling\/pwa\/webauthn-rp\.cjs$/), 'MIXED', 'SPLIT', S.MIXED_SPLIT, 'RP id/origin 로더(domain.manifest · 서버 WebAuthn RP SSOT)와 브라우저 UX 헬퍼(isWebAuthnSupported · optionalHaptic)가 한 파일');
+  add('pwa-webauthn-rp', re(/^tooling\/pwa\/webauthn-rp\.cjs$/), 'BACKEND_INFRA', 'KEEP', S.NONE, 'WebAuthn RP id/origin loader (domain.manifest · Nest RP SSOT)');
   add('pwa-webauthn-ux', re(/^tooling\/pwa\/webauthn-ux(-harness\.cjs|\.spec\.cjs)$/), 'OBSOLETE', 'DELETE', S.UI_TEST_REMOVAL, 'WebAuthn 브라우저 지원 감지·햅틱 UX 케이스 (화면 측)');
-  add('pwa-day1-cert', re(/^tooling\/pwa\/pwa-day1-certification(-harness\.cjs|\.spec\.cjs)$/), 'MIXED', 'SPLIT', S.MIXED_SPLIT, 'apps/web manifest.webmanifest·sw.js·PwaRuntime(삭제됨) + push-dispatcher kill-switch 확인이 한 하네스');
+  add('pwa-day1-cert', re(/^tooling\/pwa\/pwa-day1-certification(-harness\.cjs|\.spec\.cjs)$/), 'BACKEND_TEST', 'KEEP', S.NONE, 'push-dispatcher kill-switch + VAPID/RP contract files; customer-web install/offline items handed off');
   add('pwa-lighthouse', re(/^tooling\/pwa\/lighthouse-pwa\.ci\.cjs$/), 'OBSOLETE', 'DELETE', S.UI_TEST_REMOVAL, 'PWA Lighthouse 정적 예산 (UI 성능)');
   add('pwa', re(/^tooling\/pwa\//), 'BACKEND_TEST', 'KEEP', S.NONE, 'push-dispatcher dispatch/channel-filter 하네스 (workers/push-dispatcher/src/lib 소비 · 브라우저 0)');
   add('perf', re(/^tooling\/perf\//), 'OBSOLETE', 'DELETE', S.UI_TEST_REMOVAL, 'Lighthouse 정적 예산 (UI 성능)');
@@ -679,7 +696,7 @@ function seedRules() {
   add('legacy-plan-stamp', re(/^tooling\/legacy-plan-stamp\.cjs$/), 'OBSOLETE', 'DELETE', S.MARKDOWN_CLEANUP, 'REL-017 레거시 플랜 권위 스탬프 — 플랜 정리와 함께 제거');  add('tooling-backend', re(/^tooling\/backend\//), 'BACKEND_INFRA', 'KEEP', S.NONE, '백엔드 전용 경계 도구 (이 생성기)');
 
   // root · config · misc
-  add('root-package', (f) => f === 'package.json', 'MIXED', 'SPLIT', S.PACKAGE_CLEANUP, '루트 scripts/devDependencies에 UI 검증·Playwright·axe·jsdom 잔존');
+  add('root-package', (f) => f === 'package.json', 'BACKEND_INFRA', 'KEEP', S.NONE, 'root scripts/devDependencies are backend toolchain (Nest · wrangler · husky · typescript)');
   add('root-workspace', (f) => f === 'pnpm-workspace.yaml', 'BACKEND_INFRA', 'KEEP', S.NONE, 'pnpm workspace (packages/* services/* workers/* tooling/*)');
   add('root-lock', (f) => f === 'pnpm-lock.yaml', 'GENERATED', 'KEEP', S.PACKAGE_CLEANUP, 'lockfile · 패키지 정리 후 재생성');
   add('root-docker', (f) => f === 'docker-compose.dev.yml', 'BACKEND_INFRA', 'KEEP', S.NONE, '로컬 Postgres/Redis 옵션 (Phase0 기본 OFF)');
@@ -1086,6 +1103,7 @@ function build() {
   const NEUTRAL_TARGET_RE = /^(tooling\/verify\/|tooling\/backend\/|\.github\/|\.husky\/|\.vscode\/|\.cursor\/|docs\/|quality\/|CONSTITUTION\/|package\.json$|pnpm-workspace\.yaml$|pnpm-lock\.yaml$|AGENTS\.md$|TOOLCHAIN\.md$|\.npmrc$|\.nvmrc$|\.node-version$|\.gitignore$|\.cursorignore$|\.env\.example$|rust-toolchain\.toml$|docker-compose\.dev\.yml$|\.markdownlint)/;
   const isSelfFamily = (t) => NEUTRAL_TARGET_RE.test(t) || seedClassOf(t) === "MIXED" || seedClassOf(t) === "GENERATED";
   const refSide = (r) => {
+    if (r.absence) return "neutral";
     if (r.deleted) return "ui";
     // whole-directory / glob scope literals (e.g. "tooling/e2e/", "governance/**") are scope bookkeeping, not domain assertions
     if (r.resolvedAs === "dir" || r.resolvedAs === "glob") return "neutral";

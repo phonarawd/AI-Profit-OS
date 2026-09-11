@@ -29,15 +29,10 @@ function gitLines(args) {
 
 function classifyBucket(relPath) {
   const p = relPath.replace(/\\/g, "/");
-  if (
-    p.startsWith("apps/web/components/spark-dash-home/") ||
-    p === "apps/web/app/HomeDesktopClient.tsx" ||
-    p.startsWith("apps/web/public/spark-dash/") ||
-    p === "apps/web/scripts/freeze-home-qa.mjs" ||
-    p === "governance/consumer-home-approval/home-approval-freeze.v1.json"
-  ) {
-    return "HOME-FROZEN";
-  }
+  const segs = p.split("/");
+  if (segs[0] === "apps" && (segs[1] === "web" || segs[1] === "admin")) return "FOREIGN_UI";
+  if (segs[0] === "packages" && segs[1] === "ui") return "FOREIGN_UI";
+  if (segs[0] === "governance" && segs[1] === "consumer-home-approval") return "FOREIGN_UI";
   if (
     p === ".cursor/mcp.json" ||
     p === ".cursor/permissions.json" ||
@@ -68,15 +63,11 @@ function classifyBucket(relPath) {
   ) {
     return "HOLD";
   }
-  if (p.startsWith("apps/web/components/support/") || p === "apps/web/app/me/support/page.tsx") {
-    return "HOLD";
-  }
   if (p.startsWith("governance/release-inventory/")) return "KEEP";
   if (p === "governance/security/http-headers.v1.json" || p === "tooling/security/http-headers.cjs" || p === "tooling/verify/rel-401-security-headers.cjs") {
     return "KEEP";
   }
   if (p.startsWith(".github/workflows/")) return "KEEP";
-  if (p.startsWith("apps/web/app/wallet/deposit/")) return "HOLD";
   if (p.startsWith(".cursor/") || p.startsWith("tooling/mcp/") || p.startsWith("tooling/cleanup/") || p.startsWith("tooling/dev/") || p === ".vscode/settings.json") {
     return "HOLD";
   }

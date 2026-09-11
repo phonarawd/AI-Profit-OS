@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-09-11T16:27:49.541Z",
- "headSha": "cc50e4cf971f2ba1510de9d57ffd30fad30fa6b1",
+ "generatedAt": "2026-09-11T19:27:24.097Z",
+ "headSha": "5407260f11359d674a70b7dcf603b92cae8f52b6",
  "generator": "tooling/backend/ownership-graph.cjs",
  "overrides": "tooling/backend/ownership-overrides.json",
  "inputs": {
@@ -54,31 +54,28 @@
  },
  "totals": {
   "byClass": {
-   "BACKEND_INFRA": 223,
+   "BACKEND_INFRA": 238,
    "BACKEND_DOC": 240,
-   "MIXED": 24,
    "FUTURE_ADMIN_REQUIREMENT": 2,
-   "BACKEND_TEST": 333,
+   "BACKEND_TEST": 342,
    "BACKEND_CONTRACT": 83,
    "BACKEND_RUNTIME": 466,
    "GENERATED": 5
   },
   "byDecision": {
-   "KEEP": 1352,
-   "SPLIT": 24
+   "KEEP": 1376
   },
   "byClassDecision": {
-   "BACKEND_INFRA/KEEP": 223,
+   "BACKEND_INFRA/KEEP": 238,
    "BACKEND_DOC/KEEP": 240,
-   "MIXED/SPLIT": 24,
    "FUTURE_ADMIN_REQUIREMENT/KEEP": 2,
-   "BACKEND_TEST/KEEP": 333,
+   "BACKEND_TEST/KEEP": 342,
    "BACKEND_CONTRACT/KEEP": 83,
    "BACKEND_RUNTIME/KEEP": 466,
    "GENERATED/KEEP": 5
   },
   "unknown": 0,
-  "overridesApplied": 112,
+  "overridesApplied": 113,
   "overridesUnused": [
    ".cursor/rules/canon-ui.mdc",
    ".cursor/rules/home-presentation-freeze.mdc",
@@ -136,10 +133,10 @@
   },
   "(root)": {
    "total": 18,
-   "KEEP": 14,
+   "KEEP": 18,
    "DELETE": 0,
    "MOVE": 0,
-   "SPLIT": 4
+   "SPLIT": 0
   },
   ".github/actions": {
    "total": 1,
@@ -171,17 +168,17 @@
   },
   ".husky": {
    "total": 2,
-   "KEEP": 1,
+   "KEEP": 2,
    "DELETE": 0,
    "MOVE": 0,
-   "SPLIT": 1
+   "SPLIT": 0
   },
   ".vscode": {
    "total": 2,
-   "KEEP": 0,
+   "KEEP": 2,
    "DELETE": 0,
    "MOVE": 0,
-   "SPLIT": 2
+   "SPLIT": 0
   },
   "CONSTITUTION": {
    "total": 22,
@@ -486,10 +483,10 @@
   },
   "tooling/deploy": {
    "total": 13,
-   "KEEP": 12,
+   "KEEP": 13,
    "DELETE": 0,
    "MOVE": 0,
-   "SPLIT": 1
+   "SPLIT": 0
   },
   "tooling/dev": {
    "total": 3,
@@ -500,10 +497,10 @@
   },
   "tooling/e2e": {
    "total": 14,
-   "KEEP": 13,
+   "KEEP": 14,
    "DELETE": 0,
    "MOVE": 0,
-   "SPLIT": 1
+   "SPLIT": 0
   },
   "tooling/ebay-resilience": {
    "total": 1,
@@ -521,10 +518,10 @@
   },
   "tooling/github": {
    "total": 2,
-   "KEEP": 1,
+   "KEEP": 2,
    "DELETE": 0,
    "MOVE": 0,
-   "SPLIT": 1
+   "SPLIT": 0
   },
   "tooling/lowspec": {
    "total": 4,
@@ -535,31 +532,31 @@
   },
   "tooling/pwa": {
    "total": 8,
-   "KEEP": 5,
+   "KEEP": 8,
    "DELETE": 0,
    "MOVE": 0,
-   "SPLIT": 3
+   "SPLIT": 0
   },
   "tooling/recovery": {
    "total": 10,
-   "KEEP": 9,
+   "KEEP": 10,
    "DELETE": 0,
    "MOVE": 0,
-   "SPLIT": 1
+   "SPLIT": 0
   },
   "tooling/release": {
    "total": 19,
-   "KEEP": 18,
+   "KEEP": 19,
    "DELETE": 0,
    "MOVE": 0,
-   "SPLIT": 1
+   "SPLIT": 0
   },
   "tooling/schemas": {
    "total": 2,
-   "KEEP": 1,
+   "KEEP": 2,
    "DELETE": 0,
    "MOVE": 0,
-   "SPLIT": 1
+   "SPLIT": 0
   },
   "tooling/security": {
    "total": 2,
@@ -577,10 +574,10 @@
   },
   "tooling/verify": {
    "total": 241,
-   "KEEP": 233,
+   "KEEP": 241,
    "DELETE": 0,
    "MOVE": 0,
-   "SPLIT": 8
+   "SPLIT": 0
   },
   "workers": {
    "total": 2,
@@ -839,7 +836,7 @@
     "file": "tooling/verify/backend/auth/webauthn-ux-rp.cjs",
     "class": "BACKEND_TEST",
     "decision": "KEEP",
-    "backendRefs": 7
+    "backendRefs": 8
    },
    {
     "file": "tooling/verify/backend/benefit-referral/benefit-hub-surfaces.cjs",
@@ -1388,9 +1385,9 @@
     "targets": [
      "tooling/verify/root-domain-env.cjs"
     ],
-    "class": "MIXED",
-    "decision": "SPLIT",
-    "reason": "대상 파일이 SPLIT 대상: tooling/verify/root-domain-env.cjs"
+    "class": "BACKEND_TEST",
+    "decision": "KEEP",
+    "reason": "대상 파일 KEEP: tooling/verify/root-domain-env.cjs"
    },
    {
     "script": "verify:cf-infra",
@@ -1418,9 +1415,9 @@
     "targets": [
      "tooling/verify/phase0-bootstrap.cjs"
     ],
-    "class": "MIXED",
-    "decision": "SPLIT",
-    "reason": "대상 파일이 SPLIT 대상: tooling/verify/phase0-bootstrap.cjs"
+    "class": "BACKEND_TEST",
+    "decision": "KEEP",
+    "reason": "대상 파일 KEEP: tooling/verify/phase0-bootstrap.cjs"
    },
    {
     "script": "verify:ebay-worker-deploy-path",
@@ -1708,9 +1705,9 @@
     "targets": [
      "tooling/verify/rel-601-staging-regression.cjs"
     ],
-    "class": "MIXED",
-    "decision": "SPLIT",
-    "reason": "대상 파일이 SPLIT 대상: tooling/verify/rel-601-staging-regression.cjs"
+    "class": "BACKEND_TEST",
+    "decision": "KEEP",
+    "reason": "대상 파일 KEEP: tooling/verify/rel-601-staging-regression.cjs"
    },
    {
     "script": "verify:rel-602-staging-rollback",
@@ -2458,9 +2455,9 @@
     "targets": [
      "tooling/verify/governance-observation-registry.cjs"
     ],
-    "class": "MIXED",
-    "decision": "SPLIT",
-    "reason": "대상 파일이 SPLIT 대상: tooling/verify/governance-observation-registry.cjs"
+    "class": "BACKEND_TEST",
+    "decision": "KEEP",
+    "reason": "대상 파일 KEEP: tooling/verify/governance-observation-registry.cjs"
    },
    {
     "script": "verify:engine-acceptance",
@@ -2488,9 +2485,9 @@
     "targets": [
      "tooling/verify/rc-formal.cjs"
     ],
-    "class": "MIXED",
-    "decision": "SPLIT",
-    "reason": "대상 파일이 SPLIT 대상: tooling/verify/rc-formal.cjs"
+    "class": "BACKEND_TEST",
+    "decision": "KEEP",
+    "reason": "대상 파일 KEEP: tooling/verify/rc-formal.cjs"
    },
    {
     "script": "verify:db-recon-inventory",
@@ -2608,9 +2605,9 @@
     "targets": [
      "tooling/verify/qa-env-isolation-guard.cjs"
     ],
-    "class": "MIXED",
-    "decision": "SPLIT",
-    "reason": "대상 파일이 SPLIT 대상: tooling/verify/qa-env-isolation-guard.cjs"
+    "class": "BACKEND_TEST",
+    "decision": "KEEP",
+    "reason": "대상 파일 KEEP: tooling/verify/qa-env-isolation-guard.cjs"
    },
    {
     "script": "verify:settlement-rule-parity",
@@ -3077,9 +3074,9 @@
     "targets": [
      "tooling/deploy/cf-preflight.cjs"
     ],
-    "class": "MIXED",
-    "decision": "SPLIT",
-    "reason": "대상 파일이 SPLIT 대상: tooling/deploy/cf-preflight.cjs"
+    "class": "BACKEND_INFRA",
+    "decision": "KEEP",
+    "reason": "대상 파일 KEEP: tooling/deploy/cf-preflight.cjs"
    },
    {
     "script": "cf:deploy:workers",
@@ -7292,13 +7289,13 @@
   },
   {
    "path": ".cursorignore",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "8단계 패키지 정리",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
    "rule": "root-toolchain-files",
    "reasons": [
     "툴체인/무시 설정",
-    "[override] .next/·.open-next/·playwright-report/ 무시 규칙만 제거."
+    "[override] UI artifact ignore rules (.next/.open-next/playwright-report) removed. Agent index skip list is backend-only."
    ],
    "evidence": [
     {
@@ -7332,7 +7329,7 @@
    "blockers": [],
    "lastCommit": "2026-08-10T04:09:53+09:00",
    "lastCommitSha": "8127046d1de45333a76e10a8abf988f7dd3672ce",
-   "sizeBytes": 985,
+   "sizeBytes": 906,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -7346,22 +7343,18 @@
   },
   {
    "path": ".env.example",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "8단계 패키지 정리",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
    "rule": "root-envexample",
    "reasons": [
     "환경변수 예시 (evidence 재판정)",
-    "[override] NEXT_PUBLIC_* (SUPABASE_URL/ANON_KEY·OAUTH_KAKAO_ENABLED·VAPID_PUBLIC_KEY) 고객 웹 변수 제거 · Nest/Workers 변수 유지 · root-domain-env.cjs가 ROOT_DOMAIN= 존재를 검사."
+    "[override] NEXT_PUBLIC_* customer-web vars removed. Nest/Workers/VAPID server vars + ROOT_DOMAIN remain."
    ],
    "evidence": [
     {
      "kind": "verifier-reads",
      "ref": "services/api-nest/src/config/phase0.env.ts"
-    },
-    {
-     "kind": "verifier-reads",
-     "ref": "DELETED_UI:apps/web"
     },
     {
      "kind": "verifier-reads",
@@ -7393,28 +7386,12 @@
     "tooling/verify/secrets.cjs|verifier-reads",
     "tooling/verify/webauthn-fallback-pointer.cjs|verifier-reads"
    ],
-   "blockers": [
-    "tooling/recovery/classify-local-state.cjs(deploy-cmd)[SPLIT]",
-    "tooling/recovery/scan-secret-risk.cjs(deploy-cmd)",
-    "tooling/verify/backend/opportunity-engine/asset-image-surface.cjs(verifier-reads)",
-    "tooling/verify/conversation-state-bounded.cjs(verifier-reads)",
-    "tooling/verify/domain-bootstrap.cjs(verifier-reads)",
-    "tooling/verify/email-provider-resend.cjs(verifier-reads)",
-    "tooling/verify/kyc-r2-only.cjs(verifier-reads)",
-    "tooling/verify/listing-legs-day1.cjs(verifier-reads)",
-    "tooling/verify/money-wallet-auth-remediation.cjs(verifier-reads)",
-    "tooling/verify/phase0-bootstrap.cjs(verifier-reads)[SPLIT]",
-    "tooling/verify/root-domain-env.cjs(verifier-reads)[SPLIT]",
-    "tooling/verify/secrets.cjs(verifier-reads)",
-    "tooling/verify/webauthn-fallback-pointer.cjs(verifier-reads)"
-   ],
+   "blockers": [],
    "lastCommit": "2026-08-21T04:17:32+09:00",
    "lastCommitSha": "44dfc341bcb8e12fc26b0165dce5429c9fb90d8c",
-   "sizeBytes": 10912,
+   "sizeBytes": 10564,
    "refSummary": {
-    "deletedUiRefs": [
-     "apps/web"
-    ],
+    "deletedUiRefs": [],
     "uiRefs": [],
     "backendRefs": [
      "services/api-nest/src/config/phase0.env.ts",
@@ -8587,13 +8564,13 @@
   },
   {
    "path": ".gitignore",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "8단계 패키지 정리",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
    "rule": "root-toolchain-files",
    "reasons": [
     "툴체인/무시 설정",
-    "[override] .next/·.open-next/·playwright-report/ 등 UI 산출물 무시 규칙만 제거 · 나머지 유지."
+    "[override] UI artifact ignore rules (.next/.open-next/playwright-report) removed. Remaining ignores are backend/toolchain."
    ],
    "evidence": [
     {
@@ -8631,14 +8608,10 @@
     "tooling/recovery/scan-secret-risk.cjs|deploy-cmd",
     "tooling/verify/rc-formal.cjs|verifier-reads"
    ],
-   "blockers": [
-    "scripts/verify-night-guard.mjs(verifier-reads)",
-    "tooling/recovery/scan-secret-risk.cjs(deploy-cmd)",
-    "tooling/verify/rc-formal.cjs(verifier-reads)[SPLIT]"
-   ],
+   "blockers": [],
    "lastCommit": "2026-09-11T13:22:36+09:00",
    "lastCommitSha": "720e7d54b9d5f0727266fc8388fb4cbc6e73ed90",
-   "sizeBytes": 1274,
+   "sizeBytes": 1203,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -8682,13 +8655,13 @@
   },
   {
    "path": ".husky/pre-push",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "8단계 패키지 정리",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
    "rule": "husky",
    "reasons": [
     "git hooks (T0/T1)",
-    "[override] NEXT_DEV_WEBPACK=1 export(Next 전용) 제거 · pnpm verify:gate:push 유지."
+    "[override] NEXT_DEV_WEBPACK export removed. Hook runs pnpm verify:gate:push only."
    ],
    "evidence": [],
    "referrers": [
@@ -8698,12 +8671,10 @@
     "scripts/verify-project-boundary.mjs|verifier-reads",
     "tooling/backend/ownership-overrides.json|verifier-reads"
    ],
-   "blockers": [
-    "scripts/verify-project-boundary.mjs(verifier-reads)"
-   ],
+   "blockers": [],
    "lastCommit": "2026-09-01T03:38:53+09:00",
    "lastCommitSha": "4c29baeef5fafea6d61226ddabe1e3891056de60",
-   "sizeBytes": 146,
+   "sizeBytes": 23,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -8952,13 +8923,13 @@
   },
   {
    "path": ".vscode/extensions.json",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "8단계 패키지 정리",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
    "rule": "vscode",
    "reasons": [
     "IDE 설정",
-    "[override] bradlc.vscode-tailwindcss 추천 제거."
+    "[override] bradlc.vscode-tailwindcss recommendation removed."
    ],
    "evidence": [],
    "referrers": [
@@ -8971,7 +8942,7 @@
    "blockers": [],
    "lastCommit": "2026-08-09T06:54:34+09:00",
    "lastCommitSha": "0eaa5a17413da2d4f8d6852200608d5fc7274602",
-   "sizeBytes": 488,
+   "sizeBytes": 455,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -8979,19 +8950,19 @@
     "governanceBackendRefs": [],
     "sdkOnlyUi": false,
     "browserHarness": false,
-    "uiMarkers": true
+    "uiMarkers": false
    },
    "override": true
   },
   {
    "path": ".vscode/settings.json",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "8단계 패키지 정리",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
    "rule": "vscode",
    "reasons": [
     "IDE 설정",
-    "[override] tailwindCSS.files.exclude·.next/.open-next/playwright-report exclude 항목 제거 · markdownlint/TS server 설정 유지."
+    "[override] tailwindCSS.files.exclude and UI artifact exclude entries removed. markdownlint/TS server/low-spec settings remain."
    ],
    "evidence": [
     {
@@ -9022,12 +8993,10 @@
     "tooling/backend/ownership-overrides.json|verifier-reads",
     "tooling/recovery/classify-local-state.cjs|deploy-cmd"
    ],
-   "blockers": [
-    "tooling/recovery/classify-local-state.cjs(deploy-cmd)[SPLIT]"
-   ],
+   "blockers": [],
    "lastCommit": "2026-08-10T04:09:53+09:00",
    "lastCommitSha": "8127046d1de45333a76e10a8abf988f7dd3672ce",
-   "sizeBytes": 4708,
+   "sizeBytes": 4231,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -9035,7 +9004,7 @@
     "governanceBackendRefs": [],
     "sdkOnlyUi": false,
     "browserHarness": false,
-    "uiMarkers": true
+    "uiMarkers": false
    },
    "override": true
   },
@@ -23042,7 +23011,7 @@
    "rule": "gov-rest",
    "reasons": [
     "시드 없음 → evidence/overrides",
-    "KEEP 검증기/워크플로가 읽음: tooling/verify/push-channel-prefs.cjs(verifier-reads)",
+    "KEEP 검증기/워크플로가 읽음: tooling/pwa/pwa-day1-certification-harness.cjs(test-ref), tooling/verify/push-channel-prefs.cjs(verifier-reads)",
     "[override] REL-021 자동 Push 채널 필터 계약 · workers/push-dispatcher channel-filter.cjs 근거."
    ],
    "evidence": [
@@ -23060,6 +23029,7 @@
     "quality/putduk-web-ui-assertions-handoff.md|doc-link|governance/pwa",
     "tooling/backend/ownership-graph.cjs|verifier-reads|governance/**",
     "tooling/backend/ownership-overrides.json|verifier-reads",
+    "tooling/pwa/pwa-day1-certification-harness.cjs|test-ref",
     "tooling/verify/CATALOG.md|verifier-reads|governance/pwa/**",
     "tooling/verify/push-channel-prefs.cjs|verifier-reads"
    ],
@@ -23088,7 +23058,7 @@
    "rule": "gov-rest",
    "reasons": [
     "시드 없음 → evidence/overrides",
-    "KEEP 검증기/워크플로가 읽음: tooling/verify/pwa-push-badge.cjs(verifier-reads)",
+    "KEEP 검증기/워크플로가 읽음: tooling/pwa/pwa-day1-certification-harness.cjs(test-ref), tooling/verify/pwa-push-badge.cjs(verifier-reads)",
     "[override] REL-020 pushEnabled kill-switch 계약 · adminPath /api/v1/admin/system-control/push."
    ],
    "evidence": [],
@@ -23101,6 +23071,7 @@
     "quality/putduk-web-ui-assertions-handoff.md|doc-link|governance/pwa",
     "tooling/backend/ownership-graph.cjs|verifier-reads|governance/**",
     "tooling/backend/ownership-overrides.json|verifier-reads",
+    "tooling/pwa/pwa-day1-certification-harness.cjs|test-ref",
     "tooling/verify/CATALOG.md|verifier-reads|governance/pwa/**",
     "tooling/verify/pwa-push-badge.cjs|verifier-reads"
    ],
@@ -27858,7 +27829,6 @@
    "rule": "gov-rm-ui",
    "reasons": [
     "고객 화면(REL-1xx)·어드민 화면(REL-20x)·웹 lint/axe/pwa/device/webauthn-ux·lighthouse·age-cohort 증거",
-    "보유 검증기가 전부 SPLIT 대상(tooling/pwa/pwa-day1-certification-harness.cjs(test-ref)) — 분리 시 UI 부분과 함께 제거 가능 · 내용 기준으로 판정",
     "KEEP 검증기/워크플로 참조 0 · UI/OBSOLETE/문서 참조자만: tooling/backend/ownership-graph.cjs, tooling/backend/ownership-overrides.json",
     "[override] push-dispatcher kill-switch·dispatch 증거(서버) · badge UI 절은 부속."
    ],
@@ -27922,8 +27892,7 @@
     "quality/backend-residual-report.md|doc-link|governance/release-master",
     "quality/putduk-web-ui-assertions-handoff.md|doc-link|governance/**",
     "tooling/backend/ownership-graph.cjs|verifier-reads|governance/**",
-    "tooling/backend/ownership-overrides.json|verifier-reads",
-    "tooling/pwa/pwa-day1-certification-harness.cjs|test-ref"
+    "tooling/backend/ownership-overrides.json|verifier-reads"
    ],
    "blockers": [],
    "lastCommit": "2026-08-21T04:17:32+09:00",
@@ -27951,7 +27920,6 @@
    "rule": "gov-rm-ui",
    "reasons": [
     "고객 화면(REL-1xx)·어드민 화면(REL-20x)·웹 lint/axe/pwa/device/webauthn-ux·lighthouse·age-cohort 증거",
-    "보유 검증기가 전부 SPLIT 대상(tooling/pwa/pwa-day1-certification-harness.cjs(test-ref)) — 분리 시 UI 부분과 함께 제거 가능 · 내용 기준으로 판정",
     "KEEP 검증기/워크플로 참조 0 · UI/OBSOLETE/문서 참조자만: tooling/backend/ownership-graph.cjs, tooling/backend/ownership-overrides.json",
     "[override] push-dispatcher 채널 필터 증거(서버)."
    ],
@@ -28003,8 +27971,7 @@
     "quality/backend-residual-report.md|doc-link|governance/release-master",
     "quality/putduk-web-ui-assertions-handoff.md|doc-link|governance/**",
     "tooling/backend/ownership-graph.cjs|verifier-reads|governance/**",
-    "tooling/backend/ownership-overrides.json|verifier-reads",
-    "tooling/pwa/pwa-day1-certification-harness.cjs|test-ref"
+    "tooling/backend/ownership-overrides.json|verifier-reads"
    ],
    "blockers": [],
    "lastCommit": "2026-08-21T04:29:22+09:00",
@@ -29852,7 +29819,6 @@
    "rule": "gov-ui-dir",
    "reasons": [
     "UI 화면 증거 디렉터리 (KEEP 검증기 참조 시 뒤집힘)",
-    "보유 검증기가 전부 SPLIT 대상(tooling/verify/rel-601-staging-regression.cjs(verifier-reads)) — 분리 시 UI 부분과 함께 제거 가능 · 내용 기준으로 판정",
     "KEEP 검증기/워크플로 참조 0 · UI/OBSOLETE/문서 참조자만: tooling/backend/ownership-graph.cjs, tooling/backend/ownership-overrides.json",
     "[override] [5th-stage] kept after split or KEEP verifier evidence"
    ],
@@ -29919,8 +29885,7 @@
     "quality/putduk-web-ui-assertions-handoff.md|doc-link|governance/**",
     "tooling/backend/ownership-graph.cjs|verifier-reads|governance/responsive/",
     "tooling/backend/ownership-graph.cjs|verifier-reads|governance/**",
-    "tooling/backend/ownership-overrides.json|verifier-reads",
-    "tooling/verify/rel-601-staging-regression.cjs|verifier-reads"
+    "tooling/backend/ownership-overrides.json|verifier-reads"
    ],
    "blockers": [],
    "lastCommit": "2026-08-21T03:52:50+09:00",
@@ -29959,7 +29924,6 @@
    "rule": "gov-ui-dir",
    "reasons": [
     "UI 화면 증거 디렉터리 (KEEP 검증기 참조 시 뒤집힘)",
-    "보유 검증기가 전부 SPLIT 대상(tooling/verify/rel-601-staging-regression.cjs(verifier-reads)) — 분리 시 UI 부분과 함께 제거 가능 · 내용 기준으로 판정",
     "KEEP 검증기/워크플로 참조 0 · UI/OBSOLETE/문서 참조자만: tooling/backend/ownership-graph.cjs, tooling/backend/ownership-overrides.json",
     "[override] [5th-stage] kept after split or KEEP verifier evidence"
    ],
@@ -29972,8 +29936,7 @@
     "quality/putduk-web-ui-assertions-handoff.md|doc-link|governance/**",
     "tooling/backend/ownership-graph.cjs|verifier-reads|governance/responsive/",
     "tooling/backend/ownership-graph.cjs|verifier-reads|governance/**",
-    "tooling/backend/ownership-overrides.json|verifier-reads",
-    "tooling/verify/rel-601-staging-regression.cjs|verifier-reads"
+    "tooling/backend/ownership-overrides.json|verifier-reads"
    ],
    "blockers": [],
    "lastCommit": "2026-08-21T03:52:50+09:00",
@@ -30175,7 +30138,6 @@
    "rule": "gov-ui-dir",
    "reasons": [
     "UI 화면 증거 디렉터리 (KEEP 검증기 참조 시 뒤집힘)",
-    "보유 검증기가 전부 SPLIT 대상(tooling/verify/rel-601-staging-regression.cjs(verifier-reads)) — 분리 시 UI 부분과 함께 제거 가능 · 내용 기준으로 판정",
     "KEEP 검증기/워크플로 참조 0 · UI/OBSOLETE/문서 참조자만: tooling/backend/ownership-graph.cjs, tooling/backend/ownership-overrides.json, tooling/verify/fixtures/rel-601-staging-regression.v1.json",
     "[override] [5th-stage] kept after split or KEEP verifier evidence"
    ],
@@ -30191,8 +30153,7 @@
     "tooling/backend/ownership-graph.cjs|verifier-reads|governance/visual-reconciliation/",
     "tooling/backend/ownership-graph.cjs|verifier-reads|governance/**",
     "tooling/backend/ownership-overrides.json|verifier-reads",
-    "tooling/verify/fixtures/rel-601-staging-regression.v1.json|verifier-reads",
-    "tooling/verify/rel-601-staging-regression.cjs|verifier-reads"
+    "tooling/verify/fixtures/rel-601-staging-regression.v1.json|verifier-reads"
    ],
    "blockers": [],
    "lastCommit": "2026-08-22T02:05:10+09:00",
@@ -30217,7 +30178,6 @@
    "rule": "gov-ui-dir",
    "reasons": [
     "UI 화면 증거 디렉터리 (KEEP 검증기 참조 시 뒤집힘)",
-    "보유 검증기가 전부 SPLIT 대상(tooling/verify/rel-601-staging-regression.cjs(verifier-reads)) — 분리 시 UI 부분과 함께 제거 가능 · 내용 기준으로 판정",
     "KEEP 검증기/워크플로 참조 0 · UI/OBSOLETE/문서 참조자만: tooling/backend/ownership-graph.cjs, tooling/backend/ownership-overrides.json, tooling/verify/fixtures/rel-601-staging-regression.v1.json",
     "[override] [5th-stage] kept after split or KEEP verifier evidence"
    ],
@@ -30250,8 +30210,7 @@
     "tooling/backend/ownership-graph.cjs|verifier-reads|governance/visual-reconciliation/",
     "tooling/backend/ownership-graph.cjs|verifier-reads|governance/**",
     "tooling/backend/ownership-overrides.json|verifier-reads",
-    "tooling/verify/fixtures/rel-601-staging-regression.v1.json|verifier-reads",
-    "tooling/verify/rel-601-staging-regression.cjs|verifier-reads"
+    "tooling/verify/fixtures/rel-601-staging-regression.v1.json|verifier-reads"
    ],
    "blockers": [],
    "lastCommit": "2026-08-22T02:05:10+09:00",
@@ -30429,7 +30388,6 @@
     "tooling/verify/domain-bootstrap.cjs|verifier-reads",
     "tooling/verify/rel-506-r8-infra-core.cjs|verifier-reads",
     "tooling/verify/rel-600-staging.cjs|verifier-reads",
-    "tooling/verify/rel-601-staging-regression.cjs|verifier-reads",
     "tooling/verify/rel-602-staging-rollback.cjs|verifier-reads",
     "tooling/verify/root-domain-env.cjs|verifier-reads",
     "tooling/verify/stack-lock.cjs|verifier-reads"
@@ -30725,12 +30683,12 @@
   },
   {
    "path": "package.json",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "8단계 패키지 정리",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
    "rule": "root-package",
    "reasons": [
-    "루트 scripts/devDependencies에 UI 검증·Playwright·axe·jsdom 잔존"
+    "root scripts/devDependencies are backend toolchain (Nest · wrangler · husky · typescript)"
    ],
    "evidence": [
     {
@@ -30936,84 +30894,7 @@
     "tooling/verify/backend-ci-tiers-sync.cjs|verifier-reads",
     "tooling/verify/catalog-runtime-seed.cjs|verifier-reads"
    ],
-   "blockers": [
-    "scripts/hook-internal-failure-security.mjs(verifier-reads)",
-    "scripts/hook-stability-stress.mjs(verifier-reads)",
-    "scripts/verify-night-guard.mjs(verifier-reads)",
-    "scripts/verify-project-boundary.mjs(verifier-reads)",
-    "tooling/dev/ensure-node.cjs(deploy-cmd)",
-    "tooling/release/version-id.cjs(deploy-cmd)",
-    "tooling/verify/ai-coach-no-autonomy.cjs(verifier-reads)",
-    "tooling/verify/ai-feature-platform.cjs(verifier-reads)",
-    "tooling/verify/ai-general-no-money-tools.cjs(verifier-reads)",
-    "tooling/verify/ai-guard-authority.cjs(verifier-reads)",
-    "tooling/verify/ai-lane-router.cjs(verifier-reads)",
-    "tooling/verify/ai-scope-guard.cjs(verifier-reads)",
-    "tooling/verify/answer-trace.cjs(verifier-reads)",
-    "tooling/verify/auth-rate-limit.cjs(verifier-reads)",
-    "tooling/verify/b3-promotion.cjs(verifier-reads)",
-    "tooling/verify/backend-ci-tiers-sync.cjs(verifier-reads)",
-    "tooling/verify/catalog-runtime-seed.cjs(verifier-reads)",
-    "tooling/verify/coach-sse-error-canonical.cjs(verifier-reads)",
-    "tooling/verify/committed-event-publication-durability.cjs(verifier-reads)",
-    "tooling/verify/conversation-state-bounded.cjs(verifier-reads)",
-    "tooling/verify/dependency-integrity.cjs(verifier-reads)",
-    "tooling/verify/ebay-identity-ingest.cjs(verifier-reads)",
-    "tooling/verify/ebay-resilience.cjs(verifier-reads)",
-    "tooling/verify/execute-rule-loop.cjs(verifier-reads)",
-    "tooling/verify/fact-freshness.cjs(verifier-reads)",
-    "tooling/verify/governance-observation-registry.cjs(verifier-reads)[SPLIT]",
-    "tooling/verify/home-money-read-contract.cjs(verifier-reads)",
-    "tooling/verify/idempotency-conflict-detection.cjs(verifier-reads)",
-    "tooling/verify/llm-adapter-contract.cjs(verifier-reads)",
-    "tooling/verify/money-wallet-auth-remediation.cjs(verifier-reads)",
-    "tooling/verify/no-ai-data-in-git.cjs(verifier-reads)",
-    "tooling/verify/no-fake-zero-status.cjs(verifier-reads)",
-    "tooling/verify/no-success-rate-as-rule.cjs(verifier-reads)",
-    "tooling/verify/notification-prefs-default-on.cjs(verifier-reads)",
-    "tooling/verify/numeric-grounding.cjs(verifier-reads)",
-    "tooling/verify/observability.cjs(verifier-reads)",
-    "tooling/verify/participate-http.cjs(verifier-reads)",
-    "tooling/verify/pg-module-scan.cjs(verifier-reads)",
-    "tooling/verify/phase0-bootstrap.cjs(verifier-reads)[SPLIT]",
-    "tooling/verify/production-deploy-path-lock.cjs(verifier-reads)",
-    "tooling/verify/push-channel-prefs.cjs(verifier-reads)",
-    "tooling/verify/pwa-push-badge.cjs(verifier-reads)",
-    "tooling/verify/qa-env-isolation-guard.cjs(verifier-reads)[SPLIT]",
-    "tooling/verify/rc-formal.cjs(verifier-reads)[SPLIT]",
-    "tooling/verify/reference-resolution.cjs(verifier-reads)",
-    "tooling/verify/rel-222-admin-ops.cjs(verifier-reads)",
-    "tooling/verify/rel-223-match-control.cjs(verifier-reads)",
-    "tooling/verify/rel-224-source-policy.cjs(verifier-reads)",
-    "tooling/verify/rel-400-admin-control-plane.cjs(verifier-reads)",
-    "tooling/verify/rel-401-security-headers.cjs(verifier-reads)",
-    "tooling/verify/rel-402-dependency-audit.cjs(verifier-reads)",
-    "tooling/verify/rel-403-versioning.cjs(verifier-reads)",
-    "tooling/verify/rel-405-rbac-audit.cjs(verifier-reads)",
-    "tooling/verify/rel-406-kill-switch.cjs(verifier-reads)",
-    "tooling/verify/rel-407-price-override.cjs(verifier-reads)",
-    "tooling/verify/rel-408-security-baseline.cjs(verifier-reads)",
-    "tooling/verify/rel-409-r6-cert.cjs(verifier-reads)",
-    "tooling/verify/rel-501-money-red-team.cjs(verifier-reads)",
-    "tooling/verify/rel-502-final-engine-acceptance.cjs(verifier-reads)",
-    "tooling/verify/rel-503-protected-scope-watch.cjs(verifier-reads)",
-    "tooling/verify/rel-504-migration-readiness.cjs(verifier-reads)",
-    "tooling/verify/rel-505-r7-backend-alignment.cjs(verifier-reads)",
-    "tooling/verify/rel-506-r8-infra-core.cjs(verifier-reads)",
-    "tooling/verify/rel-508-current-fx-approx.cjs(verifier-reads)",
-    "tooling/verify/rel-600-staging.cjs(verifier-reads)",
-    "tooling/verify/rel-601-staging-regression.cjs(verifier-reads)[SPLIT]",
-    "tooling/verify/rel-602-staging-rollback.cjs(verifier-reads)",
-    "tooling/verify/release-acceptance.cjs(verifier-reads)",
-    "tooling/verify/routing-coverage.cjs(verifier-reads)",
-    "tooling/verify/settlement-rule-parity.cjs(verifier-reads)",
-    "tooling/verify/shadow-replay-drift.cjs(verifier-reads)",
-    "tooling/verify/stack-lock.cjs(verifier-reads)",
-    "tooling/verify/twin-fact-separation.cjs(verifier-reads)",
-    "tooling/verify/user-ledger-query.cjs(verifier-reads)",
-    "tooling/verify/user-opportunity-feed.cjs(verifier-reads)",
-    "tooling/verify/workers-types.cjs(verifier-reads)"
-   ],
+   "blockers": [],
    "lastCommit": "2026-09-11T23:52:35+09:00",
    "lastCommitSha": "e7bece227de6b8f6e7e76c682209dab6c839ae67",
    "sizeBytes": 18161,
@@ -31465,9 +31346,9 @@
     "tooling/verify/CATALOG.md|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T13:22:36+09:00",
-   "lastCommitSha": "720e7d54b9d5f0727266fc8388fb4cbc6e73ed90",
-   "sizeBytes": 221443,
+   "lastCommit": "2026-09-12T01:45:18+09:00",
+   "lastCommitSha": "5407260f11359d674a70b7dcf603b92cae8f52b6",
+   "sizeBytes": 8130,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -32050,13 +31931,16 @@
      "governance/responsive/home-geometry-lock.v1.json",
      "governance/responsive/large-screen-safety.v1.json",
      "governance/visual-reconciliation/PUTDUK_UI_VISUAL_MATRIX.json",
-     "governance/visual-reconciliation/PUTDUK_UI_VISUAL_MATRIX.md",
-     "tooling/e2e/helpers/auth-session.cjs"
+     "governance/visual-reconciliation/PUTDUK_UI_VISUAL_MATRIX.md"
     ],
     "backendRefs": [
+     "tooling/e2e/helpers/auth-session.cjs",
      "tooling/deploy/cf-domain-bridge.cjs",
      "tooling/deploy/cf-origin-smoke.cjs",
      "tooling/deploy/cf-preflight.cjs",
+     "tooling/pwa/pwa-day1-certification-harness.cjs",
+     "tooling/pwa/pwa-day1-certification.spec.cjs",
+     "tooling/pwa/webauthn-rp.cjs",
      "tooling/release/artifact-provenance.cjs",
      "tooling/release/artifact-runtime-qa.cjs",
      "tooling/release/deploy-from-artifact.cjs",
@@ -32222,9 +32106,9 @@
     "tooling/backend/ownership-graph.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T22:30:42+09:00",
-   "lastCommitSha": "8c35799aff355abf056eef401504a9754046e529",
-   "sizeBytes": 3079826,
+   "lastCommit": "2026-09-12T01:45:18+09:00",
+   "lastCommitSha": "5407260f11359d674a70b7dcf603b92cae8f52b6",
+   "sizeBytes": 2998841,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -32254,8 +32138,8 @@
     "tooling/backend/repository-boundary.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-12T01:23:24+09:00",
-   "lastCommitSha": "cc50e4cf971f2ba1510de9d57ffd30fad30fa6b1",
+   "lastCommit": "2026-09-12T01:45:18+09:00",
+   "lastCommitSha": "5407260f11359d674a70b7dcf603b92cae8f52b6",
    "sizeBytes": 22397,
    "refSummary": {
     "deletedUiRefs": [],
@@ -32288,9 +32172,9 @@
     "tooling/verify/workers-typecheck.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T22:30:42+09:00",
-   "lastCommitSha": "8c35799aff355abf056eef401504a9754046e529",
-   "sizeBytes": 5210257,
+   "lastCommit": "2026-09-12T01:45:18+09:00",
+   "lastCommitSha": "5407260f11359d674a70b7dcf603b92cae8f52b6",
+   "sizeBytes": 4730984,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -33338,9 +33222,9 @@
     "quality/backend-residual-report.md|doc-link|quality/**"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-12T01:23:24+09:00",
-   "lastCommitSha": "cc50e4cf971f2ba1510de9d57ffd30fad30fa6b1",
-   "sizeBytes": 13850,
+   "lastCommit": "2026-09-12T01:45:18+09:00",
+   "lastCommitSha": "5407260f11359d674a70b7dcf603b92cae8f52b6",
+   "sizeBytes": 14319,
    "refSummary": {
     "deletedUiRefs": [
      "packages/sdk",
@@ -33708,7 +33592,9 @@
      "apps/web/components/pwa/copy.ts"
     ],
     "uiRefs": [],
-    "backendRefs": [],
+    "backendRefs": [
+     "tooling/pwa/webauthn-rp.cjs"
+    ],
     "governanceBackendRefs": [],
     "sdkOnlyUi": false,
     "browserHarness": true,
@@ -77358,7 +77244,7 @@
    "blockers": [],
    "lastCommit": "2026-09-11T22:01:58+09:00",
    "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
-   "sizeBytes": 90983,
+   "sizeBytes": 91544,
    "refSummary": {
     "deletedUiRefs": [
      "apps/web/",
@@ -77566,20 +77452,18 @@
    "blockers": [],
    "lastCommit": "2026-09-12T01:23:24+09:00",
    "lastCommitSha": "cc50e4cf971f2ba1510de9d57ffd30fad30fa6b1",
-   "sizeBytes": 30324,
+   "sizeBytes": 29827,
    "refSummary": {
     "deletedUiRefs": [
      "apps/web",
      "apps/admin",
      "packages/ui",
      "apps/web/**/peotteok",
-     "packages/ui/copy",
-     "apps/web/public/kyb"
+     "packages/ui/copy"
     ],
     "uiRefs": [
      "governance/release-master/REL-020-PUSH-BADGE.md",
      "governance/release-master/REL-021-PUSH-CHANNEL-FILTER.md",
-     "tooling/e2e/helpers/auth-session.cjs",
      "governance/platform-redesign/governance-observations.v1.json",
      "governance/platform-redesign/baseline.v1.json",
      "governance/platform-redesign/route-contract-matrix.v1.json",
@@ -77599,7 +77483,8 @@
      "schemas/support-ticket.v1.json",
      "schemas/tendency-memo.v1.json",
      "schemas/user-attribution.v1.json",
-     "schemas/user-financial-summary.v1.json"
+     "schemas/user-financial-summary.v1.json",
+     "tooling/e2e/helpers/auth-session.cjs"
     ],
     "governanceBackendRefs": [
      "governance/pwa/VAPID.md",
@@ -77682,7 +77567,7 @@
    "blockers": [],
    "lastCommit": "2026-09-12T01:23:24+09:00",
    "lastCommitSha": "cc50e4cf971f2ba1510de9d57ffd30fad30fa6b1",
-   "sizeBytes": 25072,
+   "sizeBytes": 25511,
    "refSummary": {
     "deletedUiRefs": [
      "apps/web/",
@@ -78224,13 +78109,13 @@
   },
   {
    "path": "tooling/deploy/cf-preflight.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "5단계 mixed 분리",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
    "rule": "deploy-backend",
    "reasons": [
     "api-stub/workers preflight · remote origin liveness (mutation 0)",
-    "UI 참조 2 + 백엔드 참조 5 · 백엔드 어서션 0 / UI 어서션 0"
+    "백엔드 경로 참조 5 · UI 참조 0"
    ],
    "evidence": [
     {
@@ -78258,14 +78143,6 @@
      "ref": ".cursor/mcp.json"
     },
     {
-     "kind": "deploy-cmd",
-     "ref": "DELETED_UI:apps/web"
-    },
-    {
-     "kind": "deploy-cmd",
-     "ref": "DELETED_UI:apps/admin"
-    },
-    {
      "kind": "env",
      "ref": "ROOT_DOMAIN"
     }
@@ -78284,19 +78161,12 @@
     "tooling/verify/rel-600-staging.cjs|verifier-reads",
     "package.json|pkg-script|cf:preflight"
    ],
-   "blockers": [
-    "package.json(pkg-script)[SPLIT]",
-    "package.json(pkg-script:cf:preflight)[SPLIT]",
-    "tooling/verify/rel-600-staging.cjs(verifier-reads)"
-   ],
+   "blockers": [],
    "lastCommit": "2026-09-11T22:01:58+09:00",
    "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
-   "sizeBytes": 1600,
+   "sizeBytes": 1744,
    "refSummary": {
-    "deletedUiRefs": [
-     "apps/web",
-     "apps/admin"
-    ],
+    "deletedUiRefs": [],
     "uiRefs": [],
     "backendRefs": [
      "./lib/env.cjs",
@@ -78309,21 +78179,6 @@
     "sdkOnlyUi": false,
     "browserHarness": false,
     "uiMarkers": false
-   },
-   "mixedBreakdown": {
-    "backendAssertions": [],
-    "uiAssertions": [],
-    "unclassifiedAssertions": [],
-    "backendPaths": [
-     ".cursor/mcp.json",
-     "infra/domain.manifest.json",
-     "infra/workers.manifest.json",
-     "workers/api-stub/wrangler.toml",
-     "workers/push-dispatcher/wrangler.toml"
-    ],
-    "uiPaths": [],
-    "backendDomains": [],
-    "uiDomains": []
    }
   },
   {
@@ -78875,8 +78730,7 @@
     "tooling/backend/ownership-overrides.json|verifier-reads",
     "tooling/verify/CATALOG.md|verifier-reads|tooling/e2e/**",
     "tooling/verify/qa-env-isolation-guard.cjs|verifier-reads",
-    "tooling/verify/rel-501-money-red-team.cjs|verifier-reads",
-    "tooling/verify/rel-601-staging-regression.cjs|verifier-reads"
+    "tooling/verify/rel-501-money-red-team.cjs|verifier-reads"
    ],
    "blockers": [],
    "lastCommit": "2026-08-25T04:02:58+09:00",
@@ -78937,9 +78791,10 @@
    "class": "BACKEND_TEST",
    "decision": "KEEP",
    "stage": "-",
-   "rule": "e2e-qa-lab",
+   "rule": "e2e-auth-session",
    "reasons": [
-    "REL-500 QA Lab 매트릭스: 셀이 브라우저 closure spec 파일에 바인딩(assertBoundSpecs) · 스펙 삭제 후 성립 불가",
+    "in-process QA isolation session helper + node:test (no browser)",
+    "백엔드 경로 참조 1 · UI 참조 0",
     "[override] in-process QA isolation session helper required by qa-env-isolation-guard (KEEP HTTP/in-process harness family). Ownership DELETE was QA-lab browser binding; helper itself is not a browser spec."
    ],
    "evidence": [
@@ -78980,13 +78835,13 @@
   },
   {
    "path": "tooling/e2e/helpers/auth-session.runtime.test.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "5단계 mixed 분리",
-   "rule": "e2e",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "e2e-auth-session",
    "reasons": [
-    "브라우저 E2E 잔재",
-    "UI 참조 1 + 백엔드 참조 1 · 백엔드 어서션 5 / UI 어서션 0"
+    "in-process QA isolation session helper + node:test (no browser)",
+    "백엔드 경로 참조 2 · UI 참조 0"
    ],
    "evidence": [
     {
@@ -79009,66 +78864,21 @@
     "tooling/verify/qa-env-isolation-guard.cjs|verifier-reads",
     "tooling/verify/unit-tests.cjs|verifier-reads|tooling/**/*.runtime.test.cjs"
    ],
-   "blockers": [
-    "tooling/verify/qa-env-isolation-guard.cjs(verifier-reads)[SPLIT]"
-   ],
+   "blockers": [],
    "lastCommit": "2026-09-11T19:45:09+09:00",
    "lastCommitSha": "4fc9890267973bd176a98a653bf769d9040c34ef",
    "sizeBytes": 1053,
    "refSummary": {
     "deletedUiRefs": [],
-    "uiRefs": [
-     "./auth-session.cjs"
-    ],
+    "uiRefs": [],
     "backendRefs": [
-     "../lib/qa-env-isolation-guard.cjs"
+     "../lib/qa-env-isolation-guard.cjs",
+     "./auth-session.cjs"
     ],
     "governanceBackendRefs": [],
     "sdkOnlyUi": false,
     "browserHarness": false,
     "uiMarkers": false
-   },
-   "mixedBreakdown": {
-    "backendAssertions": [
-     {
-      "domain": "인증·세션·쿠키",
-      "source": null,
-      "line": 12,
-      "detail": "e2e"
-     },
-     {
-      "domain": "인증·세션·쿠키",
-      "source": null,
-      "line": 17,
-      "detail": "qa-lab-persona-001"
-     },
-     {
-      "domain": "인증·세션·쿠키",
-      "source": null,
-      "line": 18,
-      "detail": "aipo_session"
-     },
-     {
-      "domain": "인증·세션·쿠키",
-      "source": null,
-      "line": 19,
-      "detail": "committed-helper"
-     },
-     {
-      "domain": "인증·세션·쿠키",
-      "source": null,
-      "line": 23,
-      "detail": "assert.throws(() => createAuthSession({ personaId: \"\" }), /personaId required/);"
-     }
-    ],
-    "uiAssertions": [],
-    "unclassifiedAssertions": [],
-    "backendPaths": [],
-    "uiPaths": [],
-    "backendDomains": [
-     "인증·세션·쿠키"
-    ],
-    "uiDomains": []
    }
   },
   {
@@ -85974,7 +85784,7 @@
    "blockers": [],
    "lastCommit": "2026-08-09T04:13:08+09:00",
    "lastCommitSha": "354bb995701fc6d6b82549cb7974d61977a2c7a6",
-   "sizeBytes": 846,
+   "sizeBytes": 1128,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -85989,13 +85799,13 @@
   },
   {
    "path": "tooling/github/main-gate.ruleset.json",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "6단계 CI 교체",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
    "rule": "github-tools",
    "reasons": [
     "main 룰셋 JSON + 적용 스크립트 (required context 이름 변경 시 함께 갱신)",
-    "[override] 레포 JSON의 required context는 gate / verify-gate 인데 라이브 룰셋 20576556(2026-08-21 갱신)은 verify-gate 로 드리프트 · 이 파일을 apply-main-gate.ps1로 재적용하면 required check가 만족 불가 이름으로 바뀜 · 6단계 backend-required 전환 시 rules 배열 전체를 라이브 기준으로 재작성."
+    "[override] Draft body for official-basis 9.1: context backend-required. Live PUT blocked by apply-main-gate.ps1 until AIPO_APPLY_LIVE_RULESET=1."
    ],
    "evidence": [],
    "referrers": [
@@ -86012,7 +85822,7 @@
    "blockers": [],
    "lastCommit": "2026-08-09T04:13:08+09:00",
    "lastCommitSha": "354bb995701fc6d6b82549cb7974d61977a2c7a6",
-   "sizeBytes": 1060,
+   "sizeBytes": 1058,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -86200,58 +86010,17 @@
   },
   {
    "path": "tooling/pwa/pwa-day1-certification-harness.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "5단계 mixed 분리",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP",
+   "stage": "-",
    "rule": "pwa-day1-cert",
    "reasons": [
-    "apps/web manifest.webmanifest·sw.js·PwaRuntime(삭제됨) + push-dispatcher kill-switch 확인이 한 하네스",
-    "UI 경로 참조 8: apps/web/public/manifest.webmanifest, apps/web/public/sw.js, apps/web/components/pwa/PwaRuntime.tsx, packages/ui/components/toast/pushDedup.ts, packages/ui/components/auth/webauthn-ready.ts, packages/ui/components/auth/AuthLogin.tsx"
+    "push-dispatcher kill-switch + VAPID/RP contract files; customer-web install/offline items handed off"
    ],
    "evidence": [
     {
      "kind": "require",
      "ref": "tooling/e2e/lib/qa-env-isolation-guard.cjs"
-    },
-    {
-     "kind": "test-ref",
-     "ref": "MISSING:governance/pwa/day1-checklist.v1.json"
-    },
-    {
-     "kind": "test-ref",
-     "ref": "MISSING:governance/release-master/REL-014-PWA-NATIVE-SHELL.md"
-    },
-    {
-     "kind": "test-ref",
-     "ref": "governance/release-master/REL-020-PUSH-BADGE.md"
-    },
-    {
-     "kind": "test-ref",
-     "ref": "governance/release-master/REL-021-PUSH-CHANNEL-FILTER.md"
-    },
-    {
-     "kind": "test-ref",
-     "ref": "MISSING:governance/release-master/REL-022-WEBAUTHN-UX.md"
-    },
-    {
-     "kind": "test-ref",
-     "ref": "DELETED_UI:apps/web/public/manifest.webmanifest"
-    },
-    {
-     "kind": "test-ref",
-     "ref": "DELETED_UI:apps/web/public/sw.js"
-    },
-    {
-     "kind": "test-ref",
-     "ref": "DELETED_UI:apps/web/components/pwa/PwaRuntime.tsx"
-    },
-    {
-     "kind": "test-ref",
-     "ref": "DELETED_UI:packages/ui/components/toast/pushDedup.ts"
-    },
-    {
-     "kind": "test-ref",
-     "ref": "DELETED_UI:packages/ui/components/auth/webauthn-ready.ts"
     },
     {
      "kind": "test-ref",
@@ -86263,7 +86032,11 @@
     },
     {
      "kind": "test-ref",
-     "ref": "DELETED_UI:packages/ui/components/auth/AuthLogin.tsx"
+     "ref": "governance/pwa/push-channel-filter.v1.json"
+    },
+    {
+     "kind": "test-ref",
+     "ref": "governance/pwa/push-kill.v1.json"
     }
    ],
    "referrers": [
@@ -86279,32 +86052,21 @@
     "tooling/verify/CATALOG.md|verifier-reads|tooling/pwa/**",
     "workers/push-dispatcher/src/lib/dispatch.d.cts|verifier-reads|tooling/pwa"
    ],
-   "blockers": [
-    "tooling/pwa/pwa-day1-certification.spec.cjs(require)[SPLIT]",
-    "workers/push-dispatcher/src/lib/dispatch.d.cts(verifier-reads:tooling/pwa)"
-   ],
+   "blockers": [],
    "lastCommit": "2026-08-21T04:51:54+09:00",
    "lastCommitSha": "d1c6fe282757c552f0caa0834919c3dd3b72d364",
-   "sizeBytes": 2593,
+   "sizeBytes": 1156,
    "refSummary": {
-    "deletedUiRefs": [
-     "apps/web/public/manifest.webmanifest",
-     "apps/web/public/sw.js",
-     "apps/web/components/pwa/PwaRuntime.tsx",
-     "packages/ui/components/toast/pushDedup.ts",
-     "packages/ui/components/auth/webauthn-ready.ts",
-     "packages/ui/components/auth/AuthLogin.tsx"
-    ],
-    "uiRefs": [
-     "governance/release-master/REL-020-PUSH-BADGE.md",
-     "governance/release-master/REL-021-PUSH-CHANNEL-FILTER.md"
-    ],
+    "deletedUiRefs": [],
+    "uiRefs": [],
     "backendRefs": [
      "../e2e/lib/qa-env-isolation-guard.cjs",
      "workers/push-dispatcher/src/lib/dispatch.cjs"
     ],
     "governanceBackendRefs": [
-     "governance/pwa/webauthn-rp.v1.json"
+     "governance/pwa/webauthn-rp.v1.json",
+     "governance/pwa/push-channel-filter.v1.json",
+     "governance/pwa/push-kill.v1.json"
     ],
     "sdkOnlyUi": false,
     "browserHarness": false,
@@ -86313,12 +86075,12 @@
   },
   {
    "path": "tooling/pwa/pwa-day1-certification.spec.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "5단계 mixed 분리",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP",
+   "stage": "-",
    "rule": "pwa-day1-cert",
    "reasons": [
-    "apps/web manifest.webmanifest·sw.js·PwaRuntime(삭제됨) + push-dispatcher kill-switch 확인이 한 하네스"
+    "push-dispatcher kill-switch + VAPID/RP contract files; customer-web install/offline items handed off"
    ],
    "evidence": [
     {
@@ -86342,17 +86104,16 @@
     "tooling/verify/CATALOG.md|verifier-reads|tooling/pwa/**",
     "workers/push-dispatcher/src/lib/dispatch.d.cts|verifier-reads|tooling/pwa"
    ],
-   "blockers": [
-    "workers/push-dispatcher/src/lib/dispatch.d.cts(verifier-reads:tooling/pwa)"
-   ],
+   "blockers": [],
    "lastCommit": "2026-08-21T04:51:54+09:00",
    "lastCommitSha": "d1c6fe282757c552f0caa0834919c3dd3b72d364",
-   "sizeBytes": 1121,
+   "sizeBytes": 1050,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
     "backendRefs": [
-     "../e2e/lib/qa-env-isolation-guard.cjs"
+     "../e2e/lib/qa-env-isolation-guard.cjs",
+     "./pwa-day1-certification-harness.cjs"
     ],
     "governanceBackendRefs": [],
     "sdkOnlyUi": false,
@@ -86573,12 +86334,12 @@
   },
   {
    "path": "tooling/pwa/webauthn-rp.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "5단계 mixed 분리",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
    "rule": "pwa-webauthn-rp",
    "reasons": [
-    "RP id/origin 로더(domain.manifest · 서버 WebAuthn RP SSOT)와 브라우저 UX 헬퍼(isWebAuthnSupported · optionalHaptic)가 한 파일"
+    "WebAuthn RP id/origin loader (domain.manifest · Nest RP SSOT)"
    ],
    "evidence": [
     {
@@ -86602,14 +86363,10 @@
     "tooling/verify/backend/auth/webauthn-ux-rp.cjs|verifier-reads",
     "workers/push-dispatcher/src/lib/dispatch.d.cts|verifier-reads|tooling/pwa"
    ],
-   "blockers": [
-    "tooling/verify/backend/auth/webauthn-ux-rp.cjs(require)",
-    "tooling/verify/backend/auth/webauthn-ux-rp.cjs(verifier-reads)",
-    "workers/push-dispatcher/src/lib/dispatch.d.cts(verifier-reads:tooling/pwa)"
-   ],
+   "blockers": [],
    "lastCommit": "2026-08-21T04:42:02+09:00",
    "lastCommitSha": "c4943ac5696149edf3a9cd0ae2990686a9f6090c",
-   "sizeBytes": 1681,
+   "sizeBytes": 927,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -86868,38 +86625,18 @@
   },
   {
    "path": "tooling/recovery/classify-local-state.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "5단계 mixed 분리",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
    "rule": "recovery",
    "reasons": [
     "복구/증거 재구축 도구",
-    "UI 참조 7 + 백엔드 참조 2 · 백엔드 어서션 0 / UI 어서션 0"
+    "백엔드 경로 참조 2 · UI 참조 0"
    ],
    "evidence": [
     {
      "kind": "deploy-cmd",
      "ref": "governance/recovery (42 files)"
-    },
-    {
-     "kind": "deploy-cmd",
-     "ref": "DELETED_UI:apps/web/components/spark-dash-home/"
-    },
-    {
-     "kind": "deploy-cmd",
-     "ref": "DELETED_UI:apps/web/app/HomeDesktopClient.tsx"
-    },
-    {
-     "kind": "deploy-cmd",
-     "ref": "DELETED_UI:apps/web/public/spark-dash/"
-    },
-    {
-     "kind": "deploy-cmd",
-     "ref": "DELETED_UI:apps/web/scripts/freeze-home-qa.mjs"
-    },
-    {
-     "kind": "deploy-cmd",
-     "ref": "MISSING:governance/consumer-home-approval/home-approval-freeze.v1.json"
     },
     {
      "kind": "deploy-cmd",
@@ -86955,14 +86692,6 @@
     },
     {
      "kind": "deploy-cmd",
-     "ref": "DELETED_UI:apps/web/components/support/"
-    },
-    {
-     "kind": "deploy-cmd",
-     "ref": "DELETED_UI:apps/web/app/me/support/page.tsx"
-    },
-    {
-     "kind": "deploy-cmd",
      "ref": "governance/release-inventory/ (3 files)"
     },
     {
@@ -86980,10 +86709,6 @@
     {
      "kind": "deploy-cmd",
      "ref": ".github/workflows/ (12 files)"
-    },
-    {
-     "kind": "deploy-cmd",
-     "ref": "DELETED_UI:apps/web/app/wallet/deposit/"
     },
     {
      "kind": "deploy-cmd",
@@ -87019,23 +86744,12 @@
     "tooling/recovery/classify-local-state.selftest.cjs|require",
     "tooling/recovery/classify-local-state.selftest.cjs|deploy-cmd|tooling/recovery"
    ],
-   "blockers": [
-    "tooling/recovery/classify-local-state.selftest.cjs(deploy-cmd:tooling/recovery)",
-    "tooling/recovery/classify-local-state.selftest.cjs(require)"
-   ],
+   "blockers": [],
    "lastCommit": "2026-09-01T16:20:34+09:00",
    "lastCommitSha": "28fb416c7401c13ace42a5e1e0ea10e53d9a1be1",
-   "sizeBytes": 8982,
+   "sizeBytes": 8750,
    "refSummary": {
-    "deletedUiRefs": [
-     "apps/web/components/spark-dash-home/",
-     "apps/web/app/HomeDesktopClient.tsx",
-     "apps/web/public/spark-dash/",
-     "apps/web/scripts/freeze-home-qa.mjs",
-     "apps/web/components/support/",
-     "apps/web/app/me/support/page.tsx",
-     "apps/web/app/wallet/deposit/"
-    ],
+    "deletedUiRefs": [],
     "uiRefs": [],
     "backendRefs": [
      "infra/api/runtime.json",
@@ -87052,35 +86766,6 @@
     "sdkOnlyUi": false,
     "browserHarness": false,
     "uiMarkers": false
-   },
-   "mixedBreakdown": {
-    "backendAssertions": [],
-    "uiAssertions": [],
-    "unclassifiedAssertions": [],
-    "backendPaths": [
-     ".cursor/mcp.json",
-     ".cursor/permissions.json",
-     ".vscode/settings.json",
-     "governance/db-recon/b3-promotion-ledger.v1.json",
-     "governance/release-inventory/b1-push-rls-design.v1.json",
-     "governance/release-inventory/b2-ownership-design.v1.json",
-     "governance/release-inventory/b3-promotion.v1.json",
-     "governance/security/http-headers.v1.json",
-     "infra/api/runtime.json",
-     "tooling/security/http-headers.cjs"
-    ],
-    "uiPaths": [
-     "apps/web/app/HomeDesktopClient.tsx",
-     "apps/web/app/me/support/page.tsx",
-     "apps/web/app/wallet/deposit/",
-     "apps/web/components/spark-dash-home/",
-     "apps/web/components/support/",
-     "apps/web/public/spark-dash/",
-     "apps/web/scripts/freeze-home-qa.mjs",
-     "governance/consumer-home-approval/home-approval-freeze.v1.json"
-    ],
-    "backendDomains": [],
-    "uiDomains": []
    }
   },
   {
@@ -87546,14 +87231,14 @@
   },
   {
    "path": "tooling/release/artifact-provenance.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "6단계 CI 교체",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
    "rule": "release",
    "reasons": [
     "릴리스 아티팩트/수락 도구 (evidence 재판정)",
     "레포 경로 참조 0 (순수 로직 또는 도구) · 시드 유지",
-    "[override] sha256·copyTree·manifest 헬퍼를 release 스크립트 8개(build-once-artifact·prebuild-workers·fetch-release-bundle·bind-qa-artifact·release-acceptance-verdict·require-accepted-sha·api-artifact-runtime-qa·deploy/cf-workers)가 require 하는 공용 라이브러리 · apps/web·apps/admin .open-next 아티팩트 목록만 제거하고 헬퍼는 유지."
+    "[override] API/worker provenance helpers only. not_web_kind guard kept (API artifact must declare it is not a web bundle)."
    ],
    "evidence": [
     {
@@ -87587,24 +87272,10 @@
     "tooling/verify/release-acceptance.cjs|require",
     "tooling/verify/release-manifest-identity-lock.cjs|require"
    ],
-   "blockers": [
-    "tooling/deploy/cf-workers.cjs(require)",
-    "tooling/release/api-artifact-runtime-qa.cjs(require)",
-    "tooling/release/artifact-runtime-qa.cjs(require)",
-    "tooling/release/bind-qa-artifact.cjs(require)",
-    "tooling/release/build-once-artifact.cjs(require)",
-    "tooling/release/deploy-from-artifact.cjs(require)",
-    "tooling/release/fetch-release-bundle.cjs(require)",
-    "tooling/release/prebuild-workers.cjs(require)",
-    "tooling/release/release-acceptance-verdict.cjs(require)",
-    "tooling/release/require-accepted-sha.cjs(require)",
-    "tooling/verify/api-artifact-provenance.cjs(verifier-reads)",
-    "tooling/verify/release-acceptance.cjs(require)",
-    "tooling/verify/release-manifest-identity-lock.cjs(require)"
-   ],
+   "blockers": [],
    "lastCommit": "2026-09-11T19:45:09+09:00",
    "lastCommitSha": "4fc9890267973bd176a98a653bf769d9040c34ef",
-   "sizeBytes": 16398,
+   "sizeBytes": 16350,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -88403,20 +88074,16 @@
   },
   {
    "path": "tooling/schemas/_write-trade-license-html.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "8단계 패키지 정리",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
    "rule": "schemas-tools",
    "reasons": [
     "스키마/법무 문서 생성기 (evidence 재판정)",
-    "참조 대상이 전부 삭제된/UI 경로 (apps/web/public/kyb/trade-license-1135431.html)",
-    "[override] docs/kyb/trade-license HTML 생성(법무 문서 도구 · 유지) + apps/web/public/kyb 복사 단계(삭제 대상) 공존."
+    "레포 경로 참조 0 (순수 로직 또는 도구) · 시드 유지",
+    "[override] Writes docs/kyb/trade-license HTML only. Customer-web public/kyb copy removed."
    ],
    "evidence": [
-    {
-     "kind": "deploy-cmd",
-     "ref": "DELETED_UI:apps/web/public/kyb/trade-license-1135431.html"
-    },
     {
      "kind": "deploy-cmd",
      "ref": "docs/kyb/trade-license-1135431.html"
@@ -88436,11 +88103,9 @@
    "blockers": [],
    "lastCommit": "2026-08-10T04:09:53+09:00",
    "lastCommitSha": "8127046d1de45333a76e10a8abf988f7dd3672ce",
-   "sizeBytes": 7427,
+   "sizeBytes": 7358,
    "refSummary": {
-    "deletedUiRefs": [
-     "apps/web/public/kyb/trade-license-1135431.html"
-    ],
+    "deletedUiRefs": [],
     "uiRefs": [],
     "backendRefs": [],
     "governanceBackendRefs": [],
@@ -91478,7 +91143,7 @@
    "rule": "verify-backend-port",
    "reasons": [
     "mixed 검증기 백엔드 어서션 포트 (원본 SHA 86f15964 · UI 어서션은 quality/putduk-web-ui-assertions-handoff.md) · evidence 재판정 대상",
-    "백엔드 경로만 참조 (infra/domain.manifest.json, services/api-nest/src/auth/webauthn-rp.ts, services/api-nest/src/auth/auth.service.ts, services/api-nest/src/auth/webauthn-assert.service.ts, services/api-nest/src/wallet/withdraw-stepup.policy.ts ...)",
+    "백엔드 경로만 참조 (tooling/pwa/webauthn-rp.cjs, infra/domain.manifest.json, services/api-nest/src/auth/webauthn-rp.ts, services/api-nest/src/auth/auth.service.ts, services/api-nest/src/auth/webauthn-assert.service.ts ...)",
     "[override] 5단계 mixed 분리 산출물 · 원본 mixed 검증기(SHA 86f15964)에서 백엔드 어서션만 옮긴 테스트 · UI 어서션은 quality/putduk-web-ui-assertions-handoff.md 기록 후 제거 · 러너 backend/run-all.cjs(verify:backend · T1)."
    ],
    "evidence": [
@@ -91545,6 +91210,7 @@
     "deletedUiRefs": [],
     "uiRefs": [],
     "backendRefs": [
+     "tooling/pwa/webauthn-rp.cjs",
      "infra/domain.manifest.json",
      "services/api-nest/src/auth/webauthn-rp.ts",
      "services/api-nest/src/auth/auth.service.ts",
@@ -96666,12 +96332,12 @@
   },
   {
    "path": "tooling/verify/domain-by-path.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "4단계 UI 검증기·E2E 제거",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
    "rule": "verify-domain-by-path",
    "reasons": [
-    "T0 경로→검증기 매핑 SSOT · retired skip 제거·backend 포트 매핑 완료(5단계) · 4단계 UI 검증기 규칙의 apps/web·packages/ui 경로 test만 잔존",
+    "T0 path-to-verifier map · handed-off customer-web prefixes are skipped so deleted trees do not select removed UI checkers",
     "UI 경로 참조 3: apps/web/, apps/admin/, packages/ui/"
    ],
    "evidence": [
@@ -96754,31 +96420,7 @@
     "tooling/verify/settlement-rule-parity.cjs|verifier-reads",
     "tooling/verify/shadow-replay-drift.cjs|verifier-reads"
    ],
-   "blockers": [
-    "tooling/verify/auth-rate-limit.cjs(verifier-reads)",
-    "tooling/verify/b3-promotion.cjs(verifier-reads)",
-    "tooling/verify/domain-by-path.selftest.cjs(require)",
-    "tooling/verify/domain-by-path.selftest.cjs(verifier-reads)",
-    "tooling/verify/gate-tiers.cjs(require)",
-    "tooling/verify/governance-observation-registry.cjs(verifier-reads)[SPLIT]",
-    "tooling/verify/numeric-grounding.cjs(verifier-reads)",
-    "tooling/verify/observability.cjs(verifier-reads)",
-    "tooling/verify/push-channel-prefs.cjs(verifier-reads)",
-    "tooling/verify/pwa-push-badge.cjs(verifier-reads)",
-    "tooling/verify/qa-env-isolation-guard.cjs(verifier-reads)[SPLIT]",
-    "tooling/verify/rel-502-final-engine-acceptance.cjs(verifier-reads)",
-    "tooling/verify/rel-503-protected-scope-watch.cjs(verifier-reads)",
-    "tooling/verify/rel-504-migration-readiness.cjs(verifier-reads)",
-    "tooling/verify/rel-505-r7-backend-alignment.cjs(verifier-reads)",
-    "tooling/verify/rel-506-r8-infra-core.cjs(verifier-reads)",
-    "tooling/verify/rel-508-current-fx-approx.cjs(verifier-reads)",
-    "tooling/verify/rel-600-staging.cjs(verifier-reads)",
-    "tooling/verify/rel-601-staging-regression.cjs(verifier-reads)[SPLIT]",
-    "tooling/verify/rel-602-staging-rollback.cjs(verifier-reads)",
-    "tooling/verify/settlement-rule-parity.cjs(verifier-reads)",
-    "tooling/verify/shadow-replay-drift.cjs(verifier-reads)",
-    "tooling/verify/user-ledger-query.cjs(verifier-reads)"
-   ],
+   "blockers": [],
    "lastCommit": "2026-09-12T01:23:24+09:00",
    "lastCommitSha": "cc50e4cf971f2ba1510de9d57ffd30fad30fa6b1",
    "sizeBytes": 59449,
@@ -98769,7 +98411,7 @@
    "blockers": [],
    "lastCommit": "2026-09-11T10:00:51+09:00",
    "lastCommitSha": "4214bd85af8f44902854a374e484d159948e2047",
-   "sizeBytes": 9416,
+   "sizeBytes": 1689,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [
@@ -99170,13 +98812,14 @@
   },
   {
    "path": "tooling/verify/governance-observation-registry.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "5단계 mixed 분리",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP",
+   "stage": "-",
    "rule": "verify",
    "reasons": [
     "검증기 (evidence 재판정)",
-    "UI 참조 5 + 백엔드 참조 1 · 백엔드 어서션 6 / UI 어서션 65"
+    "UI 참조 5 + 백엔드 참조 1 · 백엔드 어서션 6 / UI 어서션 65",
+    "[override] Backend observation registry (money/engine gaps). platform-redesign JSON files it reads are KEEP BACKEND_DOC."
    ],
    "evidence": [
     {
@@ -99241,15 +98884,12 @@
     "quality/backend-only-official-basis.md|doc-link|tooling/*",
     "quality/backend-residual-report.md|doc-link|tooling/verify/**",
     "quality/backend-residual-report.md|doc-link|tooling/verify/*.cjs",
+    "tooling/backend/ownership-overrides.json|verifier-reads",
     "tooling/verify/CATALOG.md|verifier-reads",
     "package.json|pkg-script|verify:governance-observation-registry",
     ".github/workflows/backend-ci.yml|workflow-run|verify:governance-observation-registry"
    ],
-   "blockers": [
-    ".github/workflows/backend-ci.yml(workflow-run:verify:governance-observation-registry)",
-    "package.json(pkg-script)[SPLIT]",
-    "package.json(pkg-script:verify:governance-observation-registry)[SPLIT]"
-   ],
+   "blockers": [],
    "lastCommit": "2026-09-11T19:45:09+09:00",
    "lastCommitSha": "4fc9890267973bd176a98a653bf769d9040c34ef",
    "sizeBytes": 16327,
@@ -99724,7 +99364,8 @@
      "버튼·CTA",
      "DOM·data 속성"
     ]
-   }
+   },
+   "override": true
   },
   {
    "path": "tooling/verify/growth-public-surface.cjs",
@@ -102288,13 +101929,13 @@
   },
   {
    "path": "tooling/verify/phase0-bootstrap.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "5단계 mixed 분리",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP",
+   "stage": "-",
    "rule": "verify",
    "reasons": [
     "검증기 (evidence 재판정)",
-    "UI 참조 4 + 백엔드 참조 15 · 백엔드 어서션 29 / UI 어서션 3"
+    "백엔드 경로만 참조 (infra/hosts.manifest.json, infra/phase0-migration-playbook.md, infra/api/runtime.json, infra/r2/kyc-docs.toml, infra/workers.manifest.json ...)"
    ],
    "evidence": [
     {
@@ -102363,23 +102004,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "DELETED_UI:apps/web/package.json"
-    },
-    {
-     "kind": "verifier-reads",
-     "ref": "DELETED_UI:apps/admin/package.json"
-    },
-    {
-     "kind": "verifier-reads",
      "ref": ".cursor/rules/phase-activation.mdc"
-    },
-    {
-     "kind": "verifier-reads",
-     "ref": "DELETED_UI:apps/web"
-    },
-    {
-     "kind": "verifier-reads",
-     "ref": "DELETED_UI:apps/admin"
     },
     {
      "kind": "verifier-reads",
@@ -102417,21 +102042,12 @@
     "package.json|pkg-script|verify:phase0-bootstrap",
     ".github/workflows/backend-ci.yml|workflow-run|verify:phase0-bootstrap"
    ],
-   "blockers": [
-    ".github/workflows/backend-ci.yml(workflow-run:verify:phase0-bootstrap)",
-    "package.json(pkg-script)[SPLIT]",
-    "package.json(pkg-script:verify:phase0-bootstrap)[SPLIT]"
-   ],
+   "blockers": [],
    "lastCommit": "2026-09-11T22:01:58+09:00",
    "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
-   "sizeBytes": 7308,
+   "sizeBytes": 7272,
    "refSummary": {
-    "deletedUiRefs": [
-     "apps/web/package.json",
-     "apps/admin/package.json",
-     "apps/web",
-     "apps/admin"
-    ],
+    "deletedUiRefs": [],
     "uiRefs": [],
     "backendRefs": [
      "infra/hosts.manifest.json",
@@ -102454,237 +102070,6 @@
     "sdkOnlyUi": false,
     "browserHarness": false,
     "uiMarkers": false
-   },
-   "mixedBreakdown": {
-    "backendAssertions": [
-     {
-      "domain": "알림·푸시·인박스",
-      "source": null,
-      "line": 12,
-      "detail": "missing: ${rel}"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/hosts.manifest.json",
-      "line": 43,
-      "detail": "hosts.manifest phase must be 0"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/hosts.manifest.json",
-      "line": 44,
-      "detail": "in-process · hosts.manifest bus must be in-process"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/hosts.manifest.json",
-      "line": 46,
-      "detail": "hosts.manifest compose.required must be false (Docker-less default)"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/hosts.manifest.json",
-      "line": 49,
-      "detail": "hosts.manifest db.region must be ap-northeast-2 (Seoul)"
-     },
-     {
-      "domain": "매칭 정책",
-      "source": "infra/hosts.manifest.json",
-      "line": 52,
-      "detail": "hosts.manifest db.projectRef mismatch"
-     },
-     {
-      "domain": "인증·세션·쿠키",
-      "source": "infra/hosts.manifest.json",
-      "line": 55,
-      "detail": "hosts.manifest must lock nest-jwt-only auth"
-     },
-     {
-      "domain": "인증·세션·쿠키",
-      "source": "infra/hosts.manifest.json",
-      "line": 59,
-      "detail": "hosts.manifest forbiddenDay1 missing ${bad} <= needles: nats | temporal | eks | vercel"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/hosts.manifest.json",
-      "line": 63,
-      "detail": "hosts.manifest workersPhase0 must include push-dispatcher"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/api/runtime.json",
-      "line": 68,
-      "detail": "infra/api/runtime.json must be phase0 in-process"
-     },
-     {
-      "domain": "인증·세션·쿠키",
-      "source": "infra/api/runtime.json",
-      "line": 72,
-      "detail": "api runtime forbidden missing ${bad} <= needles: nats | temporal | eks | supabase-auth"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/workers.manifest.json",
-      "line": 78,
-      "detail": "workers.manifest phase0 must be [push-dispatcher] only"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/workers.manifest.json",
-      "line": 81,
-      "detail": "workers.manifest phase0 must not list NATS workers"
-     },
-     {
-      "domain": "KYC 정책",
-      "source": "infra/r2/kyc-docs.toml",
-      "line": 86,
-      "detail": "R2 kyc-docs bucket_name lock missing"
-     },
-     {
-      "domain": "KYC 정책",
-      "source": "infra/r2/kyc-docs.toml",
-      "line": 91,
-      "detail": "docker-compose.dev.yml must document optional / Docker-less"
-     },
-     {
-      "domain": "인증·세션·쿠키",
-      "source": "infra/r2/kyc-docs.toml",
-      "line": 107,
-      "detail": ".env.example missing ${key} <= needles: DATABASE_URL= | REDIS_URL= | SUPABASE_REGION=ap-northeast-2 | SUPABASE_PROJECT_REF= | CLOUDFLARE_ACCOUNT_ID= | OAUTH_KAKAO_CLIENT_ID= | OAUTH_GOOGLE_CLIENT_ID= | R2_KYC_BUCKET=kyc-docs | JWT_USER_SECR"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "services/api-nest/src/events/in-process.bus.ts",
-      "line": 112,
-      "detail": "InProcessEventBus must declare in-process and nats:false"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "services/api-nest/src/app.module.ts",
-      "line": 117,
-      "detail": "AppModule must import EventsModule (Phase0 bus+hosts)"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "services/api-nest/src/config/phase0.env.ts",
-      "line": 122,
-      "detail": "phase0.env must lock Seoul ap-northeast-2 check"
-     },
-     {
-      "domain": "인증·세션·쿠키",
-      "source": "services/api-nest/src/auth/oauth-identity.service.ts",
-      "line": 127,
-      "detail": "oauth-identity.service must wire oauthConfigured from phase0 env"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/phase0-migration-playbook.md",
-      "line": 132,
-      "detail": "phase0-migration-playbook incomplete"
-     },
-     {
-      "domain": "KYC 정책",
-      "source": "infra/phase0-migration-playbook.md",
-      "line": 135,
-      "detail": "playbook must document NATS as Phase1+ cutover"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "services/api-nest/package.json",
-      "line": 156,
-      "detail": "api-nest must depend on pg (Supabase/Compose PG)"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "services/api-nest/package.json",
-      "line": 157,
-      "detail": "api-nest must depend on ioredis (Upstash REDIS_URL)"
-     },
-     {
-      "domain": "인증·세션·쿠키",
-      "source": "services/api-nest/package.json",
-      "line": 164,
-      "detail": "api-nest must not depend on ${bad} <= needles: @supabase/supabase-js | @supabase/auth-js | nats | @temporalio/client"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "services/api-nest/package.json",
-      "line": 172,
-      "detail": ".env SUPABASE_REGION must be ap-northeast-2 when set"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": ".cursor/rules/phase-activation.mdc",
-      "line": 178,
-      "detail": "phase-activation.mdc must lock Phase0 in-process"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": ".cursor/rules/phase-activation.mdc",
-      "line": 181,
-      "detail": "phase-activation.mdc must mention Upstash"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": ".cursor/rules/phase-activation.mdc",
-      "line": 184,
-      "detail": "phase-activation.mdc must mention NATS phase boundary"
-     }
-    ],
-    "uiAssertions": [
-     {
-      "domain": "버튼·CTA",
-      "source": "apps/admin/package.json",
-      "line": 151,
-      "detail": "Phase0 forbidden dependency in ${rel} <= needles: DATABASE_URL= | REDIS_URL= | SUPABASE_REGION=ap-northeast-2 | SUPABASE_PROJECT_REF= | CLOUDFLARE_ACCOUNT_ID= | OAUTH_KAKAO_CLIENT_ID= | OAUTH_GOOGLE_CLIENT_ID= | R2_KYC_BUCKET=kyc-docs | JWT"
-     },
-     {
-      "domain": "고객 route",
-      "source": "apps/web",
-      "line": 189,
-      "detail": "backend-only repo must not contain apps/web (customer web is putduk-web)"
-     },
-     {
-      "domain": "고객 route",
-      "source": "apps/admin",
-      "line": 192,
-      "detail": "backend-only repo must not contain apps/admin (future separate admin repo)"
-     }
-    ],
-    "unclassifiedAssertions": [],
-    "backendPaths": [
-     ".github/workflows/deploy-cloudflare.yml",
-     "infra/api/runtime.json",
-     "infra/hosts.manifest.json",
-     "infra/phase0-migration-playbook.md",
-     "infra/r2/kyc-docs.toml",
-     "infra/workers.manifest.json",
-     "services/api-nest/package.json",
-     "services/api-nest/src/app.module.ts",
-     "services/api-nest/src/auth/oauth-identity.service.ts",
-     "services/api-nest/src/config/phase0.env.ts",
-     "services/api-nest/src/db/postgres.ts",
-     "services/api-nest/src/events/events.module.ts",
-     "services/api-nest/src/events/in-process.bus.ts",
-     "services/api-nest/src/redis/upstash.ts",
-     "workers/api-stub/wrangler.toml",
-     "workers/push-dispatcher/wrangler.toml"
-    ],
-    "uiPaths": [
-     "apps/admin/package.json",
-     "apps/web/package.json"
-    ],
-    "backendDomains": [
-     "알림·푸시·인박스",
-     "매칭 정책",
-     "인증·세션·쿠키",
-     "KYC 정책"
-    ],
-    "uiDomains": [
-     "버튼·CTA",
-     "고객 route"
-    ]
    }
   },
   {
@@ -103584,13 +102969,13 @@
   },
   {
    "path": "tooling/verify/qa-env-isolation-guard.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "5단계 mixed 분리",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP",
+   "stage": "-",
    "rule": "verify",
    "reasons": [
     "검증기 (evidence 재판정)",
-    "UI 참조 2 + 백엔드 참조 3 · 백엔드 어서션 14 / UI 어서션 0"
+    "백엔드 경로만 참조 (tooling/e2e/lib/qa-env-isolation-guard.cjs, tooling/e2e/lib/money-mutation-gate.cjs, tooling/e2e/helpers/auth-session.cjs, tooling/e2e/fixtures/qa-allowlist.v1.json, tooling/e2e/helpers/auth-session.runtime.test.cjs)"
    ],
    "evidence": [
     {
@@ -103667,131 +103052,24 @@
     "package.json|pkg-script|verify:qa-env-isolation-guard",
     ".github/workflows/backend-ci.yml|workflow-run|verify:qa-env-isolation-guard"
    ],
-   "blockers": [
-    ".github/workflows/backend-ci.yml(workflow-run:verify:qa-env-isolation-guard)",
-    "package.json(pkg-script)[SPLIT]",
-    "package.json(pkg-script:verify:qa-env-isolation-guard)[SPLIT]"
-   ],
+   "blockers": [],
    "lastCommit": "2026-09-11T19:45:09+09:00",
    "lastCommitSha": "4fc9890267973bd176a98a653bf769d9040c34ef",
    "sizeBytes": 4695,
    "refSummary": {
     "deletedUiRefs": [],
-    "uiRefs": [
-     "tooling/e2e/helpers/auth-session.cjs",
-     "tooling/e2e/helpers/auth-session.runtime.test.cjs"
-    ],
+    "uiRefs": [],
     "backendRefs": [
      "tooling/e2e/lib/qa-env-isolation-guard.cjs",
      "tooling/e2e/lib/money-mutation-gate.cjs",
-     "tooling/e2e/fixtures/qa-allowlist.v1.json"
+     "tooling/e2e/helpers/auth-session.cjs",
+     "tooling/e2e/fixtures/qa-allowlist.v1.json",
+     "tooling/e2e/helpers/auth-session.runtime.test.cjs"
     ],
     "governanceBackendRefs": [],
     "sdkOnlyUi": false,
     "browserHarness": false,
     "uiMarkers": false
-   },
-   "mixedBreakdown": {
-    "backendAssertions": [
-     {
-      "domain": "알림·푸시·인박스",
-      "source": null,
-      "line": 13,
-      "detail": "missing: ${rel}"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/README.md",
-      "line": 32,
-      "detail": "README must forbid MCP-only DONE"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/fixtures/qa-allowlist.v1.json",
-      "line": 37,
-      "detail": "allowlist must lock production project_ref"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/helpers/auth-session.cjs",
-      "line": 58,
-      "detail": "throw message missing ${needle}: ${err.message}"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/helpers/auth-session.cjs",
-      "line": 61,
-      "detail": "expected throw containing ${needle}"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/helpers/auth-session.cjs",
-      "line": 98,
-      "detail": "money mutation callback must not run on production url"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/helpers/auth-session.cjs",
-      "line": 110,
-      "detail": "money mutation callback must not run without allowlisted target"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/helpers/auth-session.cjs",
-      "line": 122,
-      "detail": "allowlisted local money mutation must run"
-     },
-     {
-      "domain": "인증·세션·쿠키",
-      "source": "tooling/e2e/helpers/auth-session.cjs",
-      "line": 127,
-      "detail": "auth session helper must use aipo_session"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/helpers/auth-session.cjs",
-      "line": 132,
-      "detail": "redactUrl must not leak password"
-     },
-     {
-      "domain": "인증·세션·쿠키",
-      "source": "tooling/e2e/helpers/auth-session.runtime.test.cjs",
-      "line": 138,
-      "detail": "committed runtime test must use guard + auth session helper"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/helpers/auth-session.runtime.test.cjs",
-      "line": 143,
-      "detail": "package.json missing verify:qa-env-isolation-guard"
-     },
-     {
-      "domain": "자본 구간",
-      "source": "tooling/e2e/helpers/auth-session.runtime.test.cjs",
-      "line": 148,
-      "detail": "CATALOG.md must list qa-env-isolation-guard"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/helpers/auth-session.runtime.test.cjs",
-      "line": 153,
-      "detail": "domain-by-path must trigger qa-env-isolation-guard"
-     }
-    ],
-    "uiAssertions": [],
-    "unclassifiedAssertions": [],
-    "backendPaths": [
-     "tooling/e2e/fixtures/qa-allowlist.v1.json",
-     "tooling/e2e/lib/money-mutation-gate.cjs",
-     "tooling/e2e/lib/qa-env-isolation-guard.cjs"
-    ],
-    "uiPaths": [],
-    "backendDomains": [
-     "알림·푸시·인박스",
-     "인증·세션·쿠키",
-     "자본 구간"
-    ],
-    "uiDomains": []
    }
   },
   {
@@ -103850,12 +103128,12 @@
   },
   {
    "path": "tooling/verify/rc-formal.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "5단계 mixed 분리",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP",
+   "stage": "-",
    "rule": "verify-rc-formal",
    "reasons": [
-    "RC_FORMAL 잠금 검증기 · 해시 범위에 tooling/e2e/ 등 삭제 예정 트리 포함 → 범위 재정의 필요 (engine-evidence-refresh-check.yml 실행)"
+    "RC_FORMAL lock verifier · evidence-only allowlist includes remaining HTTP harness under tooling/e2e"
    ],
    "evidence": [
     {
@@ -103949,12 +103227,7 @@
     "package.json|pkg-script|verify:rc-formal",
     ".github/workflows/engine-evidence-refresh-check.yml|workflow-run|paths"
    ],
-   "blockers": [
-    ".github/workflows/engine-evidence-refresh-check.yml(workflow-run)",
-    ".github/workflows/engine-evidence-refresh-check.yml(workflow-run:paths)",
-    "package.json(pkg-script)[SPLIT]",
-    "package.json(pkg-script:verify:rc-formal)[SPLIT]"
-   ],
+   "blockers": [],
    "lastCommit": "2026-09-04T12:15:48+09:00",
    "lastCommitSha": "16d936166a53974df3476dadb1be893666f80f51",
    "sizeBytes": 9914,
@@ -106446,13 +105719,13 @@
   },
   {
    "path": "tooling/verify/rel-601-staging-regression.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "5단계 mixed 분리",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP",
+   "stage": "-",
    "rule": "verify",
    "reasons": [
     "검증기 (evidence 재판정)",
-    "UI 참조 4 + 백엔드 참조 1 · 백엔드 어서션 43 / UI 어서션 4"
+    "governance 백엔드 증거만 참조 (governance/release-master/REL-601-STAGING-REGRESSION.md) · 시드 유지"
    ],
    "evidence": [
     {
@@ -106469,14 +105742,6 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "governance/visual-reconciliation/PUTDUK_UI_VISUAL_MATRIX.md"
-    },
-    {
-     "kind": "verifier-reads",
-     "ref": "governance/visual-reconciliation/PUTDUK_UI_VISUAL_MATRIX.json"
-    },
-    {
-     "kind": "verifier-reads",
      "ref": "tooling/verify/CATALOG.md"
     },
     {
@@ -106486,22 +105751,6 @@
     {
      "kind": "verifier-reads",
      "ref": "tooling/verify/domain-by-path.cjs"
-    },
-    {
-     "kind": "verifier-reads",
-     "ref": "tooling/e2e/README.md"
-    },
-    {
-     "kind": "verifier-reads",
-     "ref": "governance/responsive/home-geometry-lock.v1.json"
-    },
-    {
-     "kind": "verifier-reads",
-     "ref": "governance/responsive/large-screen-safety.v1.json"
-    },
-    {
-     "kind": "verifier-reads",
-     "ref": "infra/domain.manifest.json"
     },
     {
      "kind": "verifier-reads",
@@ -106540,340 +105789,20 @@
     "package.json|pkg-script|verify:rel-601-staging-regression",
     ".github/workflows/backend-ci.yml|workflow-run|verify:rel-601-staging-regression"
    ],
-   "blockers": [
-    ".github/workflows/backend-ci.yml(workflow-run:verify:rel-601-staging-regression)",
-    "package.json(pkg-script)[SPLIT]",
-    "package.json(pkg-script:verify:rel-601-staging-regression)[SPLIT]"
-   ],
+   "blockers": [],
    "lastCommit": "2026-09-11T22:01:58+09:00",
    "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
-   "sizeBytes": 11776,
+   "sizeBytes": 6177,
    "refSummary": {
     "deletedUiRefs": [],
-    "uiRefs": [
-     "governance/visual-reconciliation/PUTDUK_UI_VISUAL_MATRIX.md",
-     "governance/visual-reconciliation/PUTDUK_UI_VISUAL_MATRIX.json",
-     "governance/responsive/home-geometry-lock.v1.json",
-     "governance/responsive/large-screen-safety.v1.json"
-    ],
-    "backendRefs": [
-     "infra/domain.manifest.json"
-    ],
+    "uiRefs": [],
+    "backendRefs": [],
     "governanceBackendRefs": [
      "governance/release-master/REL-601-STAGING-REGRESSION.md"
     ],
     "sdkOnlyUi": false,
     "browserHarness": false,
     "uiMarkers": false
-   },
-   "mixedBreakdown": {
-    "backendAssertions": [
-     {
-      "domain": "알림·푸시·인박스",
-      "source": null,
-      "line": 19,
-      "detail": "missing: "
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": null,
-      "line": 31,
-      "detail": " invalid JSON: "
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 63,
-      "detail": "fixture productionDomainMutation must be 0"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 64,
-      "detail": "fixture productionWorkflowDispatch must be 0"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 65,
-      "detail": "fixture pagesDeploy must be 0"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 66,
-      "detail": "fixture vercel must be 0"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 67,
-      "detail": "fixture homeVisualRedesign must be 0"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 68,
-      "detail": "fixture localFullMatrix must stay 0"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 69,
-      "detail": "fixture localFullLighthouse must stay 0"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 70,
-      "detail": "fixture must not claim live staging Playwright"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 71,
-      "detail": "fixture must not mutate money on live staging"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 72,
-      "detail": "MCP-only is not DONE"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 75,
-      "detail": "EXIT_GATE: plan todo not completed "
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 76,
-      "detail": "EXIT_GATE: YAML STATUS not COMPLETED "
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 80,
-      "detail": "fixture staging web must be preview workers"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 83,
-      "detail": "fixture staging ops must be preview workers"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 88,
-      "detail": "probe list must not target production host "
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 92,
-      "detail": "Surface Matrix markdown missing header"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 95,
-      "detail": "Surface Matrix missing  <= needles: | Home | | /profits | /wallet | /me | /admin"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 98,
-      "detail": "Surface Matrix JSON schema missing"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 101,
-      "detail": "FORBIDDEN · home-geometry-lock rewrite must stay FORBIDDEN"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 103,
-      "detail": "large-screen-safety must keep REL-601 as QA owner"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 106,
-      "detail": "home-closure.spec.cjs must stay handed off (putduk-web)"
-     },
-     {
-      "domain": "자본 구간",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 116,
-      "detail": "CATALOG missing rel-601-staging-regression"
-     },
-     {
-      "domain": "자본 구간",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 119,
-      "detail": "backend-ci.yml must run verify:rel-601-staging-regression"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 122,
-      "detail": "domain-by-path must trigger rel-601"
-     },
-     {
-      "domain": "KYC 정책",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 125,
-      "detail": "e2e README must document REL-601 Surface Matrix reuse"
-     },
-     {
-      "domain": "KYC 정책",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 128,
-      "detail": "fixture must record why device-tier is not a hard extra"
-     },
-     {
-      "domain": "자본 구간",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 131,
-      "detail": "fixture must record why asset-pipeline is not a hard extra"
-     },
-     {
-      "domain": "자본 구간",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 153,
-      "detail": "evidence missing  <= needles: STATUS = COMPLETED | HOME_RETROACTIVE_VISUAL_REDESIGN = NO | HOME_GEOMETRY_DIFF = 0 | LOCAL_FULL_MATRIX = 0 | LOCAL_FULL_LIGHTHOUSE = 0 | LOCAL_BROWSER_VS_LIVE_STAGING = NOT_RUN | MONEY_MUTATION_VS_LIVE_STAGING"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 155,
-      "detail": "REL-601 · rel-601 todo must be completed"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 156,
-      "detail": "REL-601 · REL-601 YAML must be COMPLETED"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 158,
-      "detail": "evidence leaked a Cloudflare token"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 161,
-      "detail": "evidence must not dispatch production"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 212,
-      "detail": "live FAIL  ·  + url + "
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 216,
-      "detail": "live FAIL  ·  missing x-opennext=1"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 219,
-      "detail": "live FAIL  ·  location= ·  expected="
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 238,
-      "detail": "Home HTML status "
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 242,
-      "detail": "staging Home title must stay 퍼뜩"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 245,
-      "detail": "staging Home must keep peotteok-light theme"
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 248,
-      "detail": "Home HTML contains forbidden token "
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 274,
-      "detail": "live fetch error after bounded retries: "
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "tooling/verify",
-      "line": 287,
-      "detail": "re-run FAIL  ·  + String(run.stderr || run.stdout ||  · ).split("
-     }
-    ],
-    "uiAssertions": [
-     {
-      "domain": "반응형·뷰포트",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 109,
-      "detail": "large-screen-safety must keep desktop viewports"
-     },
-     {
-      "domain": "반응형·뷰포트",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 113,
-      "detail": "package.json missing verify:rel-601-staging-regression"
-     },
-     {
-      "domain": "CSS·스타일",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 252,
-      "detail": "Home HTML missing Next static CSS href"
-     },
-     {
-      "domain": "CSS·스타일",
-      "source": "tooling/e2e/specs/home-closure.spec.cjs",
-      "line": 260,
-      "detail": "Home CSS asset status "
-     }
-    ],
-    "unclassifiedAssertions": [],
-    "backendPaths": [
-     ".github/workflows/backend-ci.yml",
-     "governance/release-master/REL-601-STAGING-REGRESSION.md",
-     "infra/domain.manifest.json"
-    ],
-    "uiPaths": [
-     "governance/responsive/home-geometry-lock.v1.json",
-     "governance/responsive/large-screen-safety.v1.json",
-     "governance/visual-reconciliation/PUTDUK_UI_VISUAL_MATRIX.json",
-     "governance/visual-reconciliation/PUTDUK_UI_VISUAL_MATRIX.md"
-    ],
-    "backendDomains": [
-     "알림·푸시·인박스",
-     "자본 구간",
-     "KYC 정책"
-    ],
-    "uiDomains": [
-     "반응형·뷰포트",
-     "CSS·스타일"
-    ]
    }
   },
   {
@@ -107527,14 +106456,14 @@
   },
   {
    "path": "tooling/verify/root-domain-env.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "5단계 mixed 분리",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP",
+   "stage": "-",
    "rule": "verify",
    "reasons": [
     "검증기 (evidence 재판정)",
     "백엔드 경로만 참조 (infra/domain.manifest.json, infra/hosts.manifest.json, workers/api-stub/wrangler.toml)",
-    "[override] T1 + deploy-cloudflare production step · SCAN_PATHS가 infra/web·infra/ops·access-policy(삭제 대상)만 · .env.example ROOT_DOMAIN 검사와 API(api-stub wrangler) 스캔으로 재정의."
+    "[override] T1 + deploy-cloudflare. SCAN_PATHS are domain.manifest / hosts.manifest / api-stub wrangler. ROOT_DOMAIN required in .env.example."
    ],
    "evidence": [
     {
@@ -107579,12 +106508,7 @@
     ".github/workflows/backend-ci.yml|workflow-run|verify:root-domain-env",
     ".github/workflows/deploy-cloudflare.yml|workflow-run|verify:root-domain-env"
    ],
-   "blockers": [
-    ".github/workflows/backend-ci.yml(workflow-run:verify:root-domain-env)",
-    ".github/workflows/deploy-cloudflare.yml(workflow-run:verify:root-domain-env)",
-    "package.json(pkg-script)[SPLIT]",
-    "package.json(pkg-script:verify:root-domain-env)[SPLIT]"
-   ],
+   "blockers": [],
    "lastCommit": "2026-09-11T22:01:58+09:00",
    "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
    "sizeBytes": 1451,
@@ -108598,12 +107522,12 @@
   },
   {
    "path": "tooling/verify/stubs/run-all.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "4단계 UI 검증기·E2E 제거",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
    "rule": "verify-stubs-runner",
    "reasons": [
-    "T1 도메인 스텁 러너 · retired skip 제거(5단계) · live 목록에 4단계 UI 검증기 이름만 잔존"
+    "T1 domain stub runner · live list is backend checkers only"
    ],
    "evidence": [
     {
@@ -108627,11 +107551,7 @@
     "tooling/verify/home-money-read-contract.cjs|verifier-reads",
     "tooling/verify/no-fake-zero-status.cjs|verifier-reads"
    ],
-   "blockers": [
-    "tooling/verify/gate-tiers.cjs(require)",
-    "tooling/verify/home-money-read-contract.cjs(verifier-reads)",
-    "tooling/verify/no-fake-zero-status.cjs(verifier-reads)"
-   ],
+   "blockers": [],
    "lastCommit": "2026-09-11T13:22:36+09:00",
    "lastCommitSha": "720e7d54b9d5f0727266fc8388fb4cbc6e73ed90",
    "sizeBytes": 2478,

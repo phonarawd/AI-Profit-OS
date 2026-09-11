@@ -1,13 +1,10 @@
 node_modules/
-.next/
 dist/
 build/
 target/
 .turbo/
 .wrangler/
-.open-next/
 coverage/
-playwright-report/
 test-results/
 blob-report/
 pnpm-lock.yaml

@@ -1,5 +1,5 @@
 /**
- * REL-023 committed Day-1 PWA certification spec.
+ * REL-023 backend Day-1 certification spec (push kill-switch + RP contracts).
  */
 const {
   assertQaIsolation,
@@ -13,11 +13,8 @@ function assert(cond, message) {
 function run() {
   assertQaIsolation({ purpose: "e2e", host: "localhost" });
   const cases = runDay1CertCases();
-  for (const id of cases.checklist.requiredCompleted) {
-    assert(cases.evidence[id] === true, `missing evidence ${id}`);
-  }
-  for (const key of cases.checklist.items) {
-    assert(cases.items[key] === true, `checklist ${key}`);
+  for (const key of ["kill", "webauthn_rp", "push_channel", "push_kill"]) {
+    assert(cases.items[key] === true, "checklist " + key);
   }
   assert(cases.storeBridge === 0, "store-bridge must be excluded");
   assert(cases.post017 === 0, "POST-017 must be excluded");

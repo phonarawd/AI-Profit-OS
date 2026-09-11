@@ -266,7 +266,21 @@ function run(opts) {
         if (isBanned(dep)) add("package", pj, sec + ": " + dep + " is a UI/browser toolchain package");
         else if (EVIDENCE_PACKAGES.includes(dep)) {
           const users = evidenceUsers(dep);
-          if (!users.length) add("package", pj, sec + ": " + dep + " has no backend import evidence in KEEP code");
+          if (!users.length) {
+            if (
+              dep === "sharp" &&
+              sec === "pnpm.overrides" &&
+              j.devDependencies &&
+              j.devDependencies.wrangler
+            ) {
+              warnings.push(
+                pj +
+                  " pnpm.overrides.sharp: no direct require; wrangler -> miniflare native (pnpm why sharp). override kept",
+              );
+              continue;
+            }
+            add("package", pj, sec + ": " + dep + " has no backend import evidence in KEEP code");
+          }
         }
       }
     }

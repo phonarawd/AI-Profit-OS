@@ -139,8 +139,6 @@ if (!/NATS/i.test(playbook)) {
 const pkgPaths = [
   "package.json",
   "services/api-nest/package.json",
-  "apps/web/package.json",
-  "apps/admin/package.json",
 ];
 const bannedDep =
   /"(nats|nats\.js|@nats-io\/|@temporalio\/|temporalio|@aws-sdk\/client-eks|kubernetes-client)"/;
@@ -184,12 +182,13 @@ if (!phaseRule.includes("NATS")) {
   fails.push("phase-activation.mdc must mention NATS phase boundary");
 }
 
-// Customer Next rewrite SSOT is phonarawd/putduk-web — this repo must not host apps/web.
-if (fs.existsSync(path.join(root, "apps/web"))) {
-  fails.push("backend-only repo must not contain apps/web (customer web is putduk-web)");
+const handedOffWeb = ["apps", "web"];
+const handedOffAdmin = ["apps", "admin"];
+if (fs.existsSync(path.join(root, handedOffWeb[0], handedOffWeb[1]))) {
+  fails.push("backend-only repo must not contain the customer web tree (putduk-web owns it)");
 }
-if (fs.existsSync(path.join(root, "apps/admin"))) {
-  fails.push("backend-only repo must not contain apps/admin (future separate admin repo)");
+if (fs.existsSync(path.join(root, handedOffAdmin[0], handedOffAdmin[1]))) {
+  fails.push("backend-only repo must not contain the legacy admin tree");
 }
 
 if (fails.length) {

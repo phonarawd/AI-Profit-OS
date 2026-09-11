@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-09-11T16:27:49.541Z",
- "headSha": "cc50e4cf971f2ba1510de9d57ffd30fad30fa6b1",
+ "generatedAt": "2026-09-11T19:27:24.097Z",
+ "headSha": "5407260f11359d674a70b7dcf603b92cae8f52b6",
  "edgeKinds": [
   "import",
   "require",
@@ -243,14 +243,14 @@
   {
    "id": ".cursorignore",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": ".env.example",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": ".github/actions/backend-setup/action.yml",
@@ -345,8 +345,8 @@
   {
    "id": ".gitignore",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": ".husky/pre-commit",
@@ -357,8 +357,8 @@
   {
    "id": ".husky/pre-push",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": ".markdownlint-cli2.jsonc",
@@ -399,14 +399,14 @@
   {
    "id": ".vscode/extensions.json",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": ".vscode/settings.json",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": "AGENTS.md",
@@ -1695,8 +1695,8 @@
   {
    "id": "package.json",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": "packages/observability/observability.core.cjs",
@@ -5421,8 +5421,8 @@
   {
    "id": "tooling/deploy/cf-preflight.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/deploy/cf-workers.cjs",
@@ -5511,8 +5511,8 @@
   {
    "id": "tooling/e2e/helpers/auth-session.runtime.test.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/e2e/lib/auth-rate-limit-harness.cjs",
@@ -6039,8 +6039,8 @@
   {
    "id": "tooling/github/main-gate.ruleset.json",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/lowspec/disable-heavy-extensions.cjs",
@@ -6075,14 +6075,14 @@
   {
    "id": "tooling/pwa/pwa-day1-certification-harness.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/pwa/pwa-day1-certification.spec.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/pwa/pwa-push-badge-harness.cjs",
@@ -6111,8 +6111,8 @@
   {
    "id": "tooling/pwa/webauthn-rp.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/recovery/apply-workflow-action-pins.cjs",
@@ -6135,8 +6135,8 @@
   {
    "id": "tooling/recovery/classify-local-state.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/recovery/classify-local-state.selftest.cjs",
@@ -6189,8 +6189,8 @@
   {
    "id": "tooling/release/artifact-provenance.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/release/artifact-runtime-qa.cjs",
@@ -6297,8 +6297,8 @@
   {
    "id": "tooling/schemas/_write-trade-license-html.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/security/dependency-audit.cjs",
@@ -6867,8 +6867,8 @@
   {
    "id": "tooling/verify/domain-by-path.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/verify/domain-by-path.selftest.cjs",
@@ -7095,8 +7095,8 @@
   {
    "id": "tooling/verify/governance-observation-registry.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/verify/growth-public-surface.cjs",
@@ -7311,8 +7311,8 @@
   {
    "id": "tooling/verify/phase0-bootstrap.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/verify/plans-ssot.cjs",
@@ -7383,8 +7383,8 @@
   {
    "id": "tooling/verify/qa-env-isolation-guard.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/verify/qa-env-isolation-staging.cjs",
@@ -7395,8 +7395,8 @@
   {
    "id": "tooling/verify/rc-formal.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/verify/reference-resolution.cjs",
@@ -7545,8 +7545,8 @@
   {
    "id": "tooling/verify/rel-601-staging-regression.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/verify/rel-602-staging-rollback.cjs",
@@ -7599,8 +7599,8 @@
   {
    "id": "tooling/verify/root-domain-env.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/verify/routing-coverage.cjs",
@@ -7671,8 +7671,8 @@
   {
    "id": "tooling/verify/stubs/run-all.cjs",
    "type": "file",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": "tooling/verify/tron-hd-derivation-fail-closed.runtime.cjs",
@@ -14766,30 +14766,6 @@
    "type": "missing-path"
   },
   {
-   "id": "deleted:apps/web/components/pwa/PwaRuntime.tsx",
-   "type": "deleted-ui-path"
-  },
-  {
-   "id": "deleted:packages/ui/components/auth/webauthn-ready.ts",
-   "type": "deleted-ui-path"
-  },
-  {
-   "id": "deleted:apps/web/components/spark-dash-home/",
-   "type": "deleted-ui-path"
-  },
-  {
-   "id": "deleted:apps/web/public/spark-dash/",
-   "type": "deleted-ui-path"
-  },
-  {
-   "id": "deleted:apps/web/components/support/",
-   "type": "deleted-ui-path"
-  },
-  {
-   "id": "deleted:apps/web/app/wallet/deposit/",
-   "type": "deleted-ui-path"
-  },
-  {
    "id": "missing:tooling/mcp/",
    "type": "missing-path"
   },
@@ -15395,8 +15371,8 @@
    "type": "npm-script",
    "package": "package.json",
    "command": "node tooling/verify/root-domain-env.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "script:verify:cf-infra",
@@ -15419,8 +15395,8 @@
    "type": "npm-script",
    "package": "package.json",
    "command": "node tooling/verify/phase0-bootstrap.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "script:verify:ebay-worker-deploy-path",
@@ -15651,8 +15627,8 @@
    "type": "npm-script",
    "package": "package.json",
    "command": "node tooling/verify/rel-601-staging-regression.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "script:verify:rel-602-staging-rollback",
@@ -16251,8 +16227,8 @@
    "type": "npm-script",
    "package": "package.json",
    "command": "node tooling/verify/governance-observation-registry.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "script:verify:engine-acceptance",
@@ -16275,8 +16251,8 @@
    "type": "npm-script",
    "package": "package.json",
    "command": "node tooling/verify/rc-formal.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "script:verify:db-recon-inventory",
@@ -16371,8 +16347,8 @@
    "type": "npm-script",
    "package": "package.json",
    "command": "node tooling/verify/qa-env-isolation-guard.cjs",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
   },
   {
    "id": "script:verify:settlement-rule-parity",
@@ -16747,8 +16723,8 @@
    "type": "npm-script",
    "package": "package.json",
    "command": "node tooling/deploy/cf-preflight.cjs preview workers",
-   "class": "MIXED",
-   "decision": "SPLIT"
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
   },
   {
    "id": "script:cf:deploy:workers",
@@ -20438,12 +20414,6 @@
    "from": ".env.example",
    "to": "services/api-nest/src/config/phase0.env.ts",
    "kind": "verifier-reads"
-  },
-  {
-   "from": ".env.example",
-   "to": "deleted:apps/web",
-   "kind": "verifier-reads",
-   "spec": "apps/web"
   },
   {
    "from": ".env.example",
@@ -74604,12 +74574,6 @@
   },
   {
    "from": "tooling/backend/ownership-overrides.json",
-   "to": "deleted:apps/web/public/kyb",
-   "kind": "verifier-reads",
-   "spec": "apps/web/public/kyb"
-  },
-  {
-   "from": "tooling/backend/ownership-overrides.json",
    "to": "missing:governance/pwa/DAY1_CERTIFICATION.md",
    "kind": "verifier-reads",
    "spec": "governance/pwa/DAY1_CERTIFICATION.md"
@@ -74766,6 +74730,11 @@
   {
    "from": "tooling/backend/ownership-overrides.json",
    "to": "governance/responsive/large-screen-safety.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/backend/ownership-overrides.json",
+   "to": "tooling/verify/governance-observation-registry.cjs",
    "kind": "verifier-reads"
   },
   {
@@ -75071,18 +75040,6 @@
    "from": "tooling/deploy/cf-preflight.cjs",
    "to": ".cursor/mcp.json",
    "kind": "deploy-cmd"
-  },
-  {
-   "from": "tooling/deploy/cf-preflight.cjs",
-   "to": "deleted:apps/web",
-   "kind": "deploy-cmd",
-   "spec": "apps/web"
-  },
-  {
-   "from": "tooling/deploy/cf-preflight.cjs",
-   "to": "deleted:apps/admin",
-   "kind": "deploy-cmd",
-   "spec": "apps/admin"
   },
   {
    "from": "tooling/deploy/cf-preflight.cjs",
@@ -78361,64 +78318,6 @@
   },
   {
    "from": "tooling/pwa/pwa-day1-certification-harness.cjs",
-   "to": "missing:governance/pwa/day1-checklist.v1.json",
-   "kind": "test-ref",
-   "spec": "governance/pwa/day1-checklist.v1.json"
-  },
-  {
-   "from": "tooling/pwa/pwa-day1-certification-harness.cjs",
-   "to": "missing:governance/release-master/REL-014-PWA-NATIVE-SHELL.md",
-   "kind": "test-ref",
-   "spec": "governance/release-master/REL-014-PWA-NATIVE-SHELL.md"
-  },
-  {
-   "from": "tooling/pwa/pwa-day1-certification-harness.cjs",
-   "to": "governance/release-master/REL-020-PUSH-BADGE.md",
-   "kind": "test-ref"
-  },
-  {
-   "from": "tooling/pwa/pwa-day1-certification-harness.cjs",
-   "to": "governance/release-master/REL-021-PUSH-CHANNEL-FILTER.md",
-   "kind": "test-ref"
-  },
-  {
-   "from": "tooling/pwa/pwa-day1-certification-harness.cjs",
-   "to": "missing:governance/release-master/REL-022-WEBAUTHN-UX.md",
-   "kind": "test-ref",
-   "spec": "governance/release-master/REL-022-WEBAUTHN-UX.md"
-  },
-  {
-   "from": "tooling/pwa/pwa-day1-certification-harness.cjs",
-   "to": "deleted:apps/web/public/manifest.webmanifest",
-   "kind": "test-ref",
-   "spec": "apps/web/public/manifest.webmanifest"
-  },
-  {
-   "from": "tooling/pwa/pwa-day1-certification-harness.cjs",
-   "to": "deleted:apps/web/public/sw.js",
-   "kind": "test-ref",
-   "spec": "apps/web/public/sw.js"
-  },
-  {
-   "from": "tooling/pwa/pwa-day1-certification-harness.cjs",
-   "to": "deleted:apps/web/components/pwa/PwaRuntime.tsx",
-   "kind": "test-ref",
-   "spec": "apps/web/components/pwa/PwaRuntime.tsx"
-  },
-  {
-   "from": "tooling/pwa/pwa-day1-certification-harness.cjs",
-   "to": "deleted:packages/ui/components/toast/pushDedup.ts",
-   "kind": "test-ref",
-   "spec": "packages/ui/components/toast/pushDedup.ts"
-  },
-  {
-   "from": "tooling/pwa/pwa-day1-certification-harness.cjs",
-   "to": "deleted:packages/ui/components/auth/webauthn-ready.ts",
-   "kind": "test-ref",
-   "spec": "packages/ui/components/auth/webauthn-ready.ts"
-  },
-  {
-   "from": "tooling/pwa/pwa-day1-certification-harness.cjs",
    "to": "workers/push-dispatcher/src/lib/dispatch.cjs",
    "kind": "test-ref"
   },
@@ -78429,9 +78328,13 @@
   },
   {
    "from": "tooling/pwa/pwa-day1-certification-harness.cjs",
-   "to": "deleted:packages/ui/components/auth/AuthLogin.tsx",
-   "kind": "test-ref",
-   "spec": "packages/ui/components/auth/AuthLogin.tsx"
+   "to": "governance/pwa/push-channel-filter.v1.json",
+   "kind": "test-ref"
+  },
+  {
+   "from": "tooling/pwa/pwa-day1-certification-harness.cjs",
+   "to": "governance/pwa/push-kill.v1.json",
+   "kind": "test-ref"
   },
   {
    "from": "tooling/pwa/pwa-day1-certification.spec.cjs",
@@ -78660,36 +78563,6 @@
   },
   {
    "from": "tooling/recovery/classify-local-state.cjs",
-   "to": "deleted:apps/web/components/spark-dash-home/",
-   "kind": "deploy-cmd",
-   "spec": "apps/web/components/spark-dash-home/"
-  },
-  {
-   "from": "tooling/recovery/classify-local-state.cjs",
-   "to": "deleted:apps/web/app/HomeDesktopClient.tsx",
-   "kind": "deploy-cmd",
-   "spec": "apps/web/app/HomeDesktopClient.tsx"
-  },
-  {
-   "from": "tooling/recovery/classify-local-state.cjs",
-   "to": "deleted:apps/web/public/spark-dash/",
-   "kind": "deploy-cmd",
-   "spec": "apps/web/public/spark-dash/"
-  },
-  {
-   "from": "tooling/recovery/classify-local-state.cjs",
-   "to": "deleted:apps/web/scripts/freeze-home-qa.mjs",
-   "kind": "deploy-cmd",
-   "spec": "apps/web/scripts/freeze-home-qa.mjs"
-  },
-  {
-   "from": "tooling/recovery/classify-local-state.cjs",
-   "to": "missing:governance/consumer-home-approval/home-approval-freeze.v1.json",
-   "kind": "deploy-cmd",
-   "spec": "governance/consumer-home-approval/home-approval-freeze.v1.json"
-  },
-  {
-   "from": "tooling/recovery/classify-local-state.cjs",
    "to": ".cursor/mcp.json",
    "kind": "deploy-cmd"
   },
@@ -78760,18 +78633,6 @@
   },
   {
    "from": "tooling/recovery/classify-local-state.cjs",
-   "to": "deleted:apps/web/components/support/",
-   "kind": "deploy-cmd",
-   "spec": "apps/web/components/support/"
-  },
-  {
-   "from": "tooling/recovery/classify-local-state.cjs",
-   "to": "deleted:apps/web/app/me/support/page.tsx",
-   "kind": "deploy-cmd",
-   "spec": "apps/web/app/me/support/page.tsx"
-  },
-  {
-   "from": "tooling/recovery/classify-local-state.cjs",
    "to": "dir:governance/release-inventory/",
    "kind": "deploy-cmd",
    "spec": "governance/release-inventory/"
@@ -78796,12 +78657,6 @@
    "to": "dir:.github/workflows/",
    "kind": "deploy-cmd",
    "spec": ".github/workflows/"
-  },
-  {
-   "from": "tooling/recovery/classify-local-state.cjs",
-   "to": "deleted:apps/web/app/wallet/deposit/",
-   "kind": "deploy-cmd",
-   "spec": "apps/web/app/wallet/deposit/"
   },
   {
    "from": "tooling/recovery/classify-local-state.cjs",
@@ -79134,12 +78989,6 @@
    "from": "tooling/release/version-id.cjs",
    "to": "env:PUTDUK_RELEASE_ID",
    "kind": "env"
-  },
-  {
-   "from": "tooling/schemas/_write-trade-license-html.cjs",
-   "to": "deleted:apps/web/public/kyb/trade-license-1135431.html",
-   "kind": "deploy-cmd",
-   "spec": "apps/web/public/kyb/trade-license-1135431.html"
   },
   {
    "from": "tooling/schemas/_write-trade-license-html.cjs",
@@ -86208,32 +86057,8 @@
   },
   {
    "from": "tooling/verify/phase0-bootstrap.cjs",
-   "to": "deleted:apps/web/package.json",
-   "kind": "verifier-reads",
-   "spec": "apps/web/package.json"
-  },
-  {
-   "from": "tooling/verify/phase0-bootstrap.cjs",
-   "to": "deleted:apps/admin/package.json",
-   "kind": "verifier-reads",
-   "spec": "apps/admin/package.json"
-  },
-  {
-   "from": "tooling/verify/phase0-bootstrap.cjs",
    "to": ".cursor/rules/phase-activation.mdc",
    "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/phase0-bootstrap.cjs",
-   "to": "deleted:apps/web",
-   "kind": "verifier-reads",
-   "spec": "apps/web"
-  },
-  {
-   "from": "tooling/verify/phase0-bootstrap.cjs",
-   "to": "deleted:apps/admin",
-   "kind": "verifier-reads",
-   "spec": "apps/admin"
   },
   {
    "from": "tooling/verify/phase0-bootstrap.cjs",
@@ -88282,16 +88107,6 @@
   },
   {
    "from": "tooling/verify/rel-601-staging-regression.cjs",
-   "to": "governance/visual-reconciliation/PUTDUK_UI_VISUAL_MATRIX.md",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-601-staging-regression.cjs",
-   "to": "governance/visual-reconciliation/PUTDUK_UI_VISUAL_MATRIX.json",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-601-staging-regression.cjs",
    "to": "tooling/verify/CATALOG.md",
    "kind": "verifier-reads"
   },
@@ -88303,26 +88118,6 @@
   {
    "from": "tooling/verify/rel-601-staging-regression.cjs",
    "to": "tooling/verify/domain-by-path.cjs",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-601-staging-regression.cjs",
-   "to": "tooling/e2e/README.md",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-601-staging-regression.cjs",
-   "to": "governance/responsive/home-geometry-lock.v1.json",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-601-staging-regression.cjs",
-   "to": "governance/responsive/large-screen-safety.v1.json",
-   "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/rel-601-staging-regression.cjs",
-   "to": "infra/domain.manifest.json",
    "kind": "verifier-reads"
   },
   {
