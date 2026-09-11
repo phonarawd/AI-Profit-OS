@@ -6,9 +6,8 @@ alwaysApply: true
 # Phase0 Low-Spec RAM (ADR-016)
 
 > **범위 = 이 워크스테이션의 로컬 개발 운영만.**  
-> 제품 시각/성능 baseline이 **아니다**.  
-> PO LOCK = `.cursor/rules/peotteok-performance-target.mdc`  
-> (`DEVELOPER MACHINE ≠ USER HARDWARE BASELINE` · 로컬 OOM/timeout = `BLOCKED_LOCAL_*` · Visual Master 다운그레이드 사유 아님)
+> 제품 시각/성능 baseline이 **아니다**. 고객 웹 성능 기준은 putduk-web.  
+> 로컬 OOM/timeout = `BLOCKED_LOCAL_*` (제품 결함으로 자동 승격 금지)
 
 ## 머신 프로필 (이 워크스테이션)
 
@@ -23,11 +22,11 @@ alwaysApply: true
 ## 필수 (에이전트+유저)
 
 - DB/Redis = **원격만** (Supabase Seoul + Upstash) · Docker Desktop **기동 금지**
-- 동시 기동 **1개만**: `web` **또는** `api` (둘 다·admin 병행 금지)
+- 동시 기동 **1개만**: `api` (Nest). 고객 웹 로컬 서버는 putduk-web.
 - `NODE_OPTIONS=--max-old-space-size=1536` (이 PC 기본 · 2048은 OOM 유발)
 - 로컬: `cargo check`만 · `cargo build --release` / E2E / 풀 test = **GitHub Actions**
 - Agent: 서브에이전트 **병렬 0** · Task/explore **최대 1** · `best-of-n` 금지
-- 컨텍스트: Index + **해당 도메인 플랜 1개만** · launch/헌법 전문 대량 로드 금지
+- 컨텍스트: Index + **해당 도메인 플랜 1개만** · 헌법 전문 대량 로드 금지
 - 터미널 동시 실행 명령 **1개** · `pnpm -r` 전체 빌드 로컬 금지
 - IDE: rust-analyzer는 engine 작업 중에만 · Continue 등 이중 AI 확장 **OFF**
 - 세션 끝: `pnpm cleanup:lowspec` (+ 불필요 `next`/`nest`/`node` 종료)

@@ -265,7 +265,6 @@ const RULES = [
       /^apps\/web\/app\/HomeDesktopClient\.tsx$/.test(f) ||
       /^apps\/web\/app\/GuestFirstVisit\.tsx$/.test(f) ||
       /^apps\/web\/app\/guest-first-visit\.css$/.test(f) ||
-      /^apps\/web\/components\/spark-dash-home\//.test(f) ||
       /^tooling\/e2e\/specs\/home-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/e2e\/lib\/local-web-runtime\.cjs$/.test(f) ||
       /^tooling\/e2e\/lib\/consumer-route-stubs\.cjs$/.test(f),
@@ -390,8 +389,6 @@ const RULES = [
   {
     test: (f) =>
       /^apps\/web\/app\/profits\/\[id\]\//.test(f) ||
-      /^apps\/web\/components\/spark-dash-room\//.test(f) ||
-      /^apps\/web\/app\/dev\/spark-dash-room\//.test(f) ||
       /^packages\/sdk\/src\/participate\//.test(f) ||
       /^tooling\/e2e\/lib\/consumer-route-stubs\.cjs$/.test(f) ||
       /^tooling\/e2e\/specs\/opportunity-detail-closure\.spec\.cjs$/.test(f) ||

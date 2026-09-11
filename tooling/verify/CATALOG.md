@@ -98,10 +98,10 @@ CI job ↔ 검증기 매핑 = `tooling/verify/gate-tiers.cjs` `CI_JOBS` · 문�
 | `governance/release-master/rel-b3-promotion/**` · `b3-promotion-ledger` · `tooling/verify/b3-promotion.cjs` | b3-promotion |
 | `release-acceptance.v1.json` · `tooling/release/*acceptance*` · `engine-acceptance.yml` · `deploy-cloudflare.yml` | release-acceptance |
 | `.github/workflows/**` · `.github/dependabot.yml` · `workflow-action-pins.v1.json` · `tooling/verify/workflow-action-pin.cjs` | workflow-action-pin |
-| `workers/push-dispatcher/**` · `services/api-nest/src/push/**` · `packages/sdk/src/push/**` · `governance/pwa/**` · `schemas/push-*.json` · `tooling/pwa/**` · `tooling/verify/pwa-push-badge.cjs` | pwa-push-badge · push-channel-prefs |
-| `services/api-nest/src/auth/webauthn-rp.ts` · `packages/ui/components/auth/webauthn-ready.ts` · `packages/ui/components/auth/AuthLogin.tsx` · `governance/pwa/webauthn-rp.v1.json` · `tooling/pwa/webauthn-*` · `tooling/verify/webauthn-ux-rp.cjs` | webauthn-ux-rp · webauthn-fallback-pointer · pwa-native-shell |
+| `workers/push-dispatcher/**` · `services/api-nest/src/push/**` · `governance/pwa/**` · `schemas/push-*.json` · `tooling/pwa/**` · `tooling/verify/pwa-push-badge.cjs` | pwa-push-badge · push-channel-prefs |
+| `services/api-nest/src/auth/webauthn-rp.ts` · `governance/pwa/webauthn-rp.v1.json` · `tooling/pwa/webauthn-*` · `tooling/verify/webauthn-ux-rp.cjs` | webauthn-ux-rp · webauthn-fallback-pointer |
 | `services/api-nest/src/ledger/ledger.user*` · `services/api-nest/ledger-user-query.core.cjs` · `tooling/e2e/**/ledger-user-query*` · `tooling/verify/user-ledger-query.cjs` | user-ledger-query |
-| `governance/observability/**` · `packages/observability/**` · `services/api-nest/src/observability/**` · `apps/web/components/observability/**` · `tooling/verify/observability.cjs` | observability |
+| `governance/observability/**` · `packages/observability/**` · `services/api-nest/src/observability/**` · `tooling/verify/observability.cjs` | observability |
 | `governance/admin/**` · `tooling/verify/rel-400-admin-control-plane.cjs` | rel-400-admin-control-plane |
 | `governance/security/http-headers` · `tooling/security/http-headers.cjs` · web/admin next.config · api-nest security-headers | rel-401-security-headers |
 | `governance/security/dependency-audit` · `governance/security/AUDIT_EXCEPTIONS.md` · `tooling/security/dependency-audit.cjs` · `.github/workflows/backend-ci.yml` | rel-402-dependency-audit |
@@ -131,18 +131,12 @@ CI job ↔ 검증기 매핑 = `tooling/verify/gate-tiers.cjs` `CI_JOBS` · 문�
 | `governance/release-master/REL-600-STAGING.md` · staging origin · `tooling/verify/rel-600-staging.cjs` | rel-600-staging |
 | `governance/release-master/REL-601-STAGING-REGRESSION.md` · Surface Matrix · `tooling/verify/rel-601-staging-regression.cjs` | rel-601-staging-regression |
 | `governance/release-master/REL-602-STAGING-ROLLBACK.md` · `tooling/deploy/cf-rollback-staging.cjs` · `tooling/verify/rel-602-staging-rollback.cjs` | rel-602-staging-rollback |
-| `apps/admin/**` | no-admin-in-web · admin-routes · admin-novice-ui · rel-201-admin-dashboard · rel-202-admin-users · rel-203-admin-user-detail · rel-204-admin-user-finance · rel-205-admin-ledger · rel-206-admin-wallet · rel-207-admin-compliance · rel-208-admin-risk · rel-209-admin-execution-policy · rel-210-admin-opportunities · rel-211-admin-adapters · rel-212-admin-support · rel-213-admin-system-control · rel-214-admin-audit · rel-215-admin-ai-logs · rel-216-admin-financial · rel-217-admin-growth · rel-218-admin-growth-deposit · rel-219-admin-growth-ticker · rel-220-admin-growth-whale · rel-221-admin-growth-content |
 | rel-2xx admin UI verifiers · admin-entry-e2e | Admin 화면 어서션 = putduk-web 인계(`quality/putduk-web-ui-assertions-handoff.md`) · Nest admin controller 계약 = `backend/admin-rbac/admin-controller-guards.cjs` (`verify:backend`) |
 | opportunity UI/copy/canon | balance-aware-feed · opportunity-scan · margin-compare · asset-image · cta-earn-profit |
 | `supabase/migrations/**` · migrations-applied fixture | migrations-applied-parity |
 | home wire (HomePageClient · SDK user-feed · HomePrincipalRail) | home-live-wire / sdk-user-feed / home-principal-slots / home-closure = putduk-web 인계(`quality/putduk-web-ui-assertions-handoff.md`) · growth-public-surface **live** · ticker-pii-0 → `backend/notification/ticker-pii-0.cjs` (schema PII 0) |
-| `apps/web/app/profits/**` · `ProfitsDesktopClient` · `spark-dash-profits` | profits-live-wire · sdk-user-feed |
-| `apps/web/app/profits/[id]/**` · `spark-dash-room` · `packages/sdk/src/participate` | opportunity-detail-live-wire · participate-web-wire · sdk-user-feed |
-| `apps/web/app/wallet/page.tsx` · `packages/sdk/src/wallet/**` | wallet-live-wire |
-| `apps/web/app/trades/EarningsEmbed.tsx` | earnings-embed · trades-live-wire |
-| `apps/web/app/wallet/deposit/**` · `me/kyc` · `me/support` · `KycFlow` | stub-page-actions · usdt-deposit-closure · krw-deposit-closure |
 | money api-nest | pg-module-scan · bucket-invariant |
-| `schemas/home-money-read.v1.json` · `wallet/home-money-read*` · `packages/sdk/src/home-money-read/**` | home-money-read-contract |
+| `schemas/home-money-read.v1.json` · `wallet/home-money-read*` | home-money-read-contract |
 | engine-rust · trade/opportunity api | match-success-rule · settlement-rule-parity · participate-http · execute-rule-loop |
 | auth/jwt | auth-jwt-runtime · auth-flows · auth-session-cookie · auth-rate-limit |
 | `api-nest` wallet · kyc.controller | wallet-kyc-session-auth |
@@ -176,7 +170,7 @@ CI job ↔ 검증기 매핑 = `tooling/verify/gate-tiers.cjs` `CI_JOBS` · 문�
 | wallet-closure | REL-113 — `/wallet` unauthorized/ready · missing≠0 · leftover 5-tab chrome 0 — **live** |
 | invite-closure | REL-120 — `/me/invite` GET `/api/v1/referral/me` · unauthorized≠empty · leftover 5-tab chrome 0 — **live** |
 | inbox-closure | REL-121 — `/me/inbox` GET `/api/v1/me/inbox` · 401≠empty — **live** |
-| peotteok-closure | REL-122 — `/me/peotteok` fact-only · spark-dash ai-orb reuse — **live** |
+| peotteok-closure | REL-122 — `/me/peotteok` fact-only · legacy-home ai-orb reuse — **live** |
 | profile-closure | REL-123 — `/me` session owner · leftover chrome 0 · fake zero 0 — **live** |
 | kyc-closure | REL-124 — `/me/kyc` status owner · fake approved 0 — **live** |
 | settings-closure | REL-125 — `/me/settings` prefs persist · logout/delete owners — **live** |

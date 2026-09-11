@@ -1,7 +1,7 @@
 # Company Registration Summary (Internal Use Only)
 
-> **SSOT:** Launch plan **§50.9** in [`ai_profit_os_launch_54c1261e.plan.md`](file:///c:/Users/PC/.cursor/plans/ai_profit_os_launch_54c1261e.plan.md)  
-> This file is a **KYB convenience copy** only. Do not duplicate edits here — update the plan §50.9 + `schemas/operator-entity.v1.json` instead.
+> **SSOT:** Launch plan **operator-entity.v1** in [`ai_profit_os_launch_54c1261e.plan.md`](file:///c:/Users/PC/.cursor/plans/ai_profit_os_launch_54c1261e.plan.md)  
+> This file is a **KYB convenience copy** only. Do not duplicate edits here — update the plan operator-entity.v1 + `schemas/operator-entity.v1.json` instead.
 
 > **This document is NOT an official government-issued certificate.**  
 > It is an internal summary compiled from information provided by the company owner  

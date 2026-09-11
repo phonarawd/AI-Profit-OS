@@ -1,3 +1,11 @@
+# Backend-only repo residual report
+
+- Head SHA: `5baa473503933ab9985a73fe265e068ebb7f6b94` · verdict **BACKEND_ONLY_CLEANUP_IN_PROGRESS**
+- UNKNOWN **0** · REVIEW_REQUIRED **0**
+- 5th stage: markdown/governance screen evidence removed. Remaining docs listed in `quality/backend-doc-ownership.json` (128).
+- Next: 6th stage CI/ruleset + putduk-web SHA. Do not declare READY.
+
+---
 # 백엔드 전용 레포 — 잔여 보고서 (1단계)
 
 - 기준 SHA: `86f159648578be7031f58393f3f011c8c249433f` · 생성 `2026-09-10T21:08:39.880Z` · 판정 **`BACKEND_ONLY_CLEANUP_IN_PROGRESS`**

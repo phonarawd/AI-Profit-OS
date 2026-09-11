@@ -13,7 +13,9 @@
  *   ui-path            apps/web · apps/admin · packages/ui · next/tailwind/postcss/playwright/lighthouse 설정 ·
  *                      백엔드 사용 증거 없는 CSS/SCSS · 이미지/폰트 · 금지 이름 마커(SparkDash · Toss Premium · Lux)
  *   package            package.json UI 의존성 · pnpm-workspace.yaml 죽은 글롭 · pnpm-lock.yaml importer 잔여
- *   import             services/workers/packages/tooling/scripts 코드가 고객 웹 트리(apps/web · @aipo/web · putduk-web 등)를 직접 읽음
+ *   import             services/workers/packages/tooling/scripts 코드가 고객 웹 트리(apps/web · @aipo/web · putduk-web 등)를 직접 읽음.
+ *                      예외(숨기지 않음 · warning으로 남김): existsSync(apps/web|apps/admin) 후 FAIL 하는 부재 어서션
+ *                      (tooling/deploy/cf-preflight.cjs · tooling/verify/phase0-bootstrap.cjs).
  *   workflow           UI 도구 호출 · echo/true/exit 0 만 있는 step/job · steps 없는 job · UI 이름 job
  *   wrangler           main 이 존재하지 않는 파일 · pages_build_output_dir / assets 정적 사이트 배포
  *   skip-list          retired UI stub 목록 · 무조건 PASS 검증기
@@ -42,6 +44,8 @@ const LEGAL_EVIDENCE_RE = /^docs\/kyb\//;
 const NAME_MARKER_RE = /(SparkDash|spark-dash|Toss Premium|toss-premium|\/lux\/|\bLux\b)/;
 const MARKER_CONTENT_EXT = /\.(ts|tsx|js|jsx|cjs|mjs|json|jsonc|toml|ya?ml|md|mdc|txt|sql|env|example|sh|ps1)$/i;
 const MARKER_HISTORY_ALLOW_RE = /^(quality\/.*\.md|docs\/ADR-[^/]*\.md)$/;
+/** KEEP verifiers (rel-601 / observation-registry) and recovery forensic snapshots keep historical UI name markers. Not a hide. */
+const MARKER_EVIDENCE_ALLOW_RE = /^(governance\/responsive\/(home-geometry-lock|large-screen-safety)\.v1\.json|governance\/visual-reconciliation\/PUTDUK_UI_VISUAL_MATRIX\.(md|json)|governance\/recovery\/|tooling\/recovery\/)/;
 
 const BANNED_PACKAGES = [
   "next", "react", "react-dom", "tailwindcss", "postcss", "autoprefixer", "@playwright/test", "playwright",
@@ -231,7 +235,7 @@ function run(opts) {
     }
   }
   for (const f of files) {
-    if (SELF_FAMILY_RE.test(f) || !MARKER_CONTENT_EXT.test(f) || MARKER_HISTORY_ALLOW_RE.test(f)) continue;
+    if (SELF_FAMILY_RE.test(f) || !MARKER_CONTENT_EXT.test(f) || MARKER_HISTORY_ALLOW_RE.test(f) || MARKER_EVIDENCE_ALLOW_RE.test(f)) continue;
     const t = textOf(f);
     if (t == null) continue;
     const m = t.match(NAME_MARKER_RE);
@@ -320,7 +324,16 @@ function run(opts) {
     const lines = stripComments(t).split(/\r?\n/);
     const hits = [];
     lines.forEach((line, i) => {
-      if (UI_IMPORT_RE.test(line) && IMPORT_CONTEXT_RE.test(line)) hits.push(i + 1);
+      if (!(UI_IMPORT_RE.test(line) && IMPORT_CONTEXT_RE.test(line))) return;
+      const window = [line].concat(lines.slice(i + 1, i + 5)).join("\n");
+      const absence =
+        /existsSync/.test(line) &&
+        /(must not (exist|contain)|handed off|FAIL: apps\/(web|admin)|fails\.push\()/.test(window);
+      if (absence) {
+        warnings.push(f + ":" + (i + 1) + " absence assertion allowed (FAIL if apps/web or apps/admin exists)");
+        return;
+      }
+      hits.push(i + 1);
     });
     if (hits.length) add("import", f, "reads customer web tree (" + hits.length + " line(s): " + hits.slice(0, 5).join(",") + ")");
   }

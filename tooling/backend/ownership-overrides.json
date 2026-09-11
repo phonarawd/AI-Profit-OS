@@ -5,10 +5,10 @@
  "entries": [
   {
    "path": ".cursor/rules/auth-boundary.mdc",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "10단계 Markdown 정리",
-   "reason": "ADR-006 Nest JWT only 규칙은 백엔드 운영 규칙(KEEP)이나 globs에 삭제된 apps/**/login/** 이 남아 glob만 정리."
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. ADR-006 Nest JWT only 규칙은 백엔드 운영 규칙(KEEP)이나 globs에 삭제된 apps/**/login/** 이 남아 glob만 정리."
   },
   {
    "path": ".cursor/rules/canon-ui.mdc",
@@ -33,10 +33,10 @@
   },
   {
    "path": ".cursor/rules/engine-ai-coach.mdc",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "10단계 Markdown 정리",
-   "reason": "§47 Personal AI Fact-only·money mutate 0 정책은 백엔드(services/**/ai) 규칙 · globs의 apps/web/**/peotteok·packages/ui/copy 부분만 제거."
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. §47 Personal AI Fact-only·money mutate 0 정책은 백엔드(services/**/ai) 규칙 · globs의 apps/web/**/peotteok·packages/ui/copy 부분만 제거."
   },
   {
    "path": ".cursor/rules/git-auto-commit-push.mdc",
@@ -110,10 +110,10 @@
   },
   {
    "path": ".cursor/rules/pg-gateway-ban.mdc",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "10단계 Markdown 정리",
-   "reason": "§41 PG사 0 규칙은 wallet 백엔드 규칙(KEEP) · globs의 apps/** 만 제거."
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. §41 PG사 0 규칙은 wallet 백엔드 규칙(KEEP) · globs의 apps/** 만 제거."
   },
   {
    "path": ".cursor/rules/phase-activation.mdc",
@@ -131,17 +131,17 @@
   },
   {
    "path": ".cursor/rules/plan-file-serial.mdc",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "10단계 Markdown 정리",
-   "reason": "File-Serial 규칙은 유지 · 03 UI/05 PWA 플랜 직렬 언급과 ENGINE_ACCEPTED_FOR_UI 게이트 문구만 정리."
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. File-Serial 규칙은 유지 · 03 UI/05 PWA 플랜 직렬 언급과 ENGINE_ACCEPTED_FOR_UI 게이트 문구만 정리."
   },
   {
    "path": ".cursor/rules/product-drift-lock.mdc",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "10단계 Markdown 정리",
-   "reason": "CTA·금지어 유저 surface drift(globs packages/ui/copy,apps/web)는 UI · yahoo adapter Day-1 0 항목은 백엔드 어댑터 정책 → 백엔드 항목만 남김."
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. CTA·금지어 유저 surface drift(globs packages/ui/copy,apps/web)는 UI · yahoo adapter Day-1 0 항목은 백엔드 어댑터 정책 → 백엔드 항목만 남김."
   },
   {
    "path": ".cursor/rules/project-isolation.mdc",
@@ -166,10 +166,10 @@
   },
   {
    "path": ".cursor/rules/stack-lock.mdc",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "5단계 mixed 분리",
-   "reason": "스택 잠금(Node22·pnpm·Nest·Rust·Cloudflare) 유지 · next@16·Tailwind v4·OpenNext web/ops 행 제거 · stack-lock.cjs가 next@16/Tailwind 문구를 강제하므로 검증기와 같은 커밋에서 개정."
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. 스택 잠금(Node22·pnpm·Nest·Rust·Cloudflare) 유지 · next@16·Tailwind v4·OpenNext web/ops 행 제거 · stack-lock.cjs가 next@16/Tailwind 문구를 강제하므로 검증기와 같은 커밋에서 개정."
   },
   {
    "path": ".cursor/rules/standing-authorization.mdc",
@@ -194,10 +194,10 @@
   },
   {
    "path": ".cursor/rules/verify-before-done.mdc",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "10단계 Markdown 정리",
-   "reason": "슬라이스/세션 done 규칙 유지 · no-it-jargon·canon/mockup UI 게이트 행만 제거."
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. 슬라이스/세션 done 규칙 유지 · no-it-jargon·canon/mockup UI 게이트 행만 제거."
   },
   {
    "path": ".cursor/rules/visual-master-intake.mdc",
@@ -208,10 +208,10 @@
   },
   {
    "path": ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "10단계 Markdown 정리",
-   "reason": "ACTIVE Index · 01/02/02.5/04/06 백엔드 플랜 인덱스 유지 · 03 UI·05 PWA·ENGINE_ACCEPTED_FOR_UI 포인터 절 제거 · sync-plans-ssot는 ai_profit_os_*.plan.md 1개 이상만 요구."
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. ACTIVE Index · 01/02/02.5/04/06 백엔드 플랜 인덱스 유지 · 03 UI·05 PWA·ENGINE_ACCEPTED_FOR_UI 포인터 절 제거 · sync-plans-ssot는 ai_profit_os_*.plan.md 1개 이상만 요구."
   },
   {
    "path": ".cursor/plans/ai_profit_os_01_money_c3d4e5f6.plan.md",
@@ -243,10 +243,10 @@
   },
   {
    "path": ".cursor/plans/ai_profit_os_04_admin_e5f6a7b8.plan.md",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "10단계 Markdown 정리",
-   "reason": "Admin & Ops 플랜 · 3-mode ops·RBAC·kill-switch·정책 버전 등 관리자 API 절은 백엔드 · 12모듈 Spark 화면 절은 quality/admin-handoff로 요약 후 제거."
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. Admin & Ops 플랜 · 3-mode ops·RBAC·kill-switch·정책 버전 등 관리자 API 절은 백엔드 · 12모듈 Spark 화면 절은 quality/admin-handoff로 요약 후 제거."
   },
   {
    "path": ".cursor/plans/ai_profit_os_05_pwa_f6a7b8c9.plan.md",
@@ -257,10 +257,10 @@
   },
   {
    "path": ".cursor/plans/ai_profit_os_06_infra_a7b8c9d0.plan.md",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "10단계 Markdown 정리",
-   "reason": "Infra & Marketing 플랜 · OpenNext web/ops 배포·staging preview 절 제거 · Workers/API/R7/R8 절 유지."
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. Infra & Marketing 플랜 · OpenNext web/ops 배포·staging preview 절 제거 · Workers/API/R7/R8 절 유지."
   },
   {
    "path": ".cursor/plans/ai_profit_os_launch_54c1261e.plan.md",
@@ -271,10 +271,10 @@
   },
   {
    "path": ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "10단계 Markdown 정리",
-   "reason": "REL 136 task 단일 SSOT · REL-1xx 고객 화면·REL-20x 어드민 화면 task는 UI · REL-22x/40x/50x/60x·R7/R8은 백엔드 · KEEP 검증기(rel-40x/50x)가 todo status를 읽으므로 blockers 해소 후 분리."
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. REL 136 task 단일 SSOT · REL-1xx 고객 화면·REL-20x 어드민 화면 task는 UI · REL-22x/40x/50x/60x·R7/R8은 백엔드 · KEEP 검증기(rel-40x/50x)가 todo status를 읽으므로 blockers 해소 후 분리."
   },
   {
    "path": "CONSTITUTION/14_EVENT_CONTRACTS.md",
@@ -334,10 +334,10 @@
   },
   {
    "path": "CONSTITUTION/27_MARKETING_AND_SEO_ENGINE.md",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "10단계 Markdown 정리",
-   "reason": "마케팅 어트리뷰션·CAPI(백엔드 services/marketing-attribution·workers/marketing-capi-dispatcher) 절 유지 · SEO/랜딩 화면 절은 인계."
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. 마케팅 어트리뷰션·CAPI(백엔드 services/marketing-attribution·workers/marketing-capi-dispatcher) 절 유지 · SEO/랜딩 화면 절은 인계."
   },
   {
    "path": "CONSTITUTION/28_LUX_FINTECH_DESIGN_AND_MOTION.md",
@@ -348,10 +348,10 @@
   },
   {
    "path": "CONSTITUTION/35_GROWTH_CONVERSION_PRESENTATION.md",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "10단계 Markdown 정리",
-   "reason": "성장·전환 프레젠테이션 · growth 공개 surface API(services/api-nest/src/growth)는 백엔드 · 표시 규범은 인계."
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. 성장·전환 프레젠테이션 · growth 공개 surface API(services/api-nest/src/growth)는 백엔드 · 표시 규범은 인계."
   },
   {
    "path": "CONSTITUTION/36_ADMIN_PRICE_AND_PROFIT_SYNC.md",
@@ -369,10 +369,10 @@
   },
   {
    "path": "CONSTITUTION/38_TRUST_EDUCATION_AND_REVENUE_TRANSPARENCY.md",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "10단계 Markdown 정리",
-   "reason": "수익 투명성(수수료 공개 규칙)은 백엔드 정책 · 신뢰 교육 화면 절은 인계."
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. 수익 투명성(수수료 공개 규칙)은 백엔드 정책 · 신뢰 교육 화면 절은 인계."
   },
   {
    "path": "CONSTITUTION/39_USER_FINANCIAL_LEDGER.md",
@@ -418,10 +418,10 @@
   },
   {
    "path": "CONSTITUTION/45_PRICE_COMPARE_MARGIN_UX.md",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "10단계 Markdown 정리",
-   "reason": "마진 계산식(pricing-formula 백엔드)은 유지 · 가격 비교 화면 UX 절은 인계."
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. 마진 계산식(pricing-formula 백엔드)은 유지 · 가격 비교 화면 UX 절은 인계."
   },
   {
    "path": "CONSTITUTION/46_CAPITAL_TIER_CATALOG.md",
@@ -432,10 +432,10 @@
   },
   {
    "path": "CONSTITUTION/46b_ASSET_IMAGE_SSOT.md",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "10단계 Markdown 정리",
-   "reason": "R2 asset-images 버킷·Admin upsert(백엔드) 절 유지 · OpportunityCard 썸네일 표시 절은 인계."
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. R2 asset-images 버킷·Admin upsert(백엔드) 절 유지 · OpportunityCard 썸네일 표시 절은 인계."
   },
   {
    "path": "CONSTITUTION/47_PERSONAL_AI_USER_TWIN.md",
@@ -446,10 +446,10 @@
   },
   {
    "path": "CONSTITUTION/48_AI_EXECUTION_ROOM_AND_POLICY.md",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "10단계 Markdown 정리",
-   "reason": "AI 실행 정책·Rule Engine 절은 백엔드 · Execution Room 화면 절은 인계."
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. AI 실행 정책·Rule Engine 절은 백엔드 · Execution Room 화면 절은 인계."
   },
   {
    "path": "CONSTITUTION/49_PRINCIPAL_RETENTION_AND_PROFIT_WITHDRAW.md",
@@ -481,17 +481,17 @@
   },
   {
    "path": "AGENTS.md",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "10단계 Markdown 정리",
-   "reason": "에이전트 가이드 · next@16·Tailwind v4·Canon/Brand/Lux·launch ARCHIVE·03 UI 직렬 행 제거 · 백엔드 읽기 순서·연동 SSOT·3-tier 규칙 유지."
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. 에이전트 가이드 · next@16·Tailwind v4·Canon/Brand/Lux·launch ARCHIVE·03 UI 직렬 행 제거 · 백엔드 읽기 순서·연동 SSOT·3-tier 규칙 유지."
   },
   {
    "path": "TOOLCHAIN.md",
-   "class": "MIXED",
-   "decision": "SPLIT",
-   "stage": "10단계 Markdown 정리",
-   "reason": "툴체인 문서 · Next/Tailwind/OpenNext 절 제거 · Node22·pnpm·Nest·Rust·wrangler 절 유지 · stack-lock.cjs mustExist."
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. 툴체인 문서 · Next/Tailwind/OpenNext 절 제거 · Node22·pnpm·Nest·Rust·wrangler 절 유지 · stack-lock.cjs mustExist."
   },
   {
    "path": "COMPANY_REGISTRATION_SUMMARY.md",
@@ -695,6 +695,97 @@
    "decision": "KEEP",
    "stage": "-",
    "reason": "in-process QA isolation session helper required by qa-env-isolation-guard (KEEP HTTP/in-process harness family). Ownership DELETE was QA-lab browser binding; helper itself is not a browser spec."
+  },
+  {
+   "path": "README.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "tooling/e2e/README.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "tooling/verify/CATALOG.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "docs/CONSTITUTION_BOOTSTRAP.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "governance/platform-redesign/governance-observations.v1.json",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "governance/platform-redesign/baseline.v1.json",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "governance/platform-redesign/route-contract-matrix.v1.json",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "governance/platform-redesign/fact-state-registry.v1.json",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "governance/platform-redesign/change-control.v1.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "governance/visual-reconciliation/PUTDUK_UI_VISUAL_MATRIX.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "governance/visual-reconciliation/PUTDUK_UI_VISUAL_MATRIX.json",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "governance/responsive/home-geometry-lock.v1.json",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "governance/responsive/large-screen-safety.v1.json",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
   }
  ]
 }

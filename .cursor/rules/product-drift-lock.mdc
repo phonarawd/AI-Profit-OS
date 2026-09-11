@@ -1,6 +1,6 @@
 ---
 description: ADR-007 — CTA·금지어·yahoo adapter Day-1 0 · 유저 surface drift 잠금
-globs: "packages/ui/copy/**,apps/web/**"
+globs: "services/**/opportunities/**,services/market-intelligence/**,schemas/**"
 alwaysApply: false
 ---
 

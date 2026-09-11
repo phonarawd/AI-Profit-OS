@@ -1,6 +1,6 @@
 ---
 description: §41 PG사(결제대행) 0 — Toss/PortOne 등 wallet path 금지.
-globs: "**/wallet/**,**/deposit/**,**/withdraw/**,services/**/wallet*/**,apps/**/wallet/**"
+globs: "**/wallet/**,**/deposit/**,**/withdraw/**,services/**/wallet*/**"
 alwaysApply: false
 ---
 

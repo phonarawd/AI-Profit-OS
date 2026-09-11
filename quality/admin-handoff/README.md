@@ -1,6 +1,6 @@
 # 미래 어드민 핸드오프 (화면 재구현 금지)
 
-이 폴더는 **레거시 `apps/admin` SparkDash / Toss Premium / Lux 화면을 이식하지 말라는** 요약이다.
+이 폴더는 **레거시 `apps/admin` 레거시 어드민 화면을 이식하지 말라는** 요약이다.
 새 어드민은 별도 레포. 이 레포가 제공하는 것은 Nest Admin HTTP와 JSON 스키마뿐이다.
 
 권위: `origin/main` `c4ebcd87` · 상세 경로 = `quality/backend-api-contract-map.md` §2.
@@ -8,7 +8,7 @@
 ## 쓰지 말 것
 
 - `apps/admin/**` 페이지·CSS(`spark-admin.css`)
-- `packages/ui` Lux/Canon/카피
+- `packages/ui` 화면 카피
 - 고객 웹 디자인 시스템
 
 ## 쓰면 되는 것

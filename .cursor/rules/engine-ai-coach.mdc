@@ -1,6 +1,6 @@
 ---
 description: §47 Personal AI — P/G/S 레인 · Fact-only · money mutate 0 · 퍼뜩
-globs: "services/**/ai/**,apps/web/**/peotteok/**,packages/ui/copy/**/coach/**,packages/ui/copy/**/peotteok/**"
+globs: "services/**/ai/**"
 alwaysApply: false
 ---
 

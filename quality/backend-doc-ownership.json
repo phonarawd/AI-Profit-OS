@@ -1,0 +1,789 @@
+{
+ "generatedAt": "2026-09-11T16:07:28.391Z",
+ "headSha": "5baa473503933ab9985a73fe265e068ebb7f6b94",
+ "generator": "tooling/backend/_p5-write-ownership.cjs",
+ "note": "All remaining .md/.mdc paths. decision KEEP. UNKNOWN 0. boundary markdown rule reads keep[].path.",
+ "totals": {
+  "docs": 129,
+  "unknown": 0,
+  "byClass": {
+   "BACKEND_DOC": 129
+  }
+ },
+ "keep": [
+  {
+   "path": ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "active backend plan or release-master YAML todos required by KEEP verifiers"
+  },
+  {
+   "path": ".cursor/plans/ai_profit_os_01_money_c3d4e5f6.plan.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "active backend plan or release-master YAML todos required by KEEP verifiers"
+  },
+  {
+   "path": ".cursor/plans/ai_profit_os_02_5_engine_acceptance_qa_fd1cd7cc.plan.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "active backend plan or release-master YAML todos required by KEEP verifiers"
+  },
+  {
+   "path": ".cursor/plans/ai_profit_os_02_engine_b2c3d4e5.plan.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "active backend plan or release-master YAML todos required by KEEP verifiers"
+  },
+  {
+   "path": ".cursor/plans/ai_profit_os_04_admin_e5f6a7b8.plan.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "active backend plan or release-master YAML todos required by KEEP verifiers"
+  },
+  {
+   "path": ".cursor/plans/ai_profit_os_06_infra_a7b8c9d0.plan.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "active backend plan or release-master YAML todos required by KEEP verifiers"
+  },
+  {
+   "path": ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "active backend plan or release-master YAML todos required by KEEP verifiers"
+  },
+  {
+   "path": ".cursor/rules/auth-boundary.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend operating rule after 5th-stage split"
+  },
+  {
+   "path": ".cursor/rules/cleanup-lowspec.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend operating rule after 5th-stage split"
+  },
+  {
+   "path": ".cursor/rules/cursor-autonomous-ops.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend operating rule after 5th-stage split"
+  },
+  {
+   "path": ".cursor/rules/engine-ai-coach.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend operating rule after 5th-stage split"
+  },
+  {
+   "path": ".cursor/rules/git-auto-commit-push.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend operating rule after 5th-stage split"
+  },
+  {
+   "path": ".cursor/rules/git-safety.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend operating rule after 5th-stage split"
+  },
+  {
+   "path": ".cursor/rules/ide-problems.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend operating rule after 5th-stage split"
+  },
+  {
+   "path": ".cursor/rules/legal-out-of-plan.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend operating rule after 5th-stage split"
+  },
+  {
+   "path": ".cursor/rules/money-ledger.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend operating rule after 5th-stage split"
+  },
+  {
+   "path": ".cursor/rules/pg-gateway-ban.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend operating rule after 5th-stage split"
+  },
+  {
+   "path": ".cursor/rules/phase-activation.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend operating rule after 5th-stage split"
+  },
+  {
+   "path": ".cursor/rules/phase0-ram.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend operating rule after 5th-stage split"
+  },
+  {
+   "path": ".cursor/rules/plan-file-serial.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend operating rule after 5th-stage split"
+  },
+  {
+   "path": ".cursor/rules/product-drift-lock.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend operating rule after 5th-stage split"
+  },
+  {
+   "path": ".cursor/rules/project-isolation-boundary.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend operating rule after 5th-stage split"
+  },
+  {
+   "path": ".cursor/rules/project-isolation.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend operating rule after 5th-stage split"
+  },
+  {
+   "path": ".cursor/rules/settlement-rule.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend operating rule after 5th-stage split"
+  },
+  {
+   "path": ".cursor/rules/stack-lock.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend operating rule after 5th-stage split"
+  },
+  {
+   "path": ".cursor/rules/standing-authorization.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend operating rule after 5th-stage split"
+  },
+  {
+   "path": ".cursor/rules/supabase-db-only.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend operating rule after 5th-stage split"
+  },
+  {
+   "path": ".cursor/rules/verify-before-done.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend operating rule after 5th-stage split"
+  },
+  {
+   "path": "AGENTS.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend-only agent/toolchain/readme"
+  },
+  {
+   "path": "COMPANY_REGISTRATION_SUMMARY.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "legal entity pointer KEEP"
+  },
+  {
+   "path": "CONSTITUTION/14_EVENT_CONTRACTS.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend constitution (money/engine/admin/security)"
+  },
+  {
+   "path": "CONSTITUTION/17_FINANCIAL_LEDGER_STANDARD.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend constitution (money/engine/admin/security)"
+  },
+  {
+   "path": "CONSTITUTION/20_SECURITY_THREAT_MODEL.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend constitution (money/engine/admin/security)"
+  },
+  {
+   "path": "CONSTITUTION/27_MARKETING_AND_SEO_ENGINE.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend constitution (money/engine/admin/security)"
+  },
+  {
+   "path": "CONSTITUTION/35_GROWTH_CONVERSION_PRESENTATION.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend constitution (money/engine/admin/security)"
+  },
+  {
+   "path": "CONSTITUTION/36_ADMIN_PRICE_AND_PROFIT_SYNC.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend constitution (money/engine/admin/security)"
+  },
+  {
+   "path": "CONSTITUTION/37_WALLET_AND_USER_ADMIN_OPS.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend constitution (money/engine/admin/security)"
+  },
+  {
+   "path": "CONSTITUTION/38_TRUST_EDUCATION_AND_REVENUE_TRANSPARENCY.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend constitution (money/engine/admin/security)"
+  },
+  {
+   "path": "CONSTITUTION/39_USER_FINANCIAL_LEDGER.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend constitution (money/engine/admin/security)"
+  },
+  {
+   "path": "CONSTITUTION/40_ADMIN_ISOLATED_OPS_PLATFORM.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend constitution (money/engine/admin/security)"
+  },
+  {
+   "path": "CONSTITUTION/41_ONCHAIN_USDT_AND_KRW_DEPOSIT.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend constitution (money/engine/admin/security)"
+  },
+  {
+   "path": "CONSTITUTION/42_KYC_WITHDRAW_ONE_TIME_GATE.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend constitution (money/engine/admin/security)"
+  },
+  {
+   "path": "CONSTITUTION/43_CHAIN_SETTLEMENT_HARDENING.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend constitution (money/engine/admin/security)"
+  },
+  {
+   "path": "CONSTITUTION/44_SIGNUP_READY_MARKET_SOURCES.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend constitution (money/engine/admin/security)"
+  },
+  {
+   "path": "CONSTITUTION/45_PRICE_COMPARE_MARGIN_UX.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend constitution (money/engine/admin/security)"
+  },
+  {
+   "path": "CONSTITUTION/46_CAPITAL_TIER_CATALOG.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend constitution (money/engine/admin/security)"
+  },
+  {
+   "path": "CONSTITUTION/46b_ASSET_IMAGE_SSOT.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend constitution (money/engine/admin/security)"
+  },
+  {
+   "path": "CONSTITUTION/47_PERSONAL_AI_USER_TWIN.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend constitution (money/engine/admin/security)"
+  },
+  {
+   "path": "CONSTITUTION/48_AI_EXECUTION_ROOM_AND_POLICY.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend constitution (money/engine/admin/security)"
+  },
+  {
+   "path": "CONSTITUTION/49_PRINCIPAL_RETENTION_AND_PROFIT_WITHDRAW.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend constitution (money/engine/admin/security)"
+  },
+  {
+   "path": "CONSTITUTION/51_PLATFORM_COMPLETENESS_AND_RULE_ENGINE.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend constitution (money/engine/admin/security)"
+  },
+  {
+   "path": "CONSTITUTION/51_REFERRAL_VIRAL_LADDER.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend constitution (money/engine/admin/security)"
+  },
+  {
+   "path": "docs/ADR-016-AGENT-AUTOMATION.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "ADR or bootstrap record"
+  },
+  {
+   "path": "docs/CONSTITUTION_BOOTSTRAP.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "ADR or bootstrap record"
+  },
+  {
+   "path": "docs/ops/project-isolation-boundary-checklist.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "ADR or bootstrap record"
+  },
+  {
+   "path": "governance/admin/admin-ops-3mode.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "admin API/RBAC/audit evidence KEEP"
+  },
+  {
+   "path": "governance/admin/control-plane-superset.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "admin API/RBAC/audit evidence KEEP"
+  },
+  {
+   "path": "governance/admin/kill-switch-9.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "admin API/RBAC/audit evidence KEEP"
+  },
+  {
+   "path": "governance/admin/match-control.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "admin API/RBAC/audit evidence KEEP"
+  },
+  {
+   "path": "governance/admin/price-override-layers.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "admin API/RBAC/audit evidence KEEP"
+  },
+  {
+   "path": "governance/admin/R6_CERTIFICATION.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "admin API/RBAC/audit evidence KEEP"
+  },
+  {
+   "path": "governance/admin/rbac-audit-foundation.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "admin API/RBAC/audit evidence KEEP"
+  },
+  {
+   "path": "governance/admin/source-policy-version.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "admin API/RBAC/audit evidence KEEP"
+  },
+  {
+   "path": "governance/db-recon/LIVE_SCHEMA_FORENSIC.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "db recon evidence KEEP"
+  },
+  {
+   "path": "governance/engine-acceptance/acceptance-contract.v1.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "engine-acceptance evidence KEEP"
+  },
+  {
+   "path": "governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "engine-acceptance evidence KEEP"
+  },
+  {
+   "path": "governance/engine-acceptance/FINAL_ACCEPTANCE.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "engine-acceptance evidence KEEP"
+  },
+  {
+   "path": "governance/engine-acceptance/invariants.v1.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "engine-acceptance evidence KEEP"
+  },
+  {
+   "path": "governance/engine-acceptance/PROTECTED_SCOPE_STALE_WATCH.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "engine-acceptance evidence KEEP"
+  },
+  {
+   "path": "governance/engine-acceptance/REBASE_EXECUTION_20260902.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "engine-acceptance evidence KEEP"
+  },
+  {
+   "path": "governance/engine-acceptance/severity-policy.v1.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "engine-acceptance evidence KEEP"
+  },
+  {
+   "path": "governance/global-product/jpy-krw-additive-fx-contract.v1.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "FX/parser contract KEEP"
+  },
+  {
+   "path": "governance/global-product/parser-implementation-contract.v1.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "FX/parser contract KEEP"
+  },
+  {
+   "path": "governance/platform-redesign/change-control.v1.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "KEEP verifier observation-registry / change-control"
+  },
+  {
+   "path": "governance/pwa/VAPID.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "VAPID/push backend evidence KEEP"
+  },
+  {
+   "path": "governance/recovery/archive/engine-pre-rebase-20260902.INDEX.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "recovery evidence KEEP"
+  },
+  {
+   "path": "governance/recovery/founder-gates-executed-20260904.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "recovery evidence KEEP"
+  },
+  {
+   "path": "governance/recovery/INTEGRATION_PACKET_20260904.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "recovery evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/KAKAO_READINESS.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/MIGRATION_READINESS.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/PROD_READINESS.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/R7_BACKEND_ALIGNMENT.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/R8_INFRA_CORE.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/RC_FORMAL.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/REL-015-USER-LEDGER-QUERY.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/REL-016-OBSERVABILITY.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/REL-020-PUSH-BADGE.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/REL-021-PUSH-CHANNEL-FILTER.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/REL-222-ADMIN-OPS.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/REL-223-MATCH-CONTROL.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/REL-224-SOURCE-POLICY.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/REL-402-DEPENDENCY-AUDIT.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/REL-405-RBAC-AUDIT.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/REL-406-KILL-SWITCH.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/REL-407-PRICE-OVERRIDE.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/REL-408-SECURITY-BASELINE.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/REL-500-QA-LAB-EXPANSION.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/REL-501-MONEY-RED-TEAM.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/REL-507-PRODUCTION-E2E.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/REL-508-CURRENT-FX-APPROX.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/REL-600-STAGING.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/REL-601-STAGING-REGRESSION.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/REL-602-STAGING-ROLLBACK.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/ROLLBACK_RUNBOOK.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/SECURITY_BASELINE.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/release-master/VERSIONING.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend release evidence KEEP"
+  },
+  {
+   "path": "governance/security/AUDIT_EXCEPTIONS.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "security evidence KEEP"
+  },
+  {
+   "path": "governance/visual-reconciliation/PUTDUK_UI_VISUAL_MATRIX.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "rel-601 Surface Matrix KEEP"
+  },
+  {
+   "path": "infra/phase0-migration-playbook.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend ops playbook KEEP"
+  },
+  {
+   "path": "quality/admin-handoff/README.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend quality or putduk-web handoff KEEP"
+  },
+  {
+   "path": "quality/backend-api-contract-map.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend quality or putduk-web handoff KEEP"
+  },
+  {
+   "path": "quality/backend-ci.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend quality or putduk-web handoff KEEP"
+  },
+  {
+   "path": "quality/backend-cloudflare-inventory.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend quality or putduk-web handoff KEEP"
+  },
+  {
+   "path": "quality/backend-deletion-ledger.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend quality or putduk-web handoff KEEP"
+  },
+  {
+   "path": "quality/backend-dep-overrides.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend quality or putduk-web handoff KEEP"
+  },
+  {
+   "path": "quality/backend-only-deletion-plan.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend quality or putduk-web handoff KEEP"
+  },
+  {
+   "path": "quality/backend-only-inventory.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend quality or putduk-web handoff KEEP"
+  },
+  {
+   "path": "quality/backend-only-official-basis.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend quality or putduk-web handoff KEEP"
+  },
+  {
+   "path": "quality/backend-only-verification.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend quality or putduk-web handoff KEEP"
+  },
+  {
+   "path": "quality/backend-residual-report.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend quality or putduk-web handoff KEEP"
+  },
+  {
+   "path": "quality/putduk-web-cloudflare-handoff.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend quality or putduk-web handoff KEEP"
+  },
+  {
+   "path": "quality/putduk-web-sdk-handoff.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend quality or putduk-web handoff KEEP"
+  },
+  {
+   "path": "quality/putduk-web-ui-assertions-handoff.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend quality or putduk-web handoff KEEP"
+  },
+  {
+   "path": "README.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend-only root readme"
+  },
+  {
+   "path": "TOOLCHAIN.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend-only agent/toolchain/readme"
+  },
+  {
+   "path": "tooling/e2e/money/red-team-report.v1.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend tooling README KEEP"
+  },
+  {
+   "path": "tooling/e2e/README.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend tooling README KEEP"
+  },
+  {
+   "path": "tooling/verify/CATALOG.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend tooling README KEEP"
+  },
+  {
+   "path": "workers/README.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "workers README KEEP"
+  }
+ ]
+}
