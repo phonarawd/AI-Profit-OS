@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-09-11T12:20:15.823Z",
- "headSha": "8bd0f46eeae97819680f64749fda3655331f4dc3",
+ "generatedAt": "2026-09-11T13:28:14.299Z",
+ "headSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
  "edgeKinds": [
   "import",
   "require",
@@ -3241,6 +3241,12 @@
    "decision": "KEEP"
   },
   {
+   "id": "quality/backend-cloudflare-inventory.md",
+   "type": "file",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP"
+  },
+  {
    "id": "quality/backend-deletion-ledger.md",
    "type": "file",
    "class": "BACKEND_DOC",
@@ -3290,6 +3296,12 @@
   },
   {
    "id": "quality/backend-residual-report.md",
+   "type": "file",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP"
+  },
+  {
+   "id": "quality/putduk-web-cloudflare-handoff.md",
    "type": "file",
    "class": "BACKEND_DOC",
    "decision": "KEEP"
@@ -14042,6 +14054,35 @@
    "type": "deleted-ui-path"
   },
   {
+   "id": "missing:infra/web/",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:workers/web-proxy/",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:workers/ops-proxy/",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:tooling/deploy/cf-deploy-all.cjs",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:tooling/deploy/cf-deploy-staging.cjs",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:tooling/deploy/cf-rollback-staging.cjs",
+   "type": "missing-path"
+  },
+  {
+   "id": "dir:infra/r2/*.toml",
+   "type": "glob",
+   "files": 2
+  },
+  {
    "id": "missing:packages/schemas",
    "type": "missing-path"
   },
@@ -14227,14 +14268,6 @@
    "type": "missing-path"
   },
   {
-   "id": "missing:tooling/deploy/cf-deploy-staging.cjs",
-   "type": "missing-path"
-  },
-  {
-   "id": "missing:tooling/deploy/cf-rollback-staging.cjs",
-   "type": "missing-path"
-  },
-  {
    "id": "deleted:apps/admin/package.json",
    "type": "deleted-ui-path"
   },
@@ -14357,10 +14390,6 @@
   },
   {
    "id": "missing:tooling/verify/ledger-journal-reader.runtime.cjs",
-   "type": "missing-path"
-  },
-  {
-   "id": "missing:tooling/deploy/cf-deploy-all.cjs",
    "type": "missing-path"
   },
   {
@@ -14669,7 +14698,7 @@
   {
    "id": "dir:quality/**",
    "type": "glob",
-   "files": 15
+   "files": 17
   },
   {
    "id": "missing:apps/*",
@@ -14697,7 +14726,7 @@
   {
    "id": "dir:quality/*",
    "type": "glob",
-   "files": 14
+   "files": 16
   },
   {
    "id": "missing:quality/backend/",
@@ -61796,6 +61825,163 @@
    "kind": "doc-link"
   },
   {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "missing:infra/web/",
+   "kind": "doc-link",
+   "spec": "infra/web/"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "missing:infra/ops/",
+   "kind": "doc-link",
+   "spec": "infra/ops/"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "missing:workers/web-proxy/",
+   "kind": "doc-link",
+   "spec": "workers/web-proxy/"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "missing:workers/ops-proxy/",
+   "kind": "doc-link",
+   "spec": "workers/ops-proxy/"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "missing:workers/_shared/opennext-origin.ts",
+   "kind": "doc-link",
+   "spec": "workers/_shared/opennext-origin.ts"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "missing:tooling/deploy/cf-pages-web.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/deploy/cf-pages-web.cjs"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "missing:tooling/deploy/cf-pages-ops.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/deploy/cf-pages-ops.cjs"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "missing:tooling/deploy/cf-deploy-all.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/deploy/cf-deploy-all.cjs"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "missing:tooling/deploy/cf-deploy-staging.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/deploy/cf-deploy-staging.cjs"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "missing:tooling/deploy/cf-rollback-staging.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/deploy/cf-rollback-staging.cjs"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "dir:workers/api-stub",
+   "kind": "doc-link",
+   "spec": "workers/api-stub"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "dir:workers/push-dispatcher",
+   "kind": "doc-link",
+   "spec": "workers/push-dispatcher"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "workers/_shared/api-origin.ts",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "tooling/deploy/cf-workers.cjs",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "tooling/deploy/cf-preflight.cjs",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "tooling/deploy/cf-domain-bridge.cjs",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "tooling/deploy/cf-domain-bootstrap.cjs",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "tooling/deploy/cf-ebay-secrets.cjs",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "tooling/deploy/cf-origin-smoke.cjs",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "dir:infra/r2/*.toml",
+   "kind": "doc-link",
+   "spec": "infra/r2/*.toml"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "infra/domain.manifest.json",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "infra/hosts.manifest.json",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "infra/workers.manifest.json",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": ".github/workflows/deploy-cloudflare.yml",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "missing:infra/web",
+   "kind": "doc-link",
+   "spec": "infra/web"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "missing:infra/ops",
+   "kind": "doc-link",
+   "spec": "infra/ops"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "missing:workers/web-proxy",
+   "kind": "doc-link",
+   "spec": "workers/web-proxy"
+  },
+  {
+   "from": "quality/backend-cloudflare-inventory.md",
+   "to": "missing:workers/ops-proxy",
+   "kind": "doc-link",
+   "spec": "workers/ops-proxy"
+  },
+  {
    "from": "quality/backend-deletion-ledger.md",
    "to": "tooling/backend/ownership-graph.cjs",
    "kind": "doc-link"
@@ -66589,6 +66775,52 @@
   {
    "from": "quality/backend-residual-report.md",
    "to": ".cursorignore",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/putduk-web-cloudflare-handoff.md",
+   "to": "missing:infra/web/wrangler.toml",
+   "kind": "doc-link",
+   "spec": "infra/web/wrangler.toml"
+  },
+  {
+   "from": "quality/putduk-web-cloudflare-handoff.md",
+   "to": "missing:workers/web-proxy",
+   "kind": "doc-link",
+   "spec": "workers/web-proxy"
+  },
+  {
+   "from": "quality/putduk-web-cloudflare-handoff.md",
+   "to": "missing:infra/web",
+   "kind": "doc-link",
+   "spec": "infra/web"
+  },
+  {
+   "from": "quality/putduk-web-cloudflare-handoff.md",
+   "to": "missing:workers/_shared/opennext-origin.ts",
+   "kind": "doc-link",
+   "spec": "workers/_shared/opennext-origin.ts"
+  },
+  {
+   "from": "quality/putduk-web-cloudflare-handoff.md",
+   "to": "missing:tooling/deploy/cf-pages-web.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/deploy/cf-pages-web.cjs"
+  },
+  {
+   "from": "quality/putduk-web-cloudflare-handoff.md",
+   "to": "missing:tooling/deploy/cf-pages-ops.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/deploy/cf-pages-ops.cjs"
+  },
+  {
+   "from": "quality/putduk-web-cloudflare-handoff.md",
+   "to": "infra/domain.manifest.json",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/putduk-web-cloudflare-handoff.md",
+   "to": "tooling/deploy/cf-origin-smoke.cjs",
    "kind": "doc-link"
   },
   {
@@ -91380,12 +91612,6 @@
   },
   {
    "from": "tooling/verify/rel-601-staging-regression.cjs",
-   "to": "missing:tooling/e2e/specs/home-closure.spec.cjs",
-   "kind": "verifier-reads",
-   "spec": "tooling/e2e/specs/home-closure.spec.cjs"
-  },
-  {
-   "from": "tooling/verify/rel-601-staging-regression.cjs",
    "to": "governance/responsive/home-geometry-lock.v1.json",
    "kind": "verifier-reads"
   },
@@ -91398,6 +91624,12 @@
    "from": "tooling/verify/rel-601-staging-regression.cjs",
    "to": "infra/domain.manifest.json",
    "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/rel-601-staging-regression.cjs",
+   "to": "missing:tooling/e2e/specs/home-closure.spec.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/e2e/specs/home-closure.spec.cjs"
   },
   {
    "from": "tooling/verify/rel-601-staging-regression.cjs",

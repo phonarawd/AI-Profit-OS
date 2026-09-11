@@ -1,17 +1,17 @@
 {
- "generatedAt": "2026-09-11T12:20:15.823Z",
- "headSha": "8bd0f46eeae97819680f64749fda3655331f4dc3",
+ "generatedAt": "2026-09-11T13:28:14.299Z",
+ "headSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
  "generator": "tooling/backend/ownership-graph.cjs",
  "overrides": "tooling/backend/ownership-overrides.json",
  "inputs": {
-  "gitLsFiles": 1625,
+  "gitLsFiles": 1627,
   "deletedUiPrefixes": [
    "apps/admin/",
    "apps/web/",
    "packages/sdk/",
    "packages/ui/"
   ],
-  "deletedUiFilesOnBranch": 912,
+  "deletedUiFilesOnBranch": 929,
   "deletedByDir": {
    "packages/schemas/": 4,
    "packages/sdk/": 57,
@@ -56,7 +56,7 @@
   "byClass": {
    "BACKEND_INFRA": 223,
    "MIXED": 45,
-   "BACKEND_DOC": 207,
+   "BACKEND_DOC": 209,
    "CUSTOMER_WEB": 11,
    "OBSOLETE": 251,
    "FUTURE_ADMIN_REQUIREMENT": 2,
@@ -66,7 +66,7 @@
    "GENERATED": 4
   },
   "byDecision": {
-   "KEEP": 1318,
+   "KEEP": 1320,
    "SPLIT": 45,
    "MOVE": 11,
    "DELETE": 251
@@ -74,7 +74,7 @@
   "byClassDecision": {
    "BACKEND_INFRA/KEEP": 223,
    "MIXED/SPLIT": 45,
-   "BACKEND_DOC/KEEP": 207,
+   "BACKEND_DOC/KEEP": 209,
    "CUSTOMER_WEB/MOVE": 11,
    "OBSOLETE/DELETE": 251,
    "FUTURE_ADMIN_REQUIREMENT/KEEP": 2,
@@ -369,8 +369,8 @@
    "SPLIT": 0
   },
   "quality": {
-   "total": 14,
-   "KEEP": 14,
+   "total": 16,
+   "KEEP": 16,
    "DELETE": 0,
    "MOVE": 0,
    "SPLIT": 0
@@ -3372,6 +3372,7 @@
      "quality/backend-only-deletion-plan.md",
      "quality/backend-only-inventory.md",
      "quality/backend-only-official-basis.md",
+     "quality/putduk-web-cloudflare-handoff.md",
      "scripts/verify-night-guard.mjs",
      "tooling/backend/ownership-graph.cjs",
      "tooling/deploy/cf-ebay-secrets.cjs",
@@ -9246,6 +9247,7 @@
     "governance/recovery/chatgpt-takeover-20260903/pr-transplant-audit.json|verifier-reads",
     "governance/recovery/current-local-state.v1.json|verifier-reads",
     "governance/release-master/VERSIONING.md|doc-link",
+    "quality/backend-cloudflare-inventory.md|doc-link",
     "quality/backend-deletion-ledger.md|doc-link|.github/workflows/**",
     "quality/backend-deletion-ledger.md|doc-link",
     "quality/backend-only-deletion-plan.md|doc-link|.github/workflows/*",
@@ -42190,6 +42192,7 @@
     "governance/release-master/REL-022-WEBAUTHN-UX.md|doc-link",
     "infra/hosts.manifest.json|verifier-reads",
     "infra/phase0-migration-playbook.md|doc-link",
+    "quality/backend-cloudflare-inventory.md|doc-link",
     "quality/backend-deletion-ledger.md|doc-link",
     "quality/backend-only-deletion-plan.md|doc-link",
     "quality/backend-only-inventory.md|doc-link",
@@ -42197,6 +42200,7 @@
     "quality/backend-only-official-basis.md|doc-link",
     "quality/backend-residual-report.md|doc-link",
     "quality/backend-residual-report.md|doc-link|infra/**",
+    "quality/putduk-web-cloudflare-handoff.md|doc-link",
     "quality/putduk-web-ui-assertions-handoff.md|doc-link|infra/**",
     "tooling/backend/ownership-graph.cjs|verifier-reads",
     "tooling/deploy/cf-domain-bootstrap.cjs|deploy-cmd",
@@ -42215,8 +42219,8 @@
     "tooling/verify/stack-lock.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-01T03:57:17+09:00",
-   "lastCommitSha": "9739801857cd3645b89c4a66af51b225e55588e5",
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
    "sizeBytes": 1934,
    "refSummary": {
     "deletedUiRefs": [],
@@ -42264,6 +42268,7 @@
    "referrers": [
     ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md|doc-link",
     "TOOLCHAIN.md|doc-link",
+    "quality/backend-cloudflare-inventory.md|doc-link",
     "quality/backend-deletion-ledger.md|doc-link",
     "quality/backend-only-inventory.md|doc-link",
     "quality/backend-only-inventory.md|doc-link|infra/*.manifest.json",
@@ -42276,8 +42281,8 @@
     "tooling/verify/root-domain-env.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-08-11T00:41:08+09:00",
-   "lastCommitSha": "1cf80deb36a1ac97a3fa28d66d37bdf266e43e40",
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
    "sizeBytes": 1204,
    "refSummary": {
     "deletedUiRefs": [],
@@ -42382,6 +42387,7 @@
    "referrers": [
     "governance/release-master/R8_INFRA_CORE.md|doc-link",
     "governance/release-master/r8-cache-inventory.v1.json|verifier-reads",
+    "quality/backend-cloudflare-inventory.md|doc-link|infra/r2/*.toml",
     "quality/backend-deletion-ledger.md|doc-link",
     "quality/backend-deletion-ledger.md|doc-link|infra/r2",
     "quality/backend-only-inventory.md|doc-link|infra/r2/",
@@ -42427,6 +42433,7 @@
     "governance/release-master/R8_INFRA_CORE.md|doc-link",
     "governance/release-master/r8-cache-inventory.v1.json|verifier-reads",
     "infra/hosts.manifest.json|verifier-reads",
+    "quality/backend-cloudflare-inventory.md|doc-link|infra/r2/*.toml",
     "quality/backend-deletion-ledger.md|doc-link|infra/r2",
     "quality/backend-only-inventory.md|doc-link|infra/r2/",
     "quality/backend-only-inventory.md|doc-link|infra/r2",
@@ -42466,6 +42473,7 @@
    "evidence": [],
    "referrers": [
     "infra/phase0-migration-playbook.md|doc-link",
+    "quality/backend-cloudflare-inventory.md|doc-link",
     "quality/backend-deletion-ledger.md|doc-link",
     "quality/backend-only-inventory.md|doc-link",
     "quality/backend-only-inventory.md|doc-link|infra/*.manifest.json",
@@ -42789,8 +42797,8 @@
     "tooling/verify/user-opportunity-feed.cjs(verifier-reads)",
     "tooling/verify/workers-types.cjs(verifier-reads)"
    ],
-   "lastCommit": "2026-09-11T20:45:56+09:00",
-   "lastCommitSha": "8bd0f46eeae97819680f64749fda3655331f4dc3",
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
    "sizeBytes": 18246,
    "refSummary": {
     "deletedUiRefs": [],
@@ -42924,9 +42932,9 @@
     "tooling/verify/dependency-integrity.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T20:45:56+09:00",
-   "lastCommitSha": "8bd0f46eeae97819680f64749fda3655331f4dc3",
-   "sizeBytes": 72033,
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
+   "sizeBytes": 71399,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -43064,8 +43072,8 @@
     "tooling/backend/ownership-overrides.json|verifier-reads|quality/admin-handoff"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-10T22:41:55+09:00",
-   "lastCommitSha": "8077fa39f6bff50f7393ea5d4518fff12da90e48",
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
    "sizeBytes": 2902,
    "refSummary": {
     "deletedUiRefs": [
@@ -43465,6 +43473,159 @@
     "sdkOnlyUi": false,
     "browserHarness": true,
     "uiMarkers": true
+   }
+  },
+  {
+   "path": "quality/backend-cloudflare-inventory.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "quality",
+   "reasons": [
+    "백엔드 전용 전환 문서"
+   ],
+   "evidence": [
+    {
+     "kind": "doc-link",
+     "ref": "MISSING:infra/web/"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "MISSING:infra/ops/"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "MISSING:workers/web-proxy/"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "MISSING:workers/ops-proxy/"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "MISSING:workers/_shared/opennext-origin.ts"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "MISSING:tooling/deploy/cf-pages-web.cjs"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "MISSING:tooling/deploy/cf-pages-ops.cjs"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "MISSING:tooling/deploy/cf-deploy-all.cjs"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "MISSING:tooling/deploy/cf-deploy-staging.cjs"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "MISSING:tooling/deploy/cf-rollback-staging.cjs"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "workers/api-stub (4 files)"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "workers/push-dispatcher (9 files)"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "workers/_shared/api-origin.ts"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "tooling/deploy/cf-workers.cjs"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "tooling/deploy/cf-preflight.cjs"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "tooling/deploy/cf-domain-bridge.cjs"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "tooling/deploy/cf-domain-bootstrap.cjs"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "tooling/deploy/cf-ebay-secrets.cjs"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "tooling/deploy/cf-origin-smoke.cjs"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "infra/r2/*.toml (2 files)"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "infra/domain.manifest.json"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "infra/hosts.manifest.json"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "infra/workers.manifest.json"
+    },
+    {
+     "kind": "doc-link",
+     "ref": ".github/workflows/deploy-cloudflare.yml"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "MISSING:infra/web"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "MISSING:infra/ops"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "MISSING:workers/web-proxy"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "MISSING:workers/ops-proxy"
+    }
+   ],
+   "referrers": [
+    "quality/backend-only-deletion-plan.md|doc-link|quality/**",
+    "quality/backend-only-deletion-plan.md|doc-link|quality/*",
+    "quality/backend-residual-report.md|doc-link|quality/**"
+   ],
+   "blockers": [],
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
+   "sizeBytes": 3806,
+   "refSummary": {
+    "deletedUiRefs": [],
+    "uiRefs": [],
+    "backendRefs": [
+     "workers/_shared/api-origin.ts",
+     "tooling/deploy/cf-workers.cjs",
+     "tooling/deploy/cf-preflight.cjs",
+     "tooling/deploy/cf-domain-bridge.cjs",
+     "tooling/deploy/cf-domain-bootstrap.cjs",
+     "tooling/deploy/cf-ebay-secrets.cjs",
+     "tooling/deploy/cf-origin-smoke.cjs",
+     "infra/domain.manifest.json",
+     "infra/hosts.manifest.json",
+     "infra/workers.manifest.json"
+    ],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
    }
   },
   {
@@ -43914,9 +44075,9 @@
     "tooling/backend/ownership-graph.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T20:45:56+09:00",
-   "lastCommitSha": "8bd0f46eeae97819680f64749fda3655331f4dc3",
-   "sizeBytes": 3084043,
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
+   "sizeBytes": 3073801,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -43948,9 +44109,9 @@
     "tooling/verify/workers-typecheck.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T20:45:56+09:00",
-   "lastCommitSha": "8bd0f46eeae97819680f64749fda3655331f4dc3",
-   "sizeBytes": 5320506,
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
+   "sizeBytes": 5202690,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -44041,7 +44202,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "quality/** (15 files)"
+     "ref": "quality/** (17 files)"
     },
     {
      "kind": "doc-link",
@@ -44952,7 +45113,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "quality/** (15 files)"
+     "ref": "quality/** (17 files)"
     },
     {
      "kind": "doc-link",
@@ -45019,6 +45180,71 @@
     "sdkOnlyUi": false,
     "browserHarness": true,
     "uiMarkers": true
+   }
+  },
+  {
+   "path": "quality/putduk-web-cloudflare-handoff.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "quality",
+   "reasons": [
+    "백엔드 전용 전환 문서"
+   ],
+   "evidence": [
+    {
+     "kind": "doc-link",
+     "ref": "MISSING:infra/web/wrangler.toml"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "MISSING:workers/web-proxy"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "MISSING:infra/web"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "MISSING:workers/_shared/opennext-origin.ts"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "MISSING:tooling/deploy/cf-pages-web.cjs"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "MISSING:tooling/deploy/cf-pages-ops.cjs"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "infra/domain.manifest.json"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "tooling/deploy/cf-origin-smoke.cjs"
+    }
+   ],
+   "referrers": [
+    "quality/backend-only-deletion-plan.md|doc-link|quality/**",
+    "quality/backend-only-deletion-plan.md|doc-link|quality/*",
+    "quality/backend-residual-report.md|doc-link|quality/**"
+   ],
+   "blockers": [],
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
+   "sizeBytes": 1428,
+   "refSummary": {
+    "deletedUiRefs": [],
+    "uiRefs": [],
+    "backendRefs": [
+     "infra/domain.manifest.json",
+     "tooling/deploy/cf-origin-smoke.cjs"
+    ],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
    }
   },
   {
@@ -89012,8 +89238,8 @@
     "package.json|pkg-script|backend:ownership-graph"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T13:22:36+09:00",
-   "lastCommitSha": "720e7d54b9d5f0727266fc8388fb4cbc6e73ed90",
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
    "sizeBytes": 90983,
    "refSummary": {
     "deletedUiRefs": [
@@ -89666,6 +89892,7 @@
    "referrers": [
     "governance/recovery/ghas-pr114-open.20260902.v1.json|verifier-reads",
     "package.json|pkg-script",
+    "quality/backend-cloudflare-inventory.md|doc-link",
     "quality/backend-deletion-ledger.md|doc-link",
     "quality/backend-deletion-ledger.md|doc-link|tooling/deploy",
     "quality/backend-only-deletion-plan.md|doc-link|tooling/deploy",
@@ -89712,6 +89939,7 @@
    ],
    "referrers": [
     "package.json|pkg-script",
+    "quality/backend-cloudflare-inventory.md|doc-link",
     "quality/backend-deletion-ledger.md|doc-link",
     "quality/backend-deletion-ledger.md|doc-link|tooling/deploy",
     "quality/backend-only-deletion-plan.md|doc-link|tooling/deploy",
@@ -89720,8 +89948,8 @@
     "package.json|pkg-script|cf:domain:bridge"
    ],
    "blockers": [],
-   "lastCommit": "2026-08-10T08:09:06+09:00",
-   "lastCommitSha": "07f5b956d126884d3f4cc182e55501ade385c608",
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
    "sizeBytes": 900,
    "refSummary": {
     "deletedUiRefs": [],
@@ -89753,6 +89981,7 @@
    ],
    "referrers": [
     ".github/workflows/provision-ebay-adapter-secrets.yml|workflow-run",
+    "quality/backend-cloudflare-inventory.md|doc-link",
     "quality/backend-deletion-ledger.md|doc-link|tooling/deploy",
     "quality/backend-only-deletion-plan.md|doc-link|tooling/deploy",
     "quality/backend-only-inventory.md|doc-link|tooling/deploy",
@@ -89796,16 +90025,18 @@
     ".cursor/rules/opennext-workers-origin.mdc|doc-link",
     "governance/recovery/ghas-pr114-open.20260902.v1.json|verifier-reads",
     "package.json|pkg-script",
+    "quality/backend-cloudflare-inventory.md|doc-link",
     "quality/backend-deletion-ledger.md|doc-link",
     "quality/backend-deletion-ledger.md|doc-link|tooling/deploy",
     "quality/backend-only-deletion-plan.md|doc-link|tooling/deploy",
     "quality/backend-only-inventory.md|doc-link|tooling/deploy",
+    "quality/putduk-web-cloudflare-handoff.md|doc-link",
     "package.json|pkg-script|cf:origin-smoke",
     "package.json|pkg-script|cf:origin-smoke:staging"
    ],
    "blockers": [],
-   "lastCommit": "2026-08-24T03:37:19+09:00",
-   "lastCommitSha": "0324a7a6c0e15ac4be8cfaf4bc45a2912746db03",
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
    "sizeBytes": 3096,
    "refSummary": {
     "deletedUiRefs": [],
@@ -89871,6 +90102,7 @@
    "referrers": [
     ".cursor/rules/opennext-workers-origin.mdc|doc-link",
     "package.json|pkg-script",
+    "quality/backend-cloudflare-inventory.md|doc-link",
     "quality/backend-deletion-ledger.md|doc-link",
     "quality/backend-deletion-ledger.md|doc-link|tooling/deploy",
     "quality/backend-only-deletion-plan.md|doc-link|tooling/deploy",
@@ -89883,8 +90115,8 @@
     "package.json(pkg-script:cf:preflight)[SPLIT]",
     "tooling/verify/rel-600-staging.cjs(verifier-reads)"
    ],
-   "lastCommit": "2026-09-01T14:34:58+09:00",
-   "lastCommitSha": "c51edfd74cca49d58f6780e137cc328dc010be86",
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
    "sizeBytes": 1600,
    "refSummary": {
     "deletedUiRefs": [
@@ -89953,6 +90185,7 @@
     "governance/recovery/chatgpt-takeover-20260903/pr-transplant-audit.json|verifier-reads",
     "governance/recovery/chatgpt-takeover-20260903/staged-paths.txt|doc-link",
     "package.json|pkg-script",
+    "quality/backend-cloudflare-inventory.md|doc-link",
     "quality/backend-deletion-ledger.md|doc-link",
     "quality/backend-deletion-ledger.md|doc-link|tooling/deploy",
     "quality/backend-only-deletion-plan.md|doc-link|tooling/deploy",
@@ -90142,8 +90375,8 @@
     "tooling/verify/staging-topology-readiness.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-01T14:34:58+09:00",
-   "lastCommitSha": "c51edfd74cca49d58f6780e137cc328dc010be86",
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
    "sizeBytes": 3007,
    "refSummary": {
     "deletedUiRefs": [],
@@ -99017,9 +99250,9 @@
     "tooling/verify/release-fetch-deploy-hardening.cjs|require"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-02T03:40:55+09:00",
-   "lastCommitSha": "92ea7200ef2798ccb638c1f2a44c685970517761",
-   "sizeBytes": 4281,
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
+   "sizeBytes": 4297,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -106694,8 +106927,8 @@
     ".github/workflows/backend-ci.yml|workflow-run|verify:cf-infra"
    ],
    "blockers": [],
-   "lastCommit": "2026-08-10T08:09:06+09:00",
-   "lastCommitSha": "07f5b956d126884d3f4cc182e55501ade385c608",
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
    "sizeBytes": 1465,
    "refSummary": {
     "deletedUiRefs": [],
@@ -107430,8 +107663,8 @@
     ".github/workflows/backend-ci.yml|workflow-run|verify:domain-bootstrap"
    ],
    "blockers": [],
-   "lastCommit": "2026-08-10T09:12:56+09:00",
-   "lastCommitSha": "e6222c04273b65ff3c927231608dbebc90dcd8b3",
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
    "sizeBytes": 4248,
    "refSummary": {
     "deletedUiRefs": [],
@@ -107611,8 +107844,8 @@
     "tooling/verify/shadow-replay-drift.cjs(verifier-reads)",
     "tooling/verify/user-ledger-query.cjs(verifier-reads)"
    ],
-   "lastCommit": "2026-09-11T20:19:48+09:00",
-   "lastCommitSha": "3c3d3376b7bab8d042a1219aa55617f9fa574399",
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
    "sizeBytes": 60261,
    "refSummary": {
     "deletedUiRefs": [
@@ -113103,8 +113336,8 @@
     "package.json(pkg-script)[SPLIT]",
     "package.json(pkg-script:verify:phase0-bootstrap)[SPLIT]"
    ],
-   "lastCommit": "2026-09-10T23:27:10+09:00",
-   "lastCommitSha": "b980dd365bfa6a3b4f10677161f921188c4662b2",
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
    "sizeBytes": 7308,
    "refSummary": {
     "deletedUiRefs": [
@@ -113808,8 +114041,8 @@
     ".github/workflows/backend-ci.yml|workflow-run|verify:production-deploy-path-lock"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-02T04:02:22+09:00",
-   "lastCommitSha": "4ae59c44883b25212187bd043782c06a18b86445",
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
    "sizeBytes": 5160,
    "refSummary": {
     "deletedUiRefs": [],
@@ -116741,8 +116974,8 @@
     ".github/workflows/backend-ci.yml|workflow-run|verify:rel-506-r8-infra-core"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T13:22:36+09:00",
-   "lastCommitSha": "720e7d54b9d5f0727266fc8388fb4cbc6e73ed90",
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
    "sizeBytes": 10032,
    "refSummary": {
     "deletedUiRefs": [],
@@ -116991,8 +117224,8 @@
     ".github/workflows/backend-ci.yml|workflow-run|verify:rel-600-staging"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T13:22:36+09:00",
-   "lastCommitSha": "720e7d54b9d5f0727266fc8388fb4cbc6e73ed90",
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
    "sizeBytes": 9825,
    "refSummary": {
     "deletedUiRefs": [],
@@ -117019,7 +117252,7 @@
    "rule": "verify",
    "reasons": [
     "검증기 (evidence 재판정)",
-    "UI 참조 4 + 백엔드 참조 1 · 백엔드 어서션 46 / UI 어서션 0"
+    "UI 참조 4 + 백엔드 참조 1 · 백엔드 어서션 43 / UI 어서션 4"
    ],
    "evidence": [
     {
@@ -117060,10 +117293,6 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "MISSING:tooling/e2e/specs/home-closure.spec.cjs"
-    },
-    {
-     "kind": "verifier-reads",
      "ref": "governance/responsive/home-geometry-lock.v1.json"
     },
     {
@@ -117073,6 +117302,10 @@
     {
      "kind": "verifier-reads",
      "ref": "infra/domain.manifest.json"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "MISSING:tooling/e2e/specs/home-closure.spec.cjs"
     },
     {
      "kind": "verifier-reads",
@@ -117109,9 +117342,9 @@
     "package.json(pkg-script)[SPLIT]",
     "package.json(pkg-script:verify:rel-601-staging-regression)[SPLIT]"
    ],
-   "lastCommit": "2026-09-11T13:22:36+09:00",
-   "lastCommitSha": "720e7d54b9d5f0727266fc8388fb4cbc6e73ed90",
-   "sizeBytes": 11690,
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
+   "sizeBytes": 11776,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [
@@ -117147,269 +117380,276 @@
      {
       "domain": "알림·푸시·인박스",
       "source": "infra/domain.manifest.json",
-      "line": 64,
+      "line": 63,
       "detail": "fixture productionDomainMutation must be 0"
      },
      {
       "domain": "알림·푸시·인박스",
       "source": "infra/domain.manifest.json",
-      "line": 65,
+      "line": 64,
       "detail": "fixture productionWorkflowDispatch must be 0"
      },
      {
       "domain": "알림·푸시·인박스",
       "source": "infra/domain.manifest.json",
-      "line": 66,
+      "line": 65,
       "detail": "fixture pagesDeploy must be 0"
      },
      {
       "domain": "알림·푸시·인박스",
       "source": "infra/domain.manifest.json",
-      "line": 67,
+      "line": 66,
       "detail": "fixture vercel must be 0"
      },
      {
       "domain": "알림·푸시·인박스",
       "source": "infra/domain.manifest.json",
-      "line": 68,
+      "line": 67,
       "detail": "fixture homeVisualRedesign must be 0"
      },
      {
       "domain": "알림·푸시·인박스",
       "source": "infra/domain.manifest.json",
-      "line": 69,
+      "line": 68,
       "detail": "fixture localFullMatrix must stay 0"
      },
      {
       "domain": "알림·푸시·인박스",
       "source": "infra/domain.manifest.json",
-      "line": 70,
+      "line": 69,
       "detail": "fixture localFullLighthouse must stay 0"
      },
      {
       "domain": "알림·푸시·인박스",
       "source": "infra/domain.manifest.json",
-      "line": 71,
+      "line": 70,
       "detail": "fixture must not claim live staging Playwright"
      },
      {
       "domain": "알림·푸시·인박스",
       "source": "infra/domain.manifest.json",
-      "line": 72,
+      "line": 71,
       "detail": "fixture must not mutate money on live staging"
      },
      {
       "domain": "알림·푸시·인박스",
       "source": "infra/domain.manifest.json",
-      "line": 73,
+      "line": 72,
       "detail": "MCP-only is not DONE"
      },
      {
       "domain": "알림·푸시·인박스",
       "source": "infra/domain.manifest.json",
-      "line": 76,
+      "line": 75,
       "detail": "EXIT_GATE: plan todo not completed "
      },
      {
       "domain": "알림·푸시·인박스",
       "source": "infra/domain.manifest.json",
-      "line": 77,
+      "line": 76,
       "detail": "EXIT_GATE: YAML STATUS not COMPLETED "
      },
      {
       "domain": "알림·푸시·인박스",
       "source": "infra/domain.manifest.json",
-      "line": 81,
+      "line": 80,
       "detail": "fixture staging web must be preview workers"
      },
      {
       "domain": "알림·푸시·인박스",
       "source": "infra/domain.manifest.json",
-      "line": 84,
+      "line": 83,
       "detail": "fixture staging ops must be preview workers"
      },
      {
       "domain": "알림·푸시·인박스",
       "source": "infra/domain.manifest.json",
-      "line": 89,
+      "line": 88,
       "detail": "probe list must not target production host "
      },
      {
       "domain": "알림·푸시·인박스",
       "source": "infra/domain.manifest.json",
-      "line": 93,
+      "line": 92,
       "detail": "Surface Matrix markdown missing header"
      },
      {
       "domain": "알림·푸시·인박스",
       "source": "infra/domain.manifest.json",
-      "line": 96,
+      "line": 95,
       "detail": "Surface Matrix missing  <= needles: | Home | | /profits | /wallet | /me | /admin"
      },
      {
       "domain": "알림·푸시·인박스",
       "source": "infra/domain.manifest.json",
-      "line": 99,
+      "line": 98,
       "detail": "Surface Matrix JSON schema missing"
      },
      {
       "domain": "알림·푸시·인박스",
       "source": "infra/domain.manifest.json",
-      "line": 102,
+      "line": 101,
       "detail": "FORBIDDEN · home-geometry-lock rewrite must stay FORBIDDEN"
      },
      {
       "domain": "알림·푸시·인박스",
       "source": "infra/domain.manifest.json",
-      "line": 104,
+      "line": 103,
       "detail": "large-screen-safety must keep REL-601 as QA owner"
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 107,
-      "detail": "home-closure spec must keep viewport "
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 111,
-      "detail": "package.json missing verify:rel-601-staging-regression"
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 106,
+      "detail": "home-closure.spec.cjs must stay handed off (putduk-web)"
      },
      {
       "domain": "자본 구간",
-      "source": "infra/domain.manifest.json",
-      "line": 114,
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 116,
       "detail": "CATALOG missing rel-601-staging-regression"
      },
      {
       "domain": "자본 구간",
-      "source": "infra/domain.manifest.json",
-      "line": 117,
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 119,
       "detail": "backend-ci.yml must run verify:rel-601-staging-regression"
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 120,
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 122,
       "detail": "domain-by-path must trigger rel-601"
      },
      {
       "domain": "KYC 정책",
-      "source": "infra/domain.manifest.json",
-      "line": 123,
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 125,
       "detail": "e2e README must document REL-601 Surface Matrix reuse"
      },
      {
       "domain": "KYC 정책",
-      "source": "infra/domain.manifest.json",
-      "line": 126,
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 128,
       "detail": "fixture must record why device-tier is not a hard extra"
      },
      {
       "domain": "자본 구간",
-      "source": "infra/domain.manifest.json",
-      "line": 129,
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 131,
       "detail": "fixture must record why asset-pipeline is not a hard extra"
      },
      {
       "domain": "자본 구간",
-      "source": "infra/domain.manifest.json",
-      "line": 151,
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 153,
       "detail": "evidence missing  <= needles: STATUS = COMPLETED | HOME_RETROACTIVE_VISUAL_REDESIGN = NO | HOME_GEOMETRY_DIFF = 0 | LOCAL_FULL_MATRIX = 0 | LOCAL_FULL_LIGHTHOUSE = 0 | LOCAL_BROWSER_VS_LIVE_STAGING = NOT_RUN | MONEY_MUTATION_VS_LIVE_STAGING"
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 153,
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 155,
       "detail": "REL-601 · rel-601 todo must be completed"
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 154,
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 156,
       "detail": "REL-601 · REL-601 YAML must be COMPLETED"
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 156,
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 158,
       "detail": "evidence leaked a Cloudflare token"
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 159,
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 161,
       "detail": "evidence must not dispatch production"
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 210,
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 212,
       "detail": "live FAIL  ·  + url + "
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 214,
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 216,
       "detail": "live FAIL  ·  missing x-opennext=1"
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 217,
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 219,
       "detail": "live FAIL  ·  location= ·  expected="
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 236,
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 238,
       "detail": "Home HTML status "
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 240,
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 242,
       "detail": "staging Home title must stay 퍼뜩"
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 243,
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 245,
       "detail": "staging Home must keep peotteok-light theme"
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 246,
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 248,
       "detail": "Home HTML contains forbidden token "
      },
      {
-      "domain": "매칭 정책",
-      "source": "infra/domain.manifest.json",
-      "line": 250,
-      "detail": "Home HTML missing Next static CSS href"
-     },
-     {
       "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 258,
-      "detail": "Home CSS asset status "
-     },
-     {
-      "domain": "알림·푸시·인박스",
-      "source": "infra/domain.manifest.json",
-      "line": 272,
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 274,
       "detail": "live fetch error after bounded retries: "
      },
      {
       "domain": "알림·푸시·인박스",
       "source": "tooling/verify",
-      "line": 285,
+      "line": 287,
       "detail": "re-run FAIL  ·  + String(run.stderr || run.stdout ||  · ).split("
      }
     ],
-    "uiAssertions": [],
+    "uiAssertions": [
+     {
+      "domain": "반응형·뷰포트",
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 109,
+      "detail": "large-screen-safety must keep desktop viewports"
+     },
+     {
+      "domain": "반응형·뷰포트",
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 113,
+      "detail": "package.json missing verify:rel-601-staging-regression"
+     },
+     {
+      "domain": "CSS·스타일",
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 252,
+      "detail": "Home HTML missing Next static CSS href"
+     },
+     {
+      "domain": "CSS·스타일",
+      "source": "tooling/e2e/specs/home-closure.spec.cjs",
+      "line": 260,
+      "detail": "Home CSS asset status "
+     }
+    ],
     "unclassifiedAssertions": [],
     "backendPaths": [
      ".github/workflows/backend-ci.yml",
@@ -117425,10 +117665,12 @@
     "backendDomains": [
      "알림·푸시·인박스",
      "자본 구간",
-     "KYC 정책",
-     "매칭 정책"
+     "KYC 정책"
     ],
-    "uiDomains": []
+    "uiDomains": [
+     "반응형·뷰포트",
+     "CSS·스타일"
+    ]
    }
   },
   {
@@ -117519,8 +117761,8 @@
     ".github/workflows/backend-ci.yml|workflow-run|verify:rel-602-staging-rollback"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T13:22:36+09:00",
-   "lastCommitSha": "720e7d54b9d5f0727266fc8388fb4cbc6e73ed90",
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
    "sizeBytes": 11784,
    "refSummary": {
     "deletedUiRefs": [],
@@ -117674,8 +117916,8 @@
     ".github/workflows/backend-ci.yml|workflow-run|verify:release-acceptance"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T19:45:09+09:00",
-   "lastCommitSha": "4fc9890267973bd176a98a653bf769d9040c34ef",
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
    "sizeBytes": 33597,
    "refSummary": {
     "deletedUiRefs": [],
@@ -118113,8 +118355,8 @@
     "package.json(pkg-script)[SPLIT]",
     "package.json(pkg-script:verify:root-domain-env)[SPLIT]"
    ],
-   "lastCommit": "2026-08-09T04:13:08+09:00",
-   "lastCommitSha": "354bb995701fc6d6b82549cb7974d61977a2c7a6",
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
    "sizeBytes": 1451,
    "refSummary": {
     "deletedUiRefs": [],
@@ -118859,8 +119101,8 @@
     "package.json|pkg-script|verify:stack-lock"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T19:45:09+09:00",
-   "lastCommitSha": "4fc9890267973bd176a98a653bf769d9040c34ef",
+   "lastCommit": "2026-09-11T22:01:58+09:00",
+   "lastCommitSha": "bf59d5bea7b2e3b6ab7416f89d64bfcbc238df7f",
    "sizeBytes": 4990,
    "refSummary": {
     "deletedUiRefs": [],
@@ -120391,6 +120633,7 @@
     ".cursor/rules/ide-problems.mdc|doc-link|workers/**",
     "docs/CONSTITUTION_BOOTSTRAP.md|doc-link|workers/*-adapter",
     "infra/domain.manifest.json|verifier-reads",
+    "quality/backend-cloudflare-inventory.md|doc-link",
     "quality/backend-deletion-ledger.md|doc-link|workers/_shared",
     "quality/backend-only-deletion-plan.md|doc-link|workers/*-proxy",
     "quality/backend-only-inventory.md|doc-link|workers/*-adapter",
@@ -120682,6 +120925,7 @@
     ".cursor/rules/ide-problems.mdc|doc-link|workers/**",
     "docs/CONSTITUTION_BOOTSTRAP.md|doc-link|workers/*-adapter",
     "infra/domain.manifest.json|verifier-reads|workers/api-stub",
+    "quality/backend-cloudflare-inventory.md|doc-link|workers/api-stub",
     "quality/backend-deletion-ledger.md|doc-link|workers/api-stub",
     "quality/backend-only-deletion-plan.md|doc-link|workers/*-proxy",
     "quality/backend-only-inventory.md|doc-link|workers/*-adapter",
@@ -120726,6 +120970,7 @@
     ".cursor/rules/ide-problems.mdc|doc-link|workers/**",
     "docs/CONSTITUTION_BOOTSTRAP.md|doc-link|workers/*-adapter",
     "infra/domain.manifest.json|verifier-reads|workers/api-stub",
+    "quality/backend-cloudflare-inventory.md|doc-link|workers/api-stub",
     "quality/backend-deletion-ledger.md|doc-link|workers/api-stub",
     "quality/backend-only-deletion-plan.md|doc-link|workers/*-proxy",
     "quality/backend-only-inventory.md|doc-link|workers/*-adapter",
@@ -120768,6 +121013,7 @@
     ".cursor/rules/ide-problems.mdc|doc-link|workers/**",
     "docs/CONSTITUTION_BOOTSTRAP.md|doc-link|workers/*-adapter",
     "infra/domain.manifest.json|verifier-reads|workers/api-stub",
+    "quality/backend-cloudflare-inventory.md|doc-link|workers/api-stub",
     "quality/backend-deletion-ledger.md|doc-link|workers/api-stub",
     "quality/backend-only-deletion-plan.md|doc-link|workers/*-proxy",
     "quality/backend-only-inventory.md|doc-link|workers/*-adapter",
@@ -120809,6 +121055,7 @@
     "docs/CONSTITUTION_BOOTSTRAP.md|doc-link|workers/*-adapter",
     "infra/domain.manifest.json|verifier-reads|workers/api-stub",
     "quality/backend-ci.md|doc-link|workers/*/wrangler.toml",
+    "quality/backend-cloudflare-inventory.md|doc-link|workers/api-stub",
     "quality/backend-deletion-ledger.md|doc-link|workers/api-stub",
     "quality/backend-only-deletion-plan.md|doc-link|workers/*-proxy",
     "quality/backend-only-inventory.md|doc-link|workers/*-adapter",
@@ -123351,6 +123598,7 @@
     "governance/release-master/REL-020-PUSH-BADGE.md|doc-link|workers/push-dispatcher",
     "infra/phase0-migration-playbook.md|doc-link|workers/push-dispatcher",
     "quality/backend-ci.md|doc-link|workers/push-dispatcher/**",
+    "quality/backend-cloudflare-inventory.md|doc-link|workers/push-dispatcher",
     "quality/backend-deletion-ledger.md|doc-link|workers/push-dispatcher",
     "quality/backend-only-deletion-plan.md|doc-link|workers/*-proxy",
     "quality/backend-only-inventory.md|doc-link|workers/*-adapter",
@@ -123404,6 +123652,7 @@
     "governance/release-master/REL-020-PUSH-BADGE.md|doc-link|workers/push-dispatcher",
     "infra/phase0-migration-playbook.md|doc-link|workers/push-dispatcher",
     "quality/backend-ci.md|doc-link|workers/push-dispatcher/**",
+    "quality/backend-cloudflare-inventory.md|doc-link|workers/push-dispatcher",
     "quality/backend-deletion-ledger.md|doc-link|workers/push-dispatcher",
     "quality/backend-only-deletion-plan.md|doc-link|workers/*-proxy",
     "quality/backend-only-inventory.md|doc-link|workers/*-adapter",
@@ -123456,6 +123705,7 @@
     "governance/release-master/REL-020-PUSH-BADGE.md|doc-link|workers/push-dispatcher",
     "infra/phase0-migration-playbook.md|doc-link|workers/push-dispatcher",
     "quality/backend-ci.md|doc-link|workers/push-dispatcher/**",
+    "quality/backend-cloudflare-inventory.md|doc-link|workers/push-dispatcher",
     "quality/backend-deletion-ledger.md|doc-link|workers/push-dispatcher",
     "quality/backend-only-deletion-plan.md|doc-link|workers/*-proxy",
     "quality/backend-only-inventory.md|doc-link|workers/*-adapter",
@@ -123506,6 +123756,7 @@
     "governance/release-master/REL-020-PUSH-BADGE.md|doc-link|workers/push-dispatcher",
     "infra/phase0-migration-playbook.md|doc-link|workers/push-dispatcher",
     "quality/backend-ci.md|doc-link|workers/push-dispatcher/**",
+    "quality/backend-cloudflare-inventory.md|doc-link|workers/push-dispatcher",
     "quality/backend-deletion-ledger.md|doc-link|workers/push-dispatcher",
     "quality/backend-only-deletion-plan.md|doc-link|workers/*-proxy",
     "quality/backend-only-inventory.md|doc-link|workers/*-adapter",
@@ -123558,6 +123809,7 @@
     "governance/release-master/REL-020-PUSH-BADGE.md|doc-link|workers/push-dispatcher",
     "infra/phase0-migration-playbook.md|doc-link|workers/push-dispatcher",
     "quality/backend-ci.md|doc-link|workers/push-dispatcher/**",
+    "quality/backend-cloudflare-inventory.md|doc-link|workers/push-dispatcher",
     "quality/backend-deletion-ledger.md|doc-link|workers/push-dispatcher",
     "quality/backend-only-deletion-plan.md|doc-link|workers/*-proxy",
     "quality/backend-only-inventory.md|doc-link|workers/*-adapter",
@@ -123613,6 +123865,7 @@
     "governance/release-master/REL-020-PUSH-BADGE.md|doc-link|workers/push-dispatcher",
     "infra/phase0-migration-playbook.md|doc-link|workers/push-dispatcher",
     "quality/backend-ci.md|doc-link|workers/push-dispatcher/**",
+    "quality/backend-cloudflare-inventory.md|doc-link|workers/push-dispatcher",
     "quality/backend-deletion-ledger.md|doc-link|workers/push-dispatcher",
     "quality/backend-only-deletion-plan.md|doc-link|workers/*-proxy",
     "quality/backend-only-inventory.md|doc-link|workers/*-adapter",
@@ -123665,6 +123918,7 @@
     "governance/release-master/REL-020-PUSH-BADGE.md|doc-link|workers/push-dispatcher",
     "infra/phase0-migration-playbook.md|doc-link|workers/push-dispatcher",
     "quality/backend-ci.md|doc-link|workers/push-dispatcher/**",
+    "quality/backend-cloudflare-inventory.md|doc-link|workers/push-dispatcher",
     "quality/backend-deletion-ledger.md|doc-link|workers/push-dispatcher",
     "quality/backend-only-deletion-plan.md|doc-link|workers/*-proxy",
     "quality/backend-only-inventory.md|doc-link|workers/*-adapter",
@@ -123712,6 +123966,7 @@
     "governance/release-master/REL-020-PUSH-BADGE.md|doc-link|workers/push-dispatcher",
     "infra/phase0-migration-playbook.md|doc-link|workers/push-dispatcher",
     "quality/backend-ci.md|doc-link|workers/push-dispatcher/**",
+    "quality/backend-cloudflare-inventory.md|doc-link|workers/push-dispatcher",
     "quality/backend-deletion-ledger.md|doc-link|workers/push-dispatcher",
     "quality/backend-only-deletion-plan.md|doc-link|workers/*-proxy",
     "quality/backend-only-inventory.md|doc-link|workers/*-adapter",
@@ -123762,6 +124017,7 @@
     "infra/phase0-migration-playbook.md|doc-link|workers/push-dispatcher",
     "quality/backend-ci.md|doc-link|workers/push-dispatcher/**",
     "quality/backend-ci.md|doc-link|workers/*/wrangler.toml",
+    "quality/backend-cloudflare-inventory.md|doc-link|workers/push-dispatcher",
     "quality/backend-deletion-ledger.md|doc-link|workers/push-dispatcher",
     "quality/backend-only-deletion-plan.md|doc-link|workers/*-proxy",
     "quality/backend-only-inventory.md|doc-link|workers/*-adapter",
