@@ -1,5 +1,14 @@
 # Backend-only repo residual report
 
+- Head SHA: `cc50e4cf971f2ba1510de9d57ffd30fad30fa6b1` · verdict **BACKEND_ONLY_CLEANUP_IN_PROGRESS**
+- UNKNOWN **0** · REVIEW_REQUIRED **0**
+- Docs keep: 129 (`quality/backend-doc-ownership.json`). markdown/ui-path boundary = 0.
+- Remaining boundary: 26 (ownership SPLIT 24 + package sharp 1 + import _write-trade-license-html 1). Later stages / Founder.
+- Next: 6th stage CI/ruleset + putduk-web SHA. Do not declare READY.
+
+---
+# Backend-only repo residual report
+
 - Head SHA: `5baa473503933ab9985a73fe265e068ebb7f6b94` · verdict **BACKEND_ONLY_CLEANUP_IN_PROGRESS**
 - UNKNOWN **0** · REVIEW_REQUIRED **0**
 - 5th stage: markdown/governance screen evidence removed. Remaining docs listed in `quality/backend-doc-ownership.json` (128).

@@ -1,6 +1,6 @@
 {
  "generatedAt": "2026-09-11T16:07:28.391Z",
- "headSha": "5baa473503933ab9985a73fe265e068ebb7f6b94",
+ "headSha": "cc50e4cf971f2ba1510de9d57ffd30fad30fa6b1",
  "generator": "tooling/backend/_p5-write-ownership.cjs",
  "note": "All remaining .md/.mdc paths. decision KEEP. UNKNOWN 0. boundary markdown rule reads keep[].path.",
  "totals": {
