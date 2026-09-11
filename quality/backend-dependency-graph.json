@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-09-11T11:14:33.745Z",
- "headSha": "4fc9890267973bd176a98a653bf769d9040c34ef",
+ "generatedAt": "2026-09-11T11:42:33.409Z",
+ "headSha": "3c3d3376b7bab8d042a1219aa55617f9fa574399",
  "edgeKinds": [
   "import",
   "require",
@@ -3302,6 +3302,12 @@
   },
   {
    "id": "quality/backend-residual-report.md",
+   "type": "file",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP"
+  },
+  {
+   "id": "quality/putduk-web-sdk-handoff.md",
    "type": "file",
    "class": "BACKEND_DOC",
    "decision": "KEEP"
@@ -9946,8 +9952,8 @@
    "type": "missing-path"
   },
   {
-   "id": "missing:packages/sdk/marketing",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/marketing",
+   "type": "deleted-ui-path"
   },
   {
    "id": "missing:services/marketing-attribution/METRICS.md",
@@ -10242,8 +10248,8 @@
    "type": "missing-path"
   },
   {
-   "id": "missing:packages/sdk/marketing/**",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/marketing/**",
+   "type": "deleted-ui-path"
   },
   {
    "id": "dir:workers/marketing-capi-dispatcher/**",
@@ -10367,8 +10373,8 @@
    "type": "missing-path"
   },
   {
-   "id": "missing:packages/sdk",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk",
+   "type": "deleted-ui-path"
   },
   {
    "id": "dir:workers/chain-watchers/",
@@ -10414,8 +10420,8 @@
    "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/wallet-config/",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/wallet-config/",
+   "type": "deleted-ui-path"
   },
   {
    "id": "deleted:packages/ui/tokens/lux-fintech.ts",
@@ -10426,8 +10432,8 @@
    "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/marketing/",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/marketing/",
+   "type": "deleted-ui-path"
   },
   {
    "id": "dir:workers/marketing-capi-dispatcher/",
@@ -10448,8 +10454,8 @@
    "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/device-tier.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/device-tier.ts",
+   "type": "deleted-ui-path"
   },
   {
    "id": "deleted:packages/ui/components/AdminTop5Widgets.tsx",
@@ -10464,8 +10470,8 @@
    "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/",
+   "type": "deleted-ui-path"
   },
   {
    "id": "dir:workers/push-dispatcher/",
@@ -10473,8 +10479,8 @@
    "files": 9
   },
   {
-   "id": "missing:packages/sdk/opportunity-stream/",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/opportunity-stream/",
+   "type": "deleted-ui-path"
   },
   {
    "id": "deleted:packages/ui/components/ProfitAmount.tsx",
@@ -11073,8 +11079,8 @@
    "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/execution-stream/useTradeExecution.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/execution-stream/useTradeExecution.ts",
+   "type": "deleted-ui-path"
   },
   {
    "id": "deleted:apps/web/app/me/settings/page.tsx",
@@ -11129,8 +11135,8 @@
    "type": "missing-path"
   },
   {
-   "id": "missing:packages/sdk/opportunity-stream",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/opportunity-stream",
+   "type": "deleted-ui-path"
   },
   {
    "id": "deleted:apps/admin/app/wallet/deposit-settings/",
@@ -11149,20 +11155,20 @@
    "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/install-prompt/",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/install-prompt/",
+   "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/feedback.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/feedback.ts",
+   "type": "deleted-ui-path"
   },
   {
    "id": "deleted:apps/web/public",
    "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/native-bridge",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/native-bridge",
+   "type": "deleted-ui-path"
   },
   {
    "id": "missing:apps/mobile-shell",
@@ -11173,12 +11179,12 @@
    "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/marketing/consent.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/marketing/consent.ts",
+   "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/marketing/landing-pixel-publisher.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/marketing/landing-pixel-publisher.ts",
+   "type": "deleted-ui-path"
   },
   {
    "id": "deleted:apps/web/app/profits/[slug]/page.tsx",
@@ -11213,8 +11219,8 @@
    "type": "missing-path"
   },
   {
-   "id": "missing:packages/sdk/install-prompt.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/install-prompt.ts",
+   "type": "deleted-ui-path"
   },
   {
    "id": "missing:assets/ai-profit-os-admin-execution-policy.png",
@@ -12667,12 +12673,12 @@
    "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/src/auth/auth-release.test.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/auth/auth-release.test.ts",
+   "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/src/auth/fetch.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/auth/fetch.ts",
+   "type": "deleted-ui-path"
   },
   {
    "id": "missing:services/api-nest/src/auth/magic-link.delivery.runtime.test.ts",
@@ -13228,8 +13234,8 @@
    "type": "missing-path"
   },
   {
-   "id": "missing:packages/sdk/src/peotteok/sse-consume.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/peotteok/sse-consume.ts",
+   "type": "deleted-ui-path"
   },
   {
    "id": "missing:tooling/verify/rel-603-age-usability-spotcheck.cjs",
@@ -13244,8 +13250,8 @@
    "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/src/execution-stream/polling-transport.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/execution-stream/polling-transport.ts",
+   "type": "deleted-ui-path"
   },
   {
    "id": "deleted:apps/admin/lib/admin-truth.ts",
@@ -13304,28 +13310,28 @@
    "type": "missing-path"
   },
   {
-   "id": "missing:packages/sdk/src/auth/index.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/auth/index.ts",
+   "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/src/auth/session-token.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/auth/session-token.ts",
+   "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/src/peotteok/chat-sse.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/peotteok/chat-sse.ts",
+   "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/src/peotteok/control.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/peotteok/control.ts",
+   "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/src/peotteok/index.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/peotteok/index.ts",
+   "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/src/peotteok/usePeotteokChat.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/peotteok/usePeotteokChat.ts",
+   "type": "deleted-ui-path"
   },
   {
    "id": "missing:services/ai-platform/src/confirm-receipt.cjs",
@@ -13809,8 +13815,8 @@
    "type": "missing-path"
   },
   {
-   "id": "missing:packages/sdk/src/device-tier.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/device-tier.ts",
+   "type": "deleted-ui-path"
   },
   {
    "id": "deleted:packages/ui/tokens/device-tier-contract.ts",
@@ -14030,20 +14036,20 @@
    "files": 324
   },
   {
-   "id": "missing:packages/sdk/src",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src",
+   "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/src/**/fetch.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/**/fetch.ts",
+   "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/src/auth/**",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/auth/**",
+   "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/src/{wallet",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/{wallet",
+   "type": "deleted-ui-path"
   },
   {
    "id": "missing:quality/customer-web-contract-p0.md",
@@ -14370,8 +14376,8 @@
    "type": "missing-path"
   },
   {
-   "id": "missing:packages/sdk/**",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/**",
+   "type": "deleted-ui-path"
   },
   {
    "id": "dir:quality/admin-handoff",
@@ -14416,16 +14422,16 @@
    "type": "missing-path"
   },
   {
-   "id": "missing:packages/sdk/package.json",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/package.json",
+   "type": "deleted-ui-path"
   },
   {
    "id": "missing:tooling/verify/home-state-truth.cjs",
    "type": "missing-path"
   },
   {
-   "id": "missing:packages/sdk/src/index.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/index.ts",
+   "type": "deleted-ui-path"
   },
   {
    "id": "missing:tooling/verify/execute-web-wire.cjs",
@@ -14444,16 +14450,16 @@
    "type": "missing-path"
   },
   {
-   "id": "missing:packages/sdk/src/home-read-model/fetch.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/home-read-model/fetch.ts",
+   "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/src/participate/fetch.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/participate/fetch.ts",
+   "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/src/wallet/fetch.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/wallet/fetch.ts",
+   "type": "deleted-ui-path"
   },
   {
    "id": "missing:tooling/verify/invite-closure.cjs",
@@ -14696,7 +14702,7 @@
   {
    "id": "dir:quality/**",
    "type": "glob",
-   "files": 13
+   "files": 14
   },
   {
    "id": "missing:apps/*",
@@ -14724,7 +14730,7 @@
   {
    "id": "dir:quality/*",
    "type": "glob",
-   "files": 12
+   "files": 13
   },
   {
    "id": "missing:quality/backend/",
@@ -14768,8 +14774,8 @@
    "files": 3
   },
   {
-   "id": "missing:packages/sdk/src/auth/{auth-release.test.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/auth/{auth-release.test.ts",
+   "type": "deleted-ui-path"
   },
   {
    "id": "missing:services/api-nest/scripts/write-nest-build-info.cjs",
@@ -14915,8 +14921,8 @@
    "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/src/auth/*",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/auth/*",
+   "type": "deleted-ui-path"
   },
   {
    "id": "dir:services/api-nest/**/*.runtime.test.ts",
@@ -14974,8 +14980,8 @@
    "files": 8
   },
   {
-   "id": "missing:packages/sdk/src/**/*.test.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/**/*.test.ts",
+   "type": "deleted-ui-path"
   },
   {
    "id": "dir:services/api-nest/src/**/*.routes.ts",
@@ -15184,8 +15190,8 @@
    "type": "missing-path"
   },
   {
-   "id": "missing:packages/sdk/src/push/subscribe.ts",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/push/subscribe.ts",
+   "type": "deleted-ui-path"
   },
   {
    "id": "deleted:apps/web/components/pwa/PushOptIn.tsx",
@@ -15206,10 +15212,6 @@
   },
   {
    "id": "missing:governance/admin/control-plane-superset",
-   "type": "missing-path"
-  },
-  {
-   "id": "missing:quality/putduk-web-sdk-handoff.md",
    "type": "missing-path"
   },
   {
@@ -15570,12 +15572,6 @@
    "type": "env-var"
   },
   {
-   "id": "pkg:@playwright/test",
-   "type": "external-package",
-   "rootDevDependency": "1.62.1",
-   "decision": "DELETE"
-  },
-  {
    "id": "env:AIPO_QA_HARNESS_OUT",
    "type": "env-var"
   },
@@ -15848,8 +15844,8 @@
    "files": 8
   },
   {
-   "id": "missing:packages/sdk/src/push/**",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/push/**",
+   "type": "deleted-ui-path"
   },
   {
    "id": "dir:schemas/push-*.json",
@@ -15946,12 +15942,12 @@
    "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/src/participate",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/participate",
+   "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/src/wallet/**",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/wallet/**",
+   "type": "deleted-ui-path"
   },
   {
    "id": "deleted:apps/web/app/trades/EarningsEmbed.tsx",
@@ -15962,8 +15958,8 @@
    "type": "deleted-ui-path"
   },
   {
-   "id": "missing:packages/sdk/src/home-money-read/**",
-   "type": "missing-path"
+   "id": "deleted:packages/sdk/src/home-money-read/**",
+   "type": "deleted-ui-path"
   },
   {
    "id": "missing:eval/p_fact",
@@ -17935,34 +17931,16 @@
    "decision": "KEEP"
   },
   {
-   "id": "pkg:@axe-core/playwright",
-   "type": "external-package",
-   "rootDevDependency": "4.13.0",
-   "decision": "DELETE"
-  },
-  {
    "id": "pkg:@cloudflare/workers-types",
    "type": "external-package",
    "rootDevDependency": "^5.20260809.1",
    "decision": "KEEP"
   },
   {
-   "id": "pkg:axe-core",
-   "type": "external-package",
-   "rootDevDependency": "^4.10.3",
-   "decision": "DELETE"
-  },
-  {
    "id": "pkg:husky",
    "type": "external-package",
    "rootDevDependency": "^9.1.7",
    "decision": "KEEP"
-  },
-  {
-   "id": "pkg:jsdom",
-   "type": "external-package",
-   "rootDevDependency": "^26.1.0",
-   "decision": "DELETE"
   },
   {
    "id": "pkg:typescript",
@@ -18747,7 +18725,7 @@
   },
   {
    "from": ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md",
-   "to": "missing:packages/sdk/marketing",
+   "to": "deleted:packages/sdk/marketing",
    "kind": "doc-link",
    "spec": "packages/sdk/marketing"
   },
@@ -19333,7 +19311,7 @@
   },
   {
    "from": ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md",
-   "to": "missing:packages/sdk/marketing/**",
+   "to": "deleted:packages/sdk/marketing/**",
    "kind": "doc-link",
    "spec": "packages/sdk/marketing/**"
   },
@@ -19591,7 +19569,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md",
-   "to": "missing:packages/sdk",
+   "to": "deleted:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
@@ -19687,7 +19665,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md",
-   "to": "missing:packages/sdk/wallet-config/",
+   "to": "deleted:packages/sdk/wallet-config/",
    "kind": "doc-link",
    "spec": "packages/sdk/wallet-config/"
   },
@@ -19705,7 +19683,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md",
-   "to": "missing:packages/sdk/marketing/",
+   "to": "deleted:packages/sdk/marketing/",
    "kind": "doc-link",
    "spec": "packages/sdk/marketing/"
   },
@@ -19740,7 +19718,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md",
-   "to": "missing:packages/sdk/device-tier.ts",
+   "to": "deleted:packages/sdk/device-tier.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/device-tier.ts"
   },
@@ -19769,7 +19747,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md",
-   "to": "missing:packages/sdk/",
+   "to": "deleted:packages/sdk/",
    "kind": "doc-link",
    "spec": "packages/sdk/"
   },
@@ -19796,7 +19774,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md",
-   "to": "missing:packages/sdk/opportunity-stream/",
+   "to": "deleted:packages/sdk/opportunity-stream/",
    "kind": "doc-link",
    "spec": "packages/sdk/opportunity-stream/"
   },
@@ -20793,7 +20771,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_02_engine_b2c3d4e5.plan.md",
-   "to": "missing:packages/sdk/opportunity-stream/",
+   "to": "deleted:packages/sdk/opportunity-stream/",
    "kind": "doc-link",
    "spec": "packages/sdk/opportunity-stream/"
   },
@@ -21019,7 +20997,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_03_ui_ux_d4e5f6a7.plan.md",
-   "to": "missing:packages/sdk/marketing",
+   "to": "deleted:packages/sdk/marketing",
    "kind": "doc-link",
    "spec": "packages/sdk/marketing"
   },
@@ -21142,7 +21120,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_03_ui_ux_d4e5f6a7.plan.md",
-   "to": "missing:packages/sdk",
+   "to": "deleted:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
@@ -21389,7 +21367,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_03_ui_ux_d4e5f6a7.plan.md",
-   "to": "missing:packages/sdk/device-tier.ts",
+   "to": "deleted:packages/sdk/device-tier.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/device-tier.ts"
   },
@@ -21518,7 +21496,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_03_ui_ux_d4e5f6a7.plan.md",
-   "to": "missing:packages/sdk/execution-stream/useTradeExecution.ts",
+   "to": "deleted:packages/sdk/execution-stream/useTradeExecution.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/execution-stream/useTradeExecution.ts"
   },
@@ -21740,7 +21718,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_04_admin_e5f6a7b8.plan.md",
-   "to": "missing:packages/sdk/opportunity-stream",
+   "to": "deleted:packages/sdk/opportunity-stream",
    "kind": "doc-link",
    "spec": "packages/sdk/opportunity-stream"
   },
@@ -21761,7 +21739,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_04_admin_e5f6a7b8.plan.md",
-   "to": "missing:packages/sdk/wallet-config/",
+   "to": "deleted:packages/sdk/wallet-config/",
    "kind": "doc-link",
    "spec": "packages/sdk/wallet-config/"
   },
@@ -21880,7 +21858,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_05_pwa_f6a7b8c9.plan.md",
-   "to": "missing:packages/sdk/install-prompt/",
+   "to": "deleted:packages/sdk/install-prompt/",
    "kind": "doc-link",
    "spec": "packages/sdk/install-prompt/"
   },
@@ -21892,7 +21870,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_05_pwa_f6a7b8c9.plan.md",
-   "to": "missing:packages/sdk/feedback.ts",
+   "to": "deleted:packages/sdk/feedback.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/feedback.ts"
   },
@@ -21915,7 +21893,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_05_pwa_f6a7b8c9.plan.md",
-   "to": "missing:packages/sdk/native-bridge",
+   "to": "deleted:packages/sdk/native-bridge",
    "kind": "doc-link",
    "spec": "packages/sdk/native-bridge"
   },
@@ -21927,7 +21905,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_05_pwa_f6a7b8c9.plan.md",
-   "to": "missing:packages/sdk/",
+   "to": "deleted:packages/sdk/",
    "kind": "doc-link",
    "spec": "packages/sdk/"
   },
@@ -21950,7 +21928,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_06_infra_a7b8c9d0.plan.md",
-   "to": "missing:packages/sdk/marketing",
+   "to": "deleted:packages/sdk/marketing",
    "kind": "doc-link",
    "spec": "packages/sdk/marketing"
   },
@@ -22022,7 +22000,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_06_infra_a7b8c9d0.plan.md",
-   "to": "missing:packages/sdk/marketing/",
+   "to": "deleted:packages/sdk/marketing/",
    "kind": "doc-link",
    "spec": "packages/sdk/marketing/"
   },
@@ -22039,13 +22017,13 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_06_infra_a7b8c9d0.plan.md",
-   "to": "missing:packages/sdk/marketing/consent.ts",
+   "to": "deleted:packages/sdk/marketing/consent.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/marketing/consent.ts"
   },
   {
    "from": ".cursor/plans/ai_profit_os_06_infra_a7b8c9d0.plan.md",
-   "to": "missing:packages/sdk/marketing/landing-pixel-publisher.ts",
+   "to": "deleted:packages/sdk/marketing/landing-pixel-publisher.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/marketing/landing-pixel-publisher.ts"
   },
@@ -22282,7 +22260,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_launch_54c1261e.plan.md",
-   "to": "missing:packages/sdk/opportunity-stream/",
+   "to": "deleted:packages/sdk/opportunity-stream/",
    "kind": "doc-link",
    "spec": "packages/sdk/opportunity-stream/"
   },
@@ -22363,7 +22341,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_launch_54c1261e.plan.md",
-   "to": "missing:packages/sdk",
+   "to": "deleted:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
@@ -22374,7 +22352,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_launch_54c1261e.plan.md",
-   "to": "missing:packages/sdk/marketing/",
+   "to": "deleted:packages/sdk/marketing/",
    "kind": "doc-link",
    "spec": "packages/sdk/marketing/"
   },
@@ -22478,7 +22456,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_launch_54c1261e.plan.md",
-   "to": "missing:packages/sdk/opportunity-stream",
+   "to": "deleted:packages/sdk/opportunity-stream",
    "kind": "doc-link",
    "spec": "packages/sdk/opportunity-stream"
   },
@@ -22499,7 +22477,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_launch_54c1261e.plan.md",
-   "to": "missing:packages/sdk/wallet-config/",
+   "to": "deleted:packages/sdk/wallet-config/",
    "kind": "doc-link",
    "spec": "packages/sdk/wallet-config/"
   },
@@ -22619,7 +22597,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_launch_54c1261e.plan.md",
-   "to": "missing:packages/sdk/device-tier.ts",
+   "to": "deleted:packages/sdk/device-tier.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/device-tier.ts"
   },
@@ -22694,13 +22672,13 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_launch_54c1261e.plan.md",
-   "to": "missing:packages/sdk/install-prompt.ts",
+   "to": "deleted:packages/sdk/install-prompt.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/install-prompt.ts"
   },
   {
    "from": ".cursor/plans/ai_profit_os_launch_54c1261e.plan.md",
-   "to": "missing:packages/sdk/feedback.ts",
+   "to": "deleted:packages/sdk/feedback.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/feedback.ts"
   },
@@ -22711,13 +22689,13 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_launch_54c1261e.plan.md",
-   "to": "missing:packages/sdk/native-bridge",
+   "to": "deleted:packages/sdk/native-bridge",
    "kind": "doc-link",
    "spec": "packages/sdk/native-bridge"
   },
   {
    "from": ".cursor/plans/ai_profit_os_launch_54c1261e.plan.md",
-   "to": "missing:packages/sdk/",
+   "to": "deleted:packages/sdk/",
    "kind": "doc-link",
    "spec": "packages/sdk/"
   },
@@ -23002,7 +22980,7 @@
   },
   {
    "from": ".cursor/plans/ai_profit_os_launch_54c1261e.plan.md",
-   "to": "missing:packages/sdk/execution-stream/useTradeExecution.ts",
+   "to": "deleted:packages/sdk/execution-stream/useTradeExecution.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/execution-stream/useTradeExecution.ts"
   },
@@ -24777,7 +24755,7 @@
   },
   {
    "from": "CONSTITUTION/26_PERFORMANCE_AND_RESPONSIVE_UX.md",
-   "to": "missing:packages/sdk/device-tier.ts",
+   "to": "deleted:packages/sdk/device-tier.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/device-tier.ts"
   },
@@ -24794,7 +24772,7 @@
   },
   {
    "from": "CONSTITUTION/27_MARKETING_AND_SEO_ENGINE.md",
-   "to": "missing:packages/sdk/marketing/",
+   "to": "deleted:packages/sdk/marketing/",
    "kind": "doc-link",
    "spec": "packages/sdk/marketing/"
   },
@@ -24845,7 +24823,7 @@
   },
   {
    "from": "CONSTITUTION/36_ADMIN_PRICE_AND_PROFIT_SYNC.md",
-   "to": "missing:packages/sdk/opportunity-stream/",
+   "to": "deleted:packages/sdk/opportunity-stream/",
    "kind": "doc-link",
    "spec": "packages/sdk/opportunity-stream/"
   },
@@ -54476,13 +54454,13 @@
   },
   {
    "from": "governance/recovery/chatgpt-takeover-20260903/pr-transplant-audit.json",
-   "to": "missing:packages/sdk/src/auth/auth-release.test.ts",
+   "to": "deleted:packages/sdk/src/auth/auth-release.test.ts",
    "kind": "verifier-reads",
    "spec": "packages/sdk/src/auth/auth-release.test.ts"
   },
   {
    "from": "governance/recovery/chatgpt-takeover-20260903/pr-transplant-audit.json",
-   "to": "missing:packages/sdk/src/auth/fetch.ts",
+   "to": "deleted:packages/sdk/src/auth/fetch.ts",
    "kind": "verifier-reads",
    "spec": "packages/sdk/src/auth/fetch.ts"
   },
@@ -54921,13 +54899,13 @@
   },
   {
    "from": "governance/recovery/chatgpt-takeover-20260903/staged-paths.txt",
-   "to": "missing:packages/sdk/src/auth/auth-release.test.ts",
+   "to": "deleted:packages/sdk/src/auth/auth-release.test.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/src/auth/auth-release.test.ts"
   },
   {
    "from": "governance/recovery/chatgpt-takeover-20260903/staged-paths.txt",
-   "to": "missing:packages/sdk/src/auth/fetch.ts",
+   "to": "deleted:packages/sdk/src/auth/fetch.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/src/auth/fetch.ts"
   },
@@ -57610,7 +57588,7 @@
   },
   {
    "from": "governance/recovery/ghas-coach-xss-through-exception.v1.json",
-   "to": "missing:packages/sdk/src/peotteok/sse-consume.ts",
+   "to": "deleted:packages/sdk/src/peotteok/sse-consume.ts",
    "kind": "verifier-reads",
    "spec": "packages/sdk/src/peotteok/sse-consume.ts"
   },
@@ -57854,13 +57832,13 @@
   },
   {
    "from": "governance/recovery/ghas-pr114-open.20260902.v1.json",
-   "to": "missing:packages/sdk/src/auth/fetch.ts",
+   "to": "deleted:packages/sdk/src/auth/fetch.ts",
    "kind": "verifier-reads",
    "spec": "packages/sdk/src/auth/fetch.ts"
   },
   {
    "from": "governance/recovery/ghas-pr114-open.20260902.v1.json",
-   "to": "missing:packages/sdk/src/execution-stream/polling-transport.ts",
+   "to": "deleted:packages/sdk/src/execution-stream/polling-transport.ts",
    "kind": "verifier-reads",
    "spec": "packages/sdk/src/execution-stream/polling-transport.ts"
   },
@@ -58049,43 +58027,43 @@
   },
   {
    "from": "governance/recovery/local-24-commits.v1.json",
-   "to": "missing:packages/sdk/src/auth/fetch.ts",
+   "to": "deleted:packages/sdk/src/auth/fetch.ts",
    "kind": "verifier-reads",
    "spec": "packages/sdk/src/auth/fetch.ts"
   },
   {
    "from": "governance/recovery/local-24-commits.v1.json",
-   "to": "missing:packages/sdk/src/auth/index.ts",
+   "to": "deleted:packages/sdk/src/auth/index.ts",
    "kind": "verifier-reads",
    "spec": "packages/sdk/src/auth/index.ts"
   },
   {
    "from": "governance/recovery/local-24-commits.v1.json",
-   "to": "missing:packages/sdk/src/auth/session-token.ts",
+   "to": "deleted:packages/sdk/src/auth/session-token.ts",
    "kind": "verifier-reads",
    "spec": "packages/sdk/src/auth/session-token.ts"
   },
   {
    "from": "governance/recovery/local-24-commits.v1.json",
-   "to": "missing:packages/sdk/src/peotteok/chat-sse.ts",
+   "to": "deleted:packages/sdk/src/peotteok/chat-sse.ts",
    "kind": "verifier-reads",
    "spec": "packages/sdk/src/peotteok/chat-sse.ts"
   },
   {
    "from": "governance/recovery/local-24-commits.v1.json",
-   "to": "missing:packages/sdk/src/peotteok/control.ts",
+   "to": "deleted:packages/sdk/src/peotteok/control.ts",
    "kind": "verifier-reads",
    "spec": "packages/sdk/src/peotteok/control.ts"
   },
   {
    "from": "governance/recovery/local-24-commits.v1.json",
-   "to": "missing:packages/sdk/src/peotteok/index.ts",
+   "to": "deleted:packages/sdk/src/peotteok/index.ts",
    "kind": "verifier-reads",
    "spec": "packages/sdk/src/peotteok/index.ts"
   },
   {
    "from": "governance/recovery/local-24-commits.v1.json",
-   "to": "missing:packages/sdk/src/peotteok/usePeotteokChat.ts",
+   "to": "deleted:packages/sdk/src/peotteok/usePeotteokChat.ts",
    "kind": "verifier-reads",
    "spec": "packages/sdk/src/peotteok/usePeotteokChat.ts"
   },
@@ -59311,7 +59289,7 @@
   },
   {
    "from": "governance/release-master/REL-019-DEVICE-TIER.md",
-   "to": "missing:packages/sdk/src/device-tier.ts",
+   "to": "deleted:packages/sdk/src/device-tier.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/src/device-tier.ts"
   },
@@ -59523,7 +59501,7 @@
   },
   {
    "from": "governance/release-master/REL-101-SIGNUP.md",
-   "to": "missing:packages/sdk/src/auth/auth-release.test.ts",
+   "to": "deleted:packages/sdk/src/auth/auth-release.test.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/src/auth/auth-release.test.ts"
   },
@@ -60129,7 +60107,7 @@
   },
   {
    "from": "governance/responsive/DEVICE_TIER.md",
-   "to": "missing:packages/sdk/src/device-tier.ts",
+   "to": "deleted:packages/sdk/src/device-tier.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/src/device-tier.ts"
   },
@@ -61501,6 +61479,12 @@
   },
   {
    "from": "pnpm-workspace.yaml",
+   "to": "tooling/legacy-plan-stamp.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/*"
+  },
+  {
+   "from": "pnpm-workspace.yaml",
    "to": "dir:services/*",
    "kind": "verifier-reads",
    "spec": "services/*"
@@ -61510,12 +61494,6 @@
    "to": "dir:workers/*",
    "kind": "verifier-reads",
    "spec": "workers/*"
-  },
-  {
-   "from": "pnpm-workspace.yaml",
-   "to": "tooling/legacy-plan-stamp.cjs",
-   "kind": "verifier-reads",
-   "spec": "tooling/*"
   },
   {
    "from": "quality/admin-handoff/README.md",
@@ -61589,7 +61567,7 @@
   },
   {
    "from": "quality/backend-api-contract-map.md",
-   "to": "missing:packages/sdk/src",
+   "to": "deleted:packages/sdk/src",
    "kind": "doc-link",
    "spec": "packages/sdk/src"
   },
@@ -61600,13 +61578,13 @@
   },
   {
    "from": "quality/backend-api-contract-map.md",
-   "to": "missing:packages/sdk/src/**/fetch.ts",
+   "to": "deleted:packages/sdk/src/**/fetch.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/src/**/fetch.ts"
   },
   {
    "from": "quality/backend-api-contract-map.md",
-   "to": "missing:packages/sdk/src/auth/fetch.ts",
+   "to": "deleted:packages/sdk/src/auth/fetch.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/src/auth/fetch.ts"
   },
@@ -61632,7 +61610,7 @@
   },
   {
    "from": "quality/backend-api-contract-map.md",
-   "to": "missing:packages/sdk",
+   "to": "deleted:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
@@ -61656,13 +61634,13 @@
   },
   {
    "from": "quality/backend-api-contract-map.md",
-   "to": "missing:packages/sdk/src/auth/**",
+   "to": "deleted:packages/sdk/src/auth/**",
    "kind": "doc-link",
    "spec": "packages/sdk/src/auth/**"
   },
   {
    "from": "quality/backend-api-contract-map.md",
-   "to": "missing:packages/sdk/src/{wallet",
+   "to": "deleted:packages/sdk/src/{wallet",
    "kind": "doc-link",
    "spec": "packages/sdk/src/{wallet"
   },
@@ -61885,7 +61863,7 @@
   },
   {
    "from": "quality/backend-ci.md",
-   "to": "missing:packages/sdk",
+   "to": "deleted:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
@@ -62006,7 +61984,7 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "missing:packages/sdk",
+   "to": "deleted:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
@@ -62938,7 +62916,7 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "missing:packages/sdk/**",
+   "to": "deleted:packages/sdk/**",
    "kind": "doc-link",
    "spec": "packages/sdk/**"
   },
@@ -63788,7 +63766,7 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "missing:packages/sdk/package.json",
+   "to": "deleted:packages/sdk/package.json",
    "kind": "doc-link",
    "spec": "packages/sdk/package.json"
   },
@@ -63856,7 +63834,7 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "missing:packages/sdk/src/index.ts",
+   "to": "deleted:packages/sdk/src/index.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/src/index.ts"
   },
@@ -63924,7 +63902,7 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "missing:packages/sdk/src/home-read-model/fetch.ts",
+   "to": "deleted:packages/sdk/src/home-read-model/fetch.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/src/home-read-model/fetch.ts"
   },
@@ -63935,13 +63913,13 @@
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "missing:packages/sdk/src/participate/fetch.ts",
+   "to": "deleted:packages/sdk/src/participate/fetch.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/src/participate/fetch.ts"
   },
   {
    "from": "quality/backend-deletion-ledger.md",
-   "to": "missing:packages/sdk/src/wallet/fetch.ts",
+   "to": "deleted:packages/sdk/src/wallet/fetch.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/src/wallet/fetch.ts"
   },
@@ -64511,7 +64489,7 @@
   },
   {
    "from": "quality/backend-only-deletion-plan.md",
-   "to": "missing:packages/sdk",
+   "to": "deleted:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
@@ -64583,7 +64561,7 @@
   },
   {
    "from": "quality/backend-only-deletion-plan.md",
-   "to": "missing:packages/sdk/**",
+   "to": "deleted:packages/sdk/**",
    "kind": "doc-link",
    "spec": "packages/sdk/**"
   },
@@ -64926,7 +64904,7 @@
   },
   {
    "from": "quality/backend-only-inventory.md",
-   "to": "missing:packages/sdk/src/auth/{auth-release.test.ts",
+   "to": "deleted:packages/sdk/src/auth/{auth-release.test.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/src/auth/{auth-release.test.ts"
   },
@@ -65017,7 +64995,7 @@
   },
   {
    "from": "quality/backend-only-inventory.md",
-   "to": "missing:packages/sdk",
+   "to": "deleted:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
@@ -65409,7 +65387,7 @@
   },
   {
    "from": "quality/backend-only-inventory.md",
-   "to": "missing:packages/sdk/src/auth/*",
+   "to": "deleted:packages/sdk/src/auth/*",
    "kind": "doc-link",
    "spec": "packages/sdk/src/auth/*"
   },
@@ -65648,7 +65626,7 @@
   },
   {
    "from": "quality/backend-only-inventory.md",
-   "to": "missing:packages/sdk/src/**/*.test.ts",
+   "to": "deleted:packages/sdk/src/**/*.test.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/src/**/*.test.ts"
   },
@@ -65660,7 +65638,7 @@
   },
   {
    "from": "quality/backend-only-inventory.md",
-   "to": "missing:packages/sdk/src/**/fetch.ts",
+   "to": "deleted:packages/sdk/src/**/fetch.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/src/**/fetch.ts"
   },
@@ -65980,13 +65958,13 @@
   },
   {
    "from": "quality/backend-only-official-basis.md",
-   "to": "missing:packages/sdk",
+   "to": "deleted:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
   {
    "from": "quality/backend-only-official-basis.md",
-   "to": "missing:packages/sdk/package.json",
+   "to": "deleted:packages/sdk/package.json",
    "kind": "doc-link",
    "spec": "packages/sdk/package.json"
   },
@@ -66196,7 +66174,7 @@
   },
   {
    "from": "quality/backend-only-verification.md",
-   "to": "missing:packages/sdk",
+   "to": "deleted:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
@@ -66261,7 +66239,7 @@
   },
   {
    "from": "quality/backend-only-verification.md",
-   "to": "missing:packages/sdk/src/auth/*",
+   "to": "deleted:packages/sdk/src/auth/*",
    "kind": "doc-link",
    "spec": "packages/sdk/src/auth/*"
   },
@@ -66509,7 +66487,7 @@
   },
   {
    "from": "quality/backend-residual-report.md",
-   "to": "missing:packages/sdk",
+   "to": "deleted:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
@@ -66755,6 +66733,66 @@
    "kind": "doc-link"
   },
   {
+   "from": "quality/putduk-web-sdk-handoff.md",
+   "to": "deleted:packages/sdk",
+   "kind": "doc-link",
+   "spec": "packages/sdk"
+  },
+  {
+   "from": "quality/putduk-web-sdk-handoff.md",
+   "to": "deleted:packages/sdk/package.json",
+   "kind": "doc-link",
+   "spec": "packages/sdk/package.json"
+  },
+  {
+   "from": "quality/putduk-web-sdk-handoff.md",
+   "to": "dir:services/**",
+   "kind": "doc-link",
+   "spec": "services/**"
+  },
+  {
+   "from": "quality/putduk-web-sdk-handoff.md",
+   "to": "dir:workers/**",
+   "kind": "doc-link",
+   "spec": "workers/**"
+  },
+  {
+   "from": "quality/putduk-web-sdk-handoff.md",
+   "to": "deleted:apps/web",
+   "kind": "doc-link",
+   "spec": "apps/web"
+  },
+  {
+   "from": "quality/putduk-web-sdk-handoff.md",
+   "to": "deleted:apps/admin",
+   "kind": "doc-link",
+   "spec": "apps/admin"
+  },
+  {
+   "from": "quality/putduk-web-sdk-handoff.md",
+   "to": "deleted:packages/ui",
+   "kind": "doc-link",
+   "spec": "packages/ui"
+  },
+  {
+   "from": "quality/putduk-web-sdk-handoff.md",
+   "to": "missing:packages/schemas",
+   "kind": "doc-link",
+   "spec": "packages/schemas"
+  },
+  {
+   "from": "quality/putduk-web-sdk-handoff.md",
+   "to": "missing:tooling/verify/ledger-journal-reader.runtime.cjs",
+   "kind": "doc-link",
+   "spec": "tooling/verify/ledger-journal-reader.runtime.cjs"
+  },
+  {
+   "from": "quality/putduk-web-sdk-handoff.md",
+   "to": "dir:packages/observability",
+   "kind": "doc-link",
+   "spec": "packages/observability"
+  },
+  {
    "from": "quality/putduk-web-ui-assertions-handoff.md",
    "to": "missing:tooling/verify/lib/retired-ui-stubs.cjs",
    "kind": "doc-link",
@@ -66828,7 +66866,7 @@
   },
   {
    "from": "quality/putduk-web-ui-assertions-handoff.md",
-   "to": "missing:packages/sdk",
+   "to": "deleted:packages/sdk",
    "kind": "doc-link",
    "spec": "packages/sdk"
   },
@@ -66935,7 +66973,7 @@
   },
   {
    "from": "quality/putduk-web-ui-assertions-handoff.md",
-   "to": "missing:packages/sdk/src/push/subscribe.ts",
+   "to": "deleted:packages/sdk/src/push/subscribe.ts",
    "kind": "doc-link",
    "spec": "packages/sdk/src/push/subscribe.ts"
   },
@@ -66988,9 +67026,8 @@
   },
   {
    "from": "quality/putduk-web-ui-assertions-handoff.md",
-   "to": "missing:quality/putduk-web-sdk-handoff.md",
-   "kind": "doc-link",
-   "spec": "quality/putduk-web-sdk-handoff.md"
+   "to": "quality/putduk-web-sdk-handoff.md",
+   "kind": "doc-link"
   },
   {
    "from": "quality/putduk-web-ui-assertions-handoff.md",
@@ -78261,12 +78298,6 @@
   },
   {
    "from": "tooling/e2e/specs/auth-rate-limit.spec.cjs",
-   "to": "pkg:@playwright/test",
-   "kind": "require",
-   "spec": "@playwright/test"
-  },
-  {
-   "from": "tooling/e2e/specs/auth-rate-limit.spec.cjs",
    "to": "tooling/e2e/lib/qa-env-isolation-guard.cjs",
    "kind": "require",
    "spec": "../lib/qa-env-isolation-guard.cjs"
@@ -78279,12 +78310,6 @@
   },
   {
    "from": "tooling/e2e/specs/ledger-user-query.spec.cjs",
-   "to": "pkg:@playwright/test",
-   "kind": "require",
-   "spec": "@playwright/test"
-  },
-  {
-   "from": "tooling/e2e/specs/ledger-user-query.spec.cjs",
    "to": "tooling/e2e/lib/qa-env-isolation-guard.cjs",
    "kind": "require",
    "spec": "../lib/qa-env-isolation-guard.cjs"
@@ -78294,12 +78319,6 @@
    "to": "tooling/e2e/lib/ledger-user-query-harness.cjs",
    "kind": "require",
    "spec": "../lib/ledger-user-query-harness.cjs"
-  },
-  {
-   "from": "tooling/e2e/specs/money-red-team.spec.cjs",
-   "to": "pkg:@playwright/test",
-   "kind": "require",
-   "spec": "@playwright/test"
   },
   {
    "from": "tooling/e2e/specs/money-red-team.spec.cjs",
@@ -82539,7 +82558,7 @@
   },
   {
    "from": "tooling/verify/CATALOG.md",
-   "to": "missing:packages/sdk/src/push/**",
+   "to": "deleted:packages/sdk/src/push/**",
    "kind": "verifier-reads",
    "spec": "packages/sdk/src/push/**"
   },
@@ -82715,7 +82734,7 @@
   },
   {
    "from": "tooling/verify/CATALOG.md",
-   "to": "missing:packages/sdk/src/device-tier.ts",
+   "to": "deleted:packages/sdk/src/device-tier.ts",
    "kind": "verifier-reads",
    "spec": "packages/sdk/src/device-tier.ts"
   },
@@ -83166,7 +83185,7 @@
   },
   {
    "from": "tooling/verify/CATALOG.md",
-   "to": "missing:packages/sdk/src/participate",
+   "to": "deleted:packages/sdk/src/participate",
    "kind": "verifier-reads",
    "spec": "packages/sdk/src/participate"
   },
@@ -83178,7 +83197,7 @@
   },
   {
    "from": "tooling/verify/CATALOG.md",
-   "to": "missing:packages/sdk/src/wallet/**",
+   "to": "deleted:packages/sdk/src/wallet/**",
    "kind": "verifier-reads",
    "spec": "packages/sdk/src/wallet/**"
   },
@@ -83201,7 +83220,7 @@
   },
   {
    "from": "tooling/verify/CATALOG.md",
-   "to": "missing:packages/sdk/src/home-money-read/**",
+   "to": "deleted:packages/sdk/src/home-money-read/**",
    "kind": "verifier-reads",
    "spec": "packages/sdk/src/home-money-read/**"
   },
@@ -96087,21 +96106,9 @@
   },
   {
    "from": "package.json",
-   "to": "pkg:@axe-core/playwright",
-   "kind": "pkg-dep",
-   "spec": "devDependencies:4.13.0"
-  },
-  {
-   "from": "package.json",
    "to": "pkg:@cloudflare/workers-types",
    "kind": "pkg-dep",
    "spec": "devDependencies:^5.20260809.1"
-  },
-  {
-   "from": "package.json",
-   "to": "pkg:@playwright/test",
-   "kind": "pkg-dep",
-   "spec": "devDependencies:1.62.1"
   },
   {
    "from": "package.json",
@@ -96111,21 +96118,9 @@
   },
   {
    "from": "package.json",
-   "to": "pkg:axe-core",
-   "kind": "pkg-dep",
-   "spec": "devDependencies:^4.10.3"
-  },
-  {
-   "from": "package.json",
    "to": "pkg:husky",
    "kind": "pkg-dep",
    "spec": "devDependencies:^9.1.7"
-  },
-  {
-   "from": "package.json",
-   "to": "pkg:jsdom",
-   "kind": "pkg-dep",
-   "spec": "devDependencies:^26.1.0"
   },
   {
    "from": "package.json",

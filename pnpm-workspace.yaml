@@ -1,6 +1,5 @@
 # ADR-015 · backend-only workspace (customer UI = phonarawd/putduk-web)
+# Actual package.json trees only. packages/* and tooling/* have no workspace package.json.
 packages:
-  - "packages/*"
   - "services/*"
   - "workers/*"
-  - "tooling/*"

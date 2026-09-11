@@ -51,7 +51,7 @@ for (const dep of fixture.deps || []) {
   if (!todoCompleted(dep)) fails.push("EXIT_GATE: plan todo not completed " + dep);
   if (!yamlCompleted(dep)) fails.push("EXIT_GATE: YAML STATUS not COMPLETED " + dep);
 }
-if (!spec.includes("assertQaIsolation") || !spec.includes("@playwright/test")) fails.push("spec must be isolated Playwright harness");
+if (!spec.includes("assertQaIsolation") || !spec.includes("node:test")) fails.push("spec must be isolated node:test harness");
 if (!lib.includes("runMoneyMutationTest")) fails.push("harness must enter through runMoneyMutationTest");
 if (/browser_navigate/.test(spec + lib)) fails.push("MCP-only evidence is not DONE");
 if (!readme.includes("REL-501") || !readme.includes("runMoneyMutationTest")) fails.push("README must document REL-501 guard entry");
