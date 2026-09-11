@@ -28,6 +28,8 @@ const ROOT = path.resolve(__dirname, "../..");
 const OUT_OWNERSHIP = "quality/backend-file-ownership.json";
 const OUT_GRAPH = "quality/backend-dependency-graph.json";
 const OVERRIDES_REL = "tooling/backend/ownership-overrides.json";
+/** quality/backend-*.json analysis artifacts (ownership · graph · boundary baseline) are never reference sources */
+const ANALYSIS_ARTIFACT_RE = /^quality\/backend-[^/]*\.json$/;
 
 // ───────────────────────────────────────────────────────────────────────────────
 // 0. 분류 어휘 (SSOT)
@@ -691,7 +693,7 @@ function seedRules() {
   add('scripts', re(/^scripts\//), 'BACKEND_TEST', 'KEEP', S.NONE, '훅 경계/안정성 검증 스크립트');
   add('eval', re(/^eval\//), 'BACKEND_TEST', 'KEEP', S.NONE, 'AI 가드 eval 데이터셋 (verify:ai-*)');
   add('assets-gitkeep', (f) => f === 'assets/.gitkeep', 'OBSOLETE', 'DELETE', S.MARKDOWN_CLEANUP, '빈 디렉터리 placeholder · 참조 0');
-  add('quality-generated', (f) => f === OUT_OWNERSHIP || f === OUT_GRAPH, 'GENERATED', 'KEEP', S.NONE, 'ownership-graph.cjs 산출물 (재생성 가능 · 참조 추출 대상에서 제외)');
+  add('quality-generated', (f) => f === OUT_OWNERSHIP || f === OUT_GRAPH || ANALYSIS_ARTIFACT_RE.test(f), 'GENERATED', 'KEEP', S.NONE, 'ownership-graph.cjs 산출물 (재생성 가능 · 참조 추출 대상에서 제외)');
   add('quality-admin-handoff', re(/^quality\/admin-handoff\//), 'FUTURE_ADMIN_REQUIREMENT', 'KEEP', S.NONE, '미래 어드민 인계 요약');
   add('quality', re(/^quality\//), 'BACKEND_DOC', 'KEEP', S.NONE, '백엔드 전용 전환 문서');
   add('docs-kyb', re(/^docs\/kyb\//), 'BACKEND_DOC', 'KEEP', S.NONE, '법인/사업자 증빙 (법률 문서 · 편집 금지)');
@@ -809,8 +811,7 @@ function docKeywordScore(text) {
 // ───────────────────────────────────────────────────────────────────────────────
 // 7. 메인
 // ───────────────────────────────────────────────────────────────────────────────
-function main() {
-  const checkOnly = process.argv.includes("--check");
+function build() {
   const inv = loadInventory();
   const headSha = git(["rev-parse", "HEAD"]).trim();
   const deleted = loadDeletedPrefixes();
@@ -852,7 +853,7 @@ function main() {
     } catch {
       rec.size = 0;
     }
-    const isOwnOutput = f === OUT_OWNERSHIP || f === OUT_GRAPH;
+    const isOwnOutput = f === OUT_OWNERSHIP || f === OUT_GRAPH || ANALYSIS_ARTIFACT_RE.test(f);
     if (!rec.binary && rec.size <= 8 * 1024 * 1024 && f !== "pnpm-lock.yaml" && !isOwnOutput) {
       const text = readText(f);
       rec.text = text;
@@ -1440,6 +1441,12 @@ function main() {
     edges,
   };
 
+  return { ownership, graph, files, unknown, unusedOverrides, nodes, edges, byClass, byDecision };
+}
+
+function main() {
+  const checkOnly = process.argv.includes("--check");
+  const { ownership, graph, files, unknown, unusedOverrides, nodes, edges, byClass, byDecision } = build();
   if (checkOnly) {
     const prevPath = path.join(ROOT, OUT_OWNERSHIP);
     const prev = fs.existsSync(prevPath) ? JSON.parse(fs.readFileSync(prevPath, "utf8")) : null;
@@ -1467,6 +1474,20 @@ function main() {
 }
 
 module.exports = {
+  ROOT,
+  OUT_OWNERSHIP,
+  OUT_GRAPH,
+  OVERRIDES_REL,
+  BACKEND_CLASSES,
+  UI_CLASSES,
+  BINARY_EXT,
+  build,
+  loadInventory,
+  loadDeletedPrefixes,
+  git,
+  posix,
+  globToRe,
+  workflowRunRefs,
   CLASSES,
   DECISIONS,
   STAGE,

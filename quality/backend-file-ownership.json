@@ -1,16 +1,16 @@
 {
- "generatedAt": "2026-09-11T01:11:31.643Z",
- "headSha": "4214bd85af8f44902854a374e484d159948e2047",
+ "generatedAt": "2026-09-11T02:47:39.855Z",
+ "headSha": "6b959d8ef2956e667a506c3220567fb70b6c78e9",
  "generator": "tooling/backend/ownership-graph.cjs",
  "overrides": "tooling/backend/ownership-overrides.json",
  "inputs": {
-  "gitLsFiles": 1838,
+  "gitLsFiles": 1840,
   "deletedUiPrefixes": [
    "apps/admin/",
    "apps/web/",
    "packages/ui/"
   ],
-  "deletedUiFilesOnBranch": 662,
+  "deletedUiFilesOnBranch": 693,
   "deletedByDir": {
    "packages/ui/": 286,
    "apps/admin/": 47,
@@ -51,7 +51,7 @@
  },
  "totals": {
   "byClass": {
-   "BACKEND_INFRA": 208,
+   "BACKEND_INFRA": 209,
    "MIXED": 103,
    "BACKEND_DOC": 204,
    "CUSTOMER_WEB": 77,
@@ -61,16 +61,16 @@
    "BACKEND_CONTRACT": 83,
    "LEGACY_ADMIN_UI": 5,
    "BACKEND_RUNTIME": 465,
-   "GENERATED": 3
+   "GENERATED": 4
   },
   "byDecision": {
-   "KEEP": 1246,
+   "KEEP": 1248,
    "SPLIT": 103,
    "MOVE": 77,
    "DELETE": 412
   },
   "byClassDecision": {
-   "BACKEND_INFRA/KEEP": 208,
+   "BACKEND_INFRA/KEEP": 209,
    "MIXED/SPLIT": 103,
    "BACKEND_DOC/KEEP": 204,
    "CUSTOMER_WEB/MOVE": 76,
@@ -82,7 +82,7 @@
    "LEGACY_ADMIN_UI/DELETE": 5,
    "CUSTOMER_WEB/DELETE": 1,
    "BACKEND_RUNTIME/KEEP": 465,
-   "GENERATED/KEEP": 3
+   "GENERATED/KEEP": 4
   },
   "unknown": 0,
   "overridesApplied": 99,
@@ -398,8 +398,8 @@
    "SPLIT": 0
   },
   "quality": {
-   "total": 10,
-   "KEEP": 10,
+   "total": 11,
+   "KEEP": 11,
    "DELETE": 0,
    "MOVE": 0,
    "SPLIT": 0
@@ -510,8 +510,8 @@
    "SPLIT": 0
   },
   "tooling/backend": {
-   "total": 2,
-   "KEEP": 2,
+   "total": 3,
+   "KEEP": 3,
    "DELETE": 0,
    "MOVE": 0,
    "SPLIT": 0
@@ -1161,6 +1161,26 @@
     "class": "BACKEND_INFRA",
     "decision": "KEEP",
     "reason": "대상 파일 KEEP: tooling/verify/backend/run-all.cjs"
+   },
+   {
+    "script": "verify:backend-boundary",
+    "command": "node tooling/backend/repository-boundary.cjs",
+    "targets": [
+     "tooling/backend/repository-boundary.cjs"
+    ],
+    "class": "BACKEND_INFRA",
+    "decision": "KEEP",
+    "reason": "대상 파일 KEEP: tooling/backend/repository-boundary.cjs"
+   },
+   {
+    "script": "backend:ownership-graph",
+    "command": "node tooling/backend/ownership-graph.cjs",
+    "targets": [
+     "tooling/backend/ownership-graph.cjs"
+    ],
+    "class": "BACKEND_INFRA",
+    "decision": "KEEP",
+    "reason": "대상 파일 KEEP: tooling/backend/ownership-graph.cjs"
    },
    {
     "script": "verify:hook-stability",
@@ -3728,16 +3748,18 @@
      "quality/backend-residual-report.md",
      "scripts/verify-project-boundary.mjs",
      "tooling/backend/ownership-graph.cjs",
-     "tooling/backend/ownership-overrides.json"
+     "tooling/backend/ownership-overrides.json",
+     "tooling/backend/repository-boundary.cjs"
     ],
     "keepUsers": [
      ".cursor/hooks/pre0-git-gate-smoke.cjs",
      "scripts/verify-project-boundary.mjs",
      "tooling/backend/ownership-graph.cjs",
-     "tooling/backend/ownership-overrides.json"
+     "tooling/backend/ownership-overrides.json",
+     "tooling/backend/repository-boundary.cjs"
     ],
     "decision": "KEEP",
-    "reason": "KEEP/SPLIT 파일이 사용: .cursor/hooks/pre0-git-gate-smoke.cjs, scripts/verify-project-boundary.mjs, tooling/backend/ownership-graph.cjs, tooling/backend/ownership-overrides.json"
+    "reason": "KEEP/SPLIT 파일이 사용: .cursor/hooks/pre0-git-gate-smoke.cjs, scripts/verify-project-boundary.mjs, tooling/backend/ownership-graph.cjs, tooling/backend/ownership-overrides.json, tooling/backend/repository-boundary.cjs"
    },
    {
     "dep": "jsdom",
@@ -7986,8 +8008,8 @@
     "tooling/backend/ownership-overrides.json|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-08-10T08:09:49+09:00",
-   "lastCommitSha": "d7e8db5e171c8241e126c41a57c23861aa80a5d8",
+   "lastCommit": "2026-09-11T10:13:52+09:00",
+   "lastCommitSha": "6b959d8ef2956e667a506c3220567fb70b6c78e9",
    "sizeBytes": 1016,
    "refSummary": {
     "deletedUiRefs": [
@@ -9039,8 +9061,8 @@
     "tooling/backend/ownership-overrides.json|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-08-10T08:09:49+09:00",
-   "lastCommitSha": "d7e8db5e171c8241e126c41a57c23861aa80a5d8",
+   "lastCommit": "2026-09-11T10:13:52+09:00",
+   "lastCommitSha": "6b959d8ef2956e667a506c3220567fb70b6c78e9",
    "sizeBytes": 1200,
    "refSummary": {
     "deletedUiRefs": [],
@@ -9161,8 +9183,8 @@
     "tooling/backend/ownership-overrides.json|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-08-16T00:57:45+09:00",
-   "lastCommitSha": "c58824e5bff4b04858d9331dcb253d0b84824e85",
+   "lastCommit": "2026-09-11T10:13:52+09:00",
+   "lastCommitSha": "6b959d8ef2956e667a506c3220567fb70b6c78e9",
    "sizeBytes": 8553,
    "refSummary": {
     "deletedUiRefs": [
@@ -13123,8 +13145,8 @@
    "blockers": [
     "tooling/verify/stack-lock.cjs(verifier-reads)[SPLIT]"
    ],
-   "lastCommit": "2026-08-24T03:23:03+09:00",
-   "lastCommitSha": "eeba6d63b76d5140fe00dd49ba5f8e04254eda29",
+   "lastCommit": "2026-09-11T10:13:52+09:00",
+   "lastCommitSha": "6b959d8ef2956e667a506c3220567fb70b6c78e9",
    "sizeBytes": 5368,
    "refSummary": {
     "deletedUiRefs": [
@@ -43400,6 +43422,14 @@
     },
     {
      "kind": "pkg-script",
+     "ref": "tooling/backend/repository-boundary.cjs"
+    },
+    {
+     "kind": "pkg-script",
+     "ref": "tooling/backend/ownership-graph.cjs"
+    },
+    {
+     "kind": "pkg-script",
      "ref": "scripts/hook-stability-stress.mjs"
     },
     {
@@ -43517,14 +43547,6 @@
     {
      "kind": "pkg-script",
      "ref": "tooling/verify/rel-503-protected-scope-watch.cjs"
-    },
-    {
-     "kind": "pkg-script",
-     "ref": "tooling/verify/rel-504-migration-readiness.cjs"
-    },
-    {
-     "kind": "pkg-script",
-     "ref": "tooling/verify/backend-data-alignment.cjs"
     }
    ],
    "referrers": [
@@ -43557,6 +43579,7 @@
     "scripts/verify-night-guard.mjs|verifier-reads",
     "scripts/verify-project-boundary.mjs|verifier-reads",
     "tooling/backend/ownership-graph.cjs|verifier-reads",
+    "tooling/backend/repository-boundary.cjs|verifier-reads",
     "tooling/cleanup/wait-quit-then-roaming.ps1|deploy-cmd",
     "tooling/dev/ensure-node.cjs|deploy-cmd",
     "tooling/release/version-id.cjs|deploy-cmd",
@@ -43566,8 +43589,7 @@
     "tooling/verify/ai-guard-authority.cjs|verifier-reads",
     "tooling/verify/ai-lane-router.cjs|verifier-reads",
     "tooling/verify/ai-scope-guard.cjs|verifier-reads",
-    "tooling/verify/answer-trace.cjs|verifier-reads",
-    "tooling/verify/asset-production-pipeline.cjs|verifier-reads"
+    "tooling/verify/answer-trace.cjs|verifier-reads"
    ],
    "blockers": [
     "scripts/hook-internal-failure-security.mjs(verifier-reads)",
@@ -43650,9 +43672,9 @@
     "tooling/verify/web-remote-patterns.cjs(verifier-reads)[SPLIT]",
     "tooling/verify/workers-types.cjs(verifier-reads)"
    ],
-   "lastCommit": "2026-09-11T10:00:51+09:00",
-   "lastCommitSha": "4214bd85af8f44902854a374e484d159948e2047",
-   "sizeBytes": 21498,
+   "lastCommit": "2026-09-11T10:13:52+09:00",
+   "lastCommitSha": "6b959d8ef2956e667a506c3220567fb70b6c78e9",
+   "sizeBytes": 21654,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [
@@ -47696,7 +47718,8 @@
     "governance/release-master/staging-topology.current.v1.json|verifier-reads",
     "quality/backend-only-inventory.md|doc-link",
     "quality/backend-residual-report.md|doc-link",
-    "tooling/backend/ownership-graph.cjs|verifier-reads"
+    "tooling/backend/ownership-graph.cjs|verifier-reads",
+    "tooling/backend/repository-boundary.cjs|verifier-reads"
    ],
    "blockers": [],
    "lastCommit": "2026-09-10T23:48:47+09:00",
@@ -47745,6 +47768,7 @@
     "quality/backend-only-official-basis.md|doc-link",
     "quality/backend-residual-report.md|doc-link",
     "tooling/backend/ownership-graph.cjs|verifier-reads",
+    "tooling/backend/repository-boundary.cjs|verifier-reads",
     "tooling/verify/rel-402-dependency-audit.cjs|verifier-reads",
     "tooling/verify/stack-lock.cjs|verifier-reads"
    ],
@@ -47971,6 +47995,35 @@
    }
   },
   {
+   "path": "quality/backend-boundary-violations-baseline.json",
+   "class": "GENERATED",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "quality-generated",
+   "reasons": [
+    "ownership-graph.cjs 산출물 (재생성 가능 · 참조 추출 대상에서 제외)"
+   ],
+   "evidence": [],
+   "referrers": [
+    "quality/backend-only-deletion-plan.md|doc-link|quality/**",
+    "quality/backend-only-deletion-plan.md|doc-link|quality/*",
+    "quality/backend-residual-report.md|doc-link|quality/**"
+   ],
+   "blockers": [],
+   "lastCommit": null,
+   "lastCommitSha": null,
+   "sizeBytes": 234056,
+   "refSummary": {
+    "deletedUiRefs": [],
+    "uiRefs": [],
+    "backendRefs": [],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
+   }
+  },
+  {
    "path": "quality/backend-deletion-ledger.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
@@ -48149,8 +48202,8 @@
     "quality/backend-residual-report.md|doc-link"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T06:12:36+09:00",
-   "lastCommitSha": "d127b0be169831e0aaf25c90408249209643d9e4",
+   "lastCommit": "2026-09-11T10:13:52+09:00",
+   "lastCommitSha": "6b959d8ef2956e667a506c3220567fb70b6c78e9",
    "sizeBytes": 86253,
    "refSummary": {
     "deletedUiRefs": [
@@ -48410,9 +48463,9 @@
     "tooling/backend/ownership-graph.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T06:12:36+09:00",
-   "lastCommitSha": "d127b0be169831e0aaf25c90408249209643d9e4",
-   "sizeBytes": 3305939,
+   "lastCommit": "2026-09-11T10:13:52+09:00",
+   "lastCommitSha": "6b959d8ef2956e667a506c3220567fb70b6c78e9",
+   "sizeBytes": 3307275,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -48442,9 +48495,9 @@
     "tooling/backend/ownership-graph.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T06:12:36+09:00",
-   "lastCommitSha": "d127b0be169831e0aaf25c90408249209643d9e4",
-   "sizeBytes": 6231540,
+   "lastCommit": "2026-09-11T10:13:52+09:00",
+   "lastCommitSha": "6b959d8ef2956e667a506c3220567fb70b6c78e9",
+   "sizeBytes": 6008609,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -48535,7 +48588,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "quality/** (11 files)"
+     "ref": "quality/** (12 files)"
     },
     {
      "kind": "doc-link",
@@ -49392,7 +49445,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/backend/** (2 files)"
+     "ref": "tooling/backend/** (3 files)"
     },
     {
      "kind": "doc-link",
@@ -49444,7 +49497,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "quality/** (11 files)"
+     "ref": "quality/** (12 files)"
     },
     {
      "kind": "doc-link",
@@ -92525,18 +92578,21 @@
     }
    ],
    "referrers": [
+    "package.json|pkg-script",
     "quality/backend-deletion-ledger.md|doc-link",
     "quality/backend-deletion-ledger.md|doc-link|tooling/backend",
     "quality/backend-only-official-basis.md|doc-link",
     "quality/backend-residual-report.md|doc-link",
     "quality/backend-residual-report.md|doc-link|tooling/backend/**",
     "tooling/backend/ownership-graph.cjs|verifier-reads",
-    "tooling/backend/ownership-overrides.json|verifier-reads"
+    "tooling/backend/ownership-overrides.json|verifier-reads",
+    "tooling/backend/repository-boundary.cjs|require",
+    "package.json|pkg-script|backend:ownership-graph"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T06:12:36+09:00",
-   "lastCommitSha": "d127b0be169831e0aaf25c90408249209643d9e4",
-   "sizeBytes": 91020,
+   "lastCommit": "2026-09-11T10:13:52+09:00",
+   "lastCommitSha": "6b959d8ef2956e667a506c3220567fb70b6c78e9",
+   "sizeBytes": 91693,
    "refSummary": {
     "deletedUiRefs": [
      "apps/web/",
@@ -92738,8 +92794,8 @@
     "tooling/backend/ownership-graph.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T06:12:36+09:00",
-   "lastCommitSha": "d127b0be169831e0aaf25c90408249209643d9e4",
+   "lastCommit": "2026-09-11T10:13:52+09:00",
+   "lastCommitSha": "6b959d8ef2956e667a506c3220567fb70b6c78e9",
    "sizeBytes": 28714,
    "refSummary": {
     "deletedUiRefs": [
@@ -92776,6 +92832,88 @@
     ],
     "sdkOnlyUi": false,
     "browserHarness": false,
+    "uiMarkers": true
+   }
+  },
+  {
+   "path": "tooling/backend/repository-boundary.cjs",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "tooling-backend",
+   "reasons": [
+    "백엔드 전용 경계 도구 (이 생성기)"
+   ],
+   "evidence": [
+    {
+     "kind": "require",
+     "ref": "tooling/backend/ownership-graph.cjs"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "MISSING:quality/backend-doc-ownership.json"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "DELETED_UI:apps/web/"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "DELETED_UI:apps/admin/"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "DELETED_UI:packages/ui/"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "DELETED_UI:apps/web"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "DELETED_UI:apps/admin"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "DELETED_UI:packages/ui"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "pnpm-lock.yaml"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "package.json"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "pnpm-workspace.yaml"
+    }
+   ],
+   "referrers": [
+    "package.json|pkg-script",
+    "quality/backend-deletion-ledger.md|doc-link|tooling/backend",
+    "quality/backend-residual-report.md|doc-link|tooling/backend/**",
+    "package.json|pkg-script|verify:backend-boundary"
+   ],
+   "blockers": [],
+   "lastCommit": null,
+   "lastCommitSha": null,
+   "sizeBytes": 24033,
+   "refSummary": {
+    "deletedUiRefs": [
+     "apps/web/",
+     "apps/admin/",
+     "packages/ui/",
+     "apps/web",
+     "apps/admin",
+     "packages/ui"
+    ],
+    "uiRefs": [],
+    "backendRefs": [],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": true,
     "uiMarkers": true
    }
   },
@@ -108373,8 +108511,8 @@
     "tooling/verify/user-opportunity-feed.cjs(verifier-reads)",
     "tooling/verify/web-remote-patterns.cjs(verifier-reads)[SPLIT]"
    ],
-   "lastCommit": "2026-09-11T10:00:51+09:00",
-   "lastCommitSha": "4214bd85af8f44902854a374e484d159948e2047",
+   "lastCommit": "2026-09-11T10:13:52+09:00",
+   "lastCommitSha": "6b959d8ef2956e667a506c3220567fb70b6c78e9",
    "sizeBytes": 48223,
    "refSummary": {
     "deletedUiRefs": [

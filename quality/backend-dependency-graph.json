@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-09-11T01:11:31.643Z",
- "headSha": "4214bd85af8f44902854a374e484d159948e2047",
+ "generatedAt": "2026-09-11T02:47:39.855Z",
+ "headSha": "6b959d8ef2956e667a506c3220567fb70b6c78e9",
  "edgeKinds": [
   "import",
   "require",
@@ -3649,6 +3649,12 @@
    "decision": "KEEP"
   },
   {
+   "id": "quality/backend-boundary-violations-baseline.json",
+   "type": "file",
+   "class": "GENERATED",
+   "decision": "KEEP"
+  },
+  {
    "id": "quality/backend-deletion-ledger.md",
    "type": "file",
    "class": "BACKEND_DOC",
@@ -7220,6 +7226,12 @@
   },
   {
    "id": "tooling/backend/ownership-overrides.json",
+   "type": "file",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
+  },
+  {
+   "id": "tooling/backend/repository-boundary.cjs",
    "type": "file",
    "class": "BACKEND_INFRA",
    "decision": "KEEP"
@@ -15370,7 +15382,7 @@
   {
    "id": "dir:tooling/backend",
    "type": "directory",
-   "files": 2
+   "files": 3
   },
   {
    "id": "dir:tooling/cleanup",
@@ -15495,7 +15507,7 @@
   {
    "id": "dir:quality/**",
    "type": "glob",
-   "files": 11
+   "files": 12
   },
   {
    "id": "missing:apps/*",
@@ -15527,7 +15539,7 @@
   {
    "id": "dir:quality/*",
    "type": "glob",
-   "files": 10
+   "files": 11
   },
   {
    "id": "missing:quality/backend/",
@@ -15877,7 +15889,7 @@
   {
    "id": "dir:tooling/backend/**",
    "type": "glob",
-   "files": 2
+   "files": 3
   },
   {
    "id": "missing:tooling/migrations/**",
@@ -16265,6 +16277,10 @@
    "id": "dir:tooling/verify/backend/**/*.cjs",
    "type": "glob",
    "files": 46
+  },
+  {
+   "id": "missing:quality/backend-doc-ownership.json",
+   "type": "missing-path"
   },
   {
    "id": "missing:.cursor/projects/${name}",
@@ -17617,6 +17633,22 @@
    "type": "npm-script",
    "package": "package.json",
    "command": "node tooling/verify/backend/run-all.cjs",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
+  },
+  {
+   "id": "script:verify:backend-boundary",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/backend/repository-boundary.cjs",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
+  },
+  {
+   "id": "script:backend:ownership-graph",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/backend/ownership-graph.cjs",
    "class": "BACKEND_INFRA",
    "decision": "KEEP"
   },
@@ -62033,6 +62065,16 @@
   },
   {
    "from": "package.json",
+   "to": "tooling/backend/repository-boundary.cjs",
+   "kind": "pkg-script"
+  },
+  {
+   "from": "package.json",
+   "to": "tooling/backend/ownership-graph.cjs",
+   "kind": "pkg-script"
+  },
+  {
+   "from": "package.json",
    "to": "scripts/hook-stability-stress.mjs",
    "kind": "pkg-script"
   },
@@ -79413,6 +79455,69 @@
   {
    "from": "tooling/backend/ownership-overrides.json",
    "to": ".env.example",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/backend/repository-boundary.cjs",
+   "to": "tooling/backend/ownership-graph.cjs",
+   "kind": "require",
+   "spec": "./ownership-graph.cjs"
+  },
+  {
+   "from": "tooling/backend/repository-boundary.cjs",
+   "to": "missing:quality/backend-doc-ownership.json",
+   "kind": "verifier-reads",
+   "spec": "quality/backend-doc-ownership.json"
+  },
+  {
+   "from": "tooling/backend/repository-boundary.cjs",
+   "to": "deleted:apps/web/",
+   "kind": "verifier-reads",
+   "spec": "apps/web/"
+  },
+  {
+   "from": "tooling/backend/repository-boundary.cjs",
+   "to": "deleted:apps/admin/",
+   "kind": "verifier-reads",
+   "spec": "apps/admin/"
+  },
+  {
+   "from": "tooling/backend/repository-boundary.cjs",
+   "to": "deleted:packages/ui/",
+   "kind": "verifier-reads",
+   "spec": "packages/ui/"
+  },
+  {
+   "from": "tooling/backend/repository-boundary.cjs",
+   "to": "deleted:apps/web",
+   "kind": "verifier-reads",
+   "spec": "apps/web"
+  },
+  {
+   "from": "tooling/backend/repository-boundary.cjs",
+   "to": "deleted:apps/admin",
+   "kind": "verifier-reads",
+   "spec": "apps/admin"
+  },
+  {
+   "from": "tooling/backend/repository-boundary.cjs",
+   "to": "deleted:packages/ui",
+   "kind": "verifier-reads",
+   "spec": "packages/ui"
+  },
+  {
+   "from": "tooling/backend/repository-boundary.cjs",
+   "to": "pnpm-lock.yaml",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/backend/repository-boundary.cjs",
+   "to": "package.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/backend/repository-boundary.cjs",
+   "to": "pnpm-workspace.yaml",
    "kind": "verifier-reads"
   },
   {
@@ -102242,6 +102347,30 @@
    "to": "tooling/verify/backend/run-all.cjs",
    "kind": "pkg-script",
    "spec": "node tooling/verify/backend/run-all.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:verify:backend-boundary",
+   "kind": "pkg-script",
+   "spec": "verify:backend-boundary"
+  },
+  {
+   "from": "script:verify:backend-boundary",
+   "to": "tooling/backend/repository-boundary.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/backend/repository-boundary.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:backend:ownership-graph",
+   "kind": "pkg-script",
+   "spec": "backend:ownership-graph"
+  },
+  {
+   "from": "script:backend:ownership-graph",
+   "to": "tooling/backend/ownership-graph.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/backend/ownership-graph.cjs"
   },
   {
    "from": "package.json",

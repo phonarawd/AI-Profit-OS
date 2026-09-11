@@ -18,6 +18,8 @@
     "verify:night-guard": "node scripts/verify-night-guard.mjs",
     "verify:domain-by-path-ci": "node tooling/verify/domain-by-path-ci.cjs",
     "verify:backend": "node tooling/verify/backend/run-all.cjs",
+    "verify:backend-boundary": "node tooling/backend/repository-boundary.cjs",
+    "backend:ownership-graph": "node tooling/backend/ownership-graph.cjs",
     "verify:hook-stability": "node scripts/hook-stability-stress.mjs",
     "verify:stack-lock": "node tooling/verify/stack-lock.cjs",
     "verify:secrets": "node tooling/verify/secrets.cjs",
