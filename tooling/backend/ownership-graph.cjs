@@ -256,7 +256,9 @@ function loadDeletedPrefixes() {
   const counts = {};
   for (const f of deleted) {
     const seg = f.split("/");
-    if (seg.length >= 2) {
+    // only UI app/package trees can become "deleted UI prefixes"; stage 4/5 verifier deletions under
+    // tooling/verify/ (and any other backend tree) must not turn the surviving files there into UI paths
+    if (seg.length >= 2 && (seg[0] === "apps" || seg[0] === "packages")) {
       const p = seg[0] + "/" + seg[1] + "/";
       counts[p] = (counts[p] || 0) + 1;
     }
@@ -631,10 +633,11 @@ function seedRules() {
 
   // tooling/verify — 세부는 evidence 단계에서 재판정
   add('verify-gate-core', re(/^tooling\/verify\/(gate|gate-fast|gate-push|gate-runner|gate-tiers|only-pnpm|secrets|plans-ssot|workflow-action-pin|domain-by-path-ci|domain-by-path\.selftest|night-guard|project-boundary|api-nest-build|pg-module-scan|bucket-invariant)\.cjs$/), 'BACKEND_INFRA', 'KEEP', S.NONE, '3-tier gate 코어 · 보안 게이트');
-  add('verify-domain-by-path', re(/^tooling\/verify\/domain-by-path\.cjs$/), 'MIXED', 'SPLIT', S.MIXED_SPLIT, 'T0 경로→검증기 매핑 SSOT · apps/web·apps/admin·packages/ui 규칙 다수 잔존');
+  add('verify-domain-by-path', re(/^tooling\/verify\/domain-by-path\.cjs$/), 'MIXED', 'SPLIT', S.UI_TEST_REMOVAL, 'T0 경로→검증기 매핑 SSOT · retired skip 제거·backend 포트 매핑 완료(5단계) · 4단계 UI 검증기 규칙의 apps/web·packages/ui 경로 test만 잔존');
   add('verify-stack-lock', re(/^tooling\/verify\/stack-lock\.cjs$/), 'MIXED', 'SPLIT', S.MIXED_SPLIT, 'T0 · infra/web·infra/ops·packages/sdk·packages/schemas mustExist + next@16/Tailwind 문구 강제 → 백엔드 전용으로 개정');
-  add('verify-retired-lib', re(/^tooling\/verify\/lib\/retired-ui-stubs\.cjs$/), 'BACKEND_INFRA', 'DELETE', S.MIXED_SPLIT, '은퇴 UI 스텁 skip 목록 · 5단계에서 스텁 해체 후 제거 (현재 T0 load-bearing)');
-  add('verify-stubs-runner', re(/^tooling\/verify\/stubs\/run-all\.cjs$/), 'MIXED', 'SPLIT', S.MIXED_SPLIT, 'T1 도메인 스텁 러너 · live 목록에 UI 스텁 이름 다수');
+  add('verify-backend-runner', re(/^tooling\/verify\/backend\/run-all\.cjs$/), 'BACKEND_INFRA', 'KEEP', S.NONE, 'T1 backend 러너 · mixed 검증기 백엔드 포트(tooling/verify/backend/**) 전부 순차 실행 · skip 0');
+  add('verify-backend-port', re(/^tooling\/verify\/backend\//), 'BACKEND_TEST', 'KEEP', S.NONE, 'mixed 검증기 백엔드 어서션 포트 (원본 SHA 86f15964 · UI 어서션은 quality/putduk-web-ui-assertions-handoff.md) · evidence 재판정 대상');
+  add('verify-stubs-runner', re(/^tooling\/verify\/stubs\/run-all\.cjs$/), 'MIXED', 'SPLIT', S.UI_TEST_REMOVAL, 'T1 도메인 스텁 러너 · retired skip 제거(5단계) · live 목록에 4단계 UI 검증기 이름만 잔존');
   add('verify-lib-ui-capture', re(/^tooling\/verify\/lib\/(capture-admin-visual|capture-visual-reconciliation|platform-redesign-measure|run-account-spec)\.cjs$/), 'OBSOLETE', 'DELETE', S.UI_TEST_REMOVAL, '브라우저 캡처/시각 측정 라이브러리');
   add('verify-catalog', re(/^tooling\/verify\/CATALOG\.md$/), 'MIXED', 'SPLIT', S.MARKDOWN_CLEANUP, '검증기 카탈로그 · UI 행 제거 (stack-lock mustExist)');
   add('verify-responsive', re(/^tooling\/verify\/responsive\//), 'OBSOLETE', 'DELETE', S.UI_TEST_REMOVAL, 'Canon 뷰포트 Playwright 시각 회귀 하네스 (브라우저)');
@@ -1127,14 +1130,13 @@ function main() {
   }
 
   // 7.6 evidence-based reclassification — tooling/verify · pwa · release · deploy · recovery · e2e lib · scripts
-  const retiredLib = safeRequire(path.join(ROOT, "tooling/verify/lib/retired-ui-stubs.cjs"));
-  const RETIRED_UI_ONLY = retiredLib ? retiredLib.RETIRED_UI_ONLY_STUBS : new Set();
-  const RETIRED_MIXED = retiredLib ? retiredLib.RETIRED_MIXED_UI_STUBS : new Set();
+  // the retired UI stub skip list (former tooling/verify/lib name list) was dismantled in stage 5:
+  // UI-only verifiers deleted, mixed verifiers ported to tooling/verify/backend/**, so no name-list branch remains.
   const gateTiers = safeRequire(path.join(ROOT, "tooling/verify/gate-tiers.cjs"));
   const T0 = new Set(gateTiers ? gateTiers.T0_ALWAYS : []);
   const T1 = new Set(gateTiers ? gateTiers.T1_PUSH : []);
   const T2 = new Set(gateTiers ? gateTiers.T2_CI : []);
-  const SEED_FINAL_RULES = /^(verify-gate-core|verify-domain-by-path|verify-stack-lock|verify-retired-lib|verify-stubs-runner|verify-lib-ui-capture|verify-catalog|verify-responsive|verify-rc-formal|legacy-plan-verify|deploy-pages|deploy-mixed|pwa-vapid|pwa-webauthn-rp|pwa-webauthn-ux|pwa-day1-cert|pwa-lighthouse|legacy-plan-stamp|e2e-lib-backend|e2e-money-unavailable|e2e-qa-lab)$/;
+  const SEED_FINAL_RULES = /^(verify-gate-core|verify-domain-by-path|verify-stack-lock|verify-backend-runner|verify-stubs-runner|verify-lib-ui-capture|verify-catalog|verify-responsive|verify-rc-formal|legacy-plan-verify|deploy-pages|deploy-mixed|pwa-vapid|pwa-webauthn-rp|pwa-webauthn-ux|pwa-day1-cert|pwa-lighthouse|legacy-plan-stamp|e2e-lib-backend|e2e-money-unavailable|e2e-qa-lab)$/;
   const bePathTest = (p) => isBeTarget(p);
 
   const evidenceTargets = inv.files.filter((f) => /^tooling\/(verify|pwa|release|deploy|recovery|e2e\/lib|e2e\/helpers|schemas|github)\/.*\.(cjs|mjs|js)$/.test(f) || /^scripts\/.*\.mjs$/.test(f));
@@ -1155,25 +1157,10 @@ function main() {
     }
     const isVerify = /^tooling\/verify\//.test(f);
     const breakdown = () => buildMixedBreakdown(raw.text, uiPathTest, bePathTest, deleted.prefixes);
-    if (isVerify && RETIRED_UI_ONLY.has(base)) {
-      setClass(rec, "OBSOLETE", "DELETE", STAGE.UI_TEST_REMOVAL, 'RETIRED_UI_ONLY_STUBS 등재 · UI 경로 참조 ' + uiCount + ' / 백엔드 참조 ' + beCount);
-      if (beCount) {
-        rec.mixedBreakdown = breakdown();
-        rec.reasons.push('주의: 백엔드 경로도 읽음 — mixedBreakdown 확인 후 삭제 (백엔드 어서션 ' + rec.mixedBreakdown.backendAssertions.length + ')');
-      }
-      continue;
-    }
-    const isMixedStub = isVerify && RETIRED_MIXED.has(base);
-    if (isMixedStub || (uiCount > 0 && beCount > 0)) {
+    if (uiCount > 0 && beCount > 0) {
       rec.mixedBreakdown = breakdown();
       const mb = rec.mixedBreakdown;
-      if (beCount > 0) {
-        setClass(rec, "MIXED", "SPLIT", STAGE.MIXED_SPLIT, (isMixedStub ? 'RETIRED_MIXED_UI_STUBS 등재 · ' : '') + 'UI 참조 ' + uiCount + ' + 백엔드 참조 ' + beCount + ' · 백엔드 어서션 ' + mb.backendAssertions.length + ' / UI 어서션 ' + mb.uiAssertions.length);
-      } else if (sum.sdkOnlyUi) {
-        setClass(rec, "CUSTOMER_WEB", "MOVE", STAGE.PACKAGE_CLEANUP, (isMixedStub ? 'RETIRED_MIXED_UI_STUBS 등재 · ' : '') + '백엔드 경로 참조 0 · packages/sdk만 검사 → SDK와 함께 putduk-web 인계 (문구 기반 백엔드 어서션 ' + mb.backendAssertions.length + '개는 mixedBreakdown 참고)');
-      } else {
-        setClass(rec, "OBSOLETE", "DELETE", STAGE.UI_TEST_REMOVAL, (isMixedStub ? 'RETIRED_MIXED_UI_STUBS 등재이나 ' : '') + '백엔드 경로 참조 0 · UI 참조 ' + uiCount + ' (문구 기반 백엔드 어서션 ' + mb.backendAssertions.length + '개는 mixedBreakdown 참고)');
-      }
+      setClass(rec, "MIXED", "SPLIT", STAGE.MIXED_SPLIT, 'UI 참조 ' + uiCount + ' + 백엔드 참조 ' + beCount + ' · 백엔드 어서션 ' + mb.backendAssertions.length + ' / UI 어서션 ' + mb.uiAssertions.length);
       continue;
     }
     const govCount = sum.governanceBackendRefs.length;
@@ -1422,12 +1409,9 @@ function main() {
     dirSummary[key][rec.decision]++;
   }
   const unknown = files.filter((r) => r.class === "UNKNOWN").map((r) => ({ path: r.path, reasons: r.reasons, keywordScore: r.keywordScore || null, referrers: r.referrers.slice(0, 10) }));
-  const mixedStubSummary = [...RETIRED_MIXED].map((name) => {
-    const r = result.get("tooling/verify/" + name);
-    if (!r) return { file: "tooling/verify/" + name, missing: true };
-    const mb = r.mixedBreakdown || { backendAssertions: [], uiAssertions: [], backendDomains: [], uiDomains: [], backendPaths: [] };
-    return { file: r.path, class: r.class, decision: r.decision, backendAssertions: mb.backendAssertions.length, uiAssertions: mb.uiAssertions.length, backendDomains: mb.backendDomains, uiDomains: mb.uiDomains, backendPaths: mb.backendPaths.slice(0, 10) };
-  });
+  // stage 5 result: mixed verifiers were dismantled into tooling/verify/backend/** (see quality/putduk-web-ui-assertions-handoff.md)
+  const backendPorts = files.filter((r) => /^tooling\/verify\/backend\/.*\.cjs$/.test(r.path) && r.path !== "tooling/verify/backend/run-all.cjs");
+  const backendPortSummary = backendPorts.map((r) => ({ file: r.path, class: r.class, decision: r.decision, backendRefs: r.refSummary ? r.refSummary.backendRefs.length : null }));
 
   const ownership = {
     generatedAt: new Date().toISOString(),
@@ -1439,7 +1423,7 @@ function main() {
     totals: { byClass, byDecision, byClassDecision, unknown: unknown.length, overridesApplied: (overrides.entries || []).length, overridesUnused: unusedOverrides },
     dirSummary,
     gateTiers: { T0: [...T0], T1: [...T1], T2: [...T2] },
-    retiredStubs: { uiOnly: RETIRED_UI_ONLY.size, mixed: RETIRED_MIXED.size, mixedSummary: mixedStubSummary },
+    retiredStubs: { dismantled: true, handoff: "quality/putduk-web-ui-assertions-handoff.md", backendPorts: backendPorts.length, backendPortSummary },
     rootPackage: { scripts: scriptOwnership, devDependencies: devDepUsage },
     workflows: workflowsReport,
     files,

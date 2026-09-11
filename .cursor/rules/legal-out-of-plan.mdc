@@ -17,7 +17,7 @@ alwaysApply: false
 
 ## 허용 (이미 SSOT)
 
-- UI **면책·약관·operator footer** — `packages/ui/copy` · §50.9 · `verify:legal-plain-ko` · `verify:operator-footer`
+- UI **면책·약관·operator footer** — `packages/ui/copy` · §50.9 · legal-plain-ko(putduk-web 인계 · `quality/putduk-web-ui-assertions-handoff.md`) · `verify:operator-footer`
 - Money **KYC·출금 게이트** — §42 (제품 기능 SSOT · “법무 보완” 아님)
 - Index §51 **pointer** · CONSTITUTION 기존 절 **유지**
 

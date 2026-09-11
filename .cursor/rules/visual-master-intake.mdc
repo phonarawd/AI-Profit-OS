@@ -68,12 +68,12 @@ Founder image
 
 순서: Visual Contract → implementation → screenshot → reference 비교 → 수정 → **LOCK**.
 
-- LOCK 등록: `packages/ui/canon/visual-locks.v1.json`에 `surfaceId` + 실존하는 `visualContractPath` + 승인 메타데이터 기록. 이 조건을 만족할 때만 `verify:responsive`가 해당 surface의 Canon wire `forbidden: photo_pixel_match` 요구를 예외 처리한다.
+- LOCK 등록: `packages/ui/canon/visual-locks.v1.json`에 `surfaceId` + 실존하는 `visualContractPath` + 승인 메타데이터 기록. 이 조건을 만족할 때만 `verify:responsive`(putduk-web 인계)가 해당 surface의 Canon wire `forbidden: photo_pixel_match` 요구를 예외 처리한다.
 - LOCK 전에는 기존 픽셀 금지가 100% 그대로 유지된다(기본값 불변 · 레지스트리 비어있으면 전면 금지).
 - LOCK된 컴포넌트는 **다른 작업의 부수효과로 재변경 금지**. 재작업하려면 새 Visual Master 승인 + 잠금 해제 절차가 필요하다.
 - 63개 라우트 Visual Contract 선제 대량 생성 금지 — 컴포넌트 단위로 하나씩 승인·구현·LOCK.
 
-## Screenshot 정책 (verify:responsive 재조정)
+## Screenshot 정책 (verify:responsive 재조정 · 검증기는 putduk-web 인계)
 
 ```
 미승인 reference 기반 픽셀 테스트            → 금지 (기본값 · ADR-013 유지)
@@ -90,7 +90,7 @@ Visual Master에 있는데 레포에 없는 자산 → Emoji·임의 아이콘·
 ## Emoji
 
 - 영구 Product UI(내비·카드·배지·상태·성공/빈 화면·버튼·에셋 대체) = Unicode Emoji **금지**.
-- **Toast/snackbar/일시 알림 예외**: `packages/ui/copy/ko/emoji.ts`(`CUTE_EMOJI_ALLOWED`/`EMOJI_CAPS`) + `packages/ui/copy/ko/toast.ts` + `verify:toast-emoji`/`verify:cute-emoji-palette` 범위 내 1~2개만 허용. Cursor가 이모지 종류·개수·위치를 임의로 추가·변경하지 않는다.
+- **Toast/snackbar/일시 알림 예외**: `packages/ui/copy/ko/emoji.ts`(`CUTE_EMOJI_ALLOWED`/`EMOJI_CAPS`) + `packages/ui/copy/ko/toast.ts` + `verify:toast-emoji`/`verify:cute-emoji-palette`(putduk-web 인계) 범위 내 1~2개만 허용. Cursor가 이모지 종류·개수·위치를 임의로 추가·변경하지 않는다.
 - 기존 결함 — 아이콘 시스템 승인 전까지 **등록만, 수정 보류**:
 
 | 파일 | 상태 |

@@ -110,7 +110,7 @@ apps/admin     # Next@16 · Admin §9.1+§9.1.1 · routes.ts lock
 packages/      # ui · sdk · schemas (JSON SSOT=/schemas)
 services/      # api-nest · engine-rust · marketing-attribution
 workers/       # push/capi + adapter stubs (Runtime P1+)
-tooling/verify # CI gates (ia-tabs · admin-routes · next-major-pin)
+tooling/verify # CI gates (ia-tabs · next-major-pin · backend/run-all = mixed 검증기 백엔드 포트)
 ```
 
 ## bun / npm 정책

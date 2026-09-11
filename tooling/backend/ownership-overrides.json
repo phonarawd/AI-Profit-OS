@@ -681,6 +681,20 @@
       "decision": "KEEP",
       "stage": "8단계 패키지 정리",
       "reason": "소비자 0 · 유저 재무 요약(원장 집계) 서버 계약 초안 · 8단계 재확인."
+    },
+    {
+      "path": "tooling/verify/backend/**/*.cjs",
+      "class": "BACKEND_TEST",
+      "decision": "KEEP",
+      "stage": "-",
+      "reason": "5단계 mixed 분리 산출물 · 원본 mixed 검증기(SHA 86f15964)에서 백엔드 어서션만 옮긴 테스트 · UI 어서션은 quality/putduk-web-ui-assertions-handoff.md 기록 후 제거 · 러너 backend/run-all.cjs(verify:backend · T1)."
+    },
+    {
+      "path": "tooling/verify/backend/run-all.cjs",
+      "class": "BACKEND_INFRA",
+      "decision": "KEEP",
+      "stage": "-",
+      "reason": "verify:backend 러너 · tooling/verify/backend/**/*.cjs 전부 순차 실행 · 하나라도 FAIL이면 exit 1 · 0개면 FAIL · skip 없음 · gate-tiers T1_PUSH 등재."
     }
   ]
 }

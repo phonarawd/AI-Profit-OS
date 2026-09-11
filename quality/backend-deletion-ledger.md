@@ -163,6 +163,8 @@ MOVE는 이 레포에서 제거하되 **인계 문서에 경로·역할을 기�
 
 ## 5. RETIRED_MIXED_UI_STUBS 해체 지도 (87개 · 5단계 입력)
 
+> **실행 완료 (2026-09-11 · 2단계):** 아래 87개 + UI-only 28개(실측 · 문서상 30) 전부 처리. 백엔드 어서션은 `tooling/verify/backend/<domain>/` 45개 파일로 이동(`pnpm verify:backend` · T1), UI 어서션은 `quality/putduk-web-ui-assertions-handoff.md` 에 기록 후 원본·`stubs/` 위임 4개·`lib/retired-ui-stubs.cjs` 삭제(총 120). 판정 차이: `rel-214-admin-audit` DELETE→SPLIT 승격(Nest 소스 트리 검사 보유) · `membership-surfaces`·`market-briefing-no-investment-advice` 는 백엔드 어서션이 다른 포트와 중복이라 포트 없이 삭제. 아래 표는 1단계 입력 원본 그대로 보존.
+
 `tooling/verify/lib/retired-ui-stubs.cjs`의 `RETIRED_MIXED_UI_STUBS` 각 파일을 실제로 읽어 어서션을 분류했다. **SPLIT 56개**는 백엔드 경로(services·schemas·supabase·workers)를 실제로 읽고 백엔드 어서션을 가지므로 백엔드 테스트로 이식한 뒤 삭제한다. **DELETE 31개**는 백엔드 경로 참조가 0이어서 그대로 삭제 가능하다(문구 기반으로 잡힌 백엔드 어서션은 JSON `mixedBreakdown.backendAssertions`에서 재확인). 어서션 원문·소스 경로·줄 번호는 JSON `files[].mixedBreakdown`에 있다.
 
 | 파일 | 결정 | 백엔드 어서션 | UI 어서션 | 백엔드 도메인 | 백엔드 경로(대표) |
