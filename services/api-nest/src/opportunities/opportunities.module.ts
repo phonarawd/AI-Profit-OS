@@ -58,6 +58,7 @@ import { UserOpportunityOverrideAdminService } from "./user-opportunity-override
     UserOpportunityOverrideAdminService,
     CatalogRuntimeSeedService,
     FxSnapshotService,
+    CurrentFxApproxService,
   ],
 })
 export class OpportunitiesModule {}

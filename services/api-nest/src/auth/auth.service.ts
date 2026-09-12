@@ -110,6 +110,15 @@ export class AuthService {
     private readonly membership: MembershipRuntimeService,
   ) {}
 
+  /** 클래식 가입/로그인 — 기존 mintSession 재사용 (Stage A 경로로 바꾸지 않음). */
+  async mintUserSession(userId: string) {
+    return this.sessionMintView(userId);
+  }
+
+  async revokeEverySession(userId: string): Promise<void> {
+    await this.revokeAllSessions(userId);
+  }
+
   /**
    * After a real `users` row insert (Stage A persist) — provision §49 buckets
    * then §51.7 welcome practice (+10 · 1회 · expire 7d).

@@ -17,7 +17,15 @@ import {
 import { AUTH_ROUTES } from "./auth.routes";
 import { AuthService } from "./auth.service";
 import { AuthRateLimitGuard } from "./auth-rate-limit.guard";
+import { ClassicSignupService } from "./classic-signup.service";
+import {
+  DECLARED_NAME_MAX_LEN,
+  type ClassicSignupInput,
+} from "./classic-signup.policy";
+import { FindIdService } from "./find-id.service";
 import { JwtAuthGuard, type SessionUser } from "./jwt-auth.guard";
+import { PasswordAuthService } from "./password-auth.service";
+import { PasswordResetService } from "./password-reset.service";
 
 type AuthedRequest = { user: SessionUser };
 
@@ -58,6 +66,27 @@ function clearUserSessionCookie(res: CookieResponse): void {
   res.clearCookie(USER_SESSION_COOKIE_NAME, { path: "/" });
 }
 
+function readClassicSignupInput(body: Record<string, unknown>): ClassicSignupInput {
+  const str = (key: string): string =>
+    typeof body[key] === "string" ? (body[key] as string) : "";
+  return {
+    username: str("username"),
+    email: str("email"),
+    password: str("password"),
+    passwordConfirm: str("passwordConfirm"),
+    declaredName: str("declaredName").slice(0, DECLARED_NAME_MAX_LEN),
+    birthDate: str("birthDate"),
+    phoneE164: body.phoneE164 ? str("phoneE164") : undefined,
+    termsAcceptedAt: str("termsAcceptedAt"),
+    privacyAcceptedAt: str("privacyAcceptedAt"),
+    marketingConsent: body.marketingConsent === true,
+    referralCode: body.referralCode ? str("referralCode") : undefined,
+    turnstileToken: body.turnstileToken ? str("turnstileToken") : undefined,
+    termsVersion: body.termsVersion ? str("termsVersion") : undefined,
+    privacyVersion: body.privacyVersion ? str("privacyVersion") : undefined,
+  };
+}
+
 /**
  * User Auth HTTP surface · Infra §51.9
  * Mounted at /api/v1/auth/* (global prefix in main.ts)
@@ -69,7 +98,70 @@ function clearUserSessionCookie(res: CookieResponse): void {
 @Controller("auth")
 @UseGuards(AuthRateLimitGuard)
 export class AuthController {
-  constructor(private readonly auth: AuthService) {}
+  constructor(
+    private readonly auth: AuthService,
+    private readonly classicSignup: ClassicSignupService,
+    private readonly passwordAuth: PasswordAuthService,
+    private readonly passwordReset: PasswordResetService,
+    private readonly findIdService: FindIdService,
+  ) {}
+
+  @Post(AUTH_ROUTES.signupClassic)
+  signupClassic(@Body() body: Record<string, unknown>) {
+    return this.classicSignup.request(readClassicSignupInput(body ?? {}));
+  }
+
+  @Post(AUTH_ROUTES.signupClassicActivate)
+  async signupClassicActivate(
+    @Body() body: Record<string, unknown>,
+    @Res({ passthrough: true }) res: CookieResponse,
+  ) {
+    const token = typeof body?.token === "string" ? body.token : "";
+    const out = await this.classicSignup.activate(token);
+    if (typeof out.accessToken === "string") {
+      attachUserSessionCookie(res, out.accessToken);
+    }
+    return out;
+  }
+
+  @Post(AUTH_ROUTES.emailVerifyResend)
+  emailVerifyResend(@Body() body: Record<string, unknown>) {
+    const email = typeof body?.email === "string" ? body.email : "";
+    return this.classicSignup.resendVerification(email);
+  }
+
+  @Post(AUTH_ROUTES.loginClassic)
+  async loginClassic(
+    @Body() body: Record<string, unknown>,
+    @Res({ passthrough: true }) res: CookieResponse,
+  ) {
+    const identifier = typeof body?.identifier === "string" ? body.identifier : "";
+    const password = typeof body?.password === "string" ? body.password : "";
+    const out = await this.passwordAuth.login(identifier, password);
+    if (typeof out.accessToken === "string") {
+      attachUserSessionCookie(res, out.accessToken);
+    }
+    return out;
+  }
+
+  @Post(AUTH_ROUTES.findId)
+  findId(@Body() body: Record<string, unknown>) {
+    const email = typeof body?.email === "string" ? body.email : "";
+    return this.findIdService.request(email);
+  }
+
+  @Post(AUTH_ROUTES.passwordResetRequest)
+  passwordResetRequest(@Body() body: Record<string, unknown>) {
+    const email = typeof body?.email === "string" ? body.email : "";
+    return this.passwordReset.request(email);
+  }
+
+  @Post(AUTH_ROUTES.passwordResetComplete)
+  passwordResetComplete(@Body() body: Record<string, unknown>) {
+    const token = typeof body?.token === "string" ? body.token : "";
+    const newPassword = typeof body?.newPassword === "string" ? body.newPassword : "";
+    return this.passwordReset.complete(token, newPassword);
+  }
 
   @Post(AUTH_ROUTES.signup)
   async signup(@Body() body: Record<string, unknown>, @Res({ passthrough: true }) res: CookieResponse) {

@@ -120,4 +120,109 @@ export class ResendEmailProvider {
     }
     return { ok: true, provider: "resend", status: "sent" };
   }
+
+  async sendSignupVerification(input: {
+    to: string;
+    url: string;
+  }): Promise<ResendSendResult> {
+    return this.sendSimpleLink({
+      to: input.to,
+      url: input.url,
+      subject: "퍼뜩 이메일 인증",
+      bodyHtml: `<p>회원가입을 완료하려면 이 링크를 눌러 주세요.</p><p><a href="${input.url}">이메일 인증하기</a></p><p>이 링크는 한 번만 쓸 수 있어요.</p>`,
+    });
+  }
+
+  async sendAccountExistsNotice(input: { to: string }): Promise<ResendSendResult> {
+    const env = loadPhase0Env();
+    const host = (env.appHost || "app.hiptk.app").replace(/\/$/, "");
+    const loginUrl = /^https?:\/\//i.test(host)
+      ? `${host}/auth/login`
+      : `https://${host}/auth/login`;
+    return this.sendSimpleLink({
+      to: input.to,
+      url: loginUrl,
+      subject: "퍼뜩 가입 안내",
+      bodyHtml: `<p>이 이메일로 이미 가입되어 있어요. 로그인하거나 비밀번호 찾기를 이용해 주세요.</p><p><a href="${loginUrl}">로그인</a></p>`,
+    });
+  }
+
+  async sendPasswordReset(input: {
+    to: string;
+    url: string;
+  }): Promise<ResendSendResult> {
+    return this.sendSimpleLink({
+      to: input.to,
+      url: input.url,
+      subject: "퍼뜩 비밀번호 재설정 안내",
+      bodyHtml: `<p>비밀번호 재설정 링크: <a href="${input.url}">여기</a></p>`,
+    });
+  }
+
+  async sendFindIdResult(input: {
+    to: string;
+    maskedUsernames: string[];
+  }): Promise<ResendSendResult> {
+    const env = loadPhase0Env();
+    this.assertFromConfigured();
+    if (!env.resendApiKey) {
+      this.log.warn("RESEND_API_KEY unset — find-id accepted_dev (not sent)");
+      return { ok: true, provider: "resend", status: "accepted_dev" };
+    }
+    const list = input.maskedUsernames.map((u) => `<li>${u}</li>`).join("");
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.resendApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: env.resendFromEmail,
+        to: [input.to],
+        subject: "퍼뜩 아이디 찾기 결과",
+        html: `<p>이 이메일로 가입된 아이디입니다.</p><ul>${list}</ul>`,
+      }),
+    });
+    if (!res.ok) {
+      this.log.error(`Resend send failed ${res.status}`);
+      return { ok: false, provider: "resend", reason: `resend_http_${res.status}` };
+    }
+    return { ok: true, provider: "resend", status: "sent" };
+  }
+
+  private async sendSimpleLink(input: {
+    to: string;
+    url: string;
+    subject: string;
+    bodyHtml: string;
+  }): Promise<ResendSendResult> {
+    const env = loadPhase0Env();
+    this.assertFromConfigured();
+    if (!env.resendApiKey) {
+      this.log.warn("RESEND_API_KEY unset — link email accepted_dev (not sent)");
+      return { ok: true, provider: "resend", status: "accepted_dev" };
+    }
+    const safeUrl = input.url.trim();
+    if (!/^https?:\/\//i.test(safeUrl) || safeUrl.length > 2000) {
+      return { ok: false, provider: "resend", reason: "link_url_invalid" };
+    }
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.resendApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: env.resendFromEmail,
+        to: [input.to],
+        subject: input.subject,
+        html: input.bodyHtml,
+      }),
+    });
+    if (!res.ok) {
+      this.log.error(`Resend send failed ${res.status}`);
+      return { ok: false, provider: "resend", reason: `resend_http_${res.status}` };
+    }
+    return { ok: true, provider: "resend", status: "sent" };
+  }
 }

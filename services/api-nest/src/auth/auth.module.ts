@@ -9,6 +9,11 @@ import { ResendEmailProvider } from "../wallet/resend-email.provider";
 import { AuthController } from "./auth.controller";
 import { AuthRateLimitGuard } from "./auth-rate-limit.guard";
 import { AuthService } from "./auth.service";
+import { ClassicSignupService } from "./classic-signup.service";
+import { FindIdService } from "./find-id.service";
+import { PasswordAuthService } from "./password-auth.service";
+import { PasswordResetService } from "./password-reset.service";
+import { PwnedPasswordService } from "./pwned-password.service";
 import { PrivacyAccountService } from "./privacy-account.service";
 import { MagicLinkService } from "./magic-link.service";
 import { OauthIdentityService, defaultOauthHttp } from "./oauth-identity.service";
@@ -26,6 +31,11 @@ import { PostgresProofStore } from "./identity-proof.store";
   controllers: [AuthController],
   providers: [
     AuthService,
+    ClassicSignupService,
+    PasswordAuthService,
+    PasswordResetService,
+    FindIdService,
+    PwnedPasswordService,
     PrivacyAccountService,
     AuthRateLimitGuard,
     ResendEmailProvider,

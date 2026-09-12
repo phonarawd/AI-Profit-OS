@@ -20,6 +20,13 @@ export const AUTH_ROUTES = {
   magicLinkRequest: "magic-link/request",
   magicLinkVerify: "magic-link/verify",
   deleteAccount: "delete-account",
+  signupClassic: "signup/classic",
+  signupClassicActivate: "signup/classic/verify",
+  loginClassic: "login",
+  findId: "find-id",
+  passwordResetRequest: "password-reset/request",
+  passwordResetComplete: "password-reset/complete",
+  emailVerifyResend: "email/resend",
 } as const;
 
 /** Absolute paths after global prefix (for verify:auth-flows) */
@@ -38,4 +45,11 @@ export const AUTH_HTTP_PATHS = [
   "POST /api/v1/auth/magic-link/request",
   "POST /api/v1/auth/magic-link/verify",
   "POST /api/v1/auth/delete-account",
+  "POST /api/v1/auth/signup/classic",
+  "POST /api/v1/auth/signup/classic/verify",
+  "POST /api/v1/auth/login",
+  "POST /api/v1/auth/find-id",
+  "POST /api/v1/auth/password-reset/request",
+  "POST /api/v1/auth/password-reset/complete",
+  "POST /api/v1/auth/email/resend",
 ] as const;
