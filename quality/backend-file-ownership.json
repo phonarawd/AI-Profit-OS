@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-09-12T06:18:15.487Z",
- "headSha": "3b5feeb09fda81f3fa0609a57cd3c70305eb2df3",
+ "generatedAt": "2026-09-12T07:56:41.758Z",
+ "headSha": "bceb1867f06be5e2a46977b4e894588e788c2922",
  "generator": "tooling/backend/ownership-graph.cjs",
  "overrides": "tooling/backend/ownership-overrides.json",
  "inputs": {
@@ -7578,9 +7578,9 @@
     "tooling/verify/rel-602-staging-rollback.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T13:43:29+09:00",
-   "lastCommitSha": "e8d0c371fee9fad94a71c122d29f288f01dbdb01",
-   "sizeBytes": 33172,
+   "lastCommit": "2026-09-12T16:24:40+09:00",
+   "lastCommitSha": "bceb1867f06be5e2a46977b4e894588e788c2922",
+   "sizeBytes": 33934,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -26261,9 +26261,9 @@
     ".github/workflows/engine-evidence-refresh-check.yml|workflow-run|paths"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-02T18:01:17Z",
-   "lastCommitSha": "9420dbc4c80a6cca759256a7ceb5bf9b9b1ac107",
-   "sizeBytes": 1445,
+   "lastCommit": "2026-09-12T16:00:23+09:00",
+   "lastCommitSha": "8076ffe1de74513ea9de0dc609c4ff10bb1dd381",
+   "sizeBytes": 1519,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -26320,9 +26320,9 @@
     ".github/workflows/engine-evidence-refresh-check.yml|workflow-run|paths"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-02T18:01:17Z",
-   "lastCommitSha": "9420dbc4c80a6cca759256a7ceb5bf9b9b1ac107",
-   "sizeBytes": 2245,
+   "lastCommit": "2026-09-12T16:00:23+09:00",
+   "lastCommitSha": "8076ffe1de74513ea9de0dc609c4ff10bb1dd381",
+   "sizeBytes": 2543,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -32862,9 +32862,9 @@
     "tooling/backend/ownership-graph.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-12T05:39:29+09:00",
-   "lastCommitSha": "a6b8c1285488c4710a2ff37381b797e4e791622d",
-   "sizeBytes": 3011166,
+   "lastCommit": "2026-09-12T15:31:12+09:00",
+   "lastCommitSha": "6f9b0251582221a89d4cb21105c70e3bb4c5b5e3",
+   "sizeBytes": 3106867,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -32894,9 +32894,9 @@
     "tooling/backend/repository-boundary.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-12T05:39:29+09:00",
-   "lastCommitSha": "a6b8c1285488c4710a2ff37381b797e4e791622d",
-   "sizeBytes": 22904,
+   "lastCommit": "2026-09-12T15:31:12+09:00",
+   "lastCommitSha": "6f9b0251582221a89d4cb21105c70e3bb4c5b5e3",
+   "sizeBytes": 23082,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -32928,9 +32928,9 @@
     "tooling/verify/workers-typecheck.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-12T05:39:29+09:00",
-   "lastCommitSha": "a6b8c1285488c4710a2ff37381b797e4e791622d",
-   "sizeBytes": 4732898,
+   "lastCommit": "2026-09-12T15:31:12+09:00",
+   "lastCommitSha": "6f9b0251582221a89d4cb21105c70e3bb4c5b5e3",
+   "sizeBytes": 4778874,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -33812,6 +33812,18 @@
    "evidence": [
     {
      "kind": "doc-link",
+     "ref": "DELETED_UI:apps/web"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:apps/admin"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/ui"
+    },
+    {
+     "kind": "doc-link",
      "ref": "quality/backend-doc-ownership.json"
     },
     {
@@ -33957,18 +33969,6 @@
     {
      "kind": "doc-link",
      "ref": "MISSING:services/workers"
-    },
-    {
-     "kind": "doc-link",
-     "ref": "MISSING:packages/schemas"
-    },
-    {
-     "kind": "doc-link",
-     "ref": "infra/** (8 files)"
-    },
-    {
-     "kind": "doc-link",
-     "ref": "services/**/*.runtime.test.ts (9 files)"
     }
    ],
    "referrers": [
@@ -33978,15 +33978,16 @@
     "quality/backend-residual-report.md|doc-link|quality/**"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-12T01:45:18+09:00",
-   "lastCommitSha": "5407260f11359d674a70b7dcf603b92cae8f52b6",
-   "sizeBytes": 14319,
+   "lastCommit": "2026-09-12T15:31:12+09:00",
+   "lastCommitSha": "6f9b0251582221a89d4cb21105c70e3bb4c5b5e3",
+   "sizeBytes": 15606,
    "refSummary": {
     "deletedUiRefs": [
-     "packages/sdk",
-     "apps/web/.open-next/worker.js",
      "apps/web",
-     "packages/ui"
+     "apps/admin",
+     "packages/ui",
+     "packages/sdk",
+     "apps/web/.open-next/worker.js"
     ],
     "uiRefs": [],
     "backendRefs": [
@@ -34030,6 +34031,10 @@
     {
      "kind": "doc-link",
      "ref": "tooling/verify/backend/auth/auth-flows.cjs"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "DELETED_UI:packages/sdk/src/auth/{auth-release.test.ts"
     }
    ],
    "referrers": [
@@ -34038,14 +34043,15 @@
     "quality/backend-residual-report.md|doc-link|quality/**"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-12T05:39:29+09:00",
-   "lastCommitSha": "a6b8c1285488c4710a2ff37381b797e4e791622d",
-   "sizeBytes": 2819,
+   "lastCommit": "2026-09-12T15:31:12+09:00",
+   "lastCommitSha": "6f9b0251582221a89d4cb21105c70e3bb4c5b5e3",
+   "sizeBytes": 3123,
    "refSummary": {
     "deletedUiRefs": [
      "packages/sdk/src/auth/auth-release.test.ts",
      "packages/sdk/src/auth/fetch.ts",
-     "packages/sdk/src/auth/types.ts"
+     "packages/sdk/src/auth/types.ts",
+     "packages/sdk/src/auth/{auth-release.test.ts"
     ],
     "uiRefs": [],
     "backendRefs": [],
@@ -86953,7 +86959,7 @@
    "blockers": [],
    "lastCommit": "2026-09-12T05:39:29+09:00",
    "lastCommitSha": "a6b8c1285488c4710a2ff37381b797e4e791622d",
-   "sizeBytes": 1058,
+   "sizeBytes": 1157,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -87612,9 +87618,9 @@
     "tooling/recovery/classify-local-state.selftest.cjs|deploy-cmd|tooling/recovery"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-03T03:03:35+09:00",
-   "lastCommitSha": "6c6c8066cd5acd9f81b3140ce501eb30c1febec3",
-   "sizeBytes": 17666,
+   "lastCommit": "2026-09-12T16:00:23+09:00",
+   "lastCommitSha": "8076ffe1de74513ea9de0dc609c4ff10bb1dd381",
+   "sizeBytes": 22842,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -91527,9 +91533,9 @@
     ".github/workflows/backend-ci.yml|workflow-run|verify:backend-ci-tiers-sync"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T13:22:36+09:00",
-   "lastCommitSha": "720e7d54b9d5f0727266fc8388fb4cbc6e73ed90",
-   "sizeBytes": 6846,
+   "lastCommit": "2026-09-12T16:24:40+09:00",
+   "lastCommitSha": "bceb1867f06be5e2a46977b4e894588e788c2922",
+   "sizeBytes": 7010,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -98509,9 +98515,9 @@
     ".github/workflows/engine-evidence-refresh-check.yml|workflow-run|paths"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-03T03:03:35+09:00",
-   "lastCommitSha": "6c6c8066cd5acd9f81b3140ce501eb30c1febec3",
-   "sizeBytes": 7407,
+   "lastCommit": "2026-09-12T16:00:23+09:00",
+   "lastCommitSha": "8076ffe1de74513ea9de0dc609c4ff10bb1dd381",
+   "sizeBytes": 9880,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],

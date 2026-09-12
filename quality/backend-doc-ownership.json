@@ -4,7 +4,7 @@
  "generator": "tooling/backend/_p5-write-ownership.cjs",
  "note": "All remaining .md/.mdc paths. decision KEEP. UNKNOWN 0. boundary markdown rule reads keep[].path.",
  "totals": {
-  "docs": 133,
+  "docs": 134,
   "unknown": 0,
   "byClass": {
    "BACKEND_DOC": 129
@@ -751,6 +751,12 @@
   },
   {
    "path": "quality/backend-residual-report.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend quality or putduk-web handoff KEEP"
+  },
+  {
+   "path": "quality/live-ruleset-backend-required-evidence.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
    "reason": "backend quality or putduk-web handoff KEEP"

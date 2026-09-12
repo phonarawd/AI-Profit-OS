@@ -1,5 +1,5 @@
 {
-  "name": "main-gate-required",
+  "name": "release-train-rel502-gate-required",
   "target": "branch",
   "enforcement": "active",
   "bypass_actors": [
@@ -11,7 +11,10 @@
   ],
   "conditions": {
     "ref_name": {
-      "include": ["refs/heads/main"],
+      "include": [
+        "refs/heads/release/train-production-v1",
+        "refs/heads/release/auth-wallet-rel502-v1-20260828"
+      ],
       "exclude": []
     }
   },

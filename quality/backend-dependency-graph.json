@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-09-12T06:18:15.487Z",
- "headSha": "3b5feeb09fda81f3fa0609a57cd3c70305eb2df3",
+ "generatedAt": "2026-09-12T07:56:41.758Z",
+ "headSha": "bceb1867f06be5e2a46977b4e894588e788c2922",
  "edgeKinds": [
   "import",
   "require",
@@ -65826,6 +65826,24 @@
   },
   {
    "from": "quality/backend-residual-report.md",
+   "to": "deleted:apps/web",
+   "kind": "doc-link",
+   "spec": "apps/web"
+  },
+  {
+   "from": "quality/backend-residual-report.md",
+   "to": "deleted:apps/admin",
+   "kind": "doc-link",
+   "spec": "apps/admin"
+  },
+  {
+   "from": "quality/backend-residual-report.md",
+   "to": "deleted:packages/ui",
+   "kind": "doc-link",
+   "spec": "packages/ui"
+  },
+  {
+   "from": "quality/backend-residual-report.md",
    "to": "quality/backend-doc-ownership.json",
    "kind": "doc-link"
   },
@@ -66198,18 +66216,6 @@
   },
   {
    "from": "quality/backend-residual-report.md",
-   "to": "deleted:apps/web",
-   "kind": "doc-link",
-   "spec": "apps/web"
-  },
-  {
-   "from": "quality/backend-residual-report.md",
-   "to": "deleted:packages/ui",
-   "kind": "doc-link",
-   "spec": "packages/ui"
-  },
-  {
-   "from": "quality/backend-residual-report.md",
    "to": "missing:scripts/deps",
    "kind": "doc-link",
    "spec": "scripts/deps"
@@ -66301,6 +66307,12 @@
    "from": "quality/pr222-pr223-integration-evidence.md",
    "to": "tooling/verify/backend/auth/auth-flows.cjs",
    "kind": "doc-link"
+  },
+  {
+   "from": "quality/pr222-pr223-integration-evidence.md",
+   "to": "deleted:packages/sdk/src/auth/{auth-release.test.ts",
+   "kind": "doc-link",
+   "spec": "packages/sdk/src/auth/{auth-release.test.ts"
   },
   {
    "from": "quality/putduk-web-cloudflare-handoff.md",

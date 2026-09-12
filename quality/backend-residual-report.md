@@ -1,5 +1,16 @@
 # Backend-only residual
 
+- Head SHA: ceb1867f06be5e2a46977b4e894588e788c2922 · verdict **BACKEND_ONLY_CLEANUP_IN_PROGRESS**
+- UNKNOWN **0** · REVIEW_REQUIRED **0**
+- ACK used: ENGINE_ACCEPTANCE_REBASE_V1 applied · LIVE_RULESET_BACKEND_REQUIRED applied for main 20576556 only
+- live main context = backend-required · release-train 21919415 still verify-gate (PUT blocked by tool policy)
+- FINAL_ACCEPTANCE NOT_ISSUED · current-epoch QA1-QA8 STALE_PENDING_RERUN
+- same-SHA backend-ci 3x PASS on bceb1867 (34680893564 PR, 34681005678 dispatch, 34681097690 dispatch)
+- Do not declare READY: current-epoch QA not re-issued · release-train context still verify-gate
+
+---
+# Backend-only residual
+
 - Head SHA: `3b5feeb09fda81f3fa0609a57cd3c70305eb2df3` · verdict **BACKEND_ONLY_CLEANUP_IN_PROGRESS**
 - UNKNOWN **0** · REVIEW_REQUIRED **0**
 - ownership KEEP 1381 · boundary PASS 0 (sharp warn 1, wrangler-miniflare)
