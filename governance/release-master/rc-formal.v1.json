@@ -2,10 +2,10 @@
   "schema": "governance.release-master.rc-formal.v1",
   "id": "rc-formal",
   "status": "LOCKED",
-  "source_sha_binding": "7de16827ea28786aefabf4c6d4d11ca31ac45354",
+  "source_sha_binding": "cb71cf91b6982471edab426ab06a14947a7f4de5",
   "engine_final_acceptance": "ISSUED",
-  "engine_baseline": "ea-baseline-a6cda12f349d-14d149fdd474",
-  "engine_rebase_id": "ea-rebase-a6cda12f349d-14d149fdd474",
+  "engine_baseline": "ea-baseline-b11140abaafa-af15bf5b43ff",
+  "engine_rebase_id": "ea-rebase-b11140abaafa-af15bf5b43ff",
   "engine_qa9": "ENGINE_ACCEPTED_FOR_UI",
   "protected_scope_drift": 0,
   "historical_82_path_evidence": "PRESERVED",
@@ -27,20 +27,20 @@
   "historical_inventory_ref": "governance/recovery/archive/engine-drift-inventory.pre-rebase-20260902.v1.json",
   "historical_evidence_ref": "governance/recovery/archive/engine-rebase-evidence.pre-rebase-20260902.v1.json",
   "predecessor_rc": {
-    "source_sha_binding": "7c6a2b0abe259847b7b1d7939ce7e1d98e6f654f",
-    "engine_baseline": "ea-baseline-0d8825e8f333-5ac0f4291966",
-    "engine_rebase_id": "ea-rebase-ec3c9604d2ab-5ac0f4291966",
+    "source_sha_binding": "7de16827ea28786aefabf4c6d4d11ca31ac45354",
+    "engine_baseline": "ea-baseline-a6cda12f349d-14d149fdd474",
+    "engine_rebase_id": "ea-rebase-a6cda12f349d-14d149fdd474",
     "release_build_run_id": 33827816052,
     "release_acceptance_run_id": 33829217490,
     "artifact_digest": "5e37887b888aa2bcd4bb075ebcd956ea1c358322bdfbb7f10bdbe31df8ec6001",
-    "superseded_reason": "ENGINE_ACCEPTANCE_REBASE_V1 ea-rebase-a6cda12f349d-14d149fdd474 · current-epoch QA0-QA9 ISSUED · engine-acceptance full run 34690227598 on main 7de16827"
+    "superseded_reason": "ENGINE_ACCEPTANCE_REBASE_V1 ea-rebase-b11140abaafa-af15bf5b43ff · current-epoch QA0-QA9 ISSUED · engine-acceptance push 34705012084 + qa7 34705378591 on main cb71cf91"
   },
   "release_artifact": {
     "name": "release-bundle",
     "digest_alg": "sha256",
     "artifact_digest": "5e37887b888aa2bcd4bb075ebcd956ea1c358322bdfbb7f10bdbe31df8ec6001",
     "release_build_run_id": 33827816052,
-    "engine_acceptance_run_id": 34690227598,
+    "engine_acceptance_run_id": 34705378591,
     "release_acceptance_run_id": 33829217490,
     "release_acceptance_verdict": "PASS",
     "api_artifact_digest": "bfbaab67e0358e2eddf1d0e53ad2ac5c790766be2c26eec6400a8c57553b669d",
@@ -48,5 +48,5 @@
     "render_staging_deploy_id": "dep-dad2cgn10e5c73d1amrg",
     "evidence_dir": "governance/release-master/evidence/release-acceptance-verdict-20260904"
   },
-  "note": "source_sha_binding is main 7de16827 after #223/#224. Engine epoch re-sealed to ea-baseline-a6cda12f349d-14d149fdd474 after official QA0-QA9 ISSUED. Predecessor release-bundle digest stays historical (no new release-acceptance invented). production_db_apply=1 records REL-701-DB; production_deploy stays 0 until Founder REL-701 workflow_dispatch."
+  "note": "source_sha_binding is main cb71cf91 after #226 (membership + apex CORS). Engine epoch re-sealed to ea-baseline-b11140abaafa-af15bf5b43ff after official QA0-QA9 ISSUED (push 34705012084 QA0-QA8 + workflow_dispatch qa7 34705378591). Predecessor release-bundle digest stays historical (no new release-acceptance invented). production_db_apply=1 records REL-701-DB; production_deploy stays 0 until Founder REL-701 workflow_dispatch."
 }
