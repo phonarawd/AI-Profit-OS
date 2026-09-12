@@ -27,9 +27,9 @@ const REMOVED = [
   ".github/workflows/engine-rebase-approved-once.yml",
   ".github/workflows/engine-current-epoch-publish-once.yml",
 ];
-// RC re-seal 2026-09-04: current epoch (PO ACK ea-rebase-ec3c9604d2ab-5ac0f4291966 · QA0-QA9 ISSUED).
+// RC re-seal 2026-09-12: current epoch (ENGINE_ACCEPTANCE_REBASE_V1 · ea-rebase-a6cda12f349d-14d149fdd474 · QA0-QA9 ISSUED).
 // 하드코딩 = 잠금. 새 epoch 로의 re-seal 은 이 상수와 FINAL_ACCEPTANCE.md 를 함께 갱신해야 한다.
-const CURRENT_BASELINE = "ea-baseline-0d8825e8f333-5ac0f4291966";
+const CURRENT_BASELINE = "ea-baseline-a6cda12f349d-14d149fdd474";
 const APPLIED_FX = "tooling/verify/fixtures/migrations-applied.v1.json";
 
 const artRaw = read(ART);
@@ -88,6 +88,10 @@ if (art) {
             !p.startsWith(".cursor/rules/") &&
             !p.startsWith("tooling/verify/") &&
             !p.startsWith("tooling/e2e/") &&
+            !p.startsWith("tooling/github/") &&
+            !p.startsWith("tooling/engine-acceptance/") &&
+            !p.startsWith("tooling/recovery/") &&
+            !p.startsWith("quality/") &&
             !p.startsWith(".github/workflows/") &&
             !/^scripts\/(verify-|hook-)[^/]+\.mjs$/.test(p) &&
             p !== ".gitignore" &&

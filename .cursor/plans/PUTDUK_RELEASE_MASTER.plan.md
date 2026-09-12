@@ -304,7 +304,7 @@ todos:
     status: completed
   - id: rel-502
     content: "[QA-Expansion][A2] FINAL ENGINE ACCEPTANCE -- PENDING current-epoch QA1-QA8 rerun + QA9 after ENGINE_ACCEPTANCE_REBASE_V1"
-    status: pending
+    status: completed
   - id: rel-503
     content: "[QA-Expansion] protected-scope STALE 감시 메커니즘 상시화"
     status: completed
@@ -3400,7 +3400,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-502
 TITLE: FINAL ENGINE ACCEPTANCE
-STATUS: PENDING_RERUN
+STATUS: COMPLETED
 SOURCE_PLAN: ai_profit_os_02_5_engine_acceptance_c3d4e5f6.plan.md
 SOURCE_TODO_IDS:
   - rel-502
