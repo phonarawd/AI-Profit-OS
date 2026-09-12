@@ -924,6 +924,71 @@
       "qa9_complete": false,
       "qa9_verdict_issued": false,
       "eval_dataset_status": "MATCH"
+    },
+    {
+      "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
+      "rebase_id": "ea-rebase-a6cda12f349d-14d149fdd474",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-09-12T05:55:18.088Z",
+        "statement": "ACK APPROVED ENGINE_ACCEPTANCE_REBASE_V1: Founder approved rustfmt-only settlement_rule.rs line-wrap and official lockfile_hash rebase after backend-only pnpm-lock change; predecessor hashes stay history; do not rewrite hashes inside the old baseline."
+      },
+      "predecessor_baseline_id": "ea-baseline-0d8825e8f333-5ac0f4291966",
+      "new_baseline_id": "ea-baseline-a6cda12f349d-14d149fdd474",
+      "reason": "Protected product mutation creates a new acceptance epoch. Predecessor hashes are history; discovery suites QA1-QA8 must rerun; QA9 aggregation is stale and must rerun only after current-epoch discovery evidence exists. Do not fabricate a verdict at rebase time.",
+      "product_commit": "a6cda12f349db379b613244fffbde2a83bf87755",
+      "changed_protected_paths": [
+        "services/engine-rust/src/settlement_rule.rs"
+      ],
+      "changed_nonprotected_support_paths": [
+        "services/ai-platform/src/index.d.ts"
+      ],
+      "old_prompt_hash": "b58b3f2c15d0234e13ac617f26f41acbd41e8b3186218b7e652f8ae36ec6dafb",
+      "new_prompt_hash": "b58b3f2c15d0234e13ac617f26f41acbd41e8b3186218b7e652f8ae36ec6dafb",
+      "old_protected_manifest_hash": "5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9",
+      "new_protected_manifest_hash": "14d149fdd4740af8ec764780e38da6e0ff453b8b583d53c8e3659dc83a4e0b14",
+      "eval_dataset_hash": "710cc5f7e3f1ac7ad6ee934eb9028d7bb8f0adbce38e94c44c1c6445cda0a47d",
+      "acceptance_workflow_hash": "b8e724ba3af9e2d240f4daeefd53d4330972afdb942396698389825167752aa7",
+      "predecessor_suite_checksums": {
+        "QA1": "cd740ea3472fa969fe71bf8c817b1173a831152d5088a37118c41b8a173215e1",
+        "QA2": "dfea10f7c0cef69a35b9dd691332b3d4b36a7943a30e1a2b1dcf6a57b8841ea0",
+        "QA3": "cb8f94c6a5326164e1611b6d6f157c8ee8101abbe1236b3a80617315a0cad8ac",
+        "QA4": "dc12b8000fb315dfb53efc5d150b9411428d8add9577a06ba0f988b8c61c4a9b",
+        "QA5": "21da338ebb23878ad50a83729bf57e3f13e8135c56ceb0114257f6e5c4f9ed79",
+        "QA6": "62d1dfbcf63727c61c08e41d9bb9b313d0433942c2320b2f8b00aabd9edd36f3",
+        "QA8": "a3d66ed28a79e5900079651c6dd3b904153948129f8cdf6739cb82fe7be332e9",
+        "QA9": "ec28c45284345961bc652fb193c3e0130f60bba13b6d862be7d0269b0e0f27cd"
+      },
+      "timestamp": "2026-09-12T05:55:18.088Z",
+      "commit_sha_or_pending": "a6cda12f349db379b613244fffbde2a83bf87755",
+      "rebase_policy_version": "ENGINE_ACCEPTANCE_REBASE_POLICY_V2",
+      "invalidated_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA8"
+      ],
+      "required_rerun_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA7",
+        "QA8"
+      ],
+      "stale_aggregation_phases": [
+        "QA9"
+      ],
+      "qa7_complete": false,
+      "qa8_complete": false,
+      "qa9_complete": false,
+      "qa9_verdict_issued": false,
+      "eval_dataset_status": "MATCH"
     }
   ]
 }
