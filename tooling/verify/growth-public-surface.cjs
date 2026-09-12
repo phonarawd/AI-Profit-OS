@@ -70,10 +70,7 @@ if (!adminPlan.includes("growth_ticker_config")) {
   );
 }
 
-// apps/admin code 0 for this todo
-const adminGrowth = path.join(root, "apps/admin/app/admin/growth");
-// allow existing growth folder — but PART9g must not add PATCH in apps/admin
-// soft check: no new requirement
+// Admin growth PATCH surface = future admin repo (API-only pointer · quality/admin-handoff); no UI tree exists here.
 
 if (fails.length) {
   console.error("[verify:growth-public-surface] FAIL\n- " + fails.join("\n- "));

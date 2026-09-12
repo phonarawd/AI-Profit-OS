@@ -1,0 +1,798 @@
+{
+ "$schema": "tooling/backend/ownership-graph.cjs#overrides",
+ "note": "규칙만으로 판정 불가한 파일의 수동 판정 테이블. 각 항목은 class · decision · stage · reason(근거) 필수. path는 정확 경로 또는 glob. ownership-graph.cjs 7.8 단계에서 마지막에 적용된다.",
+ "generated": "2026-09-11",
+ "entries": [
+  {
+   "path": ".cursor/rules/auth-boundary.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. ADR-006 Nest JWT only 규칙은 백엔드 운영 규칙(KEEP)이나 globs에 삭제된 apps/**/login/** 이 남아 glob만 정리."
+  },
+  {
+   "path": ".cursor/rules/canon-ui.mdc",
+   "class": "OBSOLETE",
+   "decision": "DELETE",
+   "stage": "10단계 Markdown 정리",
+   "reason": "ADR-013 Canon wire·Lux·Brand 화면 규칙 · globs=apps/web,apps/admin,packages/ui 전부 삭제됨 · 백엔드 적용 대상 0."
+  },
+  {
+   "path": ".cursor/rules/cleanup-lowspec.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "phase0-ram 별칭 · 로컬 저사양 운영 규칙."
+  },
+  {
+   "path": ".cursor/rules/cursor-autonomous-ops.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "에이전트 운영·production deploy workflow_dispatch 규칙 · 백엔드 CI/배포 운영 문서."
+  },
+  {
+   "path": ".cursor/rules/engine-ai-coach.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. §47 Personal AI Fact-only·money mutate 0 정책은 백엔드(services/**/ai) 규칙 · globs의 apps/web/**/peotteok·packages/ui/copy 부분만 제거."
+  },
+  {
+   "path": ".cursor/rules/git-auto-commit-push.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "3-tier gate commit/push 규칙 · 레포 운영 SSOT."
+  },
+  {
+   "path": ".cursor/rules/git-safety.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "push 후 CI 감시·secrets 금지 규칙 · 레포 운영 SSOT."
+  },
+  {
+   "path": ".cursor/rules/home-presentation-freeze.mdc",
+   "class": "OBSOLETE",
+   "decision": "DELETE",
+   "stage": "10단계 Markdown 정리",
+   "reason": "Home Desktop/Mobile geometry Founder freeze · 대상 화면(apps/web) 삭제 · SSOT governance/consumer-home-approval도 OBSOLETE."
+  },
+  {
+   "path": ".cursor/rules/ide-problems.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "markdownlint/ESLint Problems 위생 + plans hardlink 이중본 규칙 · 남는 플랜(00/01/02/02.5/04/06)에 계속 적용."
+  },
+  {
+   "path": ".cursor/rules/korean-ui.mdc",
+   "class": "CUSTOMER_WEB",
+   "decision": "MOVE",
+   "stage": "10단계 Markdown 정리",
+   "reason": "쉬운한글·IT0·toneBand 화면 카피 규칙 · globs=apps/web,apps/admin,packages/ui/copy,canon 전부 삭제됨 · 고객 웹(putduk-web) 규칙으로 인계."
+  },
+  {
+   "path": ".cursor/rules/legal-out-of-plan.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "ADR-005 법무·규제 절 영구 배제 규칙 · 플랜/문서 작성 규범."
+  },
+  {
+   "path": ".cursor/rules/mockup-governance.mdc",
+   "class": "OBSOLETE",
+   "decision": "DELETE",
+   "stage": "10단계 Markdown 정리",
+   "reason": "사진 목업·Visual Contract·Approved Visual Master 화면 거버넌스 · 백엔드 적용 대상 0 · stack-lock.cjs mustExist가 잡고 있어 5단계 stack-lock 개정 후 삭제."
+  },
+  {
+   "path": ".cursor/rules/money-ledger.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "§49 복식 원장·버킷 불변·잔액 UPDATE 금지 규칙."
+  },
+  {
+   "path": ".cursor/rules/opennext-workers-origin.mdc",
+   "class": "OBSOLETE",
+   "decision": "DELETE",
+   "stage": "9단계 Cloudflare 잔재",
+   "reason": "OpenNext web/ops Workers-only 배포 규칙 · 대상 apps/web·apps/admin·infra/web·infra/ops 전부 삭제 대상."
+  },
+  {
+   "path": ".cursor/rules/peotteok-performance-target.mdc",
+   "class": "CUSTOMER_WEB",
+   "decision": "MOVE",
+   "stage": "10단계 Markdown 정리",
+   "reason": "PO LOCK 제품 시각 품질·성능 타깃(디바이스 티어·WebGL 조건) = 고객 웹 제품 규칙 · 백엔드 적용 대상 0 · putduk-web 인계."
+  },
+  {
+   "path": ".cursor/rules/pg-gateway-ban.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. §41 PG사 0 규칙은 wallet 백엔드 규칙(KEEP) · globs의 apps/** 만 제거."
+  },
+  {
+   "path": ".cursor/rules/phase-activation.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "Phase0~3 버스/스택 활성화 규칙 · stack-lock.cjs mustExist."
+  },
+  {
+   "path": ".cursor/rules/phase0-ram.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "저사양 로컬 운영 규칙 · stack-lock.cjs mustExist."
+  },
+  {
+   "path": ".cursor/rules/plan-file-serial.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. File-Serial 규칙은 유지 · 03 UI/05 PWA 플랜 직렬 언급과 ENGINE_ACCEPTED_FOR_UI 게이트 문구만 정리."
+  },
+  {
+   "path": ".cursor/rules/product-drift-lock.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. CTA·금지어 유저 surface drift(globs packages/ui/copy,apps/web)는 UI · yahoo adapter Day-1 0 항목은 백엔드 어댑터 정책 → 백엔드 항목만 남김."
+  },
+  {
+   "path": ".cursor/rules/project-isolation.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "프로젝트 격리 하드룰 · 훅 정책 SSOT."
+  },
+  {
+   "path": ".cursor/rules/project-isolation-boundary.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "격리 경계 상세 · 훅 fixture 검증 대상."
+  },
+  {
+   "path": ".cursor/rules/settlement-rule.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "MATCH_SUCCESS Rule Engine 정산 규칙 · services/engine-rust 대상."
+  },
+  {
+   "path": ".cursor/rules/stack-lock.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. 스택 잠금(Node22·pnpm·Nest·Rust·Cloudflare) 유지 · next@16·Tailwind v4·OpenNext web/ops 행 제거 · stack-lock.cjs가 next@16/Tailwind 문구를 강제하므로 검증기와 같은 커밋에서 개정."
+  },
+  {
+   "path": ".cursor/rules/standing-authorization.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "광고 자동 ACTIVE·예산 Guardrail 규칙 · 06 infra 마케팅 백엔드 정책."
+  },
+  {
+   "path": ".cursor/rules/supabase-db-only.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "Supabase=DB/migration only 규칙."
+  },
+  {
+   "path": ".cursor/rules/ui-admin-boundary.mdc",
+   "class": "OBSOLETE",
+   "decision": "DELETE",
+   "stage": "10단계 Markdown 정리",
+   "reason": "UI Owns·apps/admin 구현 금지 규칙 · 두 UI 트리 모두 삭제되어 대상 0."
+  },
+  {
+   "path": ".cursor/rules/verify-before-done.mdc",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. 슬라이스/세션 done 규칙 유지 · no-it-jargon·canon/mockup UI 게이트 행만 제거."
+  },
+  {
+   "path": ".cursor/rules/visual-master-intake.mdc",
+   "class": "CUSTOMER_WEB",
+   "decision": "MOVE",
+   "stage": "10단계 Markdown 정리",
+   "reason": "Owner 승인 Visual Master → Visual Contract → 픽셀 LOCK 절차 · 화면 전용 · putduk-web 인계."
+  },
+  {
+   "path": ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. ACTIVE Index · 01/02/02.5/04/06 백엔드 플랜 인덱스 유지 · 03 UI·05 PWA·ENGINE_ACCEPTED_FOR_UI 포인터 절 제거 · sync-plans-ssot는 ai_profit_os_*.plan.md 1개 이상만 요구."
+  },
+  {
+   "path": ".cursor/plans/ai_profit_os_01_money_c3d4e5f6.plan.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "Money & Chain 플랜 · 키워드 비율 backend 0.91."
+  },
+  {
+   "path": ".cursor/plans/ai_profit_os_02_5_engine_acceptance_qa_fd1cd7cc.plan.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "Engine Acceptance QA 플랜 · governance/engine-acceptance 증거의 SSOT."
+  },
+  {
+   "path": ".cursor/plans/ai_profit_os_02_engine_b2c3d4e5.plan.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "Engine 플랜 · 키워드 비율 backend 0.94."
+  },
+  {
+   "path": ".cursor/plans/ai_profit_os_03_ui_ux_d4e5f6a7.plan.md",
+   "class": "CUSTOMER_WEB",
+   "decision": "MOVE",
+   "stage": "10단계 Markdown 정리",
+   "reason": "UI & UX 플랜(PART0~9 · 226KB) · 대상 apps/web·packages/ui 삭제 · 고객 웹 레포 인계 · 삭제 전 legacy-plan-migration 검증기·registry(REL-017)와 함께 제거."
+  },
+  {
+   "path": ".cursor/plans/ai_profit_os_04_admin_e5f6a7b8.plan.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. Admin & Ops 플랜 · 3-mode ops·RBAC·kill-switch·정책 버전 등 관리자 API 절은 백엔드 · 12모듈 Spark 화면 절은 quality/admin-handoff로 요약 후 제거."
+  },
+  {
+   "path": ".cursor/plans/ai_profit_os_05_pwa_f6a7b8c9.plan.md",
+   "class": "CUSTOMER_WEB",
+   "decision": "MOVE",
+   "stage": "10단계 Markdown 정리",
+   "reason": "PWA & Native 플랜(Shell·Push UI·WebAuthn UX·Store) · 키워드 UI 0.67 · push 서버 계약 todo만 01/06에 발췌 후 인계."
+  },
+  {
+   "path": ".cursor/plans/ai_profit_os_06_infra_a7b8c9d0.plan.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. Infra & Marketing 플랜 · OpenNext web/ops 배포·staging preview 절 제거 · Workers/API/R7/R8 절 유지."
+  },
+  {
+   "path": ".cursor/plans/ai_profit_os_launch_54c1261e.plan.md",
+   "class": "OBSOLETE",
+   "decision": "DELETE",
+   "stage": "10단계 Markdown 정리",
+   "reason": "ARCHIVE 포인터(v7.22.25 · 224KB) · ACTIVE=00~06 · 검증기 참조 0 · AGENTS.md의 launch=ARCHIVE 행과 COMPANY_REGISTRATION_SUMMARY의 §50.9 링크 갱신 필요."
+  },
+  {
+   "path": ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. REL 136 task 단일 SSOT · REL-1xx 고객 화면·REL-20x 어드민 화면 task는 UI · REL-22x/40x/50x/60x·R7/R8은 백엔드 · KEEP 검증기(rel-40x/50x)가 todo status를 읽으므로 blockers 해소 후 분리."
+  },
+  {
+   "path": "CONSTITUTION/14_EVENT_CONTRACTS.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "이벤트 계약 헌법 · outbox/이벤트 버스 백엔드 규범."
+  },
+  {
+   "path": "CONSTITUTION/17_FINANCIAL_LEDGER_STANDARD.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "복식 원장 표준 · 키워드 backend 0.97."
+  },
+  {
+   "path": "CONSTITUTION/20_SECURITY_THREAT_MODEL.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "보안 위협 모델 · 백엔드 보안 규범."
+  },
+  {
+   "path": "CONSTITUTION/22_UX_AND_COPY_SSOT.md",
+   "class": "CUSTOMER_WEB",
+   "decision": "MOVE",
+   "stage": "10단계 Markdown 정리",
+   "reason": "UX·카피 SSOT · 키워드 UI 0.89 · 고객 웹 규범 · putduk-web 인계."
+  },
+  {
+   "path": "CONSTITUTION/23_PWA_AND_NATIVE_EXPERIENCE.md",
+   "class": "CUSTOMER_WEB",
+   "decision": "MOVE",
+   "stage": "10단계 Markdown 정리",
+   "reason": "PWA·네이티브 경험 헌법 · UI 0.83 · push 서버 계약은 14/41 등 백엔드 헌법에 남음."
+  },
+  {
+   "path": "CONSTITUTION/24_FREE_TIER_AND_STORE_BRIDGE.md",
+   "class": "CUSTOMER_WEB",
+   "decision": "MOVE",
+   "stage": "10단계 Markdown 정리",
+   "reason": "무료 티어·스토어 브리지(앱 스토어/PWA 설치) · 화면·배포 채널 규범 · 백엔드 키워드 0."
+  },
+  {
+   "path": "CONSTITUTION/25_KOREAN_FIRST_UX_POLICY.md",
+   "class": "CUSTOMER_WEB",
+   "decision": "MOVE",
+   "stage": "10단계 Markdown 정리",
+   "reason": "한국어 우선 UX 정책 · 화면 카피 규범 · UI 0.73."
+  },
+  {
+   "path": "CONSTITUTION/26_PERFORMANCE_AND_RESPONSIVE_UX.md",
+   "class": "CUSTOMER_WEB",
+   "decision": "MOVE",
+   "stage": "10단계 Markdown 정리",
+   "reason": "성능·반응형 UX 헌법 · 백엔드 키워드 0."
+  },
+  {
+   "path": "CONSTITUTION/27_MARKETING_AND_SEO_ENGINE.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. 마케팅 어트리뷰션·CAPI(백엔드 services/marketing-attribution·workers/marketing-capi-dispatcher) 절 유지 · SEO/랜딩 화면 절은 인계."
+  },
+  {
+   "path": "CONSTITUTION/28_LUX_FINTECH_DESIGN_AND_MOTION.md",
+   "class": "OBSOLETE",
+   "decision": "DELETE",
+   "stage": "10단계 Markdown 정리",
+   "reason": "Lux 디자인 시스템·모션 헌법 · Lux/SparkDash 잔재 제거 대상 · 백엔드 키워드 0."
+  },
+  {
+   "path": "CONSTITUTION/35_GROWTH_CONVERSION_PRESENTATION.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. 성장·전환 프레젠테이션 · growth 공개 surface API(services/api-nest/src/growth)는 백엔드 · 표시 규범은 인계."
+  },
+  {
+   "path": "CONSTITUTION/36_ADMIN_PRICE_AND_PROFIT_SYNC.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "가격·수익 동기화 관리자 정책 · price-override 엔진 근거."
+  },
+  {
+   "path": "CONSTITUTION/37_WALLET_AND_USER_ADMIN_OPS.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "지갑·유저 관리자 운영 정책 · admin API 근거."
+  },
+  {
+   "path": "CONSTITUTION/38_TRUST_EDUCATION_AND_REVENUE_TRANSPARENCY.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. 수익 투명성(수수료 공개 규칙)은 백엔드 정책 · 신뢰 교육 화면 절은 인계."
+  },
+  {
+   "path": "CONSTITUTION/39_USER_FINANCIAL_LEDGER.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "유저 재무 원장 헌법 · ledger 백엔드 규범."
+  },
+  {
+   "path": "CONSTITUTION/40_ADMIN_ISOLATED_OPS_PLATFORM.md",
+   "class": "FUTURE_ADMIN_REQUIREMENT",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "어드민 격리 운영 플랫폼(§40) · 미래 어드민 레포 요구사항 + admin API 격리 정책 근거."
+  },
+  {
+   "path": "CONSTITUTION/41_ONCHAIN_USDT_AND_KRW_DEPOSIT.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "온체인 USDT·KRW 입금 헌법 · wallet 백엔드 규범."
+  },
+  {
+   "path": "CONSTITUTION/42_KYC_WITHDRAW_ONE_TIME_GATE.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "KYC 1회 출금 게이트 정책 · compliance 백엔드 규범 (화면 게이트 문구는 부속)."
+  },
+  {
+   "path": "CONSTITUTION/43_CHAIN_SETTLEMENT_HARDENING.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "체인 정산 하드닝 · sweeper/watcher 백엔드 규범."
+  },
+  {
+   "path": "CONSTITUTION/44_SIGNUP_READY_MARKET_SOURCES.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "가입 가능 마켓 소스 · 어댑터 정책."
+  },
+  {
+   "path": "CONSTITUTION/45_PRICE_COMPARE_MARGIN_UX.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. 마진 계산식(pricing-formula 백엔드)은 유지 · 가격 비교 화면 UX 절은 인계."
+  },
+  {
+   "path": "CONSTITUTION/46_CAPITAL_TIER_CATALOG.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "자본 구간 카탈로그 · 엔진 정책."
+  },
+  {
+   "path": "CONSTITUTION/46b_ASSET_IMAGE_SSOT.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. R2 asset-images 버킷·Admin upsert(백엔드) 절 유지 · OpportunityCard 썸네일 표시 절은 인계."
+  },
+  {
+   "path": "CONSTITUTION/47_PERSONAL_AI_USER_TWIN.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "Personal AI·User Twin 헌법 · ai-platform/user-twin-service 규범."
+  },
+  {
+   "path": "CONSTITUTION/48_AI_EXECUTION_ROOM_AND_POLICY.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. AI 실행 정책·Rule Engine 절은 백엔드 · Execution Room 화면 절은 인계."
+  },
+  {
+   "path": "CONSTITUTION/49_PRINCIPAL_RETENTION_AND_PROFIT_WITHDRAW.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "원금 보유·수익 출금 정책 · wallet 백엔드 규범."
+  },
+  {
+   "path": "CONSTITUTION/50_SETTINGS_LEGAL_AND_PLAIN_KOREAN.md",
+   "class": "CUSTOMER_WEB",
+   "decision": "MOVE",
+   "stage": "10단계 Markdown 정리",
+   "reason": "설정·약관 화면·쉬운 한국어 카피 헌법 · UI 0.67 · 운영자 법인 정보 SSOT는 schemas/operator-entity.v1.json에 남음."
+  },
+  {
+   "path": "CONSTITUTION/51_PLATFORM_COMPLETENESS_AND_RULE_ENGINE.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "플랫폼 완결성·Rule Engine 헌법 · engine-rust 근거."
+  },
+  {
+   "path": "CONSTITUTION/51_REFERRAL_VIRAL_LADDER.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "추천 사다리 정책 · referral 백엔드 규범."
+  },
+  {
+   "path": "AGENTS.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. 에이전트 가이드 · next@16·Tailwind v4·Canon/Brand/Lux·launch ARCHIVE·03 UI 직렬 행 제거 · 백엔드 읽기 순서·연동 SSOT·3-tier 규칙 유지."
+  },
+  {
+   "path": "TOOLCHAIN.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence. 툴체인 문서 · Next/Tailwind/OpenNext 절 제거 · Node22·pnpm·Nest·Rust·wrangler 절 유지 · stack-lock.cjs mustExist."
+  },
+  {
+   "path": "COMPANY_REGISTRATION_SUMMARY.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "10단계 Markdown 정리",
+   "reason": "운영 법인 KYB 요약(내부용) · 법률 문서 편집 금지 · SSOT 링크(launch plan §50.9)만 schemas/operator-entity.v1.json 으로 갱신."
+  },
+  {
+   "path": "FOOTER_LICENSE_COPY.md",
+   "class": "OBSOLETE",
+   "decision": "DELETE",
+   "stage": "10단계 Markdown 정리",
+   "reason": "preownedwatches.ae WordPress 푸터용 영문 복붙 문구 · 백엔드도 putduk-web도 아닌 외부 사이트용 · 법인/라이선스 SSOT는 schemas/operator-entity.v1.json 유지 (삭제 전 오너 확인 권장)."
+  },
+  {
+   "path": "PRE_IMPLEMENTATION_MASTER_AUDIT.md",
+   "class": "OBSOLETE",
+   "decision": "DELETE",
+   "stage": "10단계 Markdown 정리",
+   "reason": "2026-08-09 구현 전 감사 · 본문이 플랜 v7.22.29 흡수 완료를 명시 · 코드/검증기 참조 0 · 이력은 git에 보존."
+  },
+  {
+   "path": ".gitignore",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "UI artifact ignore rules (.next/.open-next/playwright-report) removed. Remaining ignores are backend/toolchain."
+  },
+  {
+   "path": ".cursorignore",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "UI artifact ignore rules (.next/.open-next/playwright-report) removed. Agent index skip list is backend-only."
+  },
+  {
+   "path": ".env.example",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "NEXT_PUBLIC_* customer-web vars removed. Nest/Workers/VAPID server vars + ROOT_DOMAIN remain."
+  },
+  {
+   "path": ".husky/pre-push",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "NEXT_DEV_WEBPACK export removed. Hook runs pnpm verify:gate:push only."
+  },
+  {
+   "path": ".vscode/settings.json",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "tailwindCSS.files.exclude and UI artifact exclude entries removed. markdownlint/TS server/low-spec settings remain."
+  },
+  {
+   "path": ".vscode/extensions.json",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "bradlc.vscode-tailwindcss recommendation removed."
+  },
+  {
+   "path": "tooling/release/artifact-provenance.cjs",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "API/worker provenance helpers only. not_web_kind guard kept (API artifact must declare it is not a web bundle)."
+  },
+  {
+   "path": "tooling/github/main-gate.ruleset.json",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "Draft body for official-basis 9.1: context backend-required. Live PUT blocked by apply-main-gate.ps1 until AIPO_APPLY_LIVE_RULESET=1."
+  },
+  {
+   "path": "tooling/verify/root-domain-env.cjs",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "T1 + deploy-cloudflare. SCAN_PATHS are domain.manifest / hosts.manifest / api-stub wrangler. ROOT_DOMAIN required in .env.example."
+  },
+  {
+   "path": "tooling/schemas/_write-trade-license-html.cjs",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "Writes docs/kyb/trade-license HTML only. Customer-web public/kyb copy removed."
+  },
+  {
+   "path": "governance/pwa/DAY1_CERTIFICATION.md",
+   "class": "OBSOLETE",
+   "decision": "DELETE",
+   "stage": "7단계 governance 증거 정리",
+   "reason": "REL-023 Day-1 PWA 인증 문서 · 대상 manifest.webmanifest·sw.js·PwaRuntime 삭제됨 · 보유 검증기 pwa-day1-certification은 SPLIT 대상."
+  },
+  {
+   "path": "governance/pwa/day1-checklist.v1.json",
+   "class": "OBSOLETE",
+   "decision": "DELETE",
+   "stage": "7단계 governance 증거 정리",
+   "reason": "REL-023 PWA 체크리스트 · 화면 인증 항목 · pwa-day1-certification-harness(SPLIT)가 유일 소비자."
+  },
+  {
+   "path": "governance/pwa/VAPID.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "VAPID 키 경로 문서 · OWNER=tooling/pwa/generate-vapid.mjs (서버 push 발송)."
+  },
+  {
+   "path": "governance/pwa/push-channel-filter.v1.json",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "REL-021 자동 Push 채널 필터 계약 · workers/push-dispatcher channel-filter.cjs 근거."
+  },
+  {
+   "path": "governance/pwa/push-kill.v1.json",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "REL-020 pushEnabled kill-switch 계약 · adminPath /api/v1/admin/system-control/push."
+  },
+  {
+   "path": "governance/pwa/webauthn-rp.v1.json",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "WebAuthn RP id/origin 계약(rpId=hiptk.app) · Nest webauthn-rp.ts 근거 · haptics UX 필드는 무시."
+  },
+  {
+   "path": "governance/release-master/REL-017-LEGACY-PLAN-STAMP.md",
+   "class": "OBSOLETE",
+   "decision": "DELETE",
+   "stage": "10단계 Markdown 정리",
+   "reason": "REL-017 레거시 플랜 스탬프 증거 · 검증기·레지스트리·스탬프 스크립트와 함께 제거."
+  },
+  {
+   "path": "governance/release-master/REL-020-PUSH-BADGE.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "push-dispatcher kill-switch·dispatch 증거(서버) · badge UI 절은 부속."
+  },
+  {
+   "path": "governance/release-master/REL-021-PUSH-CHANNEL-FILTER.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "push-dispatcher 채널 필터 증거(서버)."
+  },
+  {
+   "path": "schemas/support-ticket.v1.json",
+   "class": "BACKEND_CONTRACT",
+   "decision": "KEEP",
+   "stage": "8단계 패키지 정리",
+   "reason": "소비자 0 · 고객지원 티켓 서버 계약 초안 · 8단계에서 구현 착수 여부로 폐기 결정."
+  },
+  {
+   "path": "schemas/tendency-memo.v1.json",
+   "class": "BACKEND_CONTRACT",
+   "decision": "KEEP",
+   "stage": "8단계 패키지 정리",
+   "reason": "소비자 0 · AI 성향 메모(User Twin) 서버 계약 초안 · 8단계 재확인."
+  },
+  {
+   "path": "schemas/user-attribution.v1.json",
+   "class": "BACKEND_CONTRACT",
+   "decision": "KEEP",
+   "stage": "8단계 패키지 정리",
+   "reason": "소비자 0 · marketing-attribution 서버 계약 초안 · 8단계 재확인."
+  },
+  {
+   "path": "schemas/user-financial-summary.v1.json",
+   "class": "BACKEND_CONTRACT",
+   "decision": "KEEP",
+   "stage": "8단계 패키지 정리",
+   "reason": "소비자 0 · 유저 재무 요약(원장 집계) 서버 계약 초안 · 8단계 재확인."
+  },
+  {
+   "path": "tooling/verify/backend/**/*.cjs",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "5단계 mixed 분리 산출물 · 원본 mixed 검증기(SHA 86f15964)에서 백엔드 어서션만 옮긴 테스트 · UI 어서션은 quality/putduk-web-ui-assertions-handoff.md 기록 후 제거 · 러너 backend/run-all.cjs(verify:backend · T1)."
+  },
+  {
+   "path": "tooling/verify/backend/run-all.cjs",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "verify:backend 러너 · tooling/verify/backend/**/*.cjs 전부 순차 실행 · 하나라도 FAIL이면 exit 1 · 0개면 FAIL · skip 없음 · gate-tiers T1_PUSH 등재."
+  },
+  {
+   "path": "tooling/e2e/helpers/auth-session.cjs",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "in-process QA isolation session helper required by qa-env-isolation-guard (KEEP HTTP/in-process harness family). Ownership DELETE was QA-lab browser binding; helper itself is not a browser spec."
+  },
+  {
+   "path": "README.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "tooling/e2e/README.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "tooling/verify/CATALOG.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "docs/CONSTITUTION_BOOTSTRAP.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "governance/platform-redesign/governance-observations.v1.json",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "governance/platform-redesign/baseline.v1.json",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "governance/platform-redesign/route-contract-matrix.v1.json",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "governance/platform-redesign/fact-state-registry.v1.json",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "governance/platform-redesign/change-control.v1.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "governance/visual-reconciliation/PUTDUK_UI_VISUAL_MATRIX.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "governance/visual-reconciliation/PUTDUK_UI_VISUAL_MATRIX.json",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "governance/responsive/home-geometry-lock.v1.json",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "governance/responsive/large-screen-safety.v1.json",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "[5th-stage] kept after split or KEEP verifier evidence"
+  },
+  {
+   "path": "tooling/verify/governance-observation-registry.cjs",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP",
+   "stage": "-",
+   "reason": "Backend observation registry (money/engine gaps). platform-redesign JSON files it reads are KEEP BACKEND_DOC."
+  }
+ ]
+}

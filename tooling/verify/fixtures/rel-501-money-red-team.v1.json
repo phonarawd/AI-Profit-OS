@@ -13,7 +13,6 @@
   "deps": ["REL-006", "REL-007", "REL-008", "REL-015", "REL-500"],
   "extraVerifies": [
     "qa-env-isolation-guard.cjs",
-    "money-unavailable.cjs",
     "idempotency-conflict-detection.cjs",
     "user-ledger-query.cjs"
   ],

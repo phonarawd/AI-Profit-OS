@@ -1,6 +1,6 @@
 ---
 description: §47 Personal AI — P/G/S 레인 · Fact-only · money mutate 0 · 퍼뜩
-globs: "services/**/ai/**,apps/web/**/peotteok/**,packages/ui/copy/**/coach/**,packages/ui/copy/**/peotteok/**"
+globs: "services/**/ai/**"
 alwaysApply: false
 ---
 
@@ -25,4 +25,4 @@ alwaysApply: false
 
 ## CI (done 전)
 
-`verify:ai-coach-fact-only` · `verify:ai-coach-no-autonomy` · `verify:ai-general-no-money-tools` · `verify:ai-lane-router` · `verify:llm-adapter-contract` · `verify:llm-quota-degrade` · `verify:fact-freshness` · `verify:answer-trace`
+`verify:backend`(ai-policy/ai-coach-fact-only · ai-coach-runtime) · `verify:ai-coach-no-autonomy` · `verify:ai-general-no-money-tools` · `verify:ai-lane-router` · `verify:llm-adapter-contract` · `verify:llm-quota-degrade` · `verify:fact-freshness` · `verify:answer-trace`

@@ -32,12 +32,12 @@ const required = [
   "services/api-nest/src/push/push-kill.admin.controller.ts",
   "services/api-nest/src/push/push-emit.service.ts",
   "services/api-nest/src/push/push-kill.service.ts",
-  "packages/sdk/src/push/subscribe.ts",
-  "apps/web/components/pwa/PushOptIn.tsx",
   "tooling/pwa/pwa-push-badge-harness.cjs",
   "tooling/pwa/pwa-push-badge.spec.cjs",
 ];
 for (const rel of required) read(rel);
+// UI assertions (sdk push client · PushOptIn · web sw.js push/badge · pwa copy jargon) moved to
+// quality/putduk-web-ui-assertions-handoff.md (putduk-web owns them). Backend + harness assertions remain below.
 
 const worker = read("workers/push-dispatcher/src/index.ts");
 if (/status:\s*["']stub_accepted["']/.test(worker)) {
@@ -50,17 +50,6 @@ if (!worker.includes("handleDispatcherRequest")) {
 const core = read("workers/push-dispatcher/src/lib/dispatch.cjs");
 if (!core.includes('status: "killed"') || !core.includes("sendAttempted: false")) {
   fails.push("dispatch core must fail-closed on kill");
-}
-
-const sw = read("apps/web/public/sw.js");
-if (!/addEventListener\(\s*["']push["']/.test(sw)) {
-  fails.push("SW must handle push");
-}
-if (!sw.includes("setAppBadge") && !sw.includes("applyBadge")) {
-  fails.push("SW must apply badge");
-}
-if (/PublicKeyCredential|webauthn/i.test(sw)) {
-  fails.push("REL-020 must not mix WebAuthn (REL-022)");
 }
 
 const user = read("services/api-nest/src/push/push.user.controller.ts");
@@ -121,18 +110,6 @@ if (rel020Applied) {
   fails.push("REL-020 migration must be committedUnapplied (no production apply)");
 }
 
-const sdkPkg = read("packages/sdk/package.json");
-if (!sdkPkg.includes('"./push"')) {
-  fails.push("sdk package.json must export ./push");
-}
-
-const copy = read("apps/web/components/pwa/copy.ts");
-for (const jargon of ["API", "PWA", "VAPID", "Service Worker", "NATS"]) {
-  if (copy.includes(`"${jargon}"`) || copy.includes(`'${jargon}'`)) {
-    fails.push(`user copy must not include ${jargon}`);
-  }
-}
-
 const {
   runPushBadgeQaCases,
   runDispatcherHttpCases,
@@ -184,7 +161,7 @@ Promise.resolve(runDispatcherHttpCases())
       process.exit(1);
     }
     console.log(
-      "[verify:pwa-push-badge] PASS (subscribe+SW badge+kill · secret 0 · stub_accepted 0)",
+      "[verify:pwa-push-badge] PASS (dispatcher kill · Nest push controllers · VAPID · migration · harness · secret 0 · stub_accepted 0 · UI assertions handed off)",
     );
   })
   .catch((err) => {

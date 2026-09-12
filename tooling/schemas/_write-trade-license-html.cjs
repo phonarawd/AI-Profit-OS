@@ -53,7 +53,6 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border:1px solid 
 
 const root = path.resolve(__dirname, "../..");
 const targets = [
-  path.join(root, "apps/web/public/kyb/trade-license-1135431.html"),
   path.join(root, "docs/kyb/trade-license-1135431.html"),
 ];
 

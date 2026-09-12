@@ -222,7 +222,6 @@ if (mig.includes("CREATE TABLE public.money_circuit")) {
   auditCore.resetAuditSink();
   core.resetMemory();
 
-  const page = read("apps/admin/app/admin/system-control/page.tsx");
   const serverReady =
     fs.existsSync(
       path.join(
@@ -240,32 +239,11 @@ if (mig.includes("CREATE TABLE public.money_circuit")) {
       ),
     );
   if (!serverReady) fails.push("EXIT_GATE: server kill-switch missing");
-  if (page.includes("window.confirm") && !serverReady) {
-    fails.push("EXIT_GATE: UI only — server enforce missing");
-  }
-  for (const id of [
-    "GLOBAL_OPPORTUNITY_PAUSE",
-    "GLOBAL_MATCHING_PAUSE",
-    "GLOBAL_WITHDRAW_PAUSE",
-    "GLOBAL_DEPOSIT_PAUSE",
-    "GLOBAL_ALL_PAUSE",
-  ]) {
-    if (!page.includes(id)) {
-      fails.push("system-control must publish " + id);
-    }
-  }
-  if (!page.includes("/api/v1/admin/system-control/switches")) {
-    fails.push("system-control must name the switches API");
-  }
-
-  const webAdmin = path.join(root, "apps/web/app/admin");
-  if (fs.existsSync(webAdmin)) {
-    fails.push("apps/web must not grow /admin");
-  }
+  // admin system-control page (5 GLOBAL_* switch ids · switches API name): future admin repo (quality/admin-handoff)
 
   const pkg = read("package.json");
   const catalog = read("tooling/verify/CATALOG.md");
-  const gate = read(".github/workflows/gate.yml");
+  const gate = read(".github/workflows/backend-ci.yml");
   const spec = read("governance/admin/kill-switch-9.md");
   const evidence = read("governance/release-master/REL-406-KILL-SWITCH.md");
   const control = read("governance/admin/control-plane-superset.md");
@@ -276,7 +254,7 @@ if (mig.includes("CREATE TABLE public.money_circuit")) {
     fails.push("CATALOG missing rel-406-kill-switch");
   }
   if (!gate.includes("verify:rel-406-kill-switch")) {
-    fails.push("gate.yml must run verify:rel-406-kill-switch");
+    fails.push("backend-ci.yml must run verify:rel-406-kill-switch");
   }
   for (const needle of [
     "LOCKED_SWITCHES = 9",

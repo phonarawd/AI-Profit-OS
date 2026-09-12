@@ -88,7 +88,6 @@ const ctrl = read(
 );
 const app = read("services/api-nest/src/app.module.ts");
 const caps = read("services/api-nest/src/common/admin-capabilities.ts");
-const routes = read("apps/admin/routes.ts");
 
 if (!app.includes("SourcePolicyModule")) {
   fails.push("AppModule must import SourcePolicyModule");
@@ -108,10 +107,7 @@ if (/UPDATE\s+public\.admin_policy_versions/i.test(svc)) {
 if (/UPDATE\s+public\.ledger/i.test(svc)) {
   fails.push("source-policy must not write ledger");
 }
-if (!/ADMIN_TOP_LEVEL_COUNT\s*=\s*12/.test(routes)) {
-  fails.push("sidebar must stay 12");
-}
-if (/id: 13/.test(routes)) fails.push("must not add 13th sidebar module");
+// admin sidebar (ADMIN_TOP_LEVEL_COUNT 12 · no 13th module): future admin repo (quality/admin-handoff)
 
 const mig = read("supabase/migrations/20260823210000_admin_policy_versions.sql");
 for (const needle of [
@@ -140,12 +136,9 @@ if (fixtureMig.rel701db && fixtureMig.rel701db.status === "APPLIED") {
   fails.push("20260823210000 must stay committedUnapplied");
 }
 
-const webAdmin = path.join(root, "apps/web/app/admin");
-if (fs.existsSync(webAdmin)) fails.push("apps/web must not grow /admin");
-
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
-const gate = read(".github/workflows/gate.yml");
+const gate = read(".github/workflows/backend-ci.yml");
 const spec = read("governance/admin/source-policy-version.md");
 const evidence = read("governance/release-master/REL-224-SOURCE-POLICY.md");
 if (!pkg.includes("verify:rel-224-source-policy")) {
@@ -155,7 +148,7 @@ if (!catalog.includes("rel-224-source-policy")) {
   fails.push("CATALOG missing rel-224-source-policy");
 }
 if (!gate.includes("verify:rel-224-source-policy")) {
-  fails.push("gate.yml must run verify:rel-224-source-policy");
+  fails.push("backend-ci.yml must run verify:rel-224-source-policy");
 }
 for (const needle of [
   "LOCKED_LABELS = 3",

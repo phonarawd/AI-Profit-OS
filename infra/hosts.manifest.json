@@ -3,28 +3,18 @@
   "domainManifest": "infra/domain.manifest.json",
   "rootDomain": "hiptk.app",
   "bus": "in-process",
-  "forbiddenDay1": ["nats", "temporal", "eks", "vercel"],
+  "forbiddenDay1": [
+    "nats",
+    "temporal",
+    "eks",
+    "vercel"
+  ],
   "compose": {
     "file": "docker-compose.dev.yml",
     "required": false,
     "note": "ADR-016 Docker-less default — remote Supabase Seoul + Upstash"
   },
   "hosts": {
-    "web": {
-      "project": "ai-profit-web",
-      "runtime": "opennext-workers",
-      "app": "apps/web",
-      "envHost": "APP_HOST",
-      "wrangler": "infra/web/wrangler.toml"
-    },
-    "ops": {
-      "project": "ai-profit-ops",
-      "runtime": "opennext-workers",
-      "app": "apps/admin",
-      "envHost": "OPS_HOST",
-      "wrangler": "infra/ops/wrangler.toml",
-      "accessPolicy": "infra/ops/access-policy.json"
-    },
     "api": {
       "runtime": "node-nest",
       "service": "services/api-nest",
@@ -50,6 +40,8 @@
       "config": "infra/r2/kyc-docs.toml"
     }
   },
-  "workersPhase0": ["push-dispatcher"],
-  "notes": "Runtime P0=$0 path · OpenNext Cloudflare Workers only(origin=domain.manifest openNext) + Supabase Seoul + Upstash · pages deploy/pages.dev origin/Vercel/NATS/Temporal/EKS=0"
+  "workersPhase0": [
+    "push-dispatcher"
+  ],
+  "notes": "Runtime P0=$0 path · Nest API + Supabase Seoul + Upstash · customer web/ops hosts are DNS facts in domain.manifest.env · pages deploy/Vercel/NATS/Temporal/EKS=0"
 }

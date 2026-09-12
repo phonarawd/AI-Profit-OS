@@ -32,8 +32,6 @@ const files = [
   "services/api-nest/src/adapters/adapters.routes.ts",
   "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts",
   "workers/ebay-adapter/src/index.ts",
-  "apps/admin/app/admin/adapters/page.tsx",
-  "packages/ui/canon/surfaces/admin-adapters.wire.json",
 ];
 for (const f of files) mustExist(f);
 
@@ -308,21 +306,7 @@ if (!/assetId:\s*`query:\$\{query\}`/.test(worker)) {
   fails.push("ebay-adapter still emits query: hint for Nest resolve");
 }
 
-const adminPage = read("apps/admin/app/admin/adapters/page.tsx");
-if (!adminPage.includes('data-testid="identity-review-queue"')) {
-  fails.push("admin adapters page missing identity-review-queue surface");
-}
-if (!adminPage.includes("identity-review-queue")) {
-  fails.push("admin page must reference identity-review-queue API");
-}
-
-const wire = read("packages/ui/canon/surfaces/admin-adapters.wire.json");
-if (!wire.includes("identity_review_queue")) {
-  fails.push("admin-adapters.wire missing identity_review_queue block");
-}
-if (!wire.includes("unmatched_silent_drop")) {
-  fails.push("admin-adapters.wire forbidden must include unmatched_silent_drop");
-}
+// admin adapters page (identity-review-queue surface) · admin-adapters canon wire: future admin repo (quality/admin-handoff · handoff 1d)
 
 const pkg = read("package.json");
 if (!pkg.includes("verify:ebay-identity-ingest")) {

@@ -22,7 +22,7 @@ function read(rel) {
 const spec = loadSpec();
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
-const gate = read(".github/workflows/gate.yml");
+const gate = read(".github/workflows/backend-ci.yml");
 const exceptionsMd = read("governance/security/AUDIT_EXCEPTIONS.md");
 const evidence = read("governance/release-master/REL-402-DEPENDENCY-AUDIT.md");
 
@@ -89,13 +89,13 @@ if (!catalog.includes("rel-402-dependency-audit")) {
   fails.push("CATALOG missing rel-402-dependency-audit");
 }
 if (!gate.includes("AIPO_AUDIT")) {
-  fails.push("gate.yml must set AIPO_AUDIT for the CI scan");
+  fails.push("backend-ci.yml must set AIPO_AUDIT for the CI scan");
 }
 if (!gate.includes("verify:rel-402-dependency-audit")) {
-  fails.push("gate.yml must run verify:rel-402-dependency-audit");
+  fails.push("backend-ci.yml must run verify:rel-402-dependency-audit");
 }
 if (gate.includes("ignore-registry-errors")) {
-  fails.push("gate.yml must not swallow registry audit errors");
+  fails.push("backend-ci.yml must not swallow registry audit errors");
 }
 if (!evidence.includes("STATUS = COMPLETED")) {
   fails.push("REL-402 evidence must be COMPLETED");

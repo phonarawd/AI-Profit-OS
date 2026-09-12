@@ -1,6 +1,6 @@
 ---
 description: ADR-006 — User Auth = Nest JWT only. Supabase Auth 금지.
-globs: "**/auth/**,**/session/**,apps/**/login/**,services/**/api*/**"
+globs: "**/auth/**,**/session/**,services/**/api*/**"
 alwaysApply: false
 ---
 

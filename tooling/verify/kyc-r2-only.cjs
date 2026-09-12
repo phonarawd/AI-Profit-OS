@@ -1,6 +1,7 @@
 /**
  * verify:kyc-r2-only — Money §42.2.1
- * apps/web: R2 public URL hardcoding 0 · bucket kyc-docs private · key pattern kyc/
+ * bucket kyc-docs private · key pattern kyc/ · signed URL TTL cap · server code has no R2 public URL hardcoding
+ * (customer web public-URL scan + T.kyc copy: putduk-web · quality/putduk-web-ui-assertions-handoff.md 1d)
  */
 const fs = require("fs");
 const path = require("path");
@@ -19,12 +20,7 @@ function read(rel) {
 function walk(dir, onFile) {
   if (!fs.existsSync(dir)) return;
   for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
-    if (
-      ent.name === "node_modules" ||
-      ent.name === ".next" ||
-      ent.name === "dist" ||
-      ent.name === "coverage"
-    ) {
+    if (ent.name === "node_modules" || ent.name === "dist" || ent.name === "coverage") {
       continue;
     }
     const p = path.join(dir, ent.name);
@@ -79,26 +75,20 @@ if (!/"publicUrl"/.test(schema)) {
   fails.push("schema must explicitly ban publicUrl");
 }
 
-// apps/web — no R2 public URL hardcoding
+// compliance server code — no R2 *public* URL hardcoding. The S3 signing host
+// (<account>.r2.cloudflarestorage.com) is the private server-side endpoint and stays allowed.
 const ban =
-  /(?:pub-[a-z0-9]+\.r2\.dev|r2\.cloudflarestorage\.com|https?:\/\/[^"'`\s]*kyc-docs[^"'`\s]*|R2_PUBLIC|publicUrl\s*[:=]\s*['"]https?:)/i;
+  /(?:pub-[a-z0-9]+\.r2\.dev|https?:\/\/[^"'`\s]*kyc-docs[^"'`\s]*|R2_PUBLIC|publicUrl\s*[:=]\s*['"]https?:)/i;
 
-const webRoot = path.join(root, "apps/web");
-walk(webRoot, (file) => {
-  if (!/\.(ts|tsx|js|jsx|css|json|md)$/.test(file)) return;
+walk(path.join(root, "services/api-nest/src/compliance"), (file) => {
+  if (!/\.(ts|js|json)$/.test(file)) return;
   const t = fs.readFileSync(file, "utf8");
   if (ban.test(t)) {
     fails.push(
-      `apps/web R2 public URL hardcoding forbidden: ${path.relative(root, file)}`,
+      `compliance R2 public URL hardcoding forbidden: ${path.relative(root, file)}`,
     );
   }
 });
-
-// copy must not instruct public R2
-const copy = read("packages/ui/copy/ko/kyc.ts");
-if (/r2\.dev|cloudflarestorage|publicUrl/i.test(copy)) {
-  fails.push("T.kyc copy must not mention public R2 URLs");
-}
 
 const envEx = read(".env.example");
 if (!envEx.includes("R2_KYC_BUCKET=kyc-docs")) {
@@ -111,5 +101,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:kyc-r2-only] PASS (private kyc-docs · key kyc/…enc · signed ≤5m · web public URL 0)",
+  "[verify:kyc-r2-only] PASS (private kyc-docs · key kyc/…enc · signed ≤5m · compliance public URL 0)",
 );

@@ -75,8 +75,6 @@ if (!guard.includes("cookies?")) {
 const adminCookies =
   read("services/api-nest/src/common/admin-session.cookies.ts") +
   read("services/api-nest/src/common/admin-session.csrf.ts");
-const adminBar = read("apps/admin/components/AdminSessionBar.tsx");
-const adminApi = read("apps/admin/lib/admin-api.ts");
 if (!adminCookies.includes('ADMIN_SESSION_COOKIE_NAME = "aipo_admin_session"')) {
   fails.push("admin session cookie must be aipo_admin_session");
 }
@@ -92,12 +90,7 @@ if (adminToken.includes("/^Bearer") || userGuard.includes("/^Bearer")) {
 if (!bearer.includes("BEARER_HEADER_MAX") || !bearer.includes("foldAscii")) {
   fails.push("bearer-header must stay a bounded linear scan");
 }
-if (adminBar.includes("sessionStorage") || adminApi.includes("sessionStorage")) {
-  fails.push("admin UI must not store a privileged bearer in sessionStorage");
-}
-if (adminApi.includes("Authorization") && adminApi.includes("Bearer")) {
-  fails.push("admin-api must not attach a JS-held Authorization bearer");
-}
+// admin UI (AdminSessionBar · admin-api.ts) sessionStorage/Authorization bearer assertions: future admin repo (quality/admin-handoff)
 
 const pkg = read("services/api-nest/package.json");
 if (!pkg.includes('"cookie-parser"')) {

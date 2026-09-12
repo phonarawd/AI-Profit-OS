@@ -2,18 +2,6 @@
   "rel": "REL-506",
   "measured": true,
   "inventedSlo": 0,
-  "openNextAssets": {
-    "web": {
-      "wrangler": "infra/web/wrangler.toml",
-      "binding": "ASSETS",
-      "directory": "../../apps/web/.open-next/assets"
-    },
-    "ops": {
-      "wrangler": "infra/ops/wrangler.toml",
-      "binding": "ASSETS",
-      "directory": "../../apps/admin/.open-next/assets"
-    }
-  },
   "dynamicCacheRules": 0,
   "cacheControlInventory": 0,
   "r2": [
@@ -27,5 +15,6 @@
       "bucket": "asset-images",
       "publicAccess": true
     }
-  ]
+  ],
+  "openNextHandedOff": 1
 }

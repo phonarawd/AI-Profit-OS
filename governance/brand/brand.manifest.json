@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "status": "backend-repo-name-lock",
+  "note": "Consumer UI lives in phonarawd/putduk-web. Name lock only.",
+  "platform": {
+    "name": "AI Profit OS"
+  },
+  "consumer": {
+    "name": "퍼뜩",
+    "short_name": "퍼뜩",
+    "retired_names": [
+      "오늘수익",
+      "바로번다"
+    ]
+  },
+  "ai": {
+    "name": "퍼뜩"
+  }
+}

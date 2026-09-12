@@ -35,7 +35,7 @@ const plan = read(".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md");
 const cert = read("governance/release-master/R8_INFRA_CORE.md");
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
-const gate = read(".github/workflows/gate.yml");
+const gate = read(".github/workflows/backend-ci.yml");
 const domain = read("tooling/verify/domain-by-path.cjs");
 const manifest = readJson("infra/domain.manifest.json");
 const sink = readJson("governance/observability/error-sink.v1.json");
@@ -43,8 +43,6 @@ const engineCert = read("governance/engine-acceptance/FINAL_ACCEPTANCE.md");
 const r6 = read("governance/admin/R6_CERTIFICATION.md");
 const versioning = read("governance/release-master/VERSIONING.md");
 const runbook = read("governance/release-master/ROLLBACK_RUNBOOK.md");
-const webToml = read("infra/web/wrangler.toml");
-const opsToml = read("infra/ops/wrangler.toml");
 const kycToml = read("infra/r2/kyc-docs.toml");
 const assetToml = read("infra/r2/asset-images.toml");
 
@@ -138,22 +136,16 @@ if (!cert.includes("DEFERRED not aligned")) {
   fails.push("cert must keep deferred rows instead of hiding gaps");
 }
 
-if (manifest.openNext?.runtime !== "workers") {
-  fails.push("domain.manifest openNext.runtime must be workers");
+if (manifest.openNext) {
+  fails.push("domain.manifest openNext must be handed off");
 }
 const env = manifest.env || {};
 if (env.APP_HOST !== "app.hiptk.app") fails.push("APP_HOST must stay app.hiptk.app");
 if (env.OPS_HOST !== "ops.hiptk.app") fails.push("OPS_HOST must stay ops.hiptk.app");
 if (env.API_HOST !== "api.hiptk.app") fails.push("API_HOST must stay api.hiptk.app");
-const forbidden = manifest.openNext?.forbiddenDeploy || [];
+const forbidden = manifest.forbiddenDeploy || [];
 if (!forbidden.some((x) => String(x).includes("wrangler pages deploy"))) {
   fails.push("manifest forbiddenDeploy must include wrangler pages deploy");
-}
-if (manifest.openNext?.web?.workersDev !== "ai-profit-web.ebay-adapter.workers.dev") {
-  fails.push("openNext.web.workersDev drift");
-}
-if (manifest.openNext?.ops?.workersDev !== "ai-profit-ops.ebay-adapter.workers.dev") {
-  fails.push("openNext.ops.workersDev drift");
 }
 
 if (sink.vercel !== 0) fails.push("error-sink vercel must stay 0");
@@ -161,32 +153,10 @@ if (sink.provider !== "cloudflare-workers-console") {
   fails.push("error-sink provider must stay cloudflare-workers-console");
 }
 
-function tomlHasPagesKey(toml, label) {
-  if (/^\s*pages_build_output_dir\s*=/m.test(toml)) {
-    fails.push(label + " has pages_build_output_dir");
-  }
-}
-tomlHasPagesKey(webToml, "infra/web/wrangler.toml");
-tomlHasPagesKey(opsToml, "infra/ops/wrangler.toml");
-if (!webToml.includes('binding = "ASSETS"') || !webToml.includes(".open-next/assets")) {
-  fails.push("web wrangler must bind ASSETS to .open-next/assets");
-}
-if (!opsToml.includes('binding = "ASSETS"') || !opsToml.includes(".open-next/assets")) {
-  fails.push("ops wrangler must bind ASSETS to .open-next/assets");
-}
-
 if (inventory.dynamicCacheRules !== 0 || inventory.cacheControlInventory !== 0) {
   fails.push("inventory must not invent dynamic cache rules");
 }
 if (inventory.inventedSlo !== 0) fails.push("inventory inventedSlo must be 0");
-const webInv = inventory.openNextAssets?.web || {};
-const opsInv = inventory.openNextAssets?.ops || {};
-if (webInv.binding !== "ASSETS" || webInv.wrangler !== "infra/web/wrangler.toml") {
-  fails.push("inventory web assets slot drift");
-}
-if (opsInv.binding !== "ASSETS" || opsInv.wrangler !== "infra/ops/wrangler.toml") {
-  fails.push("inventory ops assets slot drift");
-}
 if (!kycToml.includes('bucket_name = "kyc-docs"') || !/public_access\s*=\s*false/.test(kycToml)) {
   fails.push("kyc-docs must stay private");
 }
@@ -209,7 +179,6 @@ if (/"web-vitals"\s*:/.test(pkg)) {
   fails.push("web-vitals dependency present; flip WEB_VITALS_RUM or remove the package");
 }
 const rumFiles = [
-  "apps/web/components/observability/ObsRuntime.tsx",
   "packages/observability/observability.core.cjs",
 ];
 for (const rel of rumFiles) {
@@ -222,9 +191,7 @@ for (const rel of rumFiles) {
 }
 
 const deployScan = [
-  "tooling/deploy/cf-pages-web.cjs",
-  "tooling/deploy/cf-pages-ops.cjs",
-  "tooling/deploy/cf-deploy-all.cjs",
+  "tooling/deploy/cf-workers.cjs",
   ".github/workflows/deploy-cloudflare.yml",
   "package.json",
 ];
@@ -264,7 +231,7 @@ if (!catalog.includes("rel-506-r8-infra-core")) {
   fails.push("CATALOG missing rel-506-r8-infra-core");
 }
 if (!gate.includes("verify:rel-506-r8-infra-core")) {
-  fails.push("gate.yml must run verify:rel-506-r8-infra-core");
+  fails.push("backend-ci.yml must run verify:rel-506-r8-infra-core");
 }
 if (!domain.includes("rel-506-r8-infra-core.cjs")) {
   fails.push("domain-by-path must trigger rel-506");

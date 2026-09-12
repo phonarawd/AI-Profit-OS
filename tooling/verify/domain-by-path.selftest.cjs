@@ -95,7 +95,7 @@ function listMain(cwd, env) {
   return { status: r.status, json, stderr: String(r.stderr || "") };
 }
 
-const WALLET = "packages/sdk/src/wallet/fetch.ts";
+const WALLET = "services/api-nest/src/ledger/ledger.user.controller.ts";
 const AUTH = "services/api-nest/src/auth/auth.controller.ts";
 
 // 1. clean checkout + committed wallet
@@ -119,8 +119,8 @@ const AUTH = "services/api-nest/src/auth/auth.controller.ts";
   const scripts = scriptsForChangedFiles(files);
   expect("1 clean+committed wallet files", files.includes(WALLET), files.join(","));
   expect(
-    "1 mapped wallet-closure",
-    scripts.includes("wallet-closure.cjs"),
+    "1 mapped user-ledger-query",
+    scripts.includes("user-ledger-query.cjs"),
     scripts.join(","),
   );
   const listed = listMain(cwd, {
@@ -133,7 +133,7 @@ const AUTH = "services/api-nest/src/auth/auth.controller.ts";
     "1 verifier names executed via list-only",
     listed.status === 0 &&
       listed.json &&
-      listed.json.scripts.includes("wallet-closure.cjs"),
+      listed.json.scripts.includes("user-ledger-query.cjs"),
     JSON.stringify(listed.json),
   );
   fs.rmSync(cwd, { recursive: true, force: true });
@@ -196,7 +196,7 @@ const AUTH = "services/api-nest/src/auth/auth.controller.ts";
   );
   expect(
     "3 multi-commit mapped both",
-    scripts.includes("wallet-closure.cjs") && scripts.includes("auth-jwt-runtime.cjs"),
+    scripts.includes("user-ledger-query.cjs") && scripts.includes("auth-jwt-runtime.cjs"),
     scripts.join(","),
   );
   fs.rmSync(cwd, { recursive: true, force: true });
@@ -305,7 +305,7 @@ const AUTH = "services/api-nest/src/auth/auth.controller.ts";
   const files = getChangedFiles({ cwd, env: { AIPO_DOMAIN_DIFF_MODE: "local" } });
   const scripts = scriptsForChangedFiles(files);
   expect("6 local staged wallet", files.includes(WALLET), files.join(","));
-  expect("6 local staged maps wallet-closure", scripts.includes("wallet-closure.cjs"));
+  expect("6 local staged maps user-ledger-query", scripts.includes("user-ledger-query.cjs"));
   fs.rmSync(cwd, { recursive: true, force: true });
 }
 
@@ -319,7 +319,7 @@ const AUTH = "services/api-nest/src/auth/auth.controller.ts";
   const files = getChangedFiles({ cwd, env: { AIPO_DOMAIN_DIFF_MODE: "local" } });
   const scripts = scriptsForChangedFiles(files);
   expect("7 local unstaged wallet", files.includes(WALLET), files.join(","));
-  expect("7 local unstaged maps wallet-closure", scripts.includes("wallet-closure.cjs"));
+  expect("7 local unstaged maps wallet-closure", scripts.includes("user-ledger-query.cjs"));
   fs.rmSync(cwd, { recursive: true, force: true });
 }
 
@@ -334,20 +334,18 @@ expect(
 );
 
 {
-  const adminCopy = "packages/ui/copy/ko/admin.ts";
-  const scripts = scriptsForChangedFiles([adminCopy]);
+  const backendTest = "tooling/verify/backend/kyc/kyc-withdraw-only.cjs";
+  const scripts = scriptsForChangedFiles([backendTest]);
   expect(
-    "admin copy maps only admin-novice-ui",
-    scripts.includes("admin-novice-ui.cjs") &&
-      !scripts.includes("rel-201-admin-dashboard.cjs") &&
-      !scripts.includes("rel-213-admin-system-control.cjs"),
+    "backend test change maps to backend runner (run-all executes every port)",
+    scripts.includes("backend/run-all.cjs"),
     scripts.join(","),
   );
-  const verifierScripts = scriptsForChangedFiles(["tooling/verify/admin-novice-ui.cjs"]);
+  const runnerScripts = scriptsForChangedFiles(["tooling/verify/backend/run-all.cjs"]);
   expect(
-    "admin-novice verifier still self-runs",
-    verifierScripts.includes("admin-novice-ui.cjs"),
-    verifierScripts.join(","),
+    "backend runner change maps to backend runner",
+    runnerScripts.includes("backend/run-all.cjs"),
+    runnerScripts.join(","),
   );
 }
 

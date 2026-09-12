@@ -10,22 +10,26 @@ const required = [
   "infra/hosts.manifest.json",
   "infra/domain.manifest.json",
   "tooling/deploy/cf-domain-bootstrap.cjs",
-  "infra/web/wrangler.toml",
-  "infra/ops/wrangler.toml",
-  "infra/ops/access-policy.json",
   "infra/api/runtime.json",
   "infra/r2/kyc-docs.toml",
   "infra/r2/asset-images.toml",
   "infra/workers.manifest.json",
   "workers/push-dispatcher/wrangler.toml",
-  "workers/web-proxy/wrangler.toml",
-  "workers/ops-proxy/wrangler.toml",
   "workers/api-stub/wrangler.toml",
   "workers/push-dispatcher/src/index.ts",
   "workers/marketing-capi-dispatcher/wrangler.toml",
-  "tooling/deploy/cf-deploy-all.cjs",
+  "tooling/deploy/cf-workers.cjs",
   ".github/workflows/deploy-cloudflare.yml",
 ];
+for (const gone of [
+  "infra/web/wrangler.toml",
+  "infra/ops/wrangler.toml",
+  "workers/web-proxy/wrangler.toml",
+  "workers/ops-proxy/wrangler.toml",
+  "tooling/deploy/cf-deploy-all.cjs",
+]) {
+  if (fs.existsSync(path.join(root, gone))) fails.push("must be removed: " + gone);
+}
 
 for (const rel of required) {
   if (!fs.existsSync(path.join(root, rel))) fails.push(`missing: ${rel}`);
@@ -34,6 +38,26 @@ for (const rel of required) {
 const mcp = JSON.parse(fs.readFileSync(path.join(root, ".cursor/mcp.json"), "utf8"));
 if (!mcp.mcpServers?.["cloudflare-docs"]?.url) {
   fails.push(".cursor/mcp.json: cloudflare-docs MCP missing");
+}
+
+const domain = JSON.parse(
+  fs.readFileSync(path.join(root, "infra/domain.manifest.json"), "utf8"),
+);
+const roles = domain.domainRoles || {};
+if (!(roles.landingOnly || []).includes("putduk.com")) {
+  fails.push("domain.manifest domainRoles.landingOnly must include putduk.com");
+}
+if (
+  !(roles.userWeb || []).includes("hiptk.app") ||
+  !(roles.userWeb || []).includes("app.hiptk.app")
+) {
+  fails.push("domain.manifest domainRoles.userWeb must include hiptk.app and app.hiptk.app");
+}
+if ((roles.userWeb || []).includes("putduk.com")) {
+  fails.push("putduk.com must not be a userWeb origin");
+}
+if (roles.userWebOwner !== "putduk-web") {
+  fails.push("domainRoles.userWebOwner must be putduk-web");
 }
 
 if (fails.length) {

@@ -14,80 +14,13 @@
     "API_HOST": "api.hiptk.app",
     "GO_HOST": "go.hiptk.app"
   },
-  "openNext": {
-    "runtime": "workers",
-    "forbiddenDeploy": [
-      "wrangler pages deploy",
-      "pages_build_output_dir",
-      ".open-next/cloudflare as deploy root"
-    ],
-    "requiredArtifacts": [".open-next/worker.js", ".open-next/assets"],
-    "web": {
-      "worker": "ai-profit-web",
-      "app": "apps/web",
-      "wrangler": "infra/web/wrangler.toml",
-      "workersDev": "ai-profit-web.ebay-adapter.workers.dev"
-    },
-    "ops": {
-      "worker": "ai-profit-ops",
-      "app": "apps/admin",
-      "wrangler": "infra/ops/wrangler.toml",
-      "workersDev": "ai-profit-ops.ebay-adapter.workers.dev"
-    },
-    "note": "OpenNext(@opennextjs/cloudflare) = Workers only. pages.dev 레거시 404 — 배포·프록시·스모크는 workersDev SSOT.",
-    "staging": {
-      "wranglerEnv": "preview",
-      "deploy": "pnpm cf:deploy:staging",
-      "forbiddenHosts": [
-        "app.hiptk.app",
-        "ops.hiptk.app",
-        "api.hiptk.app",
-        "hiptk.app",
-        "go.hiptk.app",
-        "ai-profit-os.onrender.com"
-      ],
-      "web": {
-        "worker": "ai-profit-web-preview",
-        "workersDev": "ai-profit-web-preview.ebay-adapter.workers.dev"
-      },
-      "ops": {
-        "worker": "ai-profit-ops-preview",
-        "workersDev": "ai-profit-ops-preview.ebay-adapter.workers.dev"
-      },
-      "note": "REL-600 staging origin = wrangler [env.preview]. production workersDev/custom domain 불변. production workflow_dispatch 오용 금지. preview API = STAGING_API_HOST only · forbiddenHosts(API 포함) 금지 · production API_HOST 상속 금지."
-    }
-  },
-  "pages": {
-    "web": {
-      "project": "ai-profit-web",
-      "workersDev": "ai-profit-web.ebay-adapter.workers.dev",
-      "pagesDev": "ai-profit-web.pages.dev",
-      "note": "project 이름 유지 · origin SSOT = openNext.web.workersDev · pages.dev 사용 금지"
-    },
-    "ops": {
-      "project": "ai-profit-ops",
-      "workersDev": "ai-profit-ops.ebay-adapter.workers.dev",
-      "pagesDev": "ai-profit-ops.pages.dev",
-      "note": "project 이름 유지 · origin SSOT = openNext.ops.workersDev · pages.dev 사용 금지"
-    }
-  },
   "bridgeWorkers": {
-    "web-proxy": {
-      "worker": "hiptk-web-proxy",
-      "path": "workers/web-proxy",
-      "hostnames": ["app.hiptk.app", "hiptk.app", "go.hiptk.app"],
-      "target": "https://ai-profit-web.ebay-adapter.workers.dev"
-    },
-    "ops-proxy": {
-      "worker": "hiptk-ops-proxy",
-      "path": "workers/ops-proxy",
-      "hostnames": ["ops.hiptk.app"],
-      "target": "https://ai-profit-ops.ebay-adapter.workers.dev"
-    },
     "api-stub": {
       "worker": "hiptk-api-stub",
       "path": "workers/api-stub",
-      "hostnames": ["api.hiptk.app"],
+      "hostnames": [
+        "api.hiptk.app"
+      ],
       "target": "https://ai-profit-os.onrender.com",
       "note": "Phase0 Nest on Render · workers/_shared/api-origin.ts SSOT · cloudflared 로컬 터널 폐기"
     }
@@ -113,5 +46,32 @@
       "CLOUDFLARE_API_TOKEN",
       "CLOUDFLARE_ACCOUNT_ID"
     ]
+  },
+  "forbiddenDeploy": [
+    "wrangler pages deploy",
+    "pages_build_output_dir",
+    ".open-next/cloudflare as deploy root"
+  ],
+  "productionHosts": [
+    "app.hiptk.app",
+    "ops.hiptk.app",
+    "api.hiptk.app",
+    "hiptk.app",
+    "go.hiptk.app",
+    "ai-profit-os.onrender.com"
+  ],
+  "customerWebHandoff": {
+    "owner": "putduk-web",
+    "restoreSha": "97b07908",
+    "restore": "git checkout 97b07908 -- infra/web infra/ops workers/web-proxy workers/ops-proxy workers/_shared/opennext-origin.ts tooling/deploy/cf-pages-web.cjs tooling/deploy/cf-pages-ops.cjs"
+  },
+  "domainRoles": {
+    "landingOnly": ["putduk.com"],
+    "userWeb": ["hiptk.app", "app.hiptk.app"],
+    "userWebOwner": "putduk-web",
+    "opsHost": "ops.hiptk.app",
+    "thisRepoHosts": ["api.hiptk.app"],
+    "thisRepoWorkers": ["hiptk-api-stub", "push-dispatcher"],
+    "note": "putduk.com is landing-only. Never treat as customer-app origin, CORS allowlist, cookie domain, or WebAuthn RP. User web origin is hiptk.app and app.hiptk.app (putduk-web). This repo deploys API stub / push-dispatcher / R2 / backend Workers only — no OpenNext, pages, or landing."
   }
 }

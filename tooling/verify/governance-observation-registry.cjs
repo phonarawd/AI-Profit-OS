@@ -49,9 +49,6 @@ const MONEY_TODO_IDS = [
   "money-wallet-auth-remediation",
 ];
 const R0_GATES = [
-  "platform-redesign-inventory",
-  "platform-fact-state-registry",
-  "platform-change-control",
   "governance-observation-registry",
 ];
 

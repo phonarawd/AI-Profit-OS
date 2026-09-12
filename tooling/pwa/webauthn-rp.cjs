@@ -32,31 +32,7 @@ function loadAuthWebauthnRp(manifest) {
   };
 }
 
-function isWebAuthnSupported(globalObj) {
-  const g = globalObj || globalThis;
-  const cred = g.PublicKeyCredential || (g.window && g.window.PublicKeyCredential);
-  return typeof cred === "function";
-}
-
-function optionalHaptic(ms, globalObj) {
-  try {
-    const g = globalObj || globalThis;
-    const media = typeof g.matchMedia === "function"
-      ? g.matchMedia("(prefers-reduced-motion: reduce)")
-      : null;
-    if (media && media.matches) return false;
-    const vibrate = g.navigator && g.navigator.vibrate;
-    if (typeof vibrate !== "function") return false;
-    vibrate.call(g.navigator, typeof ms === "number" ? ms : 12);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 module.exports = {
   loadDomainManifest,
   loadAuthWebauthnRp,
-  isWebAuthnSupported,
-  optionalHaptic,
 };

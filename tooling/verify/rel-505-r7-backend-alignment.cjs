@@ -25,7 +25,7 @@ const plan = read(".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md");
 const cert = read("governance/release-master/R7_BACKEND_ALIGNMENT.md");
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
-const gate = read(".github/workflows/gate.yml");
+const gate = read(".github/workflows/backend-ci.yml");
 const domain = read("tooling/verify/domain-by-path.cjs");
 
 function todoCompleted(relId) {
@@ -88,7 +88,7 @@ if (!catalog.includes("backend-data-alignment") || !catalog.includes("rel-505-r7
   fails.push("CATALOG missing R7 verifies");
 }
 if (!gate.includes("verify:rel-505-r7-backend-alignment")) {
-  fails.push("gate.yml must run verify:rel-505-r7-backend-alignment");
+  fails.push("backend-ci.yml must run verify:rel-505-r7-backend-alignment");
 }
 if (!domain.includes("rel-505-r7-backend-alignment.cjs")) {
   fails.push("domain-by-path must trigger rel-505");

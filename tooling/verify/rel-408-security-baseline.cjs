@@ -116,7 +116,7 @@ if (baseline.includes("apply_migration") === false) {
 
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
-const gate = read(".github/workflows/gate.yml");
+const gate = read(".github/workflows/backend-ci.yml");
 if (!pkg.includes("verify:rel-408-security-baseline")) {
   fails.push("package.json missing verify:rel-408-security-baseline");
 }
@@ -124,11 +124,8 @@ if (!catalog.includes("rel-408-security-baseline")) {
   fails.push("CATALOG missing rel-408-security-baseline");
 }
 if (!gate.includes("verify:rel-408-security-baseline")) {
-  fails.push("gate.yml must run verify:rel-408-security-baseline");
+  fails.push("backend-ci.yml must run verify:rel-408-security-baseline");
 }
-
-const webAdmin = path.join(root, "apps/web/app/admin");
-if (fs.existsSync(webAdmin)) fails.push("apps/web must not grow /admin");
 
 if (fails.length) {
   console.error("[verify:rel-408-security-baseline] FAIL");

@@ -9,7 +9,7 @@ alwaysApply: true
 
 1. 해당 도메인 `verify:*` PASS (`tooling/verify/CATALOG.md`)
 2. money면 `bucket-invariant` · `pg-module-scan` (해당 시)
-3. UI면 `no-it-jargon` · canon/mockup 게이트 (해당 시)
+3. mixed 포트 백엔드 테스트 변경이면 `pnpm verify:backend` · UI 어서션은 putduk-web 소유 (`quality/putduk-web-ui-assertions-handoff.md`)
 4. `pnpm verify:gate:fast` PASS → **commit (T0)**
 5. **push 하지 않음** (세션 stop / “푸시해”까지 보류)
 

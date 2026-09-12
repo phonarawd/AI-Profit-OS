@@ -1,6 +1,10 @@
 {
   "rel": "REL-506",
-  "deps": ["REL-016", "REL-403", "REL-505"],
+  "deps": [
+    "REL-016",
+    "REL-403",
+    "REL-505"
+  ],
   "protectedScopeMutation": false,
   "certIssued": 1,
   "allAligned": 0,
@@ -20,11 +24,9 @@
   "rumOwner": "REL-703",
   "adsOwner": "POST-012",
   "extraVerifies": [
-    "opennext-workers-origin.cjs",
     "observability.cjs",
     "auth-session-cookie.cjs",
     "kyc-r2-only.cjs",
-    "rel-403-versioning.cjs",
-    "rel-404-lighthouse-budget.cjs"
+    "rel-403-versioning.cjs"
   ]
 }

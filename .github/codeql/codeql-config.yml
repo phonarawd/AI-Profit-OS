@@ -4,7 +4,7 @@ queries:
 paths-ignore:
   - "**/node_modules/**"
   - "**/dist/**"
-  - "**/.open-next/**"
+  - "**/dist-ci/**"
   - "**/coverage/**"
 query-filters:
   # Static source-text host presence scans in verify tooling (not runtime URL validation).

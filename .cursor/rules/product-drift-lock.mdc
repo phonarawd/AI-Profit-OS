@@ -1,6 +1,6 @@
 ---
 description: ADR-007 — CTA·금지어·yahoo adapter Day-1 0 · 유저 surface drift 잠금
-globs: "packages/ui/copy/**,apps/web/**"
+globs: "services/**/opportunities/**,services/market-intelligence/**,schemas/**"
 alwaysApply: false
 ---
 
@@ -34,4 +34,4 @@ CTA utility = **`실시간 시세 맵 열기`** → `/onboarding` | `/auth/login
 
 ## CI
 
-`verify:cta-earn-profit` · `verify:user-trader-jargon-0` · `verify:marketing-compliance` · `verify:brand-consumer`
+cta-earn-profit · marketing-compliance(putduk-web 인계 · `quality/putduk-web-ui-assertions-handoff.md`) · `verify:backend`(opportunity-engine/user-trader-jargon-0) · `verify:brand-consumer`

@@ -41,8 +41,6 @@ const files = [
   "schemas/shadow-replay-report.v1.json",
   "schemas/ai-answer-trace.v1.json",
   "supabase/migrations/20260809103208_ai_feature_platform_pick_eval_shadow.sql",
-  "packages/ui/canon/surfaces/admin-ai-logs.wire.json",
-  "apps/admin/app/admin/ai-logs/page.tsx",
 ];
 for (const f of files) mustExist(f);
 
@@ -245,41 +243,7 @@ for (const needle of [
   if (!mig.includes(needle)) fails.push(`migration missing ${needle}`);
 }
 
-const wire = read("packages/ui/canon/surfaces/admin-ai-logs.wire.json");
-for (const f of [
-  "ai_score_admin_override",
-  "l3_money_execute",
-  "auto_learning_on",
-  "feature_platform_sidebar_module",
-]) {
-  if (!wire.includes(f)) fails.push(`canon forbidden missing ${f}`);
-}
-
-const adminPage = read("apps/admin/app/admin/ai-logs/page.tsx");
-if (!adminPage.includes('data-forbid="ai_score_admin_override"')) {
-  fails.push("admin ai-logs must forbid score override");
-}
-if (!adminPage.includes('data-auto-learning="false"')) {
-  fails.push("admin ai-logs must lock auto learning false");
-}
-
-const adminRoutes = read("apps/admin/routes.ts");
-if (!adminRoutes.includes("/admin/ai-logs?tab=pick")) {
-  fails.push("admin routes missing ai-logs?tab=pick");
-}
-if (!adminRoutes.includes("/admin/ai-logs?tab=eval")) {
-  fails.push("admin routes missing ai-logs?tab=eval");
-}
-// No 13th sidebar module named feature-platform
-if (/feature-platform/.test(adminRoutes) && /ADMIN_MODULES/.test(adminRoutes)) {
-  const modulesBlock = adminRoutes.slice(
-    adminRoutes.indexOf("ADMIN_MODULES"),
-    adminRoutes.indexOf("ADMIN_TOP_LEVEL_COUNT"),
-  );
-  if (modulesBlock.includes("feature-platform")) {
-    fails.push("sidebar must not add feature-platform module");
-  }
-}
+// admin ai-logs canon wire · admin page · admin routes assertions: UI side (putduk-web handoff · quality/putduk-web-ui-assertions-handoff.md 1d)
 
 const rootPkg = read("package.json");
 if (!rootPkg.includes("verify:ai-feature-platform")) {

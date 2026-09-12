@@ -60,6 +60,30 @@ for (const name of files) {
   }
 }
 
+// composite actions under .github/actions/** must pin every nested `uses:` the same way
+const actionsDir = path.join(root, ".github/actions");
+if (fs.existsSync(actionsDir)) {
+  for (const entry of fs.readdirSync(actionsDir, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue;
+    const rel = ".github/actions/" + entry.name + "/action.yml";
+    if (!fs.existsSync(path.join(root, rel))) {
+      must(false, rel + " missing (composite action directory without action.yml)");
+      continue;
+    }
+    const text = read(rel);
+    must(!WRITE_ALL.test(text), rel + " write-all forbidden");
+    for (const line of text.split(/\r?\n/).filter((l) => /^\s+-?\s*uses:/.test(l))) {
+      const m = line.match(/uses:\s*(\S+)/);
+      if (!m) continue;
+      const spec = m[1];
+      if (spec.startsWith("./") || spec.startsWith("docker://")) continue;
+      must(SHA.test(spec) || /@[0-9a-f]{40}/i.test(spec), rel + " unpinned " + spec);
+      must(!MUTABLE.test(line) || /@[0-9a-f]{40}/i.test(spec), rel + " mutable ref " + spec);
+    }
+  }
+}
+must(pins.pins["actions/cache@v6.1.0"] === "55cc8345863c7cc4c66a329aec7e433d2d1c52a9", "cache pin");
+
 const codeql = read(".github/workflows/codeql.yml");
 must(codeql.includes("security-events: write"), "codeql job security-events");
 must(!/write-all/.test(codeql), "codeql write-all");

@@ -26,7 +26,7 @@ const doc = read("governance/engine-acceptance/PROTECTED_SCOPE_STALE_WATCH.md");
 const cert = read("governance/engine-acceptance/FINAL_ACCEPTANCE.md");
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
-const gate = read(".github/workflows/gate.yml");
+const gate = read(".github/workflows/backend-ci.yml");
 const domain = read("tooling/verify/domain-by-path.cjs");
 const watchSrc = read("tooling/engine-acceptance/protected-scope-watch.cjs");
 
@@ -89,7 +89,7 @@ if (!catalog.includes("rel-503-protected-scope-watch")) {
   fails.push("CATALOG missing rel-503-protected-scope-watch");
 }
 if (!gate.includes("verify:rel-503-protected-scope-watch")) {
-  fails.push("gate.yml must run verify:rel-503-protected-scope-watch");
+  fails.push("backend-ci.yml must run verify:rel-503-protected-scope-watch");
 }
 if (!domain.includes("rel-503-protected-scope-watch.cjs")) {
   fails.push("domain-by-path must trigger rel-503");

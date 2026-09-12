@@ -24,9 +24,6 @@ const files = [
   "services/api-nest/src/ai/coach.controller.ts",
   "services/api-nest/src/ai/ai.module.ts",
   "services/api-nest/src/config/phase0.env.ts",
-  "packages/sdk/src/peotteok/chat-sse.ts",
-  "packages/sdk/src/peotteok/types.ts",
-  "packages/sdk/src/peotteok/usePeotteokChat.ts",
 ];
 for (const f of files) mustExist(f);
 if (fails.length) {
@@ -174,25 +171,8 @@ if (!mod.includes("ConversationStateService")) {
   fails.push("ai.module.ts missing ConversationStateService provider");
 }
 
-// --- F14: sibling dual-path auth convention (Bearer + credentials:"include") ---
-const sse = read("packages/sdk/src/peotteok/chat-sse.ts");
-const includeCount = (sse.match(/credentials:\s*"include"/g) || []).length;
-if (includeCount < 2) {
-  fails.push('chat-sse.ts must send credentials:"include" on both chips and chat fetch calls (F14)');
-}
-if (!sse.includes("conversationId")) {
-  fails.push("chat-sse.ts must forward conversationId in the chat request body");
-}
-
-const types = read("packages/sdk/src/peotteok/types.ts");
-if (!types.includes("conversation_id")) {
-  fails.push("peotteok types.ts missing conversation_id field");
-}
-
-const hook = read("packages/sdk/src/peotteok/usePeotteokChat.ts");
-if (!hook.includes("conversationId")) {
-  fails.push("usePeotteokChat.ts must track and forward conversationId");
-}
+// --- F14 client half (packages/sdk peotteok chat-sse credentials:"include" x2 · conversationId forward · types conversation_id ·
+//     usePeotteokChat conversationId): moved with the SDK to putduk-web (quality/putduk-web-sdk-handoff.md · handoff 1d) ---
 
 // --- Scope guard: routing/scope/numeric remain later File-Serial slices ---
 // resultRef + preference memory.append are owned by reference-resolution

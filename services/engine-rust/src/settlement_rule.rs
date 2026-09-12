@@ -298,10 +298,7 @@ mod tests {
     fn hard_wall_timeout() {
         let mut ctx = base_ctx();
         ctx.now_ms = ctx.participate_accepted_at_ms + HARD_SEC * 1000;
-        assert_eq!(
-            evaluate_execution(&ctx),
-            ExecutionResultCode::MatchTimeout
-        );
+        assert_eq!(evaluate_execution(&ctx), ExecutionResultCode::MatchTimeout);
     }
 
     #[test]
@@ -376,14 +373,14 @@ mod tests {
             ("g_below_min_profit", 0, below_min, "BELOW_MIN_PROFIT"),
             ("g_circuit_open", 0, circuit_open, "CIRCUIT_OPEN"),
             ("g_requeue_then_success", 0, requeue, "REQUEUE"),
-            ("g_requeue_then_success", 1, requeue_then_ok, "MATCH_SUCCESS"),
-            ("g_soft_version_ok", 0, soft_version, "MATCH_SUCCESS"),
             (
-                "g_strictness_tight_below_min",
-                0,
-                tight,
-                "BELOW_MIN_PROFIT",
+                "g_requeue_then_success",
+                1,
+                requeue_then_ok,
+                "MATCH_SUCCESS",
             ),
+            ("g_soft_version_ok", 0, soft_version, "MATCH_SUCCESS"),
+            ("g_strictness_tight_below_min", 0, tight, "BELOW_MIN_PROFIT"),
             ("g_strictness_lenient_ok", 0, lenient, "MATCH_SUCCESS"),
         ];
 

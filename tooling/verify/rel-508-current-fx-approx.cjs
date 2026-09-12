@@ -26,7 +26,7 @@ const evidence = read("governance/release-master/REL-508-CURRENT-FX-APPROX.md");
 const r7 = read("governance/release-master/R7_BACKEND_ALIGNMENT.md");
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
-const gate = read(".github/workflows/gate.yml");
+const gate = read(".github/workflows/backend-ci.yml");
 const domain = read("tooling/verify/domain-by-path.cjs");
 const routes = read("services/api-nest/src/opportunities/current-fx-approx.user.routes.ts");
 const ctl = read("services/api-nest/src/opportunities/current-fx-approx.user.controller.ts");
@@ -35,7 +35,6 @@ const map = read("services/api-nest/src/opportunities/current-fx-approx.map.ts")
 const fx = read("services/api-nest/src/opportunities/fx-snapshot.service.ts");
 const schema = read("schemas/current-fx-approx.v1.json");
 const mod = read("services/api-nest/src/opportunities/opportunities.module.ts");
-const sdk = read("packages/sdk/src/current-fx/fetch.ts");
 
 function todoCompleted(relId) {
   const id = relId.replace(/^REL-/i, "rel-").toLowerCase();
@@ -114,9 +113,7 @@ if (!schema.includes("CurrentFxApproxV1") || !schema.includes("null")) {
 if (!mod.includes("CurrentFxApproxUserController") || !mod.includes("CurrentFxApproxService")) {
   fails.push("OpportunitiesModule must register current-fx");
 }
-if (!sdk.includes("/api/v1/me/current-fx/approx")) {
-  fails.push("SDK path must stay /api/v1/me/current-fx/approx");
-}
+// SDK current-fx fetch path: client SDK moved to putduk-web (quality/putduk-web-sdk-handoff.md)
 
 if (!pkg.includes("verify:rel-508-current-fx-approx")) {
   fails.push("package.json missing verify:rel-508-current-fx-approx");
@@ -125,7 +122,7 @@ if (!catalog.includes("rel-508-current-fx-approx")) {
   fails.push("CATALOG missing rel-508-current-fx-approx");
 }
 if (!gate.includes("verify:rel-508-current-fx-approx")) {
-  fails.push("gate.yml must run verify:rel-508-current-fx-approx");
+  fails.push("backend-ci.yml must run verify:rel-508-current-fx-approx");
 }
 if (!domain.includes("rel-508-current-fx-approx.cjs")) {
   fails.push("domain-by-path must trigger rel-508");

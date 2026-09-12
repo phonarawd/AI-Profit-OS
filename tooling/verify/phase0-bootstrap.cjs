@@ -25,10 +25,8 @@ const required = [
   "infra/phase0-migration-playbook.md",
   "infra/api/runtime.json",
   "infra/r2/kyc-docs.toml",
-  "infra/web/wrangler.toml",
-  "infra/ops/wrangler.toml",
-  "infra/ops/access-policy.json",
   "infra/workers.manifest.json",
+  "workers/api-stub/wrangler.toml",
   "docker-compose.dev.yml",
   ".env.example",
   "services/api-nest/src/config/phase0.env.ts",
@@ -81,23 +79,6 @@ if (!Array.isArray(workers.phase0) || workers.phase0.join() !== "push-dispatcher
 }
 if (/nats/i.test(JSON.stringify(workers.phase0))) {
   fails.push("workers.manifest phase0 must not list NATS workers");
-}
-
-const webToml = read("infra/web/wrangler.toml");
-const opsToml = read("infra/ops/wrangler.toml");
-if (!webToml.includes("ai-profit-web")) fails.push("web wrangler missing ai-profit-web");
-if (!opsToml.includes("ai-profit-ops")) fails.push("ops wrangler missing ai-profit-ops");
-if (/^\s*pages_build_output_dir\s*=/m.test(webToml)) {
-  fails.push("web wrangler: pages_build_output_dir key forbidden (OpenNext → Workers)");
-}
-if (/^\s*pages_build_output_dir\s*=/m.test(opsToml)) {
-  fails.push("ops wrangler: pages_build_output_dir key forbidden (OpenNext → Workers)");
-}
-if (!webToml.includes(".open-next/worker.js") || !webToml.includes(".open-next/assets")) {
-  fails.push("web wrangler must point main+assets at apps/web/.open-next");
-}
-if (!opsToml.includes(".open-next/worker.js") || !opsToml.includes(".open-next/assets")) {
-  fails.push("ops wrangler must point main+assets at apps/admin/.open-next");
 }
 
 const r2 = read("infra/r2/kyc-docs.toml");
@@ -158,8 +139,6 @@ if (!/NATS/i.test(playbook)) {
 const pkgPaths = [
   "package.json",
   "services/api-nest/package.json",
-  "apps/web/package.json",
-  "apps/admin/package.json",
 ];
 const bannedDep =
   /"(nats|nats\.js|@nats-io\/|@temporalio\/|temporalio|@aws-sdk\/client-eks|kubernetes-client)"/;
@@ -203,16 +182,13 @@ if (!phaseRule.includes("NATS")) {
   fails.push("phase-activation.mdc must mention NATS phase boundary");
 }
 
-// PART9-pre needle — web /api/v1 → API_HOST · /ads rewrite 보존
-const webNextCfg = read("apps/web/next.config.ts");
-if (!webNextCfg.includes("/ads") || !webNextCfg.includes("/l/")) {
-  fails.push("apps/web/next.config.ts must preserve /ads → /l rewrites");
+const handedOffWeb = ["apps", "web"];
+const handedOffAdmin = ["apps", "admin"];
+if (fs.existsSync(path.join(root, handedOffWeb[0], handedOffWeb[1]))) {
+  fails.push("backend-only repo must not contain the customer web tree (putduk-web owns it)");
 }
-if (!webNextCfg.includes("/api/v1/:path*")) {
-  fails.push("apps/web/next.config.ts must rewrite /api/v1/:path* → API_HOST");
-}
-if (!webNextCfg.includes("API_HOST")) {
-  fails.push("apps/web/next.config.ts /api/v1 rewrite must use API_HOST");
+if (fs.existsSync(path.join(root, handedOffAdmin[0], handedOffAdmin[1]))) {
+  fails.push("backend-only repo must not contain the legacy admin tree");
 }
 
 if (fails.length) {

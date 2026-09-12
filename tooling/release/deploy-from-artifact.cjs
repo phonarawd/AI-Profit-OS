@@ -9,7 +9,7 @@ const path = require("path");
 const { extractPayload, verifyBundle } = require("./artifact-provenance.cjs");
 const { evaluateGuard } = require("./require-accepted-sha.cjs");
 
-const VALID_SURFACES = new Set(["workers", "web", "ops", "all"]);
+const VALID_SURFACES = new Set(["workers", "all"]);
 const VALID_WORKER_SETS = new Set(["phase0", "p0-ebay"]);
 
 function parseArgs(argv) {
@@ -120,33 +120,12 @@ function main(argv) {
   if (args.surface === "workers" || args.surface === "all") {
     runNode(
       "tooling/deploy/cf-workers.cjs",
-      [args.target, args.workerSet, "--no-bundle"],
+      [args.target, args.workerSet, "--no-rebuild", "--no-bundle"],
       { sha: args.sha, digest: args.expectedDigest },
     );
   }
-  if (args.surface === "web" || args.surface === "all") {
-    runNode(
-      "tooling/deploy/cf-preflight.cjs",
-      [args.target, "web"],
-      { sha: args.sha, digest: args.expectedDigest },
-    );
-    runNode(
-      "tooling/deploy/cf-pages-web.cjs",
-      [args.target, "--no-rebuild"],
-      { sha: args.sha, digest: args.expectedDigest },
-    );
-  }
-  if (args.surface === "ops" || args.surface === "all") {
-    runNode(
-      "tooling/deploy/cf-preflight.cjs",
-      [args.target, "ops"],
-      { sha: args.sha, digest: args.expectedDigest },
-    );
-    runNode(
-      "tooling/deploy/cf-pages-ops.cjs",
-      [args.target, "--no-rebuild"],
-      { sha: args.sha, digest: args.expectedDigest },
-    );
+  if (args.surface === "web" || args.surface === "ops") {
+    fail("surface_handed_off:" + args.surface);
   }
 }
 

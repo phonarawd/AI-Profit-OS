@@ -18,21 +18,14 @@ const API_ENTRY = API_DIST_DIR + "/main.js";
 const API_MANIFEST = API_DIST_DIR + "/api-release-manifest.json";
 
 const REQUIRED_FILES = [
-  "apps/web/.open-next/worker.js",
-  "apps/admin/.open-next/worker.js",
   API_ENTRY,
   API_MANIFEST,
 ];
-const REQUIRED_DIRS = [
-  "apps/web/.open-next/assets",
-  "apps/admin/.open-next/assets",
-];
+const REQUIRED_DIRS = [];
 const WORKER_SNAPSHOTS = ["push-dispatcher", "ebay-adapter"];
 const PREBUILT_DIR = ".release-prebuilt";
 const PREFERRED_PREBUILT_ENTRIES = ["index.js", "worker.js", "main.js"];
 const EXTRACTION_OUTPUTS = Object.freeze([
-  "apps/web/.open-next",
-  "apps/admin/.open-next",
   API_DIST_DIR,
   ...WORKER_SNAPSHOTS.map((name) => "workers/" + name + "/" + PREBUILT_DIR),
 ]);
@@ -254,7 +247,6 @@ function shouldSkipRel(rel) {
     /(^|\/)\.wrangler(\/|$)/.test(p) ||
     (!isCanonicalApiDist && /(^|\/)dist(\/|$)/.test(p)) ||
     /(^|\/)dist-selftest(\/|$)/.test(p) ||
-    /(^|\/)\.open-next\/cache(\/|$)/.test(p) ||
     /(^|\/)\.git(\/|$)/.test(p)
   );
 }
@@ -384,8 +376,6 @@ function packFromRepo(repoRoot, outDir, sourceSha) {
   assertRequiredOutputs(repoRoot);
   const payload = path.join(outDir, PAYLOAD_DIR);
   fs.mkdirSync(payload, { recursive: true });
-  copyTree(path.join(repoRoot, "apps/web/.open-next"), path.join(payload, "apps/web/.open-next"));
-  copyTree(path.join(repoRoot, "apps/admin/.open-next"), path.join(payload, "apps/admin/.open-next"));
   copyTree(path.join(repoRoot, API_DIST_DIR), path.join(payload, API_DIST_DIR));
   for (const worker of WORKER_SNAPSHOTS) {
     const toml = path.join(repoRoot, "workers", worker, "wrangler.toml");

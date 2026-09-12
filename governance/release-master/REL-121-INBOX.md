@@ -1,8 +1,0 @@
-# REL-121 Notifications (`/me/inbox`)
-
-STATUS: PRODUCTION_READY_CANDIDATE
-FIGMA: NOT_FOUND
-UI_STATE_BEFORE: EXISTING_PARTIAL (401→empty)
-DATA_OWNER: GET /api/v1/me/inbox
-VERIFY: verify:inbox-closure
-PROTECTED: false

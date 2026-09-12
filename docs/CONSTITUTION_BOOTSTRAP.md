@@ -3,7 +3,7 @@
 > **목적:** 구현 채팅 시작 전, 헌법·스키마·마이그레이션·어드민·브랜드·DB SSOT를 **예측 없이** 정리한다.  
 > **권위:** ACTIVE Index `ai_profit_os_00_index_a1b2c3d4.plan.md` > 도메인 01~06 > launch ARCHIVE.  
 > **현재 권위:** Index v7.23.0 · R0 governance CLOSE(inventory→fact/state→change-control→observation) · 외부 `플랫폼_전체_재설계_로드맵_d903eef7`=REFERENCE ONLY · 기존 v7.22 스냅샷/「현재」「다음」문구는 이력.
-> **현재 다음:** 03 UI & UX(Redesign R1 Home 등) — **02.5 Engine Acceptance QA는 QA-0..QA-9 전부 `completed`로 종료**되었고 **verdict=`ENGINE_ACCEPTED_FOR_UI`(ISSUED) · `UI_UX_ENTRY_GATE=OPEN`**이다(baseline `ea-baseline-64b0f8a6d984-3657543f36b5` · `governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md` · `pnpm verify:engine-acceptance` 라이브 재확인, 2026-08-16 resync). *(이력: QA4/QA5는 각각 `BLOCKED_NO_CLOCK_HOOK`/`BLOCKED_NO_FAULT_HOOK`(critical)를 최초 관측했고 QA9 최초 판정은 `QA8_ADMIN_BOUNDARY` P0(admin 라우트 19개 전부 미인증)로 `ENGINE_QA_INCOMPLETE`/`ENGINE_NOT_ACCEPTED`였다 — 이후 CI clock/fault 하네스 및 admin 인증·RBAC repair가 완료되고 QA1-8 재실행+QA9 재판정으로 위 현재 상태에 도달했다.)* 03 UI 실제 runtime 착수는 03 plan 자체의 ADR-018 Visual Master/Visual Contract/Implementation Contract 선행조건을 이 gate와 별개로 그대로 따른다.
+> **현재 다음:** 이 레포는 백엔드 전용(04 Admin API · 06 Infra). 고객 웹=putduk-web. 이력 — **02.5 Engine Acceptance QA는 QA-0..QA-9 전부 `completed`로 종료**되었고 **verdict=`ENGINE_ACCEPTED_FOR_UI`(ISSUED) · `UI_UX_ENTRY_GATE=OPEN`**이다(baseline `ea-baseline-64b0f8a6d984-3657543f36b5` · `governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md` · `pnpm verify:engine-acceptance` 라이브 재확인, 2026-08-16 resync). *(이력: QA4/QA5는 각각 `BLOCKED_NO_CLOCK_HOOK`/`BLOCKED_NO_FAULT_HOOK`(critical)를 최초 관측했고 QA9 최초 판정은 `QA8_ADMIN_BOUNDARY` P0(admin 라우트 19개 전부 미인증)로 `ENGINE_QA_INCOMPLETE`/`ENGINE_NOT_ACCEPTED`였다 — 이후 CI clock/fault 하네스 및 admin 인증·RBAC repair가 완료되고 QA1-8 재실행+QA9 재판정으로 위 현재 상태에 도달했다.)* 03 UI 실제 runtime 착수는 03 plan 자체의 ADR-018 Visual Master/Visual Contract/Implementation Contract 선행조건을 이 gate와 별개로 그대로 따른다.
 
 ## v7.23.0 현재 잠금
 
@@ -214,7 +214,7 @@
 2. ACTIVE Index: `.cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md`  
 3. 도메인 플랜 **하나만** (`01`~`06` 실제 파일명 해시 포함) — **File-Serial:** 파일 N의 todos가 전부 `completed`되기 전 파일 N+1 착수 금지 · 파일 내 todos 위→아래  
 4. launch (`ai_profit_os_launch_54c1261e.plan.md`) = **ARCHIVE** (편집 시 분리 플랜 우선)  
-5. UI면 Canon wire + Brand Kit + Lux  
+5. UI면 Canon wire + Brand Kit + visual-system  
 6. Money면 `money-ledger.mdc` + bucket gates  
 
 ### 실제 플랜 파일명 (이름 drift 금지 · v7.22.35 File-Serial)
@@ -251,7 +251,7 @@
 | 25 | `25_KOREAN_FIRST_UX_POLICY.md` | ko copy·금지어·CI |
 | 26 | `26_PERFORMANCE_AND_RESPONSIVE_UX.md` | fluid·tier |
 | 27 | `27_MARKETING_AND_SEO_ENGINE.md` | CAPI·SEO |
-| 28 | `28_LUX_FINTECH_DESIGN_AND_MOTION.md` | Lux·motion·G4 |
+| 28 | `28_LUX_FINTECH_DESIGN_AND_MOTION.md` | visual-system·motion·G4 |
 | 35 | `35_GROWTH_CONVERSION_PRESENTATION.md` | G1~G4 |
 | 36 | `36_ADMIN_PRICE_AND_PROFIT_SYNC.md` | Admin 가격 SSE |
 | 37 | `37_WALLET_AND_USER_ADMIN_OPS.md` | 입금설정·회원 |
@@ -345,7 +345,7 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 | 플랜 | `ai_profit_os_05_pwa_f6a7b8c9.plan.md` **v7.22.25** |
 | next | **next@16** + Serwist · next@15 0 |
 | Push 버스 | Phase0 **in-process** → push-dispatcher · NATS=Phase1+ |
-| 색 | Lux bg/principal · `#1A56FF` 금지 |
+| 색 | visual-system bg/principal · `#1A56FF` 금지 |
 | WebAuthn | 정책=Money §43.6 · UX=PWA §23.6 |
 | §24 | Store Bridge only · Infra pointer |
 | Admin | `pushEnabled` @ system-control |
@@ -414,7 +414,7 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 | principal · 입금 딥링크 | Money **§49.2a** |
 | 홈 섹션·카피 | UI **§5.3a** · `T.feed.*` |
 | 유저별 숨김/핀/마진/수익 | Admin **§9.8.9** · `user-opportunity-override.v1` |
-| 시각 SSOT | Canon + Lux + Brand Kit ready **만** · `docs/mockups` **0** · `assets/ai-profit-os-*.png` **0** |
+| 시각 SSOT | Canon + visual-system + Brand Kit ready **만** · `docs/mockups` **0** · `assets/ai-profit-os-*.png` **0** |
 | 검증 | `verify:balance-aware-feed` · `verify:admin-user-opportunity-override` |
 
 ### 5k. 매칭 성공 조절 (v7.22.23 · 중복0)
@@ -503,7 +503,7 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 | Stage A/B 필드 | Infra §51.9.1 | withdraw/KYC 게이트 |
 | `/ads` alias | Infra §31.2a | `/l/*` canonical |
 | 3초 랜딩 예산 | Infra §31.2b + Canon `landing-3s` | CAPI §31 |
-| KYC Lux 3면·제출 | Money §42 + Canon `kyc-*` | UI wire only |
+| KYC visual-system 3면·제출 | Money §42 + Canon `kyc-*` | UI wire only |
 | 금지 | RRN 타이핑 · 성별 필드 · `/ads` 이중 페이지 | — |
 
 ---

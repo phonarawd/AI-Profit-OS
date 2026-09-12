@@ -44,20 +44,6 @@ let bundleCounter = 0;
 function buildBundle(bundle) {
   bundleCounter += 1;
   const payload = path.join(root, "payload-src-" + String(bundleCounter));
-  fs.mkdirSync(path.join(payload, "apps/web/.open-next/assets"), {
-    recursive: true,
-  });
-  fs.mkdirSync(path.join(payload, "apps/admin/.open-next/assets"), {
-    recursive: true,
-  });
-  fs.writeFileSync(path.join(payload, "apps/web/.open-next/worker.js"), "web");
-  fs.writeFileSync(path.join(payload, "apps/admin/.open-next/worker.js"), "ops");
-  fs.writeFileSync(path.join(payload, "apps/web/.open-next/assets/a.txt"), "a");
-  fs.writeFileSync(
-    path.join(payload, "apps/admin/.open-next/assets/a.txt"),
-    "a",
-  );
-
   const apiDist = path.join(payload, "services/api-nest/dist");
   fs.mkdirSync(apiDist, { recursive: true });
   const apiEntry = path.join(apiDist, "main.js");
@@ -70,20 +56,6 @@ function buildBundle(bundle) {
 
 function buildPayload(label) {
   const payload = path.join(root, "source-" + label);
-  fs.mkdirSync(path.join(payload, "apps/web/.open-next/assets"), {
-    recursive: true,
-  });
-  fs.mkdirSync(path.join(payload, "apps/admin/.open-next/assets"), {
-    recursive: true,
-  });
-  fs.writeFileSync(path.join(payload, "apps/web/.open-next/worker.js"), "web");
-  fs.writeFileSync(path.join(payload, "apps/admin/.open-next/worker.js"), "ops");
-  fs.writeFileSync(path.join(payload, "apps/web/.open-next/assets/a.txt"), "a");
-  fs.writeFileSync(
-    path.join(payload, "apps/admin/.open-next/assets/a.txt"),
-    "a",
-  );
-
   const apiDist = path.join(payload, "services/api-nest/dist");
   fs.mkdirSync(apiDist, { recursive: true });
   const apiEntry = path.join(apiDist, "main.js");
@@ -115,20 +87,6 @@ try {
   assert.equal(verified.source_sha, SHA);
 
   const extractRoot = path.join(root, "extract-root");
-  fs.mkdirSync(path.join(extractRoot, "apps/web/.open-next/assets"), {
-    recursive: true,
-  });
-  fs.writeFileSync(
-    path.join(extractRoot, "apps/web/.open-next/assets/stale.txt"),
-    "stale",
-  );
-  fs.mkdirSync(path.join(extractRoot, "apps/admin/.open-next/assets"), {
-    recursive: true,
-  });
-  fs.writeFileSync(
-    path.join(extractRoot, "apps/admin/.open-next/assets/stale.txt"),
-    "stale",
-  );
   fs.mkdirSync(path.join(extractRoot, "services/api-nest/dist"), {
     recursive: true,
   });
@@ -156,14 +114,6 @@ try {
   extractPayload(goodBundle, extractRoot);
 
   assert.equal(
-    fs.existsSync(path.join(extractRoot, "apps/web/.open-next/assets/stale.txt")),
-    false,
-  );
-  assert.equal(
-    fs.existsSync(path.join(extractRoot, "apps/admin/.open-next/assets/stale.txt")),
-    false,
-  );
-  assert.equal(
     fs.existsSync(path.join(extractRoot, "services/api-nest/dist/stale.js")),
     false,
   );
@@ -179,10 +129,6 @@ try {
       true,
     );
   }
-  assert.equal(
-    fs.existsSync(path.join(extractRoot, "apps/web/.open-next/worker.js")),
-    true,
-  );
   assert.equal(
     fs.existsSync(path.join(extractRoot, "services/api-nest/dist/main.js")),
     true,

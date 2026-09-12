@@ -25,8 +25,6 @@ const files = [
   "services/shadow-replay-engine/testdata/golden/pick_threshold_edge.json",
   "services/shadow-replay-engine/testdata/golden/pick_below.json",
   "schemas/shadow-replay-report.v1.json",
-  "packages/ui/canon/surfaces/admin-ledger-shadow-replay.wire.json",
-  "apps/admin/app/admin/ledger/page.tsx",
   "services/api-nest/src/ai/shadow-replay.admin.service.ts",
   "supabase/migrations/20260811194832_shadow_replay_advisory_label.sql",
 ];
@@ -117,32 +115,7 @@ if (!failEnum.includes("block_settlement")) {
   fails.push("schema failAction must keep block_settlement");
 }
 
-const wire = read(
-  "packages/ui/canon/surfaces/admin-ledger-shadow-replay.wire.json",
-);
-if (!wire.includes("block_settlement")) {
-  fails.push("canon must cite block_settlement");
-}
-if (!wire.includes("nonzero_drift_pass")) {
-  fails.push("canon forbidden missing nonzero_drift_pass");
-}
-// Admin copy conversion is 04 Admin pointer — Engine may only note advisory fields
-if (!wire.includes("drift_advisory_only") && !wire.includes("driftAdvisoryOnly")) {
-  fails.push("canon wire must pointer advisory contract (Admin copy track separate)");
-}
-
-const ledger = read("apps/admin/app/admin/ledger/page.tsx");
-if (!ledger.includes("tab=shadow-replay") && !ledger.includes('"shadow-replay"')) {
-  fails.push("ledger page missing shadow-replay tab");
-}
-if (!ledger.includes('data-max-drift="0"')) {
-  fails.push("ledger shadow panel must lock max drift 0");
-}
-
-const adminRoutes = read("apps/admin/routes.ts");
-if (!adminRoutes.includes("/admin/ledger?tab=shadow-replay")) {
-  fails.push("admin routes missing ledger?tab=shadow-replay");
-}
+// admin ledger shadow-replay canon wire · ledger page tab/max-drift · admin routes: future admin repo (quality/admin-handoff · handoff 1d)
 
 const svc = read(
   "services/api-nest/src/ai/shadow-replay.admin.service.ts",

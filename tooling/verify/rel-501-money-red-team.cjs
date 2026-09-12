@@ -17,7 +17,7 @@ const report = read("tooling/e2e/money/red-team-report.v1.md");
 const evidence = read("governance/release-master/REL-501-MONEY-RED-TEAM.md");
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
-const gate = read(".github/workflows/gate.yml");
+const gate = read(".github/workflows/backend-ci.yml");
 const red = require(path.join(root, "tooling/e2e/lib/money-red-team.cjs"));
 let matrix;
 try { matrix = red.loadMatrix(); } catch (err) { fails.push(String(err.message || err)); }
@@ -51,13 +51,13 @@ for (const dep of fixture.deps || []) {
   if (!todoCompleted(dep)) fails.push("EXIT_GATE: plan todo not completed " + dep);
   if (!yamlCompleted(dep)) fails.push("EXIT_GATE: YAML STATUS not COMPLETED " + dep);
 }
-if (!spec.includes("assertQaIsolation") || !spec.includes("@playwright/test")) fails.push("spec must be isolated Playwright harness");
+if (!spec.includes("assertQaIsolation") || !spec.includes("node:test")) fails.push("spec must be isolated node:test harness");
 if (!lib.includes("runMoneyMutationTest")) fails.push("harness must enter through runMoneyMutationTest");
 if (/browser_navigate/.test(spec + lib)) fails.push("MCP-only evidence is not DONE");
 if (!readme.includes("REL-501") || !readme.includes("runMoneyMutationTest")) fails.push("README must document REL-501 guard entry");
 if (!pkg.includes("verify:rel-501-money-red-team")) fails.push("package.json missing verify:rel-501-money-red-team");
 if (!catalog.includes("rel-501-money-red-team")) fails.push("CATALOG missing rel-501-money-red-team");
-if (!gate.includes("verify:rel-501-money-red-team")) fails.push("gate.yml must run verify:rel-501-money-red-team");
+if (!gate.includes("verify:rel-501-money-red-team")) fails.push("backend-ci.yml must run verify:rel-501-money-red-team");
 for (const needle of ["STATUS = COMPLETED","ISOLATION_GUARD = 1","PRODUCTION_DB_WRITE = 0","REAL_LEDGER_MUTATION = 0","MCP_ONLY_DONE = 0","GUARD_ABORT = 1"]) {
   if (!evidence.includes(needle) && !report.includes(needle)) fails.push("REL-501 evidence missing " + needle);
 }

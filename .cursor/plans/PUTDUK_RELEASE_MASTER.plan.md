@@ -144,7 +144,7 @@ todos:
     content: "[Consumer][Legacy:C-ACC-001~003] Notifications(/me/inbox) 클로저 - Track C \"핵심 8영역\" completed 선언 범위(재확인 게이트만) — DONE 401≠empty · leftover chrome 0"
     status: completed
   - id: rel-122
-    content: "[Consumer][Asset 후보 기존재] AIInsight(/me/peotteok) 클로저 - public/spark-dash/ai-orb.svg 재사용 · fact-only · leftover chrome 0"
+    content: "[Consumer][Asset 후보 기존재] AIInsight(/me/peotteok) 클로저 - public/legacy-home/ai-orb.svg 재사용 · fact-only · leftover chrome 0"
     status: completed
   - id: rel-123
     content: "[Consumer][Legacy:C-ACC-001~003] Profile(/me) 클로저 - session owner · leftover chrome 0 · REL-131 Figma 미대기"
@@ -303,8 +303,8 @@ todos:
     content: "[QA-Expansion] 금융/red-team -- DONE 7 modes + guard abort + product codes + ledger write 0"
     status: completed
   - id: rel-502
-    content: "[QA-Expansion][A2] FINAL ENGINE ACCEPTANCE -- DONE formal rebase + current-epoch QA0-QA9 + FINAL_ACCEPTANCE ISSUED"
-    status: completed
+    content: "[QA-Expansion][A2] FINAL ENGINE ACCEPTANCE -- PENDING current-epoch QA1-QA8 rerun + QA9 after ENGINE_ACCEPTANCE_REBASE_V1"
+    status: pending
   - id: rel-503
     content: "[QA-Expansion] protected-scope STALE 감시 메커니즘 상시화"
     status: completed
@@ -559,7 +559,7 @@ IMPLEMENTATION_STEPS:
   - 각 경로를 tracked / untracked / ignored / tmp / secret-risk 로 분류
   - secret-risk(.env, pem, service_role, JWT)는 커밋 후보에서 즉시 제외하고 경로만 기록
   - .cursor/tmp, _tmp*, capture png, 플랜 draft는 tmp 또는 plan-meta로 분리
-  - Home freeze 파일, spark-dash, opportunities, opportunity-reprice.service.ts, migrations를 recoverable 후보로 표시
+  - Home freeze 파일, legacy-home, opportunities, opportunity-reprice.service.ts, migrations를 recoverable 후보로 표시
   - 분류 결과를 governance/release-master/REL-000-TREE-INVENTORY.md 로 기록
 VERIFY: 인벤토리에 모든 untracked+modified 경로가 한 번씩 등장. git add -A 사용 0. secret-risk staged 0.
 ACCEPTANCE: 분류표 존재. git add -A 금지 준수. 제품 파일 미수정. 다음 REL-001이 이 표를 입력으로 쓸 수 있음.
@@ -607,11 +607,11 @@ SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-002
 ORIGINAL_INTENT: Founder 승인 Home Desktop/Mobile을 잃지 않고 main에 안전하게 올린다. main 직접 커밋 금지.
-CURRENT_SCOPE: recovery/home-capture 브랜치에서 HomeDesktop/HomeMobile, spark-dash-home, home-approval-freeze, 관련 assets만 복원. Home 시각 재설계 금지. PR→CI→merge.
+CURRENT_SCOPE: recovery/home-capture 브랜치에서 HomeDesktop/HomeMobile, legacy-home-home, home-approval-freeze, 관련 assets만 복원. Home 시각 재설계 금지. PR→CI→merge.
 DEPENDENCIES:
   - REL-001
 IMPLEMENTATION_STEPS:
-  - REL-000 인벤토리에서 Home 관련 경로만 추출 (HomeDesktop.tsx, HomeMobile.tsx, spark-dash-home/*, governance/consumer-home-approval/*, public/spark-dash Home assets)
+  - REL-000 인벤토리에서 Home 관련 경로만 추출 (HomeDesktop.tsx, HomeMobile.tsx, legacy-home-home/*, governance/consumer-home-approval/*, public/legacy-home Home assets)
   - git checkout -b recovery/home-capture
   - 해당 경로만 add. Home geometry/Hero/Header/Sidebar/Bottom Nav 변경 금지
   - home freeze JSON과 Desktop 1440 / Mobile 390 의미가 깨지지 않는지 확인
@@ -811,7 +811,7 @@ DEPENDENCIES:
   - REL-005
 IMPLEMENTATION_STEPS:
   - 본 파일 §2 레지스트리를 코드 상수/문서로 복제 (fileKey 재요청 금지)
-  - packages/ui/tokens 와 spark-dash CSS의 충돌을 목록화하고 최소 안전 마이그레이션 계획만 작성
+  - packages/ui/tokens 와 legacy-home CSS의 충돌을 목록화하고 최소 안전 마이그레이션 계획만 작성
   - FOUNDER_REVIEW_CANDIDATE frame node-id를 화면 REL이 읽도록 매핑 테이블 작성
   - "Home 46:2를 authority로 쓰지 않음"
   - 인프라 PR. 개별 화면 적용은 REL-106~110/131
@@ -1053,7 +1053,7 @@ SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-018
 ORIGINAL_INTENT: 화면마다 애드혹으로 받던 에셋을 생성-검수-최적화 파이프라인으로 표준화한다.
-CURRENT_SCOPE: 기존 apps/web/scripts/download-spark-dash-assets.mjs, download-spark-dash-mobile-assets.mjs, process-product-sneaker.mjs 패턴 통합. 이모지로 아이콘을 대체하는 경로 금지. 파트너 로고 AI 생성 금지.
+CURRENT_SCOPE: 기존 apps/web/scripts/download-legacy-home-assets.mjs, download-legacy-home-mobile-assets.mjs, process-product-sneaker.mjs 패턴 통합. 이모지로 아이콘을 대체하는 경로 금지. 파트너 로고 AI 생성 금지.
 DEPENDENCIES:
   - REL-009
 IMPLEMENTATION_STEPS:
@@ -1429,7 +1429,7 @@ IMPLEMENTATION_STEPS:
   - "committed spec: 목록/빈상태. Home geometry 종속 금지"
 VERIFY: 실 API 목록. fake FOMO 0. candidate를 approved로 쓰지 않음.
 ACCEPTANCE: 목록 기능 REAL. 시각은 candidate 정합 또는 명시적 잔여.
-EVIDENCE: apps/web/app/profits + spark-dash-profits
+EVIDENCE: apps/web/app/profits + legacy-home-profits
 EXIT_GATE: 미승인 Figma를 Approved로 표기하면 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -1881,7 +1881,7 @@ SOURCE_PLAN: PUTDUK_CURRENT_MASTER.plan.md
 SOURCE_TODO_IDS:
   - rel-122
 ORIGINAL_INTENT: 퍼뜩 인사이트는 fact-only이고 가짜 수익을 만들지 않는다.
-CURRENT_SCOPE: /me/peotteok. public/spark-dash/ai-*.svg 재사용 우선. 신규 AI 아바타 생성 금지부터 확인. Coach 런타임 변경은 REL-300대.
+CURRENT_SCOPE: /me/peotteok. public/legacy-home/ai-*.svg 재사용 우선. 신규 AI 아바타 생성 금지부터 확인. Coach 런타임 변경은 REL-300대.
 DEPENDENCIES:
   - REL-007
   - REL-018
@@ -1893,7 +1893,7 @@ IMPLEMENTATION_STEPS:
   - committed spec 1
 VERIFY: fake money 0. 기존 에셋 우선.
 ACCEPTANCE: 인사이트 화면이 fact-only.
-EVIDENCE: /me/peotteok + spark-dash ai assets
+EVIDENCE: /me/peotteok + legacy-home ai assets
 EXIT_GATE: Coach 런타임 미확인 숫자를 확정처럼 쓰면 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -3400,7 +3400,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-502
 TITLE: FINAL ENGINE ACCEPTANCE
-STATUS: COMPLETED
+STATUS: PENDING_RERUN
 SOURCE_PLAN: ai_profit_os_02_5_engine_acceptance_c3d4e5f6.plan.md
 SOURCE_TODO_IDS:
   - rel-502

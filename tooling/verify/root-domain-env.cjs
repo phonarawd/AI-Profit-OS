@@ -17,9 +17,9 @@ const PLACEHOLDER_PATTERNS = [
 ];
 
 const SCAN_PATHS = [
-  "infra/web/wrangler.toml",
-  "infra/ops/wrangler.toml",
-  "infra/ops/access-policy.json",
+  "infra/domain.manifest.json",
+  "infra/hosts.manifest.json",
+  "workers/api-stub/wrangler.toml",
 ];
 
 function scanFile(rel) {

@@ -49,10 +49,9 @@ const evidence = read("governance/release-master/REL-602-STAGING-ROLLBACK.md");
 const runbook = read("governance/release-master/ROLLBACK_RUNBOOK.md");
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
-const gate = read(".github/workflows/gate.yml");
+const gate = read(".github/workflows/backend-ci.yml");
 const domain = read("tooling/verify/domain-by-path.cjs");
 const gateTiers = read("tooling/verify/gate-tiers.cjs");
-const rollback = read("tooling/deploy/cf-rollback-staging.cjs");
 const manifest = readJson("infra/domain.manifest.json");
 const prodWorkflow = read(".github/workflows/deploy-cloudflare.yml");
 
@@ -138,39 +137,17 @@ if (rel603Closed && rel700Closed && rel701PreClosed && rel701DbClosed) {
   if (!plan.includes("HARD_STOP_AFTER = REL-602")) fails.push("HARD_STOP_AFTER must be REL-602");
 }
 
-const staging = manifest.openNext && manifest.openNext.staging;
-if (!staging || staging.wranglerEnv !== "preview") fails.push("manifest staging wranglerEnv must be preview");
 if (fixture.stagingWeb !== STAGING_WEB_ORIGIN) {
   fails.push("staging web must equal locked preview origin");
 }
 if (fixture.stagingOps !== STAGING_OPS_ORIGIN) {
   fails.push("staging ops must equal locked preview origin");
 }
-if (!staging || staging.web.workersDev !== "ai-profit-web-preview.ebay-adapter.workers.dev") fails.push("staging web origin drift");
-if (!staging || staging.ops.workersDev !== "ai-profit-ops-preview.ebay-adapter.workers.dev") fails.push("staging ops origin drift");
-if (manifest.openNext.web.workersDev !== "ai-profit-web.ebay-adapter.workers.dev") fails.push("production web origin drift");
-if (manifest.openNext.ops.workersDev !== "ai-profit-ops.ebay-adapter.workers.dev") fails.push("production ops origin drift");
 if (manifest.env.APP_HOST !== "app.hiptk.app") fails.push("APP_HOST drift");
 if (manifest.env.OPS_HOST !== "ops.hiptk.app") fails.push("OPS_HOST drift");
-
-for (const needle of [
-  "production target forbidden",
-  "ai-profit-web-preview",
-  "ai-profit-ops-preview",
-  "Atomic preflight",
-  "target version(s) not present",
-  "MUTATION = 0",
-  "CLOUDFLARE_API_TOKEN missing",
-]) {
-  if (!rollback.includes(needle)) fails.push("rollback helper missing: " + needle);
+if (fs.existsSync(path.join(root, "tooling/deploy/cf-rollback-staging.cjs"))) {
+  fails.push("cf-rollback-staging.cjs must be removed (handed off)");
 }
-for (const forbidden of fixture.forbiddenWorkers || []) {
-  if (new RegExp("--name\\s+[\\\"']?" + forbidden + "[\\\"']?\\s*$", "m").test(rollback)) {
-    fails.push("rollback helper must not target production worker " + forbidden);
-  }
-}
-if (/\bwrangler\s+pages\s+deploy\b/.test(rollback)) fails.push("rollback helper must not Pages deploy");
-if (/\bapply_migration\b|supabase\s+db\s+push/.test(rollback)) fails.push("rollback helper must not mutate DB");
 
 for (const needle of [
   "STATUS = COMPLETED",
@@ -208,7 +185,7 @@ if (!runbook.includes("PRODUCTION_EXECUTE = 0")) fails.push("runbook production 
 if (!prodWorkflow.includes("workflow_dispatch")) fails.push("production deploy workflow contract drift");
 
 if (!pkg.includes("verify:rel-602-staging-rollback")) fails.push("package missing REL-602 verify script");
-if (!pkg.includes("cf:rollback:staging")) fails.push("package missing staging rollback script");
+if (pkg.includes("cf:rollback:staging")) fails.push("package must not keep cf:rollback:staging");
 if (!catalog.includes("rel-602-staging-rollback")) fails.push("catalog missing REL-602");
 if (!gate.includes("verify:rel-602-staging-rollback")) fails.push("gate missing REL-602");
 if (!domain.includes("rel-602-staging-rollback.cjs")) {

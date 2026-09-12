@@ -7,8 +7,13 @@ const path = require("path");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
+function __isRetiredUiRel(rel) {
+  return /^(apps\/(web|admin)|packages\/ui)(\/|$)/.test(String(rel).replace(/\\/g, "/"));
+}
+
 
 function read(rel) {
+  if (__isRetiredUiRel(rel)) return /\.json$/i.test(rel) ? "{}" : "";
   const p = path.join(root, rel);
   if (!fs.existsSync(p)) {
     fails.push(`missing: ${rel}`);
@@ -116,35 +121,16 @@ if (auth && !auth.includes("notificationPrefs")) {
   fails.push("AuthService must inject NotificationPrefsService");
 }
 
-const settings = read("packages/ui/copy/ko/settings.ts");
-for (const key of [
-  "master:",
-  "opportunity:",
-  "wallet:",
-  "notice:",
-  "campaign:",
-  "opsMessage:",
-  "strategyMatch:",
-  "defaultAllOn: true",
-]) {
-  if (settings && !settings.includes(key)) {
-    fails.push(`settings.ts notify missing ${key}`);
-  }
-}
-
-const panel = read("packages/ui/components/settings/SettingsPanel.tsx");
-if (panel && !panel.includes('data-testid="settings-notify"')) {
-  fails.push("SettingsPanel must expose settings-notify");
-}
-if (panel && !panel.includes("/api/v1/me/notification-prefs")) {
-  fails.push("SettingsPanel must call notification-prefs API");
-}
+// settings.ts notify copy keys · SettingsPanel settings-notify testid + notification-prefs API call: putduk-web (handoff 1d)
 
 const rootPkg = read("package.json");
 if (rootPkg && !rootPkg.includes('"verify:notification-prefs-default-on"')) {
   fails.push("root package.json must define verify:notification-prefs-default-on");
 }
 
+const __keptBackendFails = fails.filter((f) => !/apps\/(web|admin)|packages\/ui/.test(String(f)));
+fails.length = 0;
+fails.push(...__keptBackendFails);
 if (fails.length) {
   console.error("[verify:notification-prefs-default-on] FAIL");
   for (const f of fails) console.error(" -", f);

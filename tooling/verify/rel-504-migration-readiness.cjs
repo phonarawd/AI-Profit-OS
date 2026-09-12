@@ -24,7 +24,7 @@ const ready = read("governance/release-master/MIGRATION_READINESS.md");
 const cert = read("governance/engine-acceptance/FINAL_ACCEPTANCE.md");
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
-const gate = read(".github/workflows/gate.yml");
+const gate = read(".github/workflows/backend-ci.yml");
 const domain = read("tooling/verify/domain-by-path.cjs");
 const applied = JSON.parse(read("tooling/verify/fixtures/migrations-applied.v1.json") || "{}");
 
@@ -156,7 +156,7 @@ if (rebaseRequired) {
 
 if (!pkg.includes("verify:rel-504-migration-readiness")) fails.push("package.json missing verify:rel-504-migration-readiness");
 if (!catalog.includes("rel-504-migration-readiness")) fails.push("CATALOG missing rel-504-migration-readiness");
-if (!gate.includes("verify:rel-504-migration-readiness")) fails.push("gate.yml must run verify:rel-504-migration-readiness");
+if (!gate.includes("verify:rel-504-migration-readiness")) fails.push("backend-ci.yml must run verify:rel-504-migration-readiness");
 if (!domain.includes("rel-504-migration-readiness.cjs")) fails.push("domain-by-path must trigger rel-504");
 
 if (fails.length === 0) {

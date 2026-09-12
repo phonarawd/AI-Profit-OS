@@ -1,22 +1,21 @@
 # AI Profit OS — Toolchain Lock (ADR-015 · 오류0)
 
-작업( monorepo-skeleton / 기능 구현 ) **전에** 이 문서의 PASS가 필수다.
+작업(기능 구현) **전에** 이 문서의 PASS가 필수다.
+이 레포는 **백엔드 전용**. 고객 웹 툴체인(Next/Tailwind)은 putduk-web.
 
-## 잠금 조합 (2026-08 · 지구상 현존 최강 · 이 플랫폼 기준)
+## 잠금 조합 (2026-08 · 이 플랫폼 기준)
 
 | 층 | SSOT | 금지 |
 |----|------|------|
 | Runtime | **Node.js 22.14+** (engines `<23`) | Node 18/20로 다운 |
 | Package manager | **pnpm@10.14.0** (`packageManager` 필드) | npm/yarn/**bun install SSOT** |
-| Web/Admin | **Next.js 16** (App Router) + React 19.2 | next@15 잔존 · next@17 무단 |
-| CSS | **Tailwind CSS v4** + Lux `@theme` | Tailwind v3 신규 · 헥스 하드코딩 |
-| API | NestJS (Node) | Supabase Auth |
+| API | NestJS (Node) | Supabase Auth · Next/React를 이 레포에 재도입 |
 | Engine | Rust (`rust-toolchain.toml`) | JS 원장 핵심 |
 | DB | PostgreSQL **17** (Compose) / managed 단일 | 두 번째 Postgres · **PG사(결제대행)** |
 | Cache | Redis 7 | — |
-| Edge | OpenNext Cloudflare Workers only | Pages deploy/pages.dev origin · Vercel 병행 |
+| Edge | Cloudflare Workers (API stub · push-dispatcher · R2) | Pages deploy/pages.dev origin · Vercel 병행 · 이 레포 OpenNext web/ops |
 | Events Runtime P0 | Nest in-process | NATS/Temporal 필수화 |
-| Monorepo | pnpm workspaces | bun/npm workspaces SSOT |
+| Monorepo | pnpm workspaces (backend packages only) | bun/npm workspaces SSOT |
 
 ## 1회 설치 (Windows)
 
@@ -59,16 +58,15 @@ pnpm exec wrangler -v
 
 | Host | 경로 |
 |------|------|
-| User PWA | OpenNext Worker `ai-profit-web` · `infra/web/wrangler.toml` · `pnpm cf:deploy:web` |
-| Admin Ops | OpenNext Worker `ai-profit-ops` · `infra/ops/wrangler.toml` · `pnpm cf:deploy:ops` |
-| API | Nest Node · `infra/api/runtime.json` · `API_HOST` :4000 · web `next.config` rewrites `/api/v1/:path*` → `API_HOST` (`/ads` 보존) |
+| Customer web | putduk-web (이 레포 밖) |
+| API | Nest Node · `infra/api/runtime.json` · `API_HOST` :4000 |
 | DB | Supabase Seoul · `DATABASE_URL` |
 | Redis | Upstash · `REDIS_URL` |
 | KYC | R2 `kyc-docs` · `infra/r2/kyc-docs.toml` |
 | Bus | Nest **in-process** · NATS/Temporal/EKS **0** |
+| Workers | `push-dispatcher` · `api-stub` · `infra/workers.manifest.json` |
 
-- Origin SSOT: `infra/domain.manifest.json` `openNext.web|ops` · staging = `openNext.staging` (`pnpm cf:deploy:staging`) · host inventory: `infra/hosts.manifest.json`
-- Deploy: `opennextjs-cloudflare deploy`; staging = wrangler `[env.preview]`; `wrangler pages deploy` · `pages_build_output_dir` · `.open-next/cloudflare` deploy root 금지
+- Host inventory: `infra/hosts.manifest.json` · domain SSOT: `infra/domain.manifest.json`
 - Cutover: `infra/phase0-migration-playbook.md`
 - Verify: `pnpm verify:phase0-bootstrap` (in `verify:gate`)
 - Compose=`pnpm docker:up` **옵션만** (8GB OFF)
@@ -78,7 +76,7 @@ pnpm exec wrangler -v
 ```powershell
 pnpm verify:gate:fast      # commit 전 (T0 · ~30s)
 pnpm verify:gate:push      # push 전 (T1 · infra+stubs)
-pnpm verify:gate           # CI / main (T2 · next+opennext 포함)
+pnpm verify:gate           # CI / main (T2)
 pnpm cursor:sync-plans    # Plan SSOT → %USERPROFILE%\.cursor\plans hardlink (todo UI drift 방지)
 pnpm cleanup:lowspec      # 작업 후 렉 방지
 pnpm lowspec:status       # RAM/Docker/Cursor 압력 확인 (이 PC=Celeron 2C/8GB)
@@ -88,10 +86,9 @@ pnpm lowspec:status       # RAM/Docker/Cursor 압력 확인 (이 PC=Celeron 2C/8
 - Cursor hooks: `.cursor/hooks.json` (project isolation only · `preToolUse` + `beforeTabFileRead`)
 - Plan SSOT: 워크스페이스 `.cursor/plans` only · `verify:plans-ssot` in T0 · stale home aliases quarantine
 - Husky: pre-commit → `verify:gate:fast` · pre-push → `verify:gate:push`
-- CI: `.github/workflows/gate.yml` → T2 `verify:gate`
+- CI: `.github/workflows/backend-ci.yml` → T2 `verify:gate`
 - Rules: always ≤7 + domain globs · catalog `tooling/verify/CATALOG.md`
 - Git: **슬라이스=T0 commit** · **push=세션 stop/명시** = `.cursor/rules/git-auto-commit-push.mdc`
-
 
 ## 검증
 
@@ -102,15 +99,15 @@ pnpm verify:stack-lock
 
 PASS 없으면 기능 구현 착수 **금지**.
 
-## 디렉터리 골격 (monorepo-skeleton)
+## 디렉터리 골격
 
 ```
-apps/web       # Next@16 · User 5탭 · routes.ts lock
-apps/admin     # Next@16 · Admin §9.1+§9.1.1 · routes.ts lock
-packages/      # ui · sdk · schemas (JSON SSOT=/schemas)
-services/      # api-nest · engine-rust · marketing-attribution
-workers/       # push/capi + adapter stubs (Runtime P1+)
-tooling/verify # CI gates (ia-tabs · admin-routes · next-major-pin)
+services/      # api-nest · engine-rust · 지원 서비스
+workers/       # push-dispatcher · api-stub · adapters
+schemas/       # JSON 계약 SSOT
+supabase/      # migrations
+tooling/verify # CI gates · backend/run-all
+quality/       # 백엔드 문서·인계
 ```
 
 ## bun / npm 정책

@@ -139,7 +139,7 @@ Investigated, not invented:
 1. `verify:device-tier-system` compares SHA-256 of Home files to `governance/responsive/home-geometry-lock.v1.json`.
    `apps/web/app/page.tsx` lock bytes=198 / sha `71fca608…`. Git object at the lock commit `17ec0e5` and at HEAD is 192 bytes / sha `297e7a4e…`. Converting that git object to CRLF yields the lock sha and 198 bytes. The lock was hashed from a Windows CRLF working tree, not from the LF git object. That is not a Home visual change in REL-601.
 2. `apps/web/app/HomeDesktopClient.tsx` did change after the lock: `17ec0e5` 2181 bytes → HEAD 3007 bytes via REL-105 commits `889e58f` / `938f9cd` (guest first-visit / leftover chrome). Those RELs are already COMPLETED. This REL does not refresh the lock and does not rewrite Home geometry.
-3. `verify:asset-production-pipeline` Home asset lock fails the same way (CRLF lock vs LF git objects). No spark-dash asset was rewritten here.
+3. `verify:asset-production-pipeline` Home asset lock fails the same way (CRLF lock vs LF git objects). No Home asset was rewritten here.
 4. `verify:rel-500-qa-lab-expansion` is still a hard extra SKIP (local full matrix 0). After `pnpm install --frozen-lockfile` in this environment, T0 path `verify:axe-harness` PASS (committed spec · Home 390/1440+login · MCP 0). That does not run the REL-500 sample cartesian.
 
 REL-601 does not update `home-geometry-lock.v1.json` or Home CSS/TSX. Lock refresh is out of scope (would look like blessing a new geometry baseline).

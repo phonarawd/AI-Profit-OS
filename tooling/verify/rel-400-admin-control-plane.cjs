@@ -54,11 +54,6 @@ if (!catalog.includes("rel-400-admin-control-plane")) {
   fails.push("CATALOG missing rel-400-admin-control-plane");
 }
 
-const webAdmin = path.join(root, "apps/web/app/admin");
-if (fs.existsSync(webAdmin)) {
-  fails.push("apps/web must not grow /admin");
-}
-
 if (fails.length) {
   console.error("[verify:rel-400-admin-control-plane] FAIL");
   for (const f of fails) console.error(" -", f);
