@@ -7,11 +7,11 @@ Production DB apply (REL-701-DB) was executed separately under explicit Founder 
 ```text
 RC = RC_FORMAL
 STATUS = LOCKED
-RC_SOURCE_SHA_BINDING = 7de16827ea28786aefabf4c6d4d11ca31ac45354
+RC_SOURCE_SHA_BINDING = cb71cf91b6982471edab426ab06a14947a7f4de5
 RC_BRANCH_POINTER = main
 ENGINE_FINAL_ACCEPTANCE = ISSUED
-ENGINE_BASELINE = ea-baseline-a6cda12f349d-14d149fdd474
-ENGINE_REBASE_ID = ea-rebase-a6cda12f349d-14d149fdd474
+ENGINE_BASELINE = ea-baseline-b11140abaafa-af15bf5b43ff
+ENGINE_REBASE_ID = ea-rebase-b11140abaafa-af15bf5b43ff
 ENGINE_QA9 = ENGINE_ACCEPTED_FOR_UI
 PROTECTED_SCOPE_DRIFT = 0
 HISTORICAL_82_PATH_EVIDENCE = PRESERVED
@@ -24,13 +24,13 @@ PRODUCTION_DEPLOY = 0
 PRODUCTION_SCHEMA_PARITY_MIGRATION = APPLIED_BY_REL-701-DB
 APPLY_OWNER = REL-701-DB
 NEXT = REL-701_FOUNDER_WORKFLOW_DISPATCH
-PREDECESSOR_RC = 7c6a2b0abe259847b7b1d7939ce7e1d98e6f654f (superseded · re-seal after ENGINE_ACCEPTANCE_REBASE_V1 ea-rebase-a6cda12f349d-14d149fdd474 · current-epoch QA0-QA9 ISSUED on main 7de16827)
+PREDECESSOR_RC = 7de16827ea28786aefabf4c6d4d11ca31ac45354 (superseded · re-seal after ENGINE_ACCEPTANCE_REBASE_V1 ea-rebase-b11140abaafa-af15bf5b43ff · current-epoch QA0-QA9 ISSUED on main cb71cf91)
 ```
 
-CI fields for the predecessor seal remain historical. Current-epoch engine-acceptance full is run 34690227598 on exact SHA 7de16827. This record does not invent a new release-bundle digest.
+CI fields for the predecessor seal remain historical. Current-epoch engine-acceptance evidence is push run 34705012084 (QA0-QA8) plus workflow_dispatch qa7 run 34705378591 on exact SHA cb71cf91. This record does not invent a new release-bundle digest.
 
 ```text
-ENGINE_ACCEPTANCE_CI = BOUND_TO_EXACT_SHA (full · workflow_dispatch · run 34690227598 success)
+ENGINE_ACCEPTANCE_CI = BOUND_TO_EXACT_SHA (push 34705012084 QA0-QA8 success · workflow_dispatch qa7 34705378591 success)
 PREDECESSOR_GATE = 7c6a2b0abe259847b7b1d7939ce7e1d98e6f654f (run 33826181360 success)
 PREDECESSOR_RELEASE_BUILD = 5e37887b888aa2bcd4bb075ebcd956ea1c358322bdfbb7f10bdbe31df8ec6001
 PREDECESSOR_RELEASE_ACCEPTANCE = run 33829217490 · verdict PASS
