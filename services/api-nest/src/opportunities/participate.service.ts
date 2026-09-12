@@ -42,6 +42,7 @@ import {
   membershipDefaults,
   mergeEffectivePolicy,
 } from "../membership/membership.mi";
+import { MembershipRuntimeService } from "../membership/membership.runtime.service";
 import { OPPORTUNITY_EVENTS } from "./opportunities.events";
 
 const req = createRequire(__filename);
@@ -142,6 +143,7 @@ export class ParticipateService {
     private readonly executionPolicy: ExecutionPolicyAdminService,
     private readonly bus: InProcessEventBus,
     private readonly preflight: PreflightService,
+    private readonly membershipRuntime: MembershipRuntimeService,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
@@ -544,24 +546,12 @@ export class ParticipateService {
       slippageBoundBps: number;
     },
   ): Promise<void> {
-    const mem = await this.db.query<{
-      membership: string;
-      max_capital_band: string;
-      daily_user_match_cap: number;
-      daily_matches_used: number;
-      match_strictness: string;
-    }>(
-      `SELECT membership, max_capital_band, daily_user_match_cap,
-              daily_matches_used, match_strictness
-         FROM public.user_membership
-        WHERE user_id = $1::uuid`,
-      [userId],
-    );
-    const row = mem.rows[0];
+    const row = await this.membershipRuntime.ensureRow(userId);
+    const dailyMatchesUsed =
+      await this.membershipRuntime.effectiveDailyMatchesUsed(userId);
     const defaults = membershipDefaults("sprout");
-    const membership = row?.membership ?? defaults.membership;
-    const maxCapitalBand = row?.max_capital_band ?? defaults.maxCapitalBand;
-    const dailyMatchesUsed = Number(row?.daily_matches_used ?? 0);
+    const membership = row.membership ?? defaults.membership;
+    const maxCapitalBand = row.max_capital_band ?? defaults.maxCapitalBand;
 
     const ov = await this.db.query<{
       match_strictness: string;

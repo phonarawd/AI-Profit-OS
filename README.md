@@ -18,6 +18,11 @@ Nest API · Rust engine · PostgreSQL(Supabase Seoul) · Redis(Upstash) · Cloud
 - 어드민은 서버 API·RBAC·감사만: `quality/admin-handoff/README.md`
 - UI 어서션 인계: `quality/putduk-web-ui-assertions-handoff.md`
 
+## 패치
+
+이 레포는 백엔드다. 고객 웹은 `phonarawd/putduk-web`이다.
+패치는 `main`에서 브랜치 → `pnpm verify:gate:fast` → `backend-ci` → PR 머지.
+
 ## 검증
 
 ```powershell

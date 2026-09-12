@@ -3,6 +3,7 @@ import { EventsModule } from "../events/events.module";
 import { InboxModule } from "../inbox/inbox.module";
 import { UserUxPrefsModule } from "../ux-prefs/user-ux-prefs.module";
 import { LedgerModule } from "../ledger/ledger.module";
+import { MembershipModule } from "../membership/membership.module";
 import { PostgresService } from "../db/postgres";
 import { ResendEmailProvider } from "../wallet/resend-email.provider";
 import { AuthController } from "./auth.controller";
@@ -15,7 +16,13 @@ import { WebauthnAssertService } from "./webauthn-assert.service";
 import { PostgresProofStore } from "./identity-proof.store";
 
 @Module({
-  imports: [EventsModule, LedgerModule, InboxModule, UserUxPrefsModule],
+  imports: [
+    EventsModule,
+    LedgerModule,
+    InboxModule,
+    UserUxPrefsModule,
+    MembershipModule,
+  ],
   controllers: [AuthController],
   providers: [
     AuthService,

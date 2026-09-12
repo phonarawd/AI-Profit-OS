@@ -1,5 +1,6 @@
 export { MembershipModule } from "./membership.module";
 export { MembershipAdminService } from "./membership.admin.service";
+export { MembershipRuntimeService } from "./membership.runtime.service";
 export { MembershipUserController } from "./membership.user.controller";
 export { MEMBERSHIP_ADMIN_ROUTES } from "./membership.routes";
 export { MEMBERSHIP_USER_ROUTES } from "./membership.user.routes";

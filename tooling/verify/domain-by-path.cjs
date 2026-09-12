@@ -330,11 +330,31 @@ const RULES = [
       /^packages\/ui\/components\/auth\/webauthn-ready\.ts$/.test(f) ||
       /^packages\/ui\/components\/auth\/AuthLogin\.tsx$/.test(f) ||
       /^governance\/pwa\/webauthn-rp/.test(f) ||
-      /^tooling\/pwa\/webauthn-/.test(f),
+      /^tooling\/pwa\/webauthn-/.test(f) ||
+      /^services\/api-nest\/src\/main\.ts$/.test(f),
     scripts: [
       "backend/auth/webauthn-ux-rp.cjs",
       "webauthn-fallback-pointer.cjs",
     ],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\/src\/membership\//.test(f) ||
+      /^tooling\/verify\/backend\/matching-membership\/membership-/.test(f) ||
+      /^services\/market-intelligence\/src\/membership\.cjs$/.test(f),
+    scripts: [
+      "backend/matching-membership/membership-ladder.cjs",
+      "backend/matching-membership/membership-daily-cap.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\/src\/referral\/referral\.hooks\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/referral\/referral\.ladder\.service\.ts$/.test(
+        f,
+      ) ||
+      /^tooling\/verify\/referral-ladder\.cjs$/.test(f),
+    scripts: ["referral-ladder.cjs", "benefit-g4-ledger-separation.cjs"],
   },
   {
     test: (f) =>
