@@ -2,6 +2,8 @@ import { Module } from "@nestjs/common";
 import { EventsModule } from "../events/events.module";
 import { MembershipAdminController } from "./membership.admin.controller";
 import { MembershipAdminService } from "./membership.admin.service";
+import { MembershipHooks } from "./membership.hooks";
+import { MembershipRuntimeService } from "./membership.runtime.service";
 import { MembershipUserController } from "./membership.user.controller";
 
 /**
@@ -11,7 +13,11 @@ import { MembershipUserController } from "./membership.user.controller";
 @Module({
   imports: [EventsModule],
   controllers: [MembershipAdminController, MembershipUserController],
-  providers: [MembershipAdminService],
-  exports: [MembershipAdminService],
+  providers: [
+    MembershipRuntimeService,
+    MembershipAdminService,
+    MembershipHooks,
+  ],
+  exports: [MembershipAdminService, MembershipRuntimeService],
 })
 export class MembershipModule {}

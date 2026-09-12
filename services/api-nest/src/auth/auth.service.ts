@@ -25,6 +25,7 @@ import { PostgresService } from "../db/postgres";
 import { NotificationPrefsService } from "../inbox/notification-prefs.service";
 import { UserUxPrefsService } from "../ux-prefs/user-ux-prefs.service";
 import { LedgerProvisionService } from "../ledger/ledger.provision.service";
+import { MembershipRuntimeService } from "../membership/membership.runtime.service";
 import { PracticeGrantService } from "../ledger/practice-grant.service";
 import {
   ACCESS_TOKEN_TTL_SEC,
@@ -106,6 +107,7 @@ export class AuthService {
     private readonly magicLink: MagicLinkService,
     private readonly oauthIdentity: OauthIdentityService,
     private readonly webauthn: WebauthnAssertService,
+    private readonly membership: MembershipRuntimeService,
   ) {}
 
   /**
@@ -119,6 +121,7 @@ export class AuthService {
     /** UI §50.1n — 가입 시 알림 prefs 전부 ON */
     await this.notificationPrefs.ensureDefaultsForUser(userId);
     await this.uxPrefs.ensureDefaultsForUser(userId);
+    await this.membership.ensureRow(userId);
   }
 
   /** Fail-closed: admin issuer must never mint user sessions */

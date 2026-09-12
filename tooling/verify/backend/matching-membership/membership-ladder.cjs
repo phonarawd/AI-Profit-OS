@@ -32,6 +32,8 @@ const files = [
   "services/api-nest/src/membership/membership.user.controller.ts",
   "services/api-nest/src/membership/membership.module.ts",
   "services/api-nest/src/membership/membership.mi.ts",
+  "services/api-nest/src/membership/membership.runtime.service.ts",
+  "services/api-nest/src/membership/membership.hooks.ts",
   "supabase/migrations/20260809101114_user_membership_match_policy.sql",
 ];
 for (const f of files) mustExist(f);
@@ -234,6 +236,55 @@ if (!svc.includes("admin.user.membership.force") && !svc.includes("MEMBERSHIP_AU
 }
 if (!svc.includes("ledgerMutated: false")) {
   fails.push("membership writes must declare ledgerMutated false");
+}
+
+const runtime = read("services/api-nest/src/membership/membership.runtime.service.ts");
+for (const needle of [
+  "reapplyFromLedger",
+  "ensureRow",
+  "admin_force",
+  "autoDowngrade: false",
+  "maxMembership",
+  "ledgerMutated: false",
+]) {
+  if (!runtime.includes(needle)) {
+    fails.push(`membership.runtime missing: ${needle}`);
+  }
+}
+if (/Math\.random|UPDATE public\.ledger_|balance/.test(runtime)) {
+  fails.push("runtime must not use RNG or ledger/balance UPDATE");
+}
+if (!runtime.includes("ON CONFLICT (user_id) DO NOTHING")) {
+  fails.push("ensureRow must be idempotent (ON CONFLICT DO NOTHING)");
+}
+
+const hooks = read("services/api-nest/src/membership/membership.hooks.ts");
+for (const needle of [
+  "depositConfirmed",
+  "krwDepositApproved",
+  "settlement.completed",
+  "reapplyFromLedger",
+]) {
+  if (!hooks.includes(needle)) {
+    fails.push(`membership.hooks missing: ${needle}`);
+  }
+}
+
+const authSvc = read("services/api-nest/src/auth/auth.service.ts");
+if (!authSvc.includes("membership.ensureRow") && !authSvc.includes("this.membership.ensureRow")) {
+  fails.push("signup provision must ensure user_membership row");
+}
+const authMod = read("services/api-nest/src/auth/auth.module.ts");
+if (!authMod.includes("MembershipModule")) {
+  fails.push("AuthModule must import MembershipModule");
+}
+const participate = read("services/api-nest/src/opportunities/participate.service.ts");
+if (!participate.includes("ensureRow") || !participate.includes("effectiveDailyMatchesUsed")) {
+  fails.push("participate must ensure membership row and use KST daily used");
+}
+const oppMod = read("services/api-nest/src/opportunities/opportunities.module.ts");
+if (!oppMod.includes("MembershipModule")) {
+  fails.push("OpportunitiesModule must import MembershipModule");
 }
 
 // Migration audit

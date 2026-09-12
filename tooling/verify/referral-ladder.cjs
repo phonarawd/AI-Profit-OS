@@ -34,6 +34,9 @@ for (const needle of [
   "onQualifyingDeposit",
   "usdt_deposit_confirmed",
   "krw_admin_approve",
+  "SETTLEMENT_EVENTS",
+  "onMatchSuccess",
+  "settlement.completed",
 ]) {
   if (!hooks.includes(needle)) {
     fails.push(`referral.hooks missing: ${needle}`);

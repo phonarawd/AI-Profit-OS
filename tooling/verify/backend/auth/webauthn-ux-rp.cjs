@@ -63,6 +63,9 @@ if (/\bhttps?:\/\/putduk\.com\b/.test(corsSrc)) {
 if (!corsSrc.includes("env.appHost") || !corsSrc.includes("enableCors")) {
   fails.push("Nest CORS must keep APP_HOST user-web allowlist");
 }
+if (!corsSrc.includes("https://hiptk.app")) {
+  fails.push("Nest CORS must allow apex https://hiptk.app");
+}
 
 const contract = JSON.parse(read("governance/pwa/webauthn-rp.v1.json"));
 if (contract.rpId !== manifest.rootDomain) {

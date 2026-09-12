@@ -22,6 +22,10 @@ import {
   mergeEffectivePolicy,
   resolveMembership,
 } from "./membership.mi";
+import {
+  MembershipRuntimeService,
+  type MembershipRow,
+} from "./membership.runtime.service";
 import type {
   ForceMembershipRequest,
   MembershipId,
@@ -30,19 +34,6 @@ import type {
   UserMembershipV1,
 } from "./membership.types";
 import { MEMBERSHIP_AUDIT } from "./membership.types";
-
-type MembershipRow = {
-  user_id: string;
-  membership: string;
-  max_capital_band: string;
-  daily_user_match_cap: number;
-  match_strictness: string;
-  admin_force: boolean;
-  ai_perk_flags: unknown;
-  fulfill_rate_7d: string | null;
-  daily_matches_used: number;
-  updated_at: Date;
-};
 
 type MatchOverrideRow = {
   user_id: string;
@@ -73,6 +64,7 @@ export class MembershipAdminService {
   constructor(
     private readonly db: PostgresService,
     private readonly bus: InProcessEventBus,
+    private readonly runtime: MembershipRuntimeService,
   ) {}
 
   async getMembership(userId: string): Promise<{
@@ -84,7 +76,7 @@ export class MembershipAdminService {
   }> {
     this.assertUuid(userId, "userId");
     await this.assertUserExists(userId);
-    const row = await this.ensureMembershipRow(userId);
+    const row = await this.runtime.ensureRow(userId);
     const rate = await this.refreshFulfillRate7d(userId);
     const item = this.toMembershipV1({
       ...row,
@@ -113,12 +105,12 @@ export class MembershipAdminService {
     this.assertReason(body.reason);
     await this.assertUserExists(userId);
 
-    const before = await this.ensureMembershipRow(userId);
+    const before = await this.runtime.ensureRow(userId);
     let nextMembership: MembershipId;
     let adminForce: boolean;
 
     if (body.clearForce === true) {
-      const metrics = await this.loadPromotionMetrics(userId);
+      const metrics = await this.runtime.loadPromotionMetrics(userId);
       const resolved = resolveMembership({
         cumulativeDepositUsdt: metrics.cumulativeDepositUsdt,
         matchSuccessCount: metrics.matchSuccessCount,
@@ -389,75 +381,6 @@ export class MembershipAdminService {
 
   // --- internals ---
 
-  private async ensureMembershipRow(userId: string): Promise<MembershipRow> {
-    const existing = await this.db.query<MembershipRow>(
-      `SELECT user_id::text, membership, max_capital_band,
-              daily_user_match_cap, match_strictness, admin_force,
-              ai_perk_flags, fulfill_rate_7d::text, daily_matches_used,
-              updated_at
-         FROM public.user_membership
-        WHERE user_id = $1::uuid`,
-      [userId],
-    );
-    if (existing.rows[0]) return existing.rows[0];
-
-    const metrics = await this.loadPromotionMetrics(userId);
-    const resolved = resolveMembership({
-      cumulativeDepositUsdt: metrics.cumulativeDepositUsdt,
-      matchSuccessCount: metrics.matchSuccessCount,
-    });
-    const defaults = membershipDefaults(resolved.membership);
-    const { rows } = await this.db.query<MembershipRow>(
-      `INSERT INTO public.user_membership (
-         user_id, membership, max_capital_band, daily_user_match_cap,
-         match_strictness, admin_force, ai_perk_flags, daily_matches_used
-       ) VALUES (
-         $1::uuid, $2, $3, $4, $5, false, $6::jsonb, 0
-       )
-       RETURNING user_id::text, membership, max_capital_band,
-                 daily_user_match_cap, match_strictness, admin_force,
-                 ai_perk_flags, fulfill_rate_7d::text, daily_matches_used,
-                 updated_at`,
-      [
-        userId,
-        defaults.membership,
-        defaults.maxCapitalBand,
-        defaults.dailyUserMatchCap,
-        defaults.matchStrictness,
-        JSON.stringify(defaults.aiPerkFlags),
-      ],
-    );
-    return rows[0];
-  }
-
-  private async loadPromotionMetrics(userId: string): Promise<{
-    cumulativeDepositUsdt: string;
-    matchSuccessCount: number;
-  }> {
-    const dep = await this.db.query<{ amt: string | null }>(
-      `SELECT COALESCE(sum(e.amount_usdt), 0)::text AS amt
-         FROM public.ledger_entries e
-         JOIN public.ledger_accounts a ON a.id = e.account_id
-         JOIN public.ledger_journals j ON j.id = e.journal_id
-        WHERE j.journal_type IN ('deposit_usdt', 'deposit_krw')
-          AND e.direction = 'credit'
-          AND a.owner_user_id = $1::uuid
-          AND a.account_kind = 'user_bucket'`,
-      [userId],
-    );
-    const suc = await this.db.query<{ c: string }>(
-      `SELECT count(*)::text AS c
-         FROM public.trade_executions
-        WHERE user_id = $1::uuid
-          AND result_code = 'MATCH_SUCCESS'`,
-      [userId],
-    );
-    return {
-      cumulativeDepositUsdt: dep.rows[0]?.amt ?? "0",
-      matchSuccessCount: Number(suc.rows[0]?.c ?? 0),
-    };
-  }
-
   /**
    * Display-only KPI refresh. NEVER used by evaluateMatchSuccess.
    */
@@ -553,7 +476,7 @@ export class MembershipAdminService {
     override: UserMatchPolicyOverrideV1 | null,
     capitalBand = "micro",
   ): Promise<object> {
-    const mem = await this.ensureMembershipRow(userId);
+    const mem = await this.runtime.ensureRow(userId);
     const { policy, overlayEnabled } = await this.loadBasePolicy();
     return mergeEffectivePolicy({
       basePolicy: policy,

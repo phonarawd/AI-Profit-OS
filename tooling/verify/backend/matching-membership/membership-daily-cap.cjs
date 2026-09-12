@@ -174,6 +174,27 @@ const routes = read("services/api-nest/src/membership/membership.routes.ts");
 if (!routes.includes("match-policy-override")) {
   fails.push("routes must expose match-policy-override");
 }
+const participate = read("services/api-nest/src/opportunities/participate.service.ts");
+if (!participate.includes("effectiveDailyMatchesUsed")) {
+  fails.push("participate must use effectiveDailyMatchesUsed (KST day reset)");
+}
+if (!participate.includes("ensureRow")) {
+  fails.push("participate must ensure user_membership before daily cap");
+}
+const runtime = read("services/api-nest/src/membership/membership.runtime.service.ts");
+if (!runtime.includes("Asia/Seoul")) {
+  fails.push("daily reset must use Asia/Seoul");
+}
+if (!runtime.includes("date_trunc('day'")) {
+  fails.push("daily reset must key off KST day (date_trunc)");
+}
+if (!runtime.includes("participate_requests")) {
+  fails.push("daily used SoT must be today's participate_requests (no new column)");
+}
+if (!runtime.includes("daily_matches_used = 0")) {
+  fails.push("runtime must reset daily_matches_used on a new KST day");
+}
+
 const mig = read(
   "supabase/migrations/20260809101114_user_membership_match_policy.sql",
 );

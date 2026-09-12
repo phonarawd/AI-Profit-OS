@@ -37,6 +37,7 @@ Cursor는 **플랜 집행기**다. ADR 없는 스택 재설계 금지.
 - push 후 **`gh run watch`로 GitHub `backend-ci` CI 감시** · FAIL이면 즉시 수정→재푸시→green까지 (`.cursor/rules/git-safety.mdc`)
 - GitHub 도착물 = **오류0 · 오차0 · 결함0 · 중복0** (로컬 T1 + 원격 T2 CI green)
 - **슬라이스 done** = domain verify PASS + T0 commit · **세션 done** = cleanup (+ push 시 CI green)
+- **이후 패치:** 이 레포=백엔드 · 웹=`phonarawd/putduk-web` · `main`에서 브랜치 → `pnpm verify:gate:fast` → `backend-ci` → PR 머지
 
 ## Phase0 RAM (이 PC = Celeron G6900 2C / ~8GB)
 
