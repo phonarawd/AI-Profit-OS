@@ -1,3 +1,20 @@
+# Backend live close — 2026-09-12
+
+- Local / origin/main / live Nest SHA: `7de16827ea28786aefabf4c6d4d11ca31ac45354`
+- Verdict **BACKEND_LIVE_PROMOTED_WITH_CERT_AND_CORS_DEBT**
+- MERGED = YES (#223 #224) · DEPLOYED = YES · PROD_DB_CHANGED = NO
+- Render prod `srv-da5r1tqjobas73fl16dg` deploy `dep-daik75fqj5pc73af3kg0` live on exact main SHA
+- hiptk-api-stub production version `b4ed3e7c-f1f4-46b2-83c5-d555bfa12f57` · route api.hiptk.app
+- Health 200: https://api.hiptk.app/api/v1/health and https://ai-profit-os.onrender.com/api/v1/health
+- CORS measured: app.hiptk.app allow · apex hiptk.app no ACAO · putduk.com no ACAO
+- Ruleset 21919415 full-body PUT · context backend-required · include 2 release branches kept · 20576556 untouched
+- FINAL_ACCEPTANCE ISSUED · currentEpochQaReady true · RC_FORMAL re-sealed to ea-baseline-a6cda12f349d-14d149fdd474 on 7de16827
+- engine-acceptance qa_phase=full run 34690227598 · official publish-qa7-formal + apply-ci-suite-result + run-qa1/qa2/qa9 + finalize-engine-current-epoch
+- PR #222 remains OPEN · this session did not checkout or overwrite it
+- apps/web apps/admin packages/ui = 0
+- Do not declare READY: apex CORS still needs a new protected-scope Nest rebase ACK · push-dispatcher stays on accepted-artifact path · RC production_deploy stays 0
+
+---
 # Backend-only residual
 
 - Head SHA: ceb1867f06be5e2a46977b4e894588e788c2922 · verdict **BACKEND_ONLY_CLEANUP_IN_PROGRESS**

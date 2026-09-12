@@ -2,11 +2,11 @@
   "schema": "governance.engine-acceptance.qa8-result.v1",
   "version": "1.0.0",
   "suite_id": "QA8",
-  "run_id": "qa8-security-privacy-20260902",
+  "run_id": "qa8-security-privacy-20260912",
   "todoId": "qa8-security-privacy",
-  "measuredAt": "2026-09-02T17:55:32.200Z",
-  "baseline_id": "ea-baseline-0d8825e8f333-5ac0f4291966",
-  "mode": "tiny",
+  "measuredAt": "2026-09-12T11:08:57.099Z",
+  "baseline_id": "ea-baseline-a6cda12f349d-14d149fdd474",
+  "mode": "full",
   "asvs_version": "5.0.0",
   "exhaustive_certification_claim": false,
   "kill_switch": {
@@ -16,7 +16,7 @@
     "synthetic_account_namespace": "qa-synth-ci"
   },
   "dual_dirty": {
-    "working_tree_clean": false,
+    "working_tree_clean": true,
     "protected_scope_clean": true,
     "forced_clean_forbidden": true
   },
@@ -25,8 +25,8 @@
     "security_privacy_world": {
       "check_id": "QA8_SECURITY_PRIVACY_WORLD",
       "status": "PASS",
-      "mode": "tiny",
-      "measuredAt": "2026-09-02T17:55:32.200Z",
+      "mode": "full",
+      "measuredAt": "2026-09-12T11:08:57.099Z",
       "seed": 20260813,
       "asvs_version": "5.0.0",
       "exhaustive_certification_claim": false,
@@ -228,11 +228,11 @@
           "harness_probe": {
             "available": true,
             "probed_path": "../../../../../tmp/aipo-harness/qa8-adversarial/qa8-adversarial.v1.json",
-            "age_ms": 69
+            "age_ms": 73
           },
           "evidence": {
             "source": "run-qa8-adversarial.cjs (isolated CI Postgres + booted Nest, real HTTP)",
-            "measuredAt": "2026-09-02T17:55:32.132Z",
+            "measuredAt": "2026-09-12T11:08:57.027Z",
             "case_count": 42,
             "product_security_verdict": "PASS",
             "unknown_product_failures": 0,
@@ -341,5 +341,5 @@
     "Real defects recorded in defects.v1.json - discovery only, not repaired this wave.",
     "Does not issue ENGINE_ACCEPTED_FOR_UI. Does not start QA9."
   ],
-  "checksum": "a3d66ed28a79e5900079651c6dd3b904153948129f8cdf6739cb82fe7be332e9"
+  "checksum": "19162acd0e52c5dfda9a9a6f9c6a6a5e366aefe337acfb81a31752a9a5333800"
 }

@@ -2,10 +2,10 @@
   "schema": "governance.engine-acceptance.qa3-result.v1",
   "version": "1.0.0",
   "suite_id": "QA3",
-  "run_id": "qa3-generative-fuzz-20260902",
+  "run_id": "qa3-generative-fuzz-20260912",
   "todoId": "qa3-generative-fuzz",
-  "measuredAt": "2026-09-02T17:53:17.820Z",
-  "baseline_id": "ea-baseline-0d8825e8f333-5ac0f4291966",
+  "measuredAt": "2026-09-12T11:08:38.520Z",
+  "baseline_id": "ea-baseline-a6cda12f349d-14d149fdd474",
   "mode": "full",
   "kill_switch": {
     "verified_before_checks": true,
@@ -14,7 +14,7 @@
     "synthetic_account_namespace": "qa-synth-ci"
   },
   "dual_dirty": {
-    "working_tree_clean": false,
+    "working_tree_clean": true,
     "protected_scope_clean": true,
     "forced_clean_forbidden": true
   },
@@ -145,5 +145,5 @@
     "Failure → rich evidence + defects · product mutation 0.",
     "Does not issue ENGINE_ACCEPTED_FOR_UI."
   ],
-  "checksum": "cb8f94c6a5326164e1611b6d6f157c8ee8101abbe1236b3a80617315a0cad8ac"
+  "checksum": "589c9be1601df6021f73969d4647923238a7ce37c9620a28103d95e0e098d92c"
 }

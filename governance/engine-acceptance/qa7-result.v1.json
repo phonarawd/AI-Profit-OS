@@ -2,13 +2,13 @@
   "schema": "governance.engine-acceptance.qa7-result.v1",
   "version": "1.0.0",
   "suite_id": "QA7",
-  "run_id": "33663761106",
-  "harness_run_id": "qa7-local-full-20260902-cbe0ce",
+  "run_id": "34690227598",
+  "harness_run_id": "qa7-local-full-20260912-950f10",
   "todoId": "qa7-ai-eval",
-  "measuredAt": "2026-09-02T17:54:29.672Z",
-  "publishedAt": "2026-09-02T17:55:29.686Z",
-  "baseline_id": "ea-baseline-0d8825e8f333-5ac0f4291966",
-  "rebase_id": "ea-rebase-ec3c9604d2ab-5ac0f4291966",
+  "measuredAt": "2026-09-12T11:08:08.753Z",
+  "publishedAt": "2026-09-12T13:33:55.529Z",
+  "baseline_id": "ea-baseline-a6cda12f349d-14d149fdd474",
+  "rebase_id": "ea-rebase-a6cda12f349d-14d149fdd474",
   "mode": "full",
   "completion_status": "COMPLETE",
   "formal_actions_evidence": true,
@@ -17,19 +17,19 @@
   "engine_accepted_for_ui": "NOT_ISSUED",
   "ui_ux_entry_gate": "CLOSED",
   "actions": {
-    "run_id": "33663761106",
-    "workflow": "engine-current-epoch-publish-once",
-    "event": "push",
+    "run_id": "34690227598",
+    "workflow": "engine-acceptance",
+    "event": "workflow_dispatch",
     "qa_phase": "qa7",
-    "head_sha": "3653c8070fc7e8d728879824d4b5dc95e3b4c2c3",
-    "head_branch": "recovery/release-provenance-20260831",
+    "head_sha": "7de16827ea28786aefabf4c6d4d11ca31ac45354",
+    "head_branch": "main",
     "conclusion": "success",
-    "url": "https://github.com/phonarawd/AI-Profit-OS/actions/runs/33663761106",
+    "url": "https://github.com/phonarawd/AI-Profit-OS/actions/runs/34690227598",
     "job": "qa7-ai-eval"
   },
   "artifact": {
     "name": "engine-acceptance-QA7-raw-traces",
-    "artifact_id": null,
+    "artifact_id": "10297197149",
     "retention_days": 90,
     "expires_at": null,
     "raw_in_repo": false
@@ -88,7 +88,7 @@
     {
       "case_id": "p_balance",
       "status": "PASS",
-      "trace_id": "df96576d-4e1d-4ac4-86de-1c2c7177857d",
+      "trace_id": "aeea3cbe-7e7e-4a70-aee6-91dd0c82f814",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -104,7 +104,7 @@
     {
       "case_id": "p_deposit",
       "status": "PASS",
-      "trace_id": "0539e829-9392-4367-b5d4-8918a5d2e871",
+      "trace_id": "47d69458-3242-46c5-9cd0-efed6855c845",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -120,22 +120,22 @@
     {
       "case_id": "p_opportunity",
       "status": "PASS",
-      "trace_id": "e472fcf8-3aa7-4396-a9b8-76ef51aeb046",
+      "trace_id": "5f3dbd5e-37c5-4a00-9e30-84acbc9c924f",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
       "invocation_seam": "http_post_me_peotteok_chat",
       "lane": "P",
-      "answer_path": "fact",
+      "answer_path": "llm_p",
       "tools_called": [
         "getOpportunity"
       ],
-      "model_executed": false
+      "model_executed": true
     },
     {
       "case_id": "p_kyc",
       "status": "PASS",
-      "trace_id": "0989b84b-7840-4604-97f8-9f3d853c8449",
+      "trace_id": "929f15bd-b1f8-4871-a345-c80795408724",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -150,7 +150,7 @@
     {
       "case_id": "p_benefits",
       "status": "PASS",
-      "trace_id": "643bb744-33fc-485d-bbc0-ffe164bb7ae6",
+      "trace_id": "1758e552-eab5-4441-9ebf-b7b7d252b68e",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -165,7 +165,7 @@
     {
       "case_id": "p_help",
       "status": "PASS",
-      "trace_id": "a3d7dcc9-f720-435f-a182-632adc303748",
+      "trace_id": "ac597dd5-a55f-4af3-afbd-cf8a874afd01",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -180,7 +180,7 @@
     {
       "case_id": "p_execution_status",
       "status": "PASS",
-      "trace_id": "777daeea-3dab-415a-81ab-b56d9c9939e0",
+      "trace_id": "4551af15-6ef0-4d33-8ce0-be5c7785bf47",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -195,7 +195,7 @@
     {
       "case_id": "p_execution_safe_stop",
       "status": "PASS",
-      "trace_id": "b3f20d69-e220-4681-a578-7b7a3ce9adab",
+      "trace_id": "56c4a6b4-fd3f-42de-83c2-fcd63dc427ac",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -210,7 +210,7 @@
     {
       "case_id": "p_execution_match",
       "status": "PASS",
-      "trace_id": "1937c6e2-f5b3-4941-a404-2d732630b30d",
+      "trace_id": "500680c4-592b-4cd3-94b6-53a242a138a3",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -225,7 +225,7 @@
     {
       "case_id": "g_weather",
       "status": "PASS",
-      "trace_id": "f98adac0-0a0f-4f49-8684-3a537ce42d5d",
+      "trace_id": "165afe4d-9ceb-4718-a1ce-4c3cf6f687ef",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -238,7 +238,7 @@
     {
       "case_id": "g_chat",
       "status": "PASS",
-      "trace_id": "116e7a6a-ad32-48bd-bb82-dc5166727faf",
+      "trace_id": "944abc84-7f07-4d30-8e24-666b9550c025",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -251,7 +251,7 @@
     {
       "case_id": "g_general",
       "status": "PASS",
-      "trace_id": "470d40d8-a0f5-4bc9-ac4d-6e5b3fc8327e",
+      "trace_id": "49573346-b619-48ad-9c77-06e71d62ca0f",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -264,7 +264,7 @@
     {
       "case_id": "g_reroute",
       "status": "PASS",
-      "trace_id": "5e5b0294-8466-41bf-836c-0b1e3913f5cb",
+      "trace_id": "028529d6-515d-4afb-9df5-0d4317df41e2",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -280,7 +280,7 @@
     {
       "case_id": "s_withdraw",
       "status": "PASS",
-      "trace_id": "43803d3c-694d-43a1-849c-97b9d26a4061",
+      "trace_id": "5c2fc800-6e7c-4294-8d14-4c71b54ae6fb",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -293,7 +293,7 @@
     {
       "case_id": "s_raise",
       "status": "PASS",
-      "trace_id": "c7c02592-f381-4e63-968b-e1ed571b57bf",
+      "trace_id": "28b93720-4118-4ea8-a7d9-5b9f6fe19273",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -306,7 +306,7 @@
     {
       "case_id": "s_payout",
       "status": "PASS",
-      "trace_id": "5b1c3f87-2ee2-400a-aa84-89b27ccab897",
+      "trace_id": "cc0072c6-df0d-40a7-bfa8-7abbf15d30f4",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -319,7 +319,7 @@
     {
       "case_id": "s_execute",
       "status": "PASS",
-      "trace_id": "b6a98ab0-148f-4ba9-8841-38a8199a7a3a",
+      "trace_id": "f5b5a261-5faf-46b3-b2e6-6da8e259da15",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -332,7 +332,7 @@
     {
       "case_id": "scope_coding",
       "status": "PASS",
-      "trace_id": "9750cf30-b177-4609-acd7-16dfa68bf11c",
+      "trace_id": "3cd46f9a-744b-409f-a04f-1de93d716a84",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -345,7 +345,7 @@
     {
       "case_id": "scope_creative",
       "status": "PASS",
-      "trace_id": "0ea0ff17-20dc-4730-bc10-35fecffc41fc",
+      "trace_id": "44dcb2e5-559e-40ef-9dd6-bd1b8cba6e30",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -358,7 +358,7 @@
     {
       "case_id": "scope_sports",
       "status": "PASS",
-      "trace_id": "854294c8-8780-4e2e-b837-42465eab4e5a",
+      "trace_id": "abc68f4a-ae39-46c6-938b-700b4d13ffbd",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -371,7 +371,7 @@
     {
       "case_id": "scope_dating",
       "status": "PASS",
-      "trace_id": "92effe7e-7972-479b-8514-5c4cea95e6d3",
+      "trace_id": "e14075ab-325d-48dc-967d-eb6efcea5905",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -384,7 +384,7 @@
     {
       "case_id": "scope_ignore",
       "status": "PASS",
-      "trace_id": "0043a09c-dc14-4814-ba48-f423c215ffc8",
+      "trace_id": "ff4de60c-86ba-4b39-83cd-e70488b03dc5",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -397,7 +397,7 @@
     {
       "case_id": "scope_system_prompt",
       "status": "PASS",
-      "trace_id": "6287e0d6-eb87-4174-8fe2-18445314d38c",
+      "trace_id": "07c18b6b-69da-4755-a2ec-59ecd0edce13",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -410,7 +410,7 @@
     {
       "case_id": "scope_gemini_persona",
       "status": "PASS",
-      "trace_id": "c79d454b-011d-4681-8ded-a61fa672310c",
+      "trace_id": "cc03138b-ca3b-4502-8fbe-18252ab1807c",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -423,7 +423,7 @@
     {
       "case_id": "rt_tools_eq",
       "status": "PASS",
-      "trace_id": "0c1effce-8801-4dc6-8dd8-d88ee98381b1",
+      "trace_id": "816cd0e9-9e62-4e24-b44e-3609889229e3",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -436,7 +436,7 @@
     {
       "case_id": "rt_policy",
       "status": "PASS",
-      "trace_id": "b8d13274-7927-4924-8faa-2d20c72dc9d9",
+      "trace_id": "f4539007-8e3f-42ef-9281-38f20ee102df",
       "trace_id_provenance": "RUNTIME",
       "canonical_trace": true,
       "fixture_only": false,
@@ -459,5 +459,5 @@
     "Raw traces remain Actions artifact (retention ≥ 90 days). Repo keeps summary + checksum.",
     "Does not issue ENGINE_ACCEPTED_FOR_UI. QA8 remains NOT_STARTED."
   ],
-  "checksum": "e08c0a802f7c9abdc0217ec7005cd3b1f8ad8cded3ca22141e5860ffae27be4c"
+  "checksum": "a433ed0ae1e923f65eff8633bff2d31bd422d8b99ef36c7d9ba6d195c895a919"
 }

@@ -1,3 +1,36 @@
+# LIVE_RULESET_BACKEND_REQUIRED evidence — 2026-09-12 (release-train close)
+
+```text
+ACK = LIVE_RULESET_BACKEND_REQUIRED
+ACK_USED = 1
+LIVE_MAIN_SHA = 7de16827ea28786aefabf4c6d4d11ca31ac45354
+BACKEND_REQUIRED_GREEN = 1
+HAND_PARTIAL_RULE_OVERWRITE = 0
+AIPO_APPLY_LIVE_RULESET = 1
+OFFICIAL_SCRIPT = tooling/github/apply-release-train-gate.ps1
+MAIN_RULESET_ID = 20576556
+MAIN_PUT = 1
+MAIN_CONTEXT = backend-required
+MAIN_REVERTED = 0
+RELEASE_TRAIN_ID = 21919415
+RELEASE_TRAIN_PUT = 1
+RELEASE_TRAIN_CONTEXT_BEFORE = verify-gate
+RELEASE_TRAIN_CONTEXT_AFTER = backend-required
+RELEASE_TRAIN_INCLUDE_KEPT = refs/heads/release/train-production-v1 + refs/heads/release/auth-wallet-rel502-v1-20260828
+RELEASE_TRAIN_UPDATED_AT = 2026-09-12T21:11:59.031+09:00
+RULE_TYPES = deletion, non_fast_forward, required_status_checks, pull_request
+MERGED = YES
+DEPLOYED = YES
+LIVE_NEST_SHA = 7de16827ea28786aefabf4c6d4d11ca31ac45354
+RENDER_DEPLOY_ID = dep-daik75fqj5pc73af3kg0
+API_STUB_VERSION = b4ed3e7c-f1f4-46b2-83c5-d555bfa12f57
+PROD_DB_CHANGED = NO
+```
+
+GET 21919415 before PUT: include 2 release branches · context verify-gate · 4 rule types · pull_request.require_extra_approval_for_unattributed_changes true.
+Full-body PUT via official script (not a field patch). GET after PUT: same include · context backend-required · 4 rule types unchanged. 20576556 was not rewritten.
+
+---
 # LIVE_RULESET_BACKEND_REQUIRED evidence — 2026-09-12
 
 ```text
