@@ -28,6 +28,7 @@ KNOWN_GOOD_POINTER = pnpm release:id
 CURRENT_RELEASE_ID_PINNED = 0
 RUNTIME_P3_EKS_OTEL = 0
 CONCEALMENT = 0
+STALE_PENDING_REBASE = 1
 ```
 
 R8 Core 는 OpenNext Workers origin / pages deploy 0 / R2 실사 / 에러추적 경로 / 세션 쿠키 / rollback 체계 를 인증한다.
@@ -54,7 +55,7 @@ Web Vitals 수치 SLO 창작 0 (REL-404). RUM 파이프 는 코드에 없다. �
 | rollback_scheme | VERSIONING.md + release:id | semver + HUMAN tag | ALIGNED | REL-403 |
 | rollback_runbook | ROLLBACK_RUNBOOK.md | DRAFT_FOR_REL_602 | ALIGNED | REL-408 |
 | web_vitals_lab | REL-404 lighthouse budget | NUMERIC_SLO_INVENTED=0 | ALIGNED | REL-404 |
-| p0_p3_engine | FINAL_ACCEPTANCE | DEFECTS_P0/P1=0 ISSUED | ALIGNED (current epoch ISSUED) | REL-502 |
+| p0_p3_engine | FINAL_ACCEPTANCE | DEFECTS_P0/P1=0 NOT_ISSUED | STALE_PENDING_REBASE (QA rerun) | REL-502 |
 | p0_p3_admin | R6_CERTIFICATION | KNOWN_P0~P3=0 | ALIGNED | REL-409 |
 
 ## 2. DEFERRED (blank cell = FAIL · ALIGNED 세탁 금지)

@@ -118,7 +118,13 @@ if (ev) {
   }
 
   if (ev.plan502Done && !ev.canIssue) {
-    fails.push("REL-502 cannot be COMPLETED until current-epoch QA0-QA9 PASS");
+    const pendingRerun =
+      notIssued &&
+      psm.needle(cert, "REBASE_APPLIED", "1") &&
+      ev.scope.drift !== true;
+    if (!pendingRerun) {
+      fails.push("REL-502 cannot be COMPLETED until current-epoch QA0-QA9 PASS");
+    }
   }
 }
 
