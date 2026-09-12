@@ -5,6 +5,7 @@ import {
   continuePathAfterAuth,
   fetchAuthSession,
   patchAuthProfile,
+  requestMagicLink,
   signupStageA,
   startKakaoOAuth,
 } from "./fetch.ts";
@@ -108,6 +109,21 @@ describe("acquisition release — guest / auth / error / resume", () => {
     mockFetch(() => jsonRes(200, { status: "not_configured" }));
     const out = await startKakaoOAuth({}, { apiBase: "" });
     assert.equal(out.status, "not_configured");
+  });
+
+  it("surfaces magic-link provider delivery failure instead of fake success", async () => {
+    mockFetch(() =>
+      jsonRes(503, { message: "MAGIC_LINK_DELIVERY_UNAVAILABLE" }),
+    );
+    await assert.rejects(
+      () => requestMagicLink("user@example.com", { apiBase: "" }),
+      (err: unknown) => {
+        assert.ok(err instanceof AuthError);
+        assert.equal(err.status, 503);
+        assert.equal(err.code, "MAGIC_LINK_DELIVERY_UNAVAILABLE");
+        return true;
+      },
+    );
   });
 
   it("surfaces TERMS_REQUIRED without inventing a session", async () => {

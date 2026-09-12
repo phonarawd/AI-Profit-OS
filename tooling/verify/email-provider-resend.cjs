@@ -68,6 +68,22 @@ if (!auth.includes("magicLinkRequest") || !magic.includes('delivery: "resend"'))
 if (!provider.includes("sendMagicLink")) {
   fails.push("resend-email.provider must send an actual magic-link URL");
 }
+if (
+  !provider.includes('env.nodeEnv === "production"') ||
+  !provider.includes('reason: "resend_api_key_missing"')
+) {
+  fails.push("production Resend delivery must fail closed when API key is missing");
+}
+
+const magicFailIndex = magic.indexOf("if (!sent.ok)");
+const magicFailBlock =
+  magicFailIndex >= 0 ? magic.slice(magicFailIndex, magicFailIndex + 320) : "";
+if (
+  !magicFailBlock.includes("ServiceUnavailableException") ||
+  !magicFailBlock.includes("MAGIC_LINK_DELIVERY_UNAVAILABLE")
+) {
+  fails.push("magic-link provider failure must surface as delivery unavailable");
+}
 
 const step = read("services/api-nest/src/wallet/withdraw-stepup.service.ts");
 if (!step.includes("ResendEmailProvider") || !step.includes("email_otp")) {
