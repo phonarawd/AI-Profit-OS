@@ -1,10 +1,10 @@
 {
- "generatedAt": "2026-09-11T20:27:13.153Z",
- "headSha": "cc50e4cf971f2ba1510de9d57ffd30fad30fa6b1",
+ "generatedAt": "2026-09-12T06:20:57.327Z",
+ "headSha": "3b5feeb09fda81f3fa0609a57cd3c70305eb2df3",
  "generator": "tooling/backend/_p5-write-ownership.cjs",
  "note": "All remaining .md/.mdc paths. decision KEEP. UNKNOWN 0. boundary markdown rule reads keep[].path.",
  "totals": {
-  "docs": 132,
+  "docs": 133,
   "unknown": 0,
   "byClass": {
    "BACKEND_DOC": 129
@@ -427,6 +427,12 @@
   },
   {
    "path": "governance/engine-acceptance/REBASE_EXECUTION_20260902.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "engine-acceptance evidence KEEP"
+  },
+  {
+   "path": "governance/engine-acceptance/REBASE_EXECUTION_20260912.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
    "reason": "engine-acceptance evidence KEEP"

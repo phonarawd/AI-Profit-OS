@@ -1,3 +1,15 @@
+# Backend-only residual
+
+- Head SHA: `3b5feeb09fda81f3fa0609a57cd3c70305eb2df3` · verdict **BACKEND_ONLY_CLEANUP_IN_PROGRESS**
+- UNKNOWN **0** · REVIEW_REQUIRED **0**
+- ownership KEEP 1381 · boundary PASS 0 (sharp warn 1, wrangler-miniflare)
+- ACK used: ENGINE_ACCEPTANCE_REBASE_V1 applied · LIVE_RULESET_BACKEND_REQUIRED not applied yet
+- FINAL_ACCEPTANCE NOT_ISSUED · current-epoch QA1-QA8 STALE_PENDING_RERUN
+- live ruleset context still verify-gate · PUT 0
+- apps/web apps/admin packages/ui = 0
+- Do not declare READY until same-SHA backend-ci 3x PASS + live ruleset PUT + current-epoch QA re-issue.
+
+---
 # Backend-only repo residual report
 
 - Head SHA: `cc50e4cf971f2ba1510de9d57ffd30fad30fa6b1` · verdict **BACKEND_ONLY_CLEANUP_IN_PROGRESS**

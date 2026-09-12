@@ -56,3 +56,9 @@ NOT_RUN 을 PASS 로 쓰지 않는다.
 ## 다음
 
 SDK 삭제 vs 수정은 여기서 해결하지 않는다. 운영 배포 0. 운영 DB 0.
+
+## 2026-09-12 follow-up
+
+- This session HEAD `3b5feeb09fda81f3fa0609a57cd3c70305eb2df3`. PR #222 branch was not checked out and PR222 files were not overwritten.
+- 3-way merge NOT_RUN this session. Recorded conflict remains packages/sdk/src/auth/{auth-release.test.ts,fetch.ts,types.ts}.
+- MERGED = NO.
