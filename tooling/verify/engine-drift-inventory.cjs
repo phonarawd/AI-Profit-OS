@@ -110,6 +110,16 @@ const issued =
   cert.REBASE_ID === currentRebase.rebase_id &&
   !live.drift &&
   qa.ready;
+const pendingRerun =
+  cert.STATUS === "NOT_ISSUED" &&
+  cert.CERT_ISSUED === "0" &&
+  cert.REBASE_REQUIRED === "1" &&
+  cert.REBASE_APPLIED === "1" &&
+  cert.BASELINE_ID === live.baselineId &&
+  Boolean(currentRebase) &&
+  cert.REBASE_ID === currentRebase.rebase_id &&
+  !live.drift &&
+  !qa.ready;
 const preRebase = live.drift;
 
 if (issued) {
@@ -136,6 +146,46 @@ if (issued) {
   }
   if (inventory.historical_evidence_ref !== archiveEvRel) {
     fail("issued: historical_evidence_ref");
+  }
+  if (evidence.inventory_ref !== INV_REL) fail("inventory_ref");
+} else if (pendingRerun) {
+  if (inventory.ACK_RECEIVED !== 0) fail("pending-rerun: inventory ACK_RECEIVED must be 0");
+  if (inventory.FINAL_ACCEPTANCE !== "NOT_ISSUED") {
+    fail("pending-rerun: inventory FINAL_ACCEPTANCE");
+  }
+  if (inventory.REBASE_REQUIRED !== 1) fail("pending-rerun: inventory REBASE_REQUIRED must be 1");
+  if (inventory.REBASE_APPLIED !== 1) fail("pending-rerun: inventory REBASE_APPLIED must be 1");
+  if (inventory.current_baseline_id !== live.baselineId) {
+    fail("pending-rerun: inventory current_baseline_id");
+  }
+  if (inventory.rebase_id !== currentRebase.rebase_id) fail("pending-rerun: inventory rebase_id");
+  if (evidence.baseline_id !== live.baselineId) fail("pending-rerun: evidence baseline_id");
+  if (evidence.current_baseline_id !== live.baselineId) {
+    fail("pending-rerun: evidence current_baseline_id");
+  }
+  if (evidence.rebase_id !== currentRebase.rebase_id) fail("pending-rerun: evidence rebase_id");
+  if (!evidence.ack_eligibility || evidence.ack_eligibility.ACK_RECEIVED !== 0) {
+    fail("pending-rerun: evidence ACK_RECEIVED must be 0");
+  }
+  if (evidence.ack_eligibility.FINAL_ACCEPTANCE !== "NOT_ISSUED") {
+    fail("pending-rerun: evidence FINAL_ACCEPTANCE");
+  }
+  if (evidence.ack_eligibility.required_qa_rerun_complete !== false) {
+    fail("pending-rerun: required_qa_rerun_complete must stay false");
+  }
+  const required = evidence.required_reruns || [];
+  for (const id of ["QA1", "QA2", "QA3", "QA4", "QA5", "QA6", "QA7", "QA8", "QA9"]) {
+    if (!required.includes(id)) fail("pending-rerun: required_reruns missing " + id);
+  }
+  if (live.changedPathCount !== 0) fail("pending-rerun: live changedPathCount must be 0");
+  if (live.liveAggregate !== live.baselineAggregate) {
+    fail("pending-rerun: liveAggregate must equal baselineAggregate");
+  }
+  if (inventory.historical_inventory_ref !== archiveInvRel) {
+    fail("pending-rerun: historical_inventory_ref");
+  }
+  if (inventory.historical_evidence_ref !== archiveEvRel) {
+    fail("pending-rerun: historical_evidence_ref");
   }
   if (evidence.inventory_ref !== INV_REL) fail("inventory_ref");
 } else if (preRebase) {

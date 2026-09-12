@@ -2,6 +2,7 @@
 /**
  * Engine drift inventory builder.
  * ISSUED epoch: refresh current files from live protected scope.
+ * Pending-rerun epoch: rebase applied, drift 0, current-epoch QA not ready, NOT_ISSUED.
  * Pre-rebase epoch: classify live drift. Does not issue ACK and does not rebase.
  */
 "use strict";
@@ -31,6 +32,19 @@ const ARCHIVE_EV_REL =
 const CURRENT_INV_REL = "governance/recovery/engine-drift-inventory.current.v1.json";
 const CURRENT_NOTE =
   "Historical pre-rebase drift is preserved in archive. Current epoch was formally rebased under ENGINE_ACCEPTANCE_REBASE_V1. QA0-QA9 were rerun on the current epoch. FINAL_ACCEPTANCE is ISSUED. No in-place predecessor hash washing occurred.";
+const PENDING_RERUN_NOTE =
+  "Historical pre-rebase drift is preserved in archive. Current epoch was formally rebased under ENGINE_ACCEPTANCE_REBASE_V1. Protected scope matches the new baseline (drift 0). FINAL_ACCEPTANCE is NOT_ISSUED because current-epoch QA1-QA9 have not been rerun. Predecessor evidence remains historical. No in-place predecessor hash washing occurred.";
+const REQUIRED_RERUNS = [
+  "QA1",
+  "QA2",
+  "QA3",
+  "QA4",
+  "QA5",
+  "QA6",
+  "QA7",
+  "QA8",
+  "QA9",
+];
 
 function parseCert(text) {
   const out = {};
@@ -182,6 +196,139 @@ if (issued) {
   );
   process.exit(0);
 }
+
+const pendingRerun =
+  cert.STATUS === "NOT_ISSUED" &&
+  cert.CERT_ISSUED === "0" &&
+  cert.REBASE_REQUIRED === "1" &&
+  cert.REBASE_APPLIED === "1" &&
+  cert.BASELINE_ID === live.baselineId &&
+  Boolean(currentRebase) &&
+  cert.REBASE_ID === currentRebase.rebase_id &&
+  !live.drift &&
+  !qa.ready;
+
+if (pendingRerun) {
+  if (!fs.existsSync(path.join(root, ARCHIVE_INV_REL))) {
+    console.error(
+      "[engine-drift-inventory] predecessor archive missing; refuse to wash current",
+    );
+    process.exit(1);
+  }
+  if (!fs.existsSync(path.join(root, ARCHIVE_EV_REL))) {
+    console.error(
+      "[engine-drift-inventory] predecessor evidence archive missing; refuse to wash current",
+    );
+    process.exit(1);
+  }
+  const archiveEvPending = JSON.parse(fs.readFileSync(path.join(root, ARCHIVE_EV_REL), "utf8"));
+  const predecessorBaselinePending = JSON.parse(
+    fs.readFileSync(
+      path.join(
+        root,
+        "governance/engine-acceptance/baselines",
+        `${currentRebase.predecessor_baseline_id}.json`,
+      ),
+      "utf8",
+    ),
+  );
+  const predecessorHeadShaPending = predecessorBaselinePending.commit_sha;
+  const headPending = git(["rev-parse", "HEAD"]);
+  const pendingInventory = {
+    schema: "governance.recovery.engine-drift-inventory.v1",
+    computed_at: new Date().toISOString(),
+    predecessor_head_sha: predecessorHeadShaPending,
+    inventory_head_sha: headPending,
+    changed_paths: live.changedPathCount,
+    expected_changed_paths: live.changedPathCount,
+    count_match: true,
+    by_category: {},
+    unexplained_count: 0,
+    ACK_RECEIVED: 0,
+    FINAL_ACCEPTANCE: "NOT_ISSUED",
+    REBASE_REQUIRED: 1,
+    REBASE_APPLIED: 1,
+    predecessor_baseline_id: currentRebase.predecessor_baseline_id,
+    current_baseline_id: live.baselineId,
+    rebase_id: currentRebase.rebase_id,
+    historical_inventory_ref: ARCHIVE_INV_REL,
+    historical_evidence_ref: ARCHIVE_EV_REL,
+    CURRENT_AUTHORITATIVE: true,
+    HISTORICAL_PRE_REBASE_EVIDENCE: false,
+    note: PENDING_RERUN_NOTE,
+    required_rerun_matrix: {
+      QA0: [],
+      QA1: [],
+      QA2: [],
+      QA3: [],
+      QA4: [],
+      QA5: [],
+      QA6: [],
+      QA7: [],
+      QA8: [],
+      QA9: [],
+    },
+    paths: [],
+  };
+  const pendingEvidence = {
+    schema: "governance.recovery.engine-rebase-evidence.v1",
+    computed_at: pendingInventory.computed_at,
+    predecessor_head_sha: predecessorHeadShaPending,
+    baseline_id: live.baselineId,
+    live_aggregate: live.liveAggregate,
+    baseline_aggregate: live.baselineAggregate,
+    path_count_live: live.livePathCount,
+    path_count_baseline: live.baselinePathCount,
+    changed_paths: live.changedPathCount,
+    added_paths: live.added.slice(),
+    mutated_paths: live.changed.slice(),
+    missing_paths: live.missing.slice(),
+    drift: live.drift,
+    cert_mirrors: {
+      STATUS: true,
+      CERT_ISSUED_1: false,
+      REBASE_REQUIRED_0: false,
+      ACK_RECEIVED_1: false,
+      REBASE_APPLIED_1: true,
+    },
+    ack_eligibility: {
+      all_drift_explained: true,
+      unexplained_protected_change: 0,
+      baseline_washing: 0,
+      required_qa_rerun_complete: false,
+      p0_unresolved: 0,
+      p1_unresolved: 0,
+      p2_release_blocking_unresolved: 0,
+      money_safety: archiveEvPending.ack_eligibility.money_safety,
+      auth_security: archiveEvPending.ack_eligibility.auth_security,
+      migration_staging: archiveEvPending.ack_eligibility.migration_staging,
+      ACK_RECEIVED: 0,
+      FINAL_ACCEPTANCE: "NOT_ISSUED",
+    },
+    required_reruns: REQUIRED_RERUNS.slice(),
+    invalidated_suites: REQUIRED_RERUNS.slice(),
+    baseline_washing_check: "PASS_NO_IN_PLACE_HASH_REWRITE",
+    note: PENDING_RERUN_NOTE,
+    inventory_ref: CURRENT_INV_REL,
+    historical_inventory_ref: ARCHIVE_INV_REL,
+    historical_evidence_ref: ARCHIVE_EV_REL,
+    predecessor_baseline_id: currentRebase.predecessor_baseline_id,
+    current_baseline_id: live.baselineId,
+    rebase_id: currentRebase.rebase_id,
+    CURRENT_AUTHORITATIVE: true,
+    HISTORICAL_PRE_REBASE_EVIDENCE: false,
+    scope_head_sha: headPending,
+  };
+  fs.writeFileSync(outPath, JSON.stringify(pendingInventory, null, 2) + "\n");
+  fs.writeFileSync(evidencePath, JSON.stringify(pendingEvidence, null, 2) + "\n");
+  console.log(
+    "[engine-drift-inventory] PASS · pending-rerun · paths=" +
+      live.changedPathCount +
+      " · ACK_RECEIVED=0 · NOT_ISSUED · history.preserved",
+  );
+  process.exit(0);
+}
+
 if (!live.drift) {
   throw new Error(
     "protected scope matches baseline but current acceptance is not fully issued; refuse to classify zero drift as pre-rebase",
