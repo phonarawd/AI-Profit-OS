@@ -19,12 +19,9 @@ async function bootstrap() {
   app.useBodyParser("json", { limit: "10mb" });
   app.setGlobalPrefix("api/v1");
 
-  // 유저웹 = hiptk.app · app.hiptk.app. putduk.com 은 랜딩 전용이라 CORS 에 넣지 않는다.
   const origins = new Set<string>();
-  for (const host of [env.appHost, env.opsHost, env.rootDomain]) {
+  for (const host of [env.appHost, env.opsHost]) {
     if (!host) continue;
-    const bare = host.replace(/^https?:\/\//, "").split("/")[0] ?? "";
-    if (/(^|\.)putduk\.com$/i.test(bare)) continue;
     origins.add(host.startsWith("http") ? host : `http://${host}`);
     if (!host.includes("localhost")) {
       origins.add(`https://${host}`);

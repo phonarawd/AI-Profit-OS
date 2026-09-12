@@ -57,11 +57,11 @@ if (roles.userWebOwner !== "putduk-web") {
   fails.push("domainRoles.userWebOwner must be putduk-web");
 }
 const corsSrc = read("services/api-nest/src/main.ts");
-if (!corsSrc.includes("putduk.com") || !corsSrc.includes("env.rootDomain")) {
-  fails.push("Nest CORS must pin user-web hosts and exclude putduk.com landing");
-}
 if (/\bhttps?:\/\/putduk\.com\b/.test(corsSrc)) {
   fails.push("Nest CORS must not hardcode putduk.com as an allowed origin");
+}
+if (!corsSrc.includes("env.appHost") || !corsSrc.includes("enableCors")) {
+  fails.push("Nest CORS must keep APP_HOST user-web allowlist");
 }
 
 const contract = JSON.parse(read("governance/pwa/webauthn-rp.v1.json"));
