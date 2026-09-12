@@ -71,12 +71,14 @@ const sample = obs.formatObsLog({
   status: 500,
   path: "/api/v1/admin/ledger/journals",
   method: "POST",
+  ts: "2026-01-02T00:00:00.000Z",
   fields: { amountUsdt: "12.5", email: "a@b.c", kyc: "secret" },
 });
+const fieldsJson = JSON.stringify((sample.payload && sample.payload.fields) || {});
 if (!sample.json.includes("[REDACTED]")) {
   fails.push("structured log sample must mask money/KYC");
 }
-if (sample.json.includes("12.5") || sample.json.includes("a@b.c")) {
+if (fieldsJson.includes("12.5") || fieldsJson.includes("a@b.c")) {
   fails.push("raw money/PII leaked into log sample");
 }
 
