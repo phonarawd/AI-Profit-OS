@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-09-12T07:56:41.758Z",
- "headSha": "bceb1867f06be5e2a46977b4e894588e788c2922",
+ "generatedAt": "2026-09-12T08:17:10.802Z",
+ "headSha": "2b81a5c54225058b0cc200db418711fdd82e3e38",
  "edgeKinds": [
   "import",
   "require",
@@ -1820,6 +1820,12 @@
   },
   {
    "id": "quality/backend-residual-report.md",
+   "type": "file",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP"
+  },
+  {
+   "id": "quality/live-ruleset-backend-required-evidence.md",
    "type": "file",
    "class": "BACKEND_DOC",
    "decision": "KEEP"
@@ -6068,6 +6074,12 @@
   },
   {
    "id": "tooling/github/main-gate.ruleset.json",
+   "type": "file",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
+  },
+  {
+   "id": "tooling/github/release-train-gate.ruleset.json",
    "type": "file",
    "class": "BACKEND_INFRA",
    "decision": "KEEP"
@@ -12122,7 +12134,7 @@
   {
    "id": "dir:tooling/*",
    "type": "glob",
-   "files": 405
+   "files": 406
   },
   {
    "id": "dir:services/*",
@@ -13100,7 +13112,7 @@
   {
    "id": "dir:tooling/github",
    "type": "directory",
-   "files": 2
+   "files": 3
   },
   {
    "id": "dir:tooling/lowspec",
@@ -13753,7 +13765,7 @@
   {
    "id": "dir:quality/**",
    "type": "glob",
-   "files": 21
+   "files": 22
   },
   {
    "id": "missing:apps/*",
@@ -13785,7 +13797,7 @@
   {
    "id": "dir:quality/*",
    "type": "glob",
-   "files": 20
+   "files": 21
   },
   {
    "id": "missing:quality/backend/",
@@ -66278,6 +66290,16 @@
   {
    "from": "quality/backend-residual-report.md",
    "to": ".cursorignore",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/live-ruleset-backend-required-evidence.md",
+   "to": "tooling/github/apply-main-gate.ps1",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/live-ruleset-backend-required-evidence.md",
+   "to": "tooling/github/main-gate.ruleset.json",
    "kind": "doc-link"
   },
   {

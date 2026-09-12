@@ -1,10 +1,10 @@
 {
- "generatedAt": "2026-09-12T07:56:41.758Z",
- "headSha": "bceb1867f06be5e2a46977b4e894588e788c2922",
+ "generatedAt": "2026-09-12T08:17:10.802Z",
+ "headSha": "2b81a5c54225058b0cc200db418711fdd82e3e38",
  "generator": "tooling/backend/ownership-graph.cjs",
  "overrides": "tooling/backend/ownership-overrides.json",
  "inputs": {
-  "gitLsFiles": 1381,
+  "gitLsFiles": 1383,
   "deletedUiPrefixes": [
    "apps/admin/",
    "apps/web/",
@@ -54,8 +54,8 @@
  },
  "totals": {
   "byClass": {
-   "BACKEND_INFRA": 238,
-   "BACKEND_DOC": 245,
+   "BACKEND_INFRA": 239,
+   "BACKEND_DOC": 246,
    "FUTURE_ADMIN_REQUIREMENT": 2,
    "BACKEND_TEST": 342,
    "BACKEND_CONTRACT": 83,
@@ -63,11 +63,11 @@
    "GENERATED": 5
   },
   "byDecision": {
-   "KEEP": 1381
+   "KEEP": 1383
   },
   "byClassDecision": {
-   "BACKEND_INFRA/KEEP": 238,
-   "BACKEND_DOC/KEEP": 245,
+   "BACKEND_INFRA/KEEP": 239,
+   "BACKEND_DOC/KEEP": 246,
    "FUTURE_ADMIN_REQUIREMENT/KEEP": 2,
    "BACKEND_TEST/KEEP": 342,
    "BACKEND_CONTRACT/KEEP": 83,
@@ -349,8 +349,8 @@
    "SPLIT": 0
   },
   "quality": {
-   "total": 20,
-   "KEEP": 20,
+   "total": 21,
+   "KEEP": 21,
    "DELETE": 0,
    "MOVE": 0,
    "SPLIT": 0
@@ -517,8 +517,8 @@
    "SPLIT": 0
   },
   "tooling/github": {
-   "total": 2,
-   "KEEP": 2,
+   "total": 3,
+   "KEEP": 3,
    "DELETE": 0,
    "MOVE": 0,
    "SPLIT": 0
@@ -31784,7 +31784,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "tooling/* (405 files)"
+     "ref": "tooling/* (406 files)"
     },
     {
      "kind": "verifier-reads",
@@ -32271,7 +32271,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/* (405 files)"
+     "ref": "tooling/* (406 files)"
     },
     {
      "kind": "doc-link",
@@ -32862,9 +32862,9 @@
     "tooling/backend/ownership-graph.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-12T15:31:12+09:00",
-   "lastCommitSha": "6f9b0251582221a89d4cb21105c70e3bb4c5b5e3",
-   "sizeBytes": 3106867,
+   "lastCommit": "2026-09-12T17:04:46+09:00",
+   "lastCommitSha": "2b81a5c54225058b0cc200db418711fdd82e3e38",
+   "sizeBytes": 3107214,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -32894,9 +32894,9 @@
     "tooling/backend/repository-boundary.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-12T15:31:12+09:00",
-   "lastCommitSha": "6f9b0251582221a89d4cb21105c70e3bb4c5b5e3",
-   "sizeBytes": 23082,
+   "lastCommit": "2026-09-12T17:04:46+09:00",
+   "lastCommitSha": "2b81a5c54225058b0cc200db418711fdd82e3e38",
+   "sizeBytes": 23263,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -32928,9 +32928,9 @@
     "tooling/verify/workers-typecheck.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-12T15:31:12+09:00",
-   "lastCommitSha": "6f9b0251582221a89d4cb21105c70e3bb4c5b5e3",
-   "sizeBytes": 4778874,
+   "lastCommit": "2026-09-12T17:04:46+09:00",
+   "lastCommitSha": "2b81a5c54225058b0cc200db418711fdd82e3e38",
+   "sizeBytes": 4779043,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -33021,7 +33021,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "quality/** (21 files)"
+     "ref": "quality/** (22 files)"
     },
     {
      "kind": "doc-link",
@@ -33288,7 +33288,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/* (405 files)"
+     "ref": "tooling/* (406 files)"
     },
     {
      "kind": "doc-link",
@@ -33501,7 +33501,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/* (405 files)"
+     "ref": "tooling/* (406 files)"
     },
     {
      "kind": "doc-link",
@@ -33948,7 +33948,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "quality/** (21 files)"
+     "ref": "quality/** (22 files)"
     },
     {
      "kind": "doc-link",
@@ -33978,8 +33978,8 @@
     "quality/backend-residual-report.md|doc-link|quality/**"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-12T15:31:12+09:00",
-   "lastCommitSha": "6f9b0251582221a89d4cb21105c70e3bb4c5b5e3",
+   "lastCommit": "2026-09-12T17:04:46+09:00",
+   "lastCommitSha": "2b81a5c54225058b0cc200db418711fdd82e3e38",
    "sizeBytes": 15606,
    "refSummary": {
     "deletedUiRefs": [
@@ -34000,6 +34000,47 @@
     "sdkOnlyUi": false,
     "browserHarness": true,
     "uiMarkers": true
+   }
+  },
+  {
+   "path": "quality/live-ruleset-backend-required-evidence.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "quality",
+   "reasons": [
+    "백엔드 전용 전환 문서"
+   ],
+   "evidence": [
+    {
+     "kind": "doc-link",
+     "ref": "tooling/github/apply-main-gate.ps1"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "tooling/github/main-gate.ruleset.json"
+    }
+   ],
+   "referrers": [
+    "quality/backend-only-deletion-plan.md|doc-link|quality/**",
+    "quality/backend-only-deletion-plan.md|doc-link|quality/*",
+    "quality/backend-residual-report.md|doc-link|quality/**"
+   ],
+   "blockers": [],
+   "lastCommit": "2026-09-12T17:04:46+09:00",
+   "lastCommitSha": "2b81a5c54225058b0cc200db418711fdd82e3e38",
+   "sizeBytes": 2146,
+   "refSummary": {
+    "deletedUiRefs": [],
+    "uiRefs": [],
+    "backendRefs": [
+     "tooling/github/apply-main-gate.ps1",
+     "tooling/github/main-gate.ruleset.json"
+    ],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
    }
   },
   {
@@ -86916,6 +86957,7 @@
     "quality/backend-only-inventory.md|doc-link|tooling/*",
     "quality/backend-only-official-basis.md|doc-link",
     "quality/backend-only-official-basis.md|doc-link|tooling/*",
+    "quality/live-ruleset-backend-required-evidence.md|doc-link",
     "tooling/github/apply-main-gate.ps1|deploy-cmd"
    ],
    "blockers": [],
@@ -86954,11 +86996,12 @@
     "quality/backend-only-inventory.md|doc-link|tooling/*",
     "quality/backend-only-official-basis.md|doc-link",
     "quality/backend-only-official-basis.md|doc-link|tooling/*",
+    "quality/live-ruleset-backend-required-evidence.md|doc-link",
     "tooling/backend/ownership-overrides.json|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-12T05:39:29+09:00",
-   "lastCommitSha": "a6b8c1285488c4710a2ff37381b797e4e791622d",
+   "lastCommit": "2026-09-12T17:04:46+09:00",
+   "lastCommitSha": "2b81a5c54225058b0cc200db418711fdd82e3e38",
    "sizeBytes": 1157,
    "refSummary": {
     "deletedUiRefs": [],
@@ -86970,6 +87013,37 @@
     "uiMarkers": false
    },
    "override": true
+  },
+  {
+   "path": "tooling/github/release-train-gate.ruleset.json",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "6단계 CI 교체",
+   "rule": "github-tools",
+   "reasons": [
+    "main 룰셋 JSON + 적용 스크립트 (required context 이름 변경 시 함께 갱신)"
+   ],
+   "evidence": [],
+   "referrers": [
+    "pnpm-workspace.yaml|verifier-reads|tooling/*",
+    "quality/backend-ci.md|doc-link|tooling/*",
+    "quality/backend-deletion-ledger.md|doc-link|tooling/github",
+    "quality/backend-only-inventory.md|doc-link|tooling/*",
+    "quality/backend-only-official-basis.md|doc-link|tooling/*"
+   ],
+   "blockers": [],
+   "lastCommit": "2026-09-12T17:04:46+09:00",
+   "lastCommitSha": "2b81a5c54225058b0cc200db418711fdd82e3e38",
+   "sizeBytes": 1273,
+   "refSummary": {
+    "deletedUiRefs": [],
+    "uiRefs": [],
+    "backendRefs": [],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
+   }
   },
   {
    "path": "tooling/lowspec/disable-heavy-extensions.cjs",
