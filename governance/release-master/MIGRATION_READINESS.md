@@ -12,9 +12,9 @@ APPLY_MIGRATION = 0
 APPLY_LOG = 0
 APPLY_OWNER = REL-701-DB
 PROJECT_REF = mgsytcetsiecllmhcyox
-LOCAL_MIGRATION_FILES = 54
-REMOTE_APPLIED_SNAPSHOT = 54
-REMOTE_RAW_APPLIED = 55
+LOCAL_MIGRATION_FILES = 55
+REMOTE_APPLIED_SNAPSHOT = 55
+REMOTE_RAW_APPLIED = 56
 COMMITTED_UNAPPLIED = 0
 TRACK_A_FILE_RESTORE = 3
 REL_408_BASELINE = 1
@@ -43,9 +43,9 @@ REL_701_DB_EXECUTED = 1
 
 ## REVIEW
 
-- 로컬 `supabase/migrations/*.sql` 54 · filename `YYYYMMDDHHMMSS_*.sql`
-- 원격 applied canonical snapshot `tooling/verify/fixtures/migrations-applied.v1.json` versions = 54 (asOf 2026-09-04 post REL-701-DB, ref `mgsytcetsiecllmhcyox`)
-- 실제 remote raw applied rows = 55; alias/duplicate history 5건을 fixture `remoteHistoricalMappings` 에 명시해 숨기지 않는다
+- 로컬 `supabase/migrations/*.sql` 55 · filename `YYYYMMDDHHMMSS_*.sql`
+- 원격 applied canonical snapshot `tooling/verify/fixtures/migrations-applied.v1.json` versions = 55 (asOf 2026-09-13: REL-701-DB 54 + 이미 원격 적용된 `20260905110000`, ref `mgsytcetsiecllmhcyox`)
+- fixture remote raw snapshot = 56 (54 canonical + historicalDelta 1 + `20260905110000`); 이후 원격 전용 버전은 이 레포 소스 밖이라 이 스냅샷에 넣지 않는다
 - file-only `committedUnapplied` 0 — REL-701-DB 실행으로 12 → 0 (REL-504 단계에서 옮긴 것이 아니라 REL-701-DB 실행 기록)
 - Track A (REL-003) file restore 3: `20260819210000` · `20260819220000` · `20260820013000` + `opportunity-reprice.service.ts` 존재
 - REL-408 `SECURITY_BASELINE.md` · `REL-408-SECURITY-BASELINE.md` COMPLETED · APPLY_MIGRATION = 0
@@ -55,7 +55,7 @@ REL_701_DB_EXECUTED = 1
 
 | command | expected |
 |---|---|
-| `pnpm verify:migrations-applied-parity` | PASS (54 local · 54 canonical applied · 55 raw remote rows · 0 pending) |
+| `pnpm verify:migrations-applied-parity` | PASS (55 local · 55 canonical applied · 56 raw snapshot rows · 0 pending) |
 | `pnpm verify:rel-408-security-baseline` | PASS |
 | `pnpm verify:rel-504-migration-readiness` | PASS |
 

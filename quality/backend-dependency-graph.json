@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-09-12T16:14:39.244Z",
- "headSha": "0623ccbbd9e9c669d80ceab97bc898880dd07531",
+ "generatedAt": "2026-09-12T22:26:27.824Z",
+ "headSha": "eb7ca64a8d6bec1e515e3bc5bd660ad0d68989dd",
  "edgeKinds": [
   "import",
   "require",
@@ -2911,6 +2911,30 @@
    "decision": "KEEP"
   },
   {
+   "id": "services/api-nest/src/auth/classic-signup.policy.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/auth/classic-signup.service.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/auth/consent-versions.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/auth/find-id.service.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
    "id": "services/api-nest/src/auth/identity-proof.crypto.ts",
    "type": "file",
    "class": "BACKEND_RUNTIME",
@@ -2977,7 +3001,37 @@
    "decision": "KEEP"
   },
   {
+   "id": "services/api-nest/src/auth/password-auth.service.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/auth/password-hash.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/auth/password-reset.service.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
    "id": "services/api-nest/src/auth/privacy-account.service.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/auth/pwned-password.local-blocklist.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/auth/pwned-password.service.ts",
    "type": "file",
    "class": "BACKEND_RUNTIME",
    "decision": "KEEP"
@@ -3314,6 +3368,24 @@
   },
   {
    "id": "services/api-nest/src/home-read/index.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/home-read/trial-state.service.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/home-read/trial-state.user.controller.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/home-read/trial-state.user.routes.ts",
    "type": "file",
    "class": "BACKEND_RUNTIME",
    "decision": "KEEP"
@@ -5354,6 +5426,12 @@
   },
   {
    "id": "supabase/migrations/20260902155632_withdraw_broadcast_tron.sql",
+   "type": "file",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
+  },
+  {
+   "id": "supabase/migrations/20260905110000_classic_signup_sessions_and_admin.sql",
    "type": "file",
    "class": "BACKEND_INFRA",
    "decision": "KEEP"
@@ -8499,7 +8577,7 @@
   {
    "id": "dir:services/api-nest/**",
    "type": "glob",
-   "files": 338
+   "files": 350
   },
   {
    "id": "dir:services/engine-rust/**",
@@ -8519,7 +8597,7 @@
   {
    "id": "dir:supabase/migrations/**",
    "type": "glob",
-   "files": 54
+   "files": 55
   },
   {
    "id": "missing:.cursor/tmp",
@@ -8532,7 +8610,7 @@
   {
    "id": "dir:supabase/migrations",
    "type": "directory",
-   "files": 54
+   "files": 55
   },
   {
    "id": "dir:tooling/verify",
@@ -8546,7 +8624,7 @@
   {
    "id": "dir:services/api-nest",
    "type": "directory",
-   "files": 338
+   "files": 350
   },
   {
    "id": "missing:tooling/verify/web-lint.cjs",
@@ -8962,7 +9040,7 @@
   {
    "id": "dir:supabase/migrations**",
    "type": "glob",
-   "files": 54
+   "files": 55
   },
   {
    "id": "deleted:packages/ui",
@@ -9152,7 +9230,7 @@
   {
    "id": "dir:supabase/migrations/",
    "type": "directory",
-   "files": 54
+   "files": 55
   },
   {
    "id": "missing:supabase/auth*",
@@ -9169,7 +9247,7 @@
   {
    "id": "dir:supabase/migrations/*.sql",
    "type": "glob",
-   "files": 54
+   "files": 55
   },
   {
    "id": "missing:services/realtime-service",
@@ -9200,7 +9278,7 @@
   {
    "id": "dir:supabase/migrations/*",
    "type": "glob",
-   "files": 54
+   "files": 55
   },
   {
    "id": "deleted:apps/admin/**",
@@ -9281,7 +9359,7 @@
   {
    "id": "dir:services/**",
    "type": "glob",
-   "files": 439
+   "files": 451
   },
   {
    "id": "missing:apps/**",
@@ -9515,7 +9593,7 @@
   {
    "id": "dir:services/**/api*/**",
    "type": "glob",
-   "files": 338
+   "files": 350
   },
   {
    "id": "dir:.github/workflows/**",
@@ -9591,7 +9669,7 @@
   {
    "id": "dir:supabase/**",
    "type": "glob",
-   "files": 61
+   "files": 62
   },
   {
    "id": "missing:.cursor/plans/ai_profit_os_launch_*.plan.md",
@@ -9761,6 +9839,11 @@
    "type": "missing-path"
   },
   {
+   "id": "dir:services/api-nest/src/**",
+   "type": "glob",
+   "files": 338
+  },
+  {
    "id": "dir:governance/engine-acceptance/baselines/",
    "type": "directory",
    "files": 12
@@ -9774,11 +9857,6 @@
    "id": "dir:services/api-nest/src/wallet/*.controller.ts",
    "type": "glob",
    "files": 7
-  },
-  {
-   "id": "dir:services/api-nest/src/**",
-   "type": "glob",
-   "files": 326
   },
   {
    "id": "deleted:apps/web/next-env.d.ts",
@@ -12171,7 +12249,7 @@
   {
    "id": "dir:services/*",
    "type": "glob",
-   "files": 439
+   "files": 451
   },
   {
    "id": "dir:workers/*",
@@ -12190,7 +12268,7 @@
   {
    "id": "dir:services/api-nest/src",
    "type": "directory",
-   "files": 326
+   "files": 338
   },
   {
    "id": "missing:packages/sdk/src",
@@ -13777,7 +13855,7 @@
   {
    "id": "dir:services/api-nest/src/auth/**",
    "type": "glob",
-   "files": 22
+   "files": 31
   },
   {
    "id": "dir:infra/api/**",
@@ -14107,7 +14185,7 @@
   {
    "id": "dir:services/api-nest/src/**/*.routes.ts",
    "type": "glob",
-   "files": 30
+   "files": 31
   },
   {
    "id": "deleted:packages/ui/canon/contracts/*.md",
@@ -14667,7 +14745,7 @@
   {
    "id": "dir:services/**/ai",
    "type": "glob",
-   "files": 439
+   "files": 451
   },
   {
    "id": "deleted:apps/web/**/peotteok",
@@ -15241,7 +15319,7 @@
   {
    "id": "dir:services/**/*.test.cjs",
    "type": "glob",
-   "files": 439
+   "files": 451
   },
   {
    "id": "missing:services/api-nest/dist/ledger/ledger.user-query.selftest.js",
@@ -22312,6 +22390,34 @@
    "from": "governance/db-recon/staging-hardening.v1.json",
    "to": "services/api-nest/src/kill-switch/kill-switch.service.ts",
    "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md",
+   "to": "dir:services/api-nest/src/**",
+   "kind": "doc-link",
+   "spec": "services/api-nest/src/**"
+  },
+  {
+   "from": "governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md",
+   "to": "tooling/engine-acceptance/rebase-acceptance-baseline.cjs",
+   "kind": "doc-link"
+  },
+  {
+   "from": "governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md",
+   "to": "dir:tooling/engine-acceptance/**",
+   "kind": "doc-link",
+   "spec": "tooling/engine-acceptance/**"
+  },
+  {
+   "from": "governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md",
+   "to": "dir:governance/engine-acceptance/**",
+   "kind": "doc-link",
+   "spec": "governance/engine-acceptance/**"
+  },
+  {
+   "from": "governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md",
+   "to": ".github/workflows/engine-acceptance.yml",
+   "kind": "doc-link"
   },
   {
    "from": "governance/engine-acceptance/PROTECTED_SCOPE_STALE_WATCH.md",
@@ -71519,9 +71625,39 @@
   },
   {
    "from": "services/api-nest/src/auth/auth.controller.ts",
+   "to": "services/api-nest/src/auth/classic-signup.service.ts",
+   "kind": "import",
+   "spec": "./classic-signup.service"
+  },
+  {
+   "from": "services/api-nest/src/auth/auth.controller.ts",
+   "to": "services/api-nest/src/auth/classic-signup.policy.ts",
+   "kind": "import",
+   "spec": "./classic-signup.policy"
+  },
+  {
+   "from": "services/api-nest/src/auth/auth.controller.ts",
+   "to": "services/api-nest/src/auth/find-id.service.ts",
+   "kind": "import",
+   "spec": "./find-id.service"
+  },
+  {
+   "from": "services/api-nest/src/auth/auth.controller.ts",
    "to": "services/api-nest/src/auth/jwt-auth.guard.ts",
    "kind": "import",
    "spec": "./jwt-auth.guard"
+  },
+  {
+   "from": "services/api-nest/src/auth/auth.controller.ts",
+   "to": "services/api-nest/src/auth/password-auth.service.ts",
+   "kind": "import",
+   "spec": "./password-auth.service"
+  },
+  {
+   "from": "services/api-nest/src/auth/auth.controller.ts",
+   "to": "services/api-nest/src/auth/password-reset.service.ts",
+   "kind": "import",
+   "spec": "./password-reset.service"
   },
   {
    "from": "services/api-nest/src/auth/auth.module.ts",
@@ -71588,6 +71724,36 @@
    "to": "services/api-nest/src/auth/auth.service.ts",
    "kind": "import",
    "spec": "./auth.service"
+  },
+  {
+   "from": "services/api-nest/src/auth/auth.module.ts",
+   "to": "services/api-nest/src/auth/classic-signup.service.ts",
+   "kind": "import",
+   "spec": "./classic-signup.service"
+  },
+  {
+   "from": "services/api-nest/src/auth/auth.module.ts",
+   "to": "services/api-nest/src/auth/find-id.service.ts",
+   "kind": "import",
+   "spec": "./find-id.service"
+  },
+  {
+   "from": "services/api-nest/src/auth/auth.module.ts",
+   "to": "services/api-nest/src/auth/password-auth.service.ts",
+   "kind": "import",
+   "spec": "./password-auth.service"
+  },
+  {
+   "from": "services/api-nest/src/auth/auth.module.ts",
+   "to": "services/api-nest/src/auth/password-reset.service.ts",
+   "kind": "import",
+   "spec": "./password-reset.service"
+  },
+  {
+   "from": "services/api-nest/src/auth/auth.module.ts",
+   "to": "services/api-nest/src/auth/pwned-password.service.ts",
+   "kind": "import",
+   "spec": "./pwned-password.service"
   },
   {
    "from": "services/api-nest/src/auth/auth.module.ts",
@@ -71732,6 +71898,96 @@
    "to": "services/api-nest/src/auth/identity-proof.email.ts",
    "kind": "import",
    "spec": "./identity-proof.email"
+  },
+  {
+   "from": "services/api-nest/src/auth/classic-signup.policy.ts",
+   "to": "services/api-nest/src/auth/identity-proof.email.ts",
+   "kind": "import",
+   "spec": "./identity-proof.email"
+  },
+  {
+   "from": "services/api-nest/src/auth/classic-signup.service.ts",
+   "to": "pkg:@nestjs/common",
+   "kind": "import",
+   "spec": "@nestjs/common"
+  },
+  {
+   "from": "services/api-nest/src/auth/classic-signup.service.ts",
+   "to": "services/api-nest/src/db/postgres.ts",
+   "kind": "import",
+   "spec": "../db/postgres"
+  },
+  {
+   "from": "services/api-nest/src/auth/classic-signup.service.ts",
+   "to": "services/api-nest/src/wallet/resend-email.provider.ts",
+   "kind": "import",
+   "spec": "../wallet/resend-email.provider"
+  },
+  {
+   "from": "services/api-nest/src/auth/classic-signup.service.ts",
+   "to": "services/api-nest/src/referral/referral-code.util.ts",
+   "kind": "import",
+   "spec": "../referral/referral-code.util"
+  },
+  {
+   "from": "services/api-nest/src/auth/classic-signup.service.ts",
+   "to": "services/api-nest/src/auth/identity-proof.crypto.ts",
+   "kind": "import",
+   "spec": "./identity-proof.crypto"
+  },
+  {
+   "from": "services/api-nest/src/auth/classic-signup.service.ts",
+   "to": "services/api-nest/src/auth/password-hash.ts",
+   "kind": "import",
+   "spec": "./password-hash"
+  },
+  {
+   "from": "services/api-nest/src/auth/classic-signup.service.ts",
+   "to": "services/api-nest/src/auth/pwned-password.service.ts",
+   "kind": "import",
+   "spec": "./pwned-password.service"
+  },
+  {
+   "from": "services/api-nest/src/auth/classic-signup.service.ts",
+   "to": "services/api-nest/src/auth/classic-signup.policy.ts",
+   "kind": "import",
+   "spec": "./classic-signup.policy"
+  },
+  {
+   "from": "services/api-nest/src/auth/classic-signup.service.ts",
+   "to": "services/api-nest/src/auth/auth.service.ts",
+   "kind": "import",
+   "spec": "./auth.service"
+  },
+  {
+   "from": "services/api-nest/src/auth/classic-signup.service.ts",
+   "to": "services/api-nest/src/auth/consent-versions.ts",
+   "kind": "import",
+   "spec": "./consent-versions"
+  },
+  {
+   "from": "services/api-nest/src/auth/find-id.service.ts",
+   "to": "pkg:@nestjs/common",
+   "kind": "import",
+   "spec": "@nestjs/common"
+  },
+  {
+   "from": "services/api-nest/src/auth/find-id.service.ts",
+   "to": "services/api-nest/src/db/postgres.ts",
+   "kind": "import",
+   "spec": "../db/postgres"
+  },
+  {
+   "from": "services/api-nest/src/auth/find-id.service.ts",
+   "to": "services/api-nest/src/wallet/resend-email.provider.ts",
+   "kind": "import",
+   "spec": "../wallet/resend-email.provider"
+  },
+  {
+   "from": "services/api-nest/src/auth/find-id.service.ts",
+   "to": "services/api-nest/src/auth/classic-signup.policy.ts",
+   "kind": "import",
+   "spec": "./classic-signup.policy"
   },
   {
    "from": "services/api-nest/src/auth/identity-proof.crypto.ts",
@@ -71982,6 +72238,78 @@
    "spec": "@nestjs/common"
   },
   {
+   "from": "services/api-nest/src/auth/password-auth.service.ts",
+   "to": "pkg:@nestjs/common",
+   "kind": "import",
+   "spec": "@nestjs/common"
+  },
+  {
+   "from": "services/api-nest/src/auth/password-auth.service.ts",
+   "to": "services/api-nest/src/db/postgres.ts",
+   "kind": "import",
+   "spec": "../db/postgres"
+  },
+  {
+   "from": "services/api-nest/src/auth/password-auth.service.ts",
+   "to": "services/api-nest/src/auth/password-hash.ts",
+   "kind": "import",
+   "spec": "./password-hash"
+  },
+  {
+   "from": "services/api-nest/src/auth/password-auth.service.ts",
+   "to": "services/api-nest/src/auth/auth.service.ts",
+   "kind": "import",
+   "spec": "./auth.service"
+  },
+  {
+   "from": "services/api-nest/src/auth/password-reset.service.ts",
+   "to": "pkg:@nestjs/common",
+   "kind": "import",
+   "spec": "@nestjs/common"
+  },
+  {
+   "from": "services/api-nest/src/auth/password-reset.service.ts",
+   "to": "services/api-nest/src/db/postgres.ts",
+   "kind": "import",
+   "spec": "../db/postgres"
+  },
+  {
+   "from": "services/api-nest/src/auth/password-reset.service.ts",
+   "to": "services/api-nest/src/wallet/resend-email.provider.ts",
+   "kind": "import",
+   "spec": "../wallet/resend-email.provider"
+  },
+  {
+   "from": "services/api-nest/src/auth/password-reset.service.ts",
+   "to": "services/api-nest/src/auth/identity-proof.crypto.ts",
+   "kind": "import",
+   "spec": "./identity-proof.crypto"
+  },
+  {
+   "from": "services/api-nest/src/auth/password-reset.service.ts",
+   "to": "services/api-nest/src/auth/password-hash.ts",
+   "kind": "import",
+   "spec": "./password-hash"
+  },
+  {
+   "from": "services/api-nest/src/auth/password-reset.service.ts",
+   "to": "services/api-nest/src/auth/classic-signup.policy.ts",
+   "kind": "import",
+   "spec": "./classic-signup.policy"
+  },
+  {
+   "from": "services/api-nest/src/auth/password-reset.service.ts",
+   "to": "services/api-nest/src/auth/pwned-password.service.ts",
+   "kind": "import",
+   "spec": "./pwned-password.service"
+  },
+  {
+   "from": "services/api-nest/src/auth/password-reset.service.ts",
+   "to": "services/api-nest/src/auth/auth.service.ts",
+   "kind": "import",
+   "spec": "./auth.service"
+  },
+  {
    "from": "services/api-nest/src/auth/privacy-account.service.ts",
    "to": "pkg:@nestjs/common",
    "kind": "import",
@@ -72010,6 +72338,18 @@
    "to": "services/api-nest/src/auth/auth.stage.ts",
    "kind": "import",
    "spec": "./auth.stage"
+  },
+  {
+   "from": "services/api-nest/src/auth/pwned-password.service.ts",
+   "to": "pkg:@nestjs/common",
+   "kind": "import",
+   "spec": "@nestjs/common"
+  },
+  {
+   "from": "services/api-nest/src/auth/pwned-password.service.ts",
+   "to": "services/api-nest/src/auth/pwned-password.local-blocklist.ts",
+   "kind": "import",
+   "spec": "./pwned-password.local-blocklist"
   },
   {
    "from": "services/api-nest/src/auth/webauthn-assert.service.ts",
@@ -72845,6 +73185,18 @@
   },
   {
    "from": "services/api-nest/src/home-read/home-read.module.ts",
+   "to": "services/api-nest/src/ledger/ledger.module.ts",
+   "kind": "import",
+   "spec": "../ledger/ledger.module"
+  },
+  {
+   "from": "services/api-nest/src/home-read/home-read.module.ts",
+   "to": "services/api-nest/src/membership/membership.module.ts",
+   "kind": "import",
+   "spec": "../membership/membership.module"
+  },
+  {
+   "from": "services/api-nest/src/home-read/home-read.module.ts",
    "to": "services/api-nest/src/opportunities/opportunities.module.ts",
    "kind": "import",
    "spec": "../opportunities/opportunities.module"
@@ -72866,6 +73218,18 @@
    "to": "services/api-nest/src/home-read/home-read.user.controller.ts",
    "kind": "import",
    "spec": "./home-read.user.controller"
+  },
+  {
+   "from": "services/api-nest/src/home-read/home-read.module.ts",
+   "to": "services/api-nest/src/home-read/trial-state.service.ts",
+   "kind": "import",
+   "spec": "./trial-state.service"
+  },
+  {
+   "from": "services/api-nest/src/home-read/home-read.module.ts",
+   "to": "services/api-nest/src/home-read/trial-state.user.controller.ts",
+   "kind": "import",
+   "spec": "./trial-state.user.controller"
   },
   {
    "from": "services/api-nest/src/home-read/home-read.service.ts",
@@ -72938,6 +73302,54 @@
    "to": "services/api-nest/src/home-read/home-read.user.routes.ts",
    "kind": "import",
    "spec": "./home-read.user.routes"
+  },
+  {
+   "from": "services/api-nest/src/home-read/trial-state.service.ts",
+   "to": "pkg:@nestjs/common",
+   "kind": "import",
+   "spec": "@nestjs/common"
+  },
+  {
+   "from": "services/api-nest/src/home-read/trial-state.service.ts",
+   "to": "services/api-nest/src/ledger/practice-grant.service.ts",
+   "kind": "import",
+   "spec": "../ledger/practice-grant.service"
+  },
+  {
+   "from": "services/api-nest/src/home-read/trial-state.service.ts",
+   "to": "services/api-nest/src/membership/membership.runtime.service.ts",
+   "kind": "import",
+   "spec": "../membership/membership.runtime.service"
+  },
+  {
+   "from": "services/api-nest/src/home-read/trial-state.service.ts",
+   "to": "services/api-nest/src/opportunities/current-fx-approx.service.ts",
+   "kind": "import",
+   "spec": "../opportunities/current-fx-approx.service"
+  },
+  {
+   "from": "services/api-nest/src/home-read/trial-state.user.controller.ts",
+   "to": "pkg:@nestjs/common",
+   "kind": "import",
+   "spec": "@nestjs/common"
+  },
+  {
+   "from": "services/api-nest/src/home-read/trial-state.user.controller.ts",
+   "to": "services/api-nest/src/auth/jwt-auth.guard.ts",
+   "kind": "import",
+   "spec": "../auth/jwt-auth.guard"
+  },
+  {
+   "from": "services/api-nest/src/home-read/trial-state.user.controller.ts",
+   "to": "services/api-nest/src/home-read/trial-state.service.ts",
+   "kind": "import",
+   "spec": "./trial-state.service"
+  },
+  {
+   "from": "services/api-nest/src/home-read/trial-state.user.controller.ts",
+   "to": "services/api-nest/src/home-read/trial-state.user.routes.ts",
+   "kind": "import",
+   "spec": "./trial-state.user.routes"
   },
   {
    "from": "services/api-nest/src/inbox/inbox.module.ts",
@@ -79206,6 +79618,26 @@
    "to": "missing:schemas/push-subscription.v1",
    "kind": "verifier-reads",
    "spec": "schemas/push-subscription.v1"
+  },
+  {
+   "from": "supabase/migrations/20260905110000_classic_signup_sessions_and_admin.sql",
+   "to": "services/api-nest/src/auth/classic-signup.policy.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "supabase/migrations/20260905110000_classic_signup_sessions_and_admin.sql",
+   "to": "services/api-nest/src/auth/auth.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "supabase/migrations/20260905110000_classic_signup_sessions_and_admin.sql",
+   "to": "governance/release-master/MIGRATION_READINESS.md",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "supabase/migrations/20260905110000_classic_signup_sessions_and_admin.sql",
+   "to": "services/api-nest/src/auth/password-hash.ts",
+   "kind": "verifier-reads"
   },
   {
    "from": "supabase/staging/20260901120300_hardening_rollback.sql",
