@@ -5,7 +5,7 @@
   ],
   "protectedScopeMutation": true,
   "applyMigration": 0,
-  "certIssued": 1,
-  "stalePendingRebase": false,
+  "certIssued": 0,
+  "stalePendingRebase": true,
   "route": "me/current-fx/approx"
 }
