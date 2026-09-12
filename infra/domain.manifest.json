@@ -64,5 +64,14 @@
     "owner": "putduk-web",
     "restoreSha": "97b07908",
     "restore": "git checkout 97b07908 -- infra/web infra/ops workers/web-proxy workers/ops-proxy workers/_shared/opennext-origin.ts tooling/deploy/cf-pages-web.cjs tooling/deploy/cf-pages-ops.cjs"
+  },
+  "domainRoles": {
+    "landingOnly": ["putduk.com"],
+    "userWeb": ["hiptk.app", "app.hiptk.app"],
+    "userWebOwner": "putduk-web",
+    "opsHost": "ops.hiptk.app",
+    "thisRepoHosts": ["api.hiptk.app"],
+    "thisRepoWorkers": ["hiptk-api-stub", "push-dispatcher"],
+    "note": "putduk.com is landing-only. Never treat as customer-app origin, CORS allowlist, cookie domain, or WebAuthn RP. User web origin is hiptk.app and app.hiptk.app (putduk-web). This repo deploys API stub / push-dispatcher / R2 / backend Workers only — no OpenNext, pages, or landing."
   }
 }

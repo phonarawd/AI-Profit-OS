@@ -40,6 +40,26 @@ if (!mcp.mcpServers?.["cloudflare-docs"]?.url) {
   fails.push(".cursor/mcp.json: cloudflare-docs MCP missing");
 }
 
+const domain = JSON.parse(
+  fs.readFileSync(path.join(root, "infra/domain.manifest.json"), "utf8"),
+);
+const roles = domain.domainRoles || {};
+if (!(roles.landingOnly || []).includes("putduk.com")) {
+  fails.push("domain.manifest domainRoles.landingOnly must include putduk.com");
+}
+if (
+  !(roles.userWeb || []).includes("hiptk.app") ||
+  !(roles.userWeb || []).includes("app.hiptk.app")
+) {
+  fails.push("domain.manifest domainRoles.userWeb must include hiptk.app and app.hiptk.app");
+}
+if ((roles.userWeb || []).includes("putduk.com")) {
+  fails.push("putduk.com must not be a userWeb origin");
+}
+if (roles.userWebOwner !== "putduk-web") {
+  fails.push("domainRoles.userWebOwner must be putduk-web");
+}
+
 if (fails.length) {
   console.error("[verify:cf-infra] FAIL\n- " + fails.join("\n- "));
   process.exit(1);
