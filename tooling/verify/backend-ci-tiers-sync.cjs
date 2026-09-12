@@ -123,12 +123,19 @@ for (const job of wf.jobs) {
 
 for (const d of backendDomains) if (!domainCoverage.has(d)) fails.push("backend domain not covered by any CI job: " + d);
 
-// 로컬 T2 == CI 합집합
-const full = new Set(tiers.stepsForTier("full").flatMap(tiers.expandStep).filter((s) => !s.includes("#")));
+// 로컬 T2 == CI 합집합. 고정 집합만 비교한다.
+// stepsForTier("full") 은 getChangedFiles() 를 호출하므로 workflow_dispatch 에서
+// CI_CONTEXT_UNRESOLVED 로 죽는다. 변경 경로 도메인 검증기는 이벤트 의존이라
+// 이 동기화 검사의 SSOT 가 아니다.
+const localT2 = [
+  ...tiers.T0_ALWAYS,
+  ...tiers.T1_PUSH.flatMap(tiers.expandStep),
+  ...tiers.T2_CI,
+];
+const full = new Set(localT2.flatMap(tiers.expandStep).filter((s) => !s.includes("#")));
 const ci = new Set([...tiers.ciUnion()].filter((s) => !s.includes("#") && s !== "gate-fast.cjs"));
-// stepsForTier 는 변경 경로 도메인 검증기를 포함할 수 있으므로 CI 쪽이 부족한 경우만 본다
 for (const s of ci) if (!full.has(s)) fails.push("CI runs " + s + " but local T2 (pnpm verify:gate) does not");
-for (const s of [...tiers.T0_ALWAYS, ...tiers.T1_PUSH.flatMap(tiers.expandStep), ...tiers.T2_CI]) {
+for (const s of localT2) {
   if (s.includes("#")) continue;
   if (!ci.has(s)) fails.push("local T2 runs " + s + " but no CI job does");
 }

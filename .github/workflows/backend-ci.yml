@@ -73,10 +73,28 @@ jobs:
         run: pnpm verify:backend-ownership-drift
       - name: verify:backend-ci-tiers-sync
         if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
-        run: pnpm verify:backend-ci-tiers-sync
+        env:
+          AIPO_PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          AIPO_PUSH_BEFORE_SHA: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            export AIPO_DOMAIN_DIFF_MODE=ci_pr
+            export AIPO_PR_BASE_SHA="$(git merge-base origin/main HEAD)"
+          fi
+          pnpm verify:backend-ci-tiers-sync
       - name: verify:domain-by-path-ci
         if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
-        run: pnpm verify:domain-by-path-ci
+        env:
+          AIPO_PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          AIPO_PUSH_BEFORE_SHA: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            export AIPO_DOMAIN_DIFF_MODE=ci_pr
+            export AIPO_PR_BASE_SHA="$(git merge-base origin/main HEAD)"
+          fi
+          pnpm verify:domain-by-path-ci
       - name: verify:project-boundary
         if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
         run: pnpm verify:project-boundary
