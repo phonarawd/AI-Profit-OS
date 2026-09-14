@@ -45,7 +45,9 @@
     "coreIsolation": "memory store password/user-session/disabled",
     "persistIsolation": "fake persist lookup · runtime unset · no demo seed",
     "nestHttp": "unready env still 503; GHA ephemeral PG is the real HTTP+SQL target",
-    "realDb": "pending_gha",
+    "realDb": "gha_ephemeral_pass",
+    "workflowRunId": "34885649558",
+    "verifiedHead": "87f033995ee0ee2e42d72eae8a809b2037f229a4",
     "officialQa": false
   }
 }

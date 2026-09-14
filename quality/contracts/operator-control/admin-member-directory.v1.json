@@ -48,7 +48,9 @@
   "verification": {
     "coreIsolation": "memory store exact/404/mask/page",
     "nestHttp": "AdminGuard capability CSRF-GET; empty q 503 when isolated unset",
-    "realDb": "pending_gha",
+    "realDb": "gha_ephemeral_pass",
+    "workflowRunId": "34885649558",
+    "verifiedHead": "87f033995ee0ee2e42d72eae8a809b2037f229a4",
     "officialQa": false
   },
   "pii": "directory core masks email/phone; HTTP exact path returns membership id + resellerId",

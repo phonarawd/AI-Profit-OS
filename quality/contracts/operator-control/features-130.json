@@ -63,6 +63,6 @@
     "C01": "verified_local",
     "C02": "blocked",
     "C03": "blocked",
-    "C04": "code_ready_real_pg_pending_gha"
+    "C04": "gha_ephemeral_pg_pass_not_official_qa"
   }
 }

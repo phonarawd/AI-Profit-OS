@@ -18,6 +18,12 @@
 - 직원 로그인: 격리 QA persist 가 ready 일 때만 기존 `/admin-session/login` 이 자격 조회
 - 회원 페이지 목록: 기존 `GET /admin/users` empty-q 가 격리 persist 에 연결
 
+## GHA 일회용 PG (실측)
+- run `34885649558` · job `104115531018` · SHA `87f033995ee0ee2e42d72eae8a809b2037f229a4`
+- URL: https://github.com/phonarawd/AI-Profit-OS/actions/runs/34885649558
+- 부모 구현 HEAD `9d48e58e` 이후. 상품 생성→목록→단건→수정→409→재조회·멱등·로그인·회원 목록·A/B/C·원장 QA 저널 지급 PASS
+- 이 기록 커밋은 검증 SHA 이후. 지어낸 run ID 아님
+
 ## 아직 아님
 - 운영 DB apply
 - 정식 QA0–QA9

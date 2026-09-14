@@ -11,7 +11,7 @@ atSec 0,8,18,28,48,58,66 · totalDurationSec 70 · 필드 atSec
 실행 정책(별도): GET/PUT /api/v1/admin/execution-policy
 DAY1 5단계 product_check… · durationSecMin 8 / Max 15. Soft60/Hard90 과 다름.
 
-상품 Admin HTTP(2026-09-15.mall-admin-v5): `product-admin-http.v5.json`. 이전 해석 파일 `product-visibility-concurrent-participate.v1.json` 은 v4 스냅샷. 실PG는 GHA 일회용 PG만. 정식 QA0–QA9·운영 적용·출시 아님.
+상품 Admin HTTP(2026-09-15.mall-admin-v5): `product-admin-http.v5.json`. 이전 해석 파일 `product-visibility-concurrent-participate.v1.json` 은 v4 스냅샷. GHA 일회용 PG run `34885649558` (verified HEAD `87f03399`) PASS. 정식 QA0–QA9·운영 적용·출시 아님.
 금액 권위: expectedProfitUsdt / configuredPayoutUsdt / ledgerPaidUsdt. persist 실태: persist-status.v1.json. persist 코드+draft+가짜 persist 격리. Nest Admin 상품은 격리 QA resolver. 이 턴 URL unset → STORE_UNREADY. 실 Postgres persist 아님. 기본은 쇼핑몰형 전체 공개. 선택 회원 공개는 권한이지 독점 예약이 아님. 구현 필드와 제안(라이브 스키마) 필드를 구분한다.
 
 사용자 API: GET /api/v1/me/membership

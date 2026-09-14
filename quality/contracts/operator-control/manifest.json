@@ -1,34 +1,37 @@
 {
   "contractVersion": "2026-09-15.mall-admin-v5",
-  "generatedAt": "2026-09-15T03:40:00+09:00",
+  "generatedAt": "2026-09-15T04:16:00+09:00",
   "repo": "phonarawd/AI-Profit-OS",
   "branch": "qa/operator-mall-pg-20260915",
-  "head": "9d48e58e6fa0871611fe27292e8c876ee568a18c",
+  "head": "87f033995ee0ee2e42d72eae8a809b2037f229a4",
   "parentHead": "9d48e58e6fa0871611fe27292e8c876ee568a18c",
-  "implementation": "code_ready_real_pg_pending_gha",
+  "headNote": "head=GHA run 34885649558가 검증한 SHA. 이 기록 커밋은 그 이후. 부모 구현 HEAD는 9d48e58e.",
+  "implementation": "gha_ephemeral_pg_pass",
   "schemaApplied": false,
   "storeReady": false,
   "officialQa0to9": false,
   "publishedToUiRepo": false,
+  "opsDb": false,
   "fingerprintAlgo": "sha256",
   "workflowName": "operator-mall-gha-pg",
-  "workflowRunId": null,
+  "workflowRunId": "34885649558",
+  "workflowRunUrl": "https://github.com/phonarawd/AI-Profit-OS/actions/runs/34885649558",
   "files": [
     {
       "file": "PUTDUK_OPS-handoff-mall-admin-v5.md",
-      "fingerprint": "27a49140efb3e8f645d3fa2d81b92f624024c368ddb7f776983f10d76d17d21c"
+      "fingerprint": "490198ef0a8c2949d159f4901187d872d03e6358c4abb117216a4d6043abb850"
     },
     {
       "file": "README.md",
-      "fingerprint": "0da5b4939b2cf8631156c2571969e698754e3012ab19be58136cdc5b84c35cf6"
+      "fingerprint": "59cb1ef6d1c4569a37e9eaa5ed7994f8f0bc7dc9bc300ebb8110d89f15b7d6df"
     },
     {
       "file": "admin-member-directory.v1.json",
-      "fingerprint": "567c3874bef8c9278a5565663f4c97af17ff055dd3113922e80f4d812bc8a448"
+      "fingerprint": "f530e7edea749d02d9b85b0ce293b214b9d29d57e8500126d60b81685cfafe5f"
     },
     {
       "file": "admin-session-login.v1.json",
-      "fingerprint": "54b9e1ca495952dc0fd4cc8fbcaafefd5c7d09a45a33d73910ff2a485f5c5e17"
+      "fingerprint": "55739bba86e113c2250ae75bfea02b01748750ef016b1001248909e634b9f4f7"
     },
     {
       "file": "b2-vs-b3-user-dto.v1.json",
@@ -44,11 +47,11 @@
     },
     {
       "file": "features-130.json",
-      "fingerprint": "c5f0cdc28aaa498a3b91dcb86d0aa7c83b7fbdfa9f4eba95b932045928076df5"
+      "fingerprint": "0655b6a7dfa2c6c6dd30c2cada2f0370f2580ba3c627582ca32996899def247c"
     },
     {
       "file": "persist-status.v1.json",
-      "fingerprint": "8fb5157104e6f6446cfc02334e36a408823278ecc004a0e6ebf901b84ed9a5be"
+      "fingerprint": "5b24b341869d08897415047c1eb7a730cd84aa29a73e756778c688c601733e20"
     },
     {
       "file": "presentation-journey-v19.v1.json",
@@ -56,7 +59,7 @@
     },
     {
       "file": "product-admin-http.v5.json",
-      "fingerprint": "201c4ae6dbaaf8ae63d484ccb34f59c571311580f71ace9d45aac41ecfd392a2"
+      "fingerprint": "fd809ce3a063147e9aff1ab3aa70aff47a26d491600452116931afe81039fd96"
     },
     {
       "file": "product-visibility-concurrent-participate.v1.json",
