@@ -200,5 +200,7 @@
     "GET /api/v1/trades/:id",
     "POST /api/v1/trades/:id/execute-tick",
     "GET /api/v1/me/ledger/journals"
-  ]
+  ],
+  "persistStatusFile": "persist-status.v1.json",
+  "moneyAuthority": "expectedProfitUsdt vs configuredPayoutUsdt vs ledgerPaidUsdt. payoutAuthoritative only with journal."
 }

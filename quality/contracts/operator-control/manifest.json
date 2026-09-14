@@ -1,6 +1,6 @@
 {
-  "contractVersion": "2026-09-15.mall-local-v2",
-  "generatedAt": "2026-09-15T00:45:00+09:00",
+  "contractVersion": "2026-09-15.mall-local-v2+persist",
+  "generatedAt": "2026-09-15T00:50:00+09:00",
   "repo": "phonarawd/AI-Profit-OS",
   "branch": "feat/operator-registered-catalog-s1",
   "head": "efdd6b742285651d0a8060ec3ecbc31d35520a73",
@@ -61,7 +61,7 @@
     {
       "file": "README.md",
       "absolutePath": "C:\\Users\\PC\\Desktop\\AI_PROFIT_OS\\quality\\contracts\\operator-control\\README.md",
-      "fingerprint": "45eca18a0c33db7c6f63526ed58c9a747c06086a444184b41b37208d66b4b6ed",
+      "fingerprint": "234cacdc03b5a04a86ceee91f3b86bc08739e19bfb5c82636b9550e0cf49e706",
       "status": "document"
     },
     {
@@ -93,8 +93,14 @@
     {
       "file": "product-visibility-concurrent-participate.v1.json",
       "absolutePath": "C:\\Users\\PC\\Desktop\\AI_PROFIT_OS\\quality\\contracts\\operator-control\\product-visibility-concurrent-participate.v1.json",
-      "fingerprint": "7515837449ee2bb77c2534be0a511d2434f0f2154128f759a5af03aa3c86dd83",
+      "fingerprint": "0acff43de66d6ad24ab73ba640917b8bd6e8c22467a63e7dc6fddf340b7a9eb6",
       "status": "implemented_local_memory_http_unready"
+    },
+    {
+      "file": "persist-status.v1.json",
+      "absolutePath": "C:\\Users\\PC\\Desktop\\AI_PROFIT_OS\\quality\\contracts\\operator-control\\persist-status.v1.json",
+      "fingerprint": "3592840a9abe3d1c3e1080dc6c33dd07af4209d3366f2cf4b7df8c23ef9a9b7c",
+      "status": "persist_audit"
     }
   ]
 }

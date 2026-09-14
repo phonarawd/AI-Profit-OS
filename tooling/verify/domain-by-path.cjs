@@ -350,6 +350,7 @@ const RULES = [
       /^services\/api-nest\/src\/common\/admin-session-login\.admin-http\.cjs$/.test(f) ||
       /^services\/api-nest\/src\/opportunities\/operator-mall-product\./.test(f) ||
       /^services\/api-nest\/src\/referral\/reseller-id\./.test(f) ||
+      /^services\/api-nest\/src\/ledger\/money-authority\./.test(f) ||
       /^tooling\/verify\/backend\/matching-membership\/membership-/.test(f) ||
       /^services\/market-intelligence\/src\/membership\.cjs$/.test(f),
     scripts: [

@@ -20,6 +20,7 @@ const files = [
   "services/api-nest/src/opportunities/operator-mall-product.isolation.cjs",
   "services/api-nest/src/opportunities/operator-mall-product.admin-http.cjs",
   "services/api-nest/src/referral/reseller-id.isolation.cjs",
+  "services/api-nest/src/ledger/money-authority.isolation.cjs",
 ];
 
 const failed = [];

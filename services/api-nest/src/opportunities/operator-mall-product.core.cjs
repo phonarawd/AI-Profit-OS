@@ -6,6 +6,10 @@
 "use strict";
 
 const crypto = require("node:crypto");
+const path = require("node:path");
+const { projectMoneyAuthority, rejectClientPayoutAuthority } = require(
+  path.join(__dirname, "..", "ledger", "money-authority.core.cjs"),
+);
 
 const VISIBILITY = Object.freeze({
   ALL_PUBLIC: "all_public",
@@ -158,6 +162,19 @@ function assertCompositionQty(raw) {
     throw err;
   }
   return n;
+}
+
+/**
+ * 진행 중 슬롯은 회원별. 상품 전체 독점·판매 재고가 아니다.
+ * compositionQty 는 구성 수량. 원장 FOR UPDATE 는 여기 없음.
+ */
+function countMemberInFlight(rows, opportunityId, userId) {
+  return (rows || []).filter(
+    (r) =>
+      r.opportunityId === opportunityId &&
+      r.userId === userId &&
+      (r.status === "running" || r.status === "requeue"),
+  ).length;
 }
 
 function canSeeProduct(product, userId) {
@@ -328,10 +345,13 @@ function projectPublicProduct(product) {
     description: product.description,
     photos: product.photos.slice(),
     compositionQty: product.compositionQty,
-    payoutAmount: product.payoutAmount,
     currency: product.currency,
     visibility: product.visibility,
     revision: product.revision,
+    moneyAuthority: projectMoneyAuthority({
+      expectedProfitUsdt: null,
+      configuredPayoutUsdt: product.payoutAmount,
+    }),
   };
 }
 
@@ -359,6 +379,8 @@ async function getForUser(userId, productId, deps) {
 async function participate(input, deps) {
   const blocked = requireReadyStore(deps && deps.store);
   if (blocked) return blocked;
+  const clientBlock = rejectClientPayoutAuthority(input);
+  if (clientBlock) return clientBlock;
   if (input && input.payoutAmount != null) {
     return fail("PAYOUT_AMOUNT_TAMPER", 400);
   }
@@ -386,6 +408,11 @@ async function participate(input, deps) {
       replay: true,
       httpStatus: 200,
       participation: existing,
+      moneyAuthority: projectMoneyAuthority({
+        configuredPayoutUsdt: existing.snapshot && existing.snapshot.payoutAmount,
+        ledgerJournalId: existing.journalId,
+        ledgerPaidUsdt: existing.payoutStatus === PAYOUT_STATUS.PAID ? existing.snapshot.payoutAmount : null,
+      }),
     };
   }
 
@@ -411,7 +438,15 @@ async function participate(input, deps) {
   if (deps.store.incrementDailyUsed) {
     await deps.store.incrementDailyUsed(userId);
   }
-  return { ok: true, applied: true, httpStatus: 201, participation };
+  return {
+    ok: true,
+    applied: true,
+    httpStatus: 201,
+    participation,
+    moneyAuthority: projectMoneyAuthority({
+      configuredPayoutUsdt: product.payoutAmount,
+    }),
+  };
 }
 
 async function applyMatchSuccessPayout(input, deps) {
@@ -469,6 +504,11 @@ async function applyMatchSuccessPayout(input, deps) {
       payoutStatus: PAYOUT_STATUS.PAID,
       journalId: replay.id,
       participation,
+      moneyAuthority: projectMoneyAuthority({
+        configuredPayoutUsdt: participation.snapshot.payoutAmount,
+        ledgerJournalId: replay.id,
+        ledgerPaidUsdt: replay.amountUsdt,
+      }),
     };
   }
 
@@ -504,6 +544,11 @@ async function applyMatchSuccessPayout(input, deps) {
     payoutStatus: PAYOUT_STATUS.PAID,
     journalId: journal.id,
     participation: paid,
+    moneyAuthority: projectMoneyAuthority({
+      configuredPayoutUsdt: amount,
+      ledgerJournalId: journal.id,
+      ledgerPaidUsdt: amount,
+    }),
   };
 }
 
@@ -620,6 +665,7 @@ module.exports = {
   formatAmount,
   assertPayoutAmount,
   canSeeProduct,
+  countMemberInFlight,
   personalGuard,
   registerProduct,
   updateProduct,

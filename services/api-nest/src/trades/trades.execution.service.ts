@@ -38,6 +38,23 @@ import { mergeEffectivePolicy } from "../membership/membership.mi";
 
 const req = createRequire(__filename);
 // eslint-disable-next-line @typescript-eslint/no-require-imports
+const moneyAuthorityCore = req(
+  join(__dirname, "..", "ledger", "money-authority.core.cjs"),
+) as {
+  projectMoneyAuthority: (input: {
+    expectedProfitUsdt?: string | null;
+    configuredPayoutUsdt?: string | null;
+    ledgerPaidUsdt?: string | null;
+    ledgerJournalId?: string | null;
+  }) => {
+    expectedProfitUsdt: string | null;
+    configuredPayoutUsdt: string | null;
+    ledgerPaidUsdt: string | null;
+    ledgerJournalId: string | null;
+    payoutAuthoritative: boolean;
+    clientComputedNotAuthority: true;
+  };
+};
 const settlementRule = req(
   join(__dirname, "..", "..", "..", "engine-rust", "settlement_rule.cjs"),
 ) as {
@@ -73,6 +90,14 @@ export type TradeExecutionState = {
   logLine?: string;
   expectedProfitUsdt: string;
   settledProfitUsdt?: string;
+  moneyAuthority: {
+    expectedProfitUsdt: string | null;
+    configuredPayoutUsdt: string | null;
+    ledgerPaidUsdt: string | null;
+    ledgerJournalId: string | null;
+    payoutAuthoritative: boolean;
+    clientComputedNotAuthority: true;
+  };
   softDeadlineAt?: string;
   hardDeadlineAt?: string;
   rematchCount?: number;
@@ -687,6 +712,14 @@ export class TradeExecutionService {
         trade.settled_profit_usdt != null
           ? formatAmount(parseAmount(trade.settled_profit_usdt))
           : undefined,
+      moneyAuthority: moneyAuthorityCore.projectMoneyAuthority({
+        expectedProfitUsdt: formatAmount(parseAmount(trade.expected_profit_usdt)),
+        ledgerJournalId: trade.ledger_journal_id,
+        ledgerPaidUsdt:
+          trade.settled_profit_usdt != null
+            ? formatAmount(parseAmount(trade.settled_profit_usdt))
+            : null,
+      }),
       softDeadlineAt: new Date(
         settlementRule.softDeadlineMs(acceptedAtMs),
       ).toISOString(),

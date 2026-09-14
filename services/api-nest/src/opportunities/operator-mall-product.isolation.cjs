@@ -150,6 +150,30 @@ async function main() {
     assert.equal((await core.listPayoutsForUser(A, { store })).items.length, 0);
   }, fails);
 
+  await check("slots_per_member_not_stock", async () => {
+    const rows = [
+      { opportunityId: "p1", userId: A, status: "running" },
+      { opportunityId: "p1", userId: A, status: "requeue" },
+      { opportunityId: "p1", userId: B, status: "running" },
+    ];
+    assert.equal(core.countMemberInFlight(rows, "p1", A), 2);
+    assert.equal(core.countMemberInFlight(rows, "p1", B), 1);
+    assert.equal(core.countMemberInFlight(rows, "p1", C), 0);
+  }, fails);
+
+  await check("money_not_authority_until_journal", async () => {
+    const store = mem([{ userId: A, cap: 5 }]);
+    const p = (await core.registerProduct(spec(), { store })).product;
+    const pa = await core.participate({ userId: A, productId: p.id, idempotencyKey: "ma" }, { store });
+    assert.equal(pa.moneyAuthority.payoutAuthoritative, false);
+    assert.equal(pa.moneyAuthority.configuredPayoutUsdt, "12.5");
+    const pay = await core.applyMatchSuccessPayout({ participationId: pa.participation.id }, {
+      store, evaluator: core.createMatchSuccessEvaluator(),
+    });
+    assert.equal(pay.moneyAuthority.payoutAuthoritative, true);
+    assert.equal(pay.moneyAuthority.ledgerPaidUsdt, "12.5");
+  }, fails);
+
   console.log("[operator-mall-product.isolation] scope=in_process_memory real_pg_concurrency=BLOCKED");
   if (fails.length) {
     console.error("[operator-mall-product.isolation] FAIL\n- " + fails.join("\n- "));

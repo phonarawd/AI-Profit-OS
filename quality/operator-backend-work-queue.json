@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-15T00:45:00+09:00",
+  "updatedAt": "2026-09-15T00:50:00+09:00",
   "head": "efdd6b742285651d0a8060ec3ecbc31d35520a73",
   "commitPushDeploy": 0,
   "contractPath": "quality/contracts/operator-control/",
@@ -223,5 +223,6 @@
     "engineAcceptance": "FAIL protected dirty + aggregate + pathCount",
     "gateFastCommit": "not_yet",
     "realPgConcurrency": "BLOCKED"
-  }
+  },
+  "persistStatus": "quality/contracts/operator-control/persist-status.v1.json"
 }

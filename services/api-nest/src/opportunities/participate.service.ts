@@ -78,6 +78,23 @@ const providerCore = req(
   }>;
   assertNotRuntimeMemoryAuthority: (kind: string) => void;
 };
+const moneyAuthorityCore = req(
+  join(__dirname, "..", "ledger", "money-authority.core.cjs"),
+) as {
+  projectMoneyAuthority: (input: {
+    expectedProfitUsdt?: string | null;
+    configuredPayoutUsdt?: string | null;
+    ledgerPaidUsdt?: string | null;
+    ledgerJournalId?: string | null;
+  }) => {
+    expectedProfitUsdt: string | null;
+    configuredPayoutUsdt: string | null;
+    ledgerPaidUsdt: string | null;
+    ledgerJournalId: string | null;
+    payoutAuthoritative: boolean;
+    clientComputedNotAuthority: true;
+  };
+};
 const persistCore = req(
   join(__dirname, "..", "membership", "operator-control.persist.cjs"),
 ) as {
@@ -122,6 +139,15 @@ export type ParticipateResult = {
   priceSoftAccept: boolean;
   /** §51.16 proof-at-participate · stored on trade asset */
   proof?: ParticipateProof;
+  /** 예상액 ≠ 원장 완료. 참여 직후 payoutAuthoritative=false */
+  moneyAuthority: {
+    expectedProfitUsdt: string | null;
+    configuredPayoutUsdt: string | null;
+    ledgerPaidUsdt: string | null;
+    ledgerJournalId: string | null;
+    payoutAuthoritative: boolean;
+    clientComputedNotAuthority: true;
+  };
 };
 
 type OppRow = {
@@ -618,12 +644,9 @@ export class ParticipateService {
   }
 
   /**
-   * P2-1 fix — real remaining capacity, not the global policy constant.
-   * Counts concurrently running/requeue trades on THIS opportunity only.
-   */
-  /**
-   * 회원별 in-flight만 센다. 같은 공용 상품에서 A의 running이 B 슬롯을 깎지 않는다.
-   * 원장 FOR UPDATE · 멱등 UNIQUE · 회원 cap 행 보호는 여기 없음.
+   * P2-1 실측 슬롯 + 공용 상품 최소 수정.
+   * dailyOppSlotsDefault 는 회원별 오케스트레이션 용량이지 상품 독점·판매 재고가 아니다.
+   * A running 이 B slotsLeft 를 깎지 않게 user_id 로 제한. 원장 FOR UPDATE 는 유지.
    */
   private async countActiveTradesForOpportunity(
     opportunityId: string,
@@ -791,6 +814,9 @@ export class ParticipateService {
       tradeStatus: "running",
       reused: true,
       priceSoftAccept: false,
+      moneyAuthority: moneyAuthorityCore.projectMoneyAuthority({
+        expectedProfitUsdt: formatAmount(parseAmount(trade.expected_profit_usdt)),
+      }),
     };
   }
 
@@ -999,6 +1025,9 @@ export class ParticipateService {
       reused: Boolean(lockJournal.reused),
       priceSoftAccept: input.priceSoftAccept,
       proof: created.proof,
+      moneyAuthority: moneyAuthorityCore.projectMoneyAuthority({
+        expectedProfitUsdt: input.expectedProfitUsdt,
+      }),
     };
   }
 }

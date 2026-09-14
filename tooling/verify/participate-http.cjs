@@ -147,6 +147,9 @@ if (!svc.includes("countActiveTradesForOpportunity")) {
 if (!/status IN \('running', ?'requeue'\)/.test(svc)) {
   fails.push("countActiveTradesForOpportunity must count running+requeue trade_executions");
 }
+if (!/AND user_id = \$2::uuid/.test(svc)) {
+  fails.push("countActiveTradesForOpportunity must filter user_id so A in-flight does not consume B slots");
+}
 
 // module wiring
 if (!mod.includes("ParticipateService")) {
