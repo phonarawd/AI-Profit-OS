@@ -1,7 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import { PostgresService } from "../db/postgres";
+import { PostgresService, type DbQuerier } from "../db/postgres";
 import { InProcessEventBus } from "../events/in-process.bus";
 import { AssetImageR2Service } from "./asset-image-r2.service";
+import { CatalogExternalWriteGuard } from "./catalog-external-write.guard";
 import {
   approxKrwFromSnapshot,
   assertPublishImageGuard,
@@ -70,6 +71,7 @@ export class OpportunitiesAdminService {
     private readonly assetImages: AssetImageR2Service,
     private readonly reprice: OpportunityRepriceService,
     private readonly priceOverride: PriceOverrideService,
+    private readonly catalogWrite: CatalogExternalWriteGuard,
   ) {}
 
   async list(
@@ -151,6 +153,17 @@ export class OpportunitiesAdminService {
    * SOURCE = listings 읽기 · listings UPDATE 0 · 사유+audit 필수.
    * Optimistic lock on expectedPricingVersion · pricingVersion++
    */
+  private async peekAssetIdForProtect(
+    client: { query: (text: string, params?: unknown[]) => Promise<{ rows: Array<{ asset_id: string }> }> },
+    opportunityId: string,
+  ): Promise<string | null> {
+    const { rows } = await client.query(
+      `SELECT asset_id FROM public.opportunities WHERE id = $1`,
+      [opportunityId],
+    );
+    return rows[0] ? rows[0].asset_id : null;
+  }
+
   async patchPricing(id: string, body: UpdateOpportunityPricingRequest) {
     if (!body.updatedByAdminId?.trim()) {
       throw new Error("updatedByAdminId required");
@@ -168,6 +181,18 @@ export class OpportunitiesAdminService {
     });
 
     const item = await this.db.withTransaction(async (client) => {
+      const peekAssetId = await this.peekAssetIdForProtect(client, id);
+      if (!peekAssetId) throw new Error("opportunity not found");
+      const decision = await this.catalogWrite.evaluateLockedAsset(
+        client,
+        peekAssetId,
+      );
+      if (!decision.allow) {
+        const err = new Error(decision.reason) as Error & { code: string; wrote: false };
+        err.code = decision.reason;
+        err.wrote = false;
+        throw err;
+      }
       const { rows } = await client.query<OppRow>(
         `SELECT id, asset_id, pricing_version, priced_at,
                 expected_profit_usdt::text, expected_profit_krw_approx::text,
@@ -175,8 +200,7 @@ export class OpportunitiesAdminService {
                 asset_label, asset_image_url, pricing, stale_at, status,
                 grade_mismatch, image_missing, capital_band
            FROM public.opportunities
-          WHERE id = $1
-          FOR UPDATE`,
+          WHERE id = $1`,
         [id],
       );
       const row = rows[0];
@@ -273,15 +297,25 @@ export class OpportunitiesAdminService {
 
       const nextVersion = row.pricing_version + 1;
       const asOf = new Date().toISOString();
-      const updated = await this.reprice.persistComputedPricing(client, {
-        id,
-        pricing,
-        expectedProfitUsdt: String(computed.expectedProfitUsdt),
-        expectedProfitKrw,
-        capitalBand,
-        nextVersion,
-        asOf,
-      });
+      const updated = await this.reprice.persistComputedPricing(
+        client,
+        {
+          id,
+          pricing,
+          expectedProfitUsdt: String(computed.expectedProfitUsdt),
+          expectedProfitKrw,
+          capitalBand,
+          nextVersion,
+          asOf,
+        },
+        { requireLegacySupply: true },
+      );
+      if (!updated) {
+        const err = new Error("OPERATOR_PROTECTED") as Error & { code: string; wrote: false };
+        err.code = "OPERATOR_PROTECTED";
+        err.wrote = false;
+        throw err;
+      }
       return this.toListItem(updated);
     });
 
@@ -349,7 +383,9 @@ export class OpportunitiesAdminService {
     };
   }
 
-  async upsertAsset(body: Record<string, unknown>) {
+  async upsertAsset(body: Record<string, unknown>): Promise<
+    Record<string, unknown> & { wrote: boolean; reason: string }
+  > {
     const asset = normalizeAssetMaster({
       assetId: String(body.assetId ?? ""),
       category: body.category as "watch" | "trading_card" | "luxury_bag",
@@ -367,36 +403,52 @@ export class OpportunitiesAdminService {
       meta: (body.meta as object) || {},
     });
 
-    await this.db.query(
-      `INSERT INTO public.assets (
-         asset_id, category, asset_label, image_url, image_source,
-         image_alt_ko, image_rights_note_ko, image_fetched_at, meta
-       ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9::jsonb)
-       ON CONFLICT (asset_id) DO UPDATE SET
-         category = EXCLUDED.category,
-         asset_label = EXCLUDED.asset_label,
-         image_url = EXCLUDED.image_url,
-         image_source = EXCLUDED.image_source,
-         image_alt_ko = EXCLUDED.image_alt_ko,
-         image_fetched_at = EXCLUDED.image_fetched_at,
-         meta = EXCLUDED.meta,
-         updated_at = now()`,
-      [
+    const protectedWrite = await this.db.withTransaction(async (client) => {
+      const decision = await this.catalogWrite.evaluateLockedAsset(
+        client,
         asset.assetId,
-        asset.category,
-        asset.assetLabel,
-        asset.imageUrl,
-        asset.imageSource,
-        asset.imageAltKo,
-        asset.imageRightsNoteKo,
-        asset.imageFetchedAt,
-        JSON.stringify(asset.meta),
-      ],
-    );
-
-    await this.syncOpportunityImagesFromAsset(asset);
+      );
+      if (!decision.allow) {
+        return { wrote: false as const, reason: decision.reason };
+      }
+      await client.query(
+        `INSERT INTO public.assets (
+           asset_id, category, asset_label, image_url, image_source,
+           image_alt_ko, image_rights_note_ko, image_fetched_at, meta
+         ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9::jsonb)
+         ON CONFLICT (asset_id) DO UPDATE SET
+           category = EXCLUDED.category,
+           asset_label = EXCLUDED.asset_label,
+           image_url = EXCLUDED.image_url,
+           image_source = EXCLUDED.image_source,
+           image_alt_ko = EXCLUDED.image_alt_ko,
+           image_fetched_at = EXCLUDED.image_fetched_at,
+           meta = EXCLUDED.meta,
+           updated_at = now()`,
+        [
+          asset.assetId,
+          asset.category,
+          asset.assetLabel,
+          asset.imageUrl,
+          asset.imageSource,
+          asset.imageAltKo,
+          asset.imageRightsNoteKo,
+          asset.imageFetchedAt,
+          JSON.stringify(asset.meta),
+        ],
+      );
+      await this.syncOpportunityImagesFromAsset(asset, client);
+      return { wrote: true as const, reason: decision.reason };
+    });
+    if (!protectedWrite.wrote) {
+      return {
+        wrote: false,
+        reason: protectedWrite.reason,
+        assetId: asset.assetId,
+      };
+    }
     this.bus.emit(OPPORTUNITY_EVENTS.assetUpserted, { assetId: asset.assetId });
-    return asset;
+    return { ...asset, wrote: true, reason: protectedWrite.reason };
   }
 
   /**
@@ -407,7 +459,7 @@ export class OpportunitiesAdminService {
     const rows = tradingCardSeedsAsAssetMasters();
     const upserted: string[] = [];
     for (const asset of rows) {
-      await this.upsertAsset({
+      const seeded = await this.upsertAsset({
         assetId: asset.assetId,
         category: asset.category,
         assetLabel: asset.assetLabel,
@@ -417,7 +469,7 @@ export class OpportunitiesAdminService {
         imageFetchedAt: asset.imageFetchedAt ?? undefined,
         meta: asset.meta,
       });
-      upserted.push(asset.assetId);
+      if (seeded.wrote) upserted.push(asset.assetId);
     }
     return {
       ok: true,
@@ -437,7 +489,7 @@ export class OpportunitiesAdminService {
     const rows = luxuryBagSeedsAsAssetMasters();
     const upserted: string[] = [];
     for (const asset of rows) {
-      await this.upsertAsset({
+      const seeded = await this.upsertAsset({
         assetId: asset.assetId,
         category: asset.category,
         assetLabel: asset.assetLabel,
@@ -447,7 +499,7 @@ export class OpportunitiesAdminService {
         imageFetchedAt: asset.imageFetchedAt ?? undefined,
         meta: asset.meta,
       });
-      upserted.push(asset.assetId);
+      if (seeded.wrote) upserted.push(asset.assetId);
     }
     return {
       ok: true,
@@ -469,7 +521,7 @@ export class OpportunitiesAdminService {
     const upserted: string[] = [];
     let whaleCount = 0;
     for (const asset of rows) {
-      await this.upsertAsset({
+      const seeded = await this.upsertAsset({
         assetId: asset.assetId,
         category: asset.category,
         assetLabel: asset.assetLabel,
@@ -479,7 +531,7 @@ export class OpportunitiesAdminService {
         imageFetchedAt: asset.imageFetchedAt ?? undefined,
         meta: asset.meta,
       });
-      upserted.push(asset.assetId);
+      if (seeded.wrote) upserted.push(asset.assetId);
       const capital = String(
         (asset.meta as { requiredCapitalUsdt?: string })?.requiredCapitalUsdt ??
           "0",
@@ -710,6 +762,14 @@ export class OpportunitiesAdminService {
       },
     });
 
+    if (!asset.wrote) {
+      return {
+        wrote: false,
+        reason: asset.reason,
+        assetId,
+      };
+    }
+
     return {
       ...asset,
       assetImageUrl: asset.imageUrl,
@@ -763,16 +823,20 @@ export class OpportunitiesAdminService {
     };
   }
 
-  private async syncOpportunityImagesFromAsset(asset: {
-    assetId: string;
-    category: string;
-    assetLabel: string;
-    imageUrl: string;
-    imageSource: string;
-    imageAltKo: string;
-  }) {
+  private async syncOpportunityImagesFromAsset(
+    asset: {
+      assetId: string;
+      category: string;
+      assetLabel: string;
+      imageUrl: string;
+      imageSource: string;
+      imageAltKo: string;
+    },
+    client?: DbQuerier,
+  ) {
     const imageMissing = isImageMissing({ imageUrl: asset.imageUrl });
-    const { rows } = await this.db.query<{
+    const q: DbQuerier = client || this.db;
+    const { rows } = await q.query<{
       id: string;
       status: string;
       pricing: Record<string, unknown>;
@@ -786,6 +850,7 @@ export class OpportunitiesAdminService {
           image_missing = $7,
           updated_at = now()
         WHERE asset_id = $1
+          AND supply_source = 'legacy_external'
         RETURNING id, status, pricing`,
       [
         asset.assetId,
@@ -809,9 +874,10 @@ export class OpportunitiesAdminService {
         imageOptional,
       });
       if (row.status === "available" && !canPublish) {
-        await this.db.query(
+        await q.query(
           `UPDATE public.opportunities SET status = 'paused', updated_at = now()
-            WHERE id = $1`,
+            WHERE id = $1
+              AND supply_source = 'legacy_external'`,
           [row.id],
         );
         this.bus.emit(OPPORTUNITY_EVENTS.statusChanged, {

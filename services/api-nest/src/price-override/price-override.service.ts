@@ -50,6 +50,20 @@ const auditCore = requireCjs(
   ) => Promise<{ ok: boolean; error?: string; event?: object }>;
 };
 
+const catalogWriteCore = requireCjs(
+  join(__dirname, "..", "..", "catalog-external-write.core.cjs"),
+) as {
+  evaluateLockedOpportunityOnClient: (
+    client: Pick<PoolClient, "query">,
+    opportunityId: string,
+    env?: NodeJS.ProcessEnv,
+  ) => Promise<{
+    allow: boolean;
+    reason: string;
+    opportunityMissing?: boolean;
+  }>;
+};
+
 export type PriceOverrideWrite = {
   engaged: boolean;
   adminBuyUsdt?: string;
@@ -153,6 +167,22 @@ export class PriceOverrideService {
     opportunityId: string,
     write: PriceOverrideWrite,
   ): Promise<void> {
+    const decided = await catalogWriteCore.evaluateLockedOpportunityOnClient(
+      client,
+      opportunityId,
+    );
+    if (decided.opportunityMissing) {
+      throw new NotFoundException("opportunity not found");
+    }
+    if (!decided.allow) {
+      const err = new Error(decided.reason) as Error & {
+        code: string;
+        wrote: false;
+      };
+      err.code = decided.reason;
+      err.wrote = false;
+      throw err;
+    }
     try {
       await client.query(
         `INSERT INTO public.opportunity_price_overrides (

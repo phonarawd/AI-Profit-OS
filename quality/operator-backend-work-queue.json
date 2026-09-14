@@ -1,0 +1,23 @@
+{
+  "updatedAt": "2026-09-14T16:30:00+09:00",
+  "head": "27b5b9f71f4350ca69f3e657be9b26957e91d8d1",
+  "commitPushDeploy": 0,
+  "contractPath": "quality/contracts/operator-control/",
+  "contractVersion": "2026-09-14.b3.display-v19",
+  "items": [
+    { "id": "B1", "alias": ["Q03", "Q04", "T08"], "status": "verified_local", "note": "cap-only + 0 + force preserve isolation" },
+    { "id": "B2a", "alias": ["Q01", "Q11"], "status": "verified_local", "note": "new signup 5, no backfill; persist path added in B3" },
+    { "id": "B2b", "alias": ["Q05", "Q07"], "status": "verified_local", "note": "runtime persist + memory no longer authorizes participate; real DB consume BLOCKED" },
+    { "id": "B2c", "alias": ["T01", "T02", "T03"], "status": "verified_local", "note": "AUTO/MANUAL; downgrade disabled" },
+    { "id": "B3-provider", "alias": ["Q07", "Q11"], "status": "verified_local", "note": "runtime vs test provider split; STORE_UNREADY" },
+    { "id": "B3-contract", "alias": ["U04", "U05"], "status": "handoff", "note": "live bundle 2026-09-14.b3.display-v19 display vs execution split; b3 original preserved; Journey consumer unconnected" },
+    { "id": "B3-admin-http", "alias": ["U06"], "status": "verified_local", "note": "real AdminGuard Nest HTTP 18 checks; not real Postgres" },
+    { "id": "B3", "alias": ["U02"], "status": "draft_only", "note": "360 exact id kept; JwtAuthGuard DB revoke UNVERIFIED" },
+    { "id": "B4", "alias": ["J01", "J02", "J03", "J07"], "status": "verified_local", "note": "v19 profile GET/PUT persist-blocked when schema unready" },
+    { "id": "B5", "alias": ["I01", "I02", "S01"], "status": "draft_only", "note": "ownership/preview contract; no full transcript policy" },
+    { "id": "B6", "alias": ["F09", "F10"], "status": "draft_only", "note": "dry-run only; fake success excluded; write 0" },
+    { "id": "Q08", "alias": ["Q10"], "status": "blocked", "note": "need CATALOG_TEST_DATABASE_URL / QA Postgres" },
+    { "id": "C-S2", "alias": ["C03"], "status": "blocked", "note": "S1 real DB BLOCKED; spec only" },
+    { "id": "Release", "status": "blocked", "note": "no deploy approval" }
+  ]
+}

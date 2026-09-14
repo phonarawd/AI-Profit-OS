@@ -129,6 +129,7 @@
     "verify:participate-http": "node tooling/verify/participate-http.cjs",
     "verify:execute-rule-loop": "node tooling/verify/execute-rule-loop.cjs",
     "verify:catalog-runtime-seed": "node tooling/verify/catalog-runtime-seed.cjs",
+    "verify:operator-row-protect": "node tooling/verify/operator-row-protect.cjs",
     "verify:auth-jwt-runtime": "node tooling/verify/auth-jwt-runtime.cjs",
     "verify:auth-identity-proof": "node tooling/verify/auth-identity-proof.runtime.cjs",
     "verify:passkey-registration-hijack": "node tooling/verify/passkey-registration-hijack.runtime.cjs",

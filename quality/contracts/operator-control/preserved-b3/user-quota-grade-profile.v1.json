@@ -1,0 +1,92 @@
+{
+  "contractVersion": "2026-09-14.b3",
+  "bundleId": "user-quota-grade-profile",
+  "generatedAt": "2026-09-14T16:20:00+09:00",
+  "repo": "phonarawd/AI-Profit-OS",
+  "branch": "feat/operator-registered-catalog-s1",
+  "head": "27b5b9f71f4350ca69f3e657be9b26957e91d8d1",
+  "implementation": "local_dirty_not_deployed",
+  "schemaApplied": false,
+  "publishedToUiRepo": false,
+  "audience": "putduk-web user surface only",
+  "adminPathsForbiddenOnUserWeb": true,
+  "absolutePaths": {
+    "indexReadme": "C:\\Users\\PC\\Desktop\\AI_PROFIT_OS\\quality\\contracts\\operator-control\\README.md",
+    "manifest": "C:\\Users\\PC\\Desktop\\AI_PROFIT_OS\\quality\\contracts\\operator-control\\manifest.json",
+    "thisBundle": "C:\\Users\\PC\\Desktop\\AI_PROFIT_OS\\quality\\contracts\\operator-control\\user-quota-grade-profile.v1.json",
+    "features130": "C:\\Users\\PC\\Desktop\\AI_PROFIT_OS\\quality\\contracts\\operator-control\\features-130.json",
+    "userController": "C:\\Users\\PC\\Desktop\\AI_PROFIT_OS\\services\\api-nest\\src\\membership\\membership.user.controller.ts",
+    "userRoute": "C:\\Users\\PC\\Desktop\\AI_PROFIT_OS\\services\\api-nest\\src\\membership\\membership.user.routes.ts",
+    "quotaTypes": "C:\\Users\\PC\\Desktop\\AI_PROFIT_OS\\services\\api-nest\\src\\membership\\membership.types.ts",
+    "presentationCore": "C:\\Users\\PC\\Desktop\\AI_PROFIT_OS\\services\\api-nest\\src\\membership\\presentation-profile.core.cjs",
+    "runtimeProvider": "C:\\Users\\PC\\Desktop\\AI_PROFIT_OS\\services\\api-nest\\src\\membership\\operator-control.provider.cjs"
+  },
+  "userApi": {
+    "method": "GET",
+    "path": "/api/v1/me/membership",
+    "auth": "user JWT / aipo_session cookie · JwtAuthGuard",
+    "adminJwtRejected": true,
+    "queryUserIdForbidden": true,
+    "implementedOnController": true
+  },
+  "fields": {
+    "contractVersion": "묶음 버전. UI는 이 값이 바뀌면 reader를 재검증한다.",
+    "membership": "sprout|entry|core|high|vip",
+    "dailyUserMatchCap": "오늘 기본 한도. 0은 명시 차단이며 null/unknown이 아니다.",
+    "dailyMatchesUsed": "오늘(KST) accepted participate_requests 건수. 이력 삭제가 아니다.",
+    "remaining": "participateRemaining 별칭. 음수 없음.",
+    "baseRemaining": "기본 한도 잔여. max(0, cap-used).",
+    "bonusRemaining": "유효 추가 잔여. 스키마 미준비면 0. 테스트 메모리 지급량을 여기 넣지 않음.",
+    "participateRemaining": "기본잔여+추가잔여. 명시 차단/정지면 0.",
+    "blocked": "participateRemaining<=0",
+    "quotaSource": "user_override|membership_row|grade_policy|ladder_default|policy_default",
+    "bonusSource": "runtime_persist|store_unready|test_memory(테스트 전용, 사용자 응답에 출판 금지)",
+    "storeStatus": "ready|unready",
+    "schemaReady": "true일 때만 추가 기회/등급 설정 영속을 신뢰.",
+    "zeroIsExplicitBlock": "cap===0 이면 true",
+    "presentationProfile": "v19 기본 또는 persist profile. money/cap/grade/engine 불변.",
+    "fulfillRate7d": "표시 KPI. Rule 입력 아님.",
+    "nullMeansUnset": "override 없음. 0과 구분.",
+    "unknown": "연결 실패. 0/null/demo로 대체 금지."
+  },
+  "errors": {
+    "401": "AUTH_REQUIRED",
+    "403": "DAILY_MATCH_CAP | SAFETY_DENY | 계정 제한",
+    "404": "정확 userId 없음. demo 대체 없음",
+    "409": "REVISION_CONFLICT",
+    "503": "STORE_UNREADY — 새 지급/등급설정/연출저장 차단. 허위 200 금지"
+  },
+  "invariants": {
+    "newSignupDailyMatchCap": 5,
+    "quotaTimezone": "Asia/Seoul",
+    "observedLadderSprout": 8,
+    "existingExplicitRowPreserved": true,
+    "overrideZeroBlocksBonus": true,
+    "memoryDraftDoesNotAuthorizeParticipate": true,
+    "bonusExpiryActivated": false,
+    "autoDowngradeEnabled": false,
+    "existingMemberBackfill": false
+  },
+  "presentation": {
+    "profileId": "journey_v19_default",
+    "durationSecMin": 8,
+    "durationSecMax": 15,
+    "steps": ["product_check", "price_compare", "matching", "settle_prep", "credit"],
+    "phaseSeconds": {
+      "product_check": 2,
+      "price_compare": 3,
+      "matching": 4,
+      "settle_prep": 3,
+      "credit": 2
+    },
+    "expectedTotalSec": 14,
+    "saveBlockedWhenSchemaUnready": true,
+    "doesNotCreditMoney": true
+  },
+  "adminOnlyDoNotWireToUserWeb": [
+    "GET/PUT /api/v1/admin/membership/grade-daily-caps",
+    "GET/PUT /api/v1/admin/users/:id/membership/bonus-grants",
+    "PUT /api/v1/admin/users/:id/membership/bonus-grants/reclaim",
+    "GET/PUT /api/v1/admin/membership/presentation-profile"
+  ]
+}

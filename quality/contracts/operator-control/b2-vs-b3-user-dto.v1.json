@@ -1,0 +1,7 @@
+{
+  "contractVersion": "2026-09-14.b3.display-v19",
+  "kind": "note",
+  "b2Original": "absent",
+  "claimExactB2Delta": false,
+  "note": "This repo has no frozen b2 user DTO file. Do not claim a verified field-by-field b2 vs b3 diff."
+}

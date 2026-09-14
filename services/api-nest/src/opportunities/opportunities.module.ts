@@ -8,6 +8,7 @@ import { KillSwitchModule } from "../kill-switch/kill-switch.module";
 import { PriceOverrideModule } from "../price-override/price-override.module";
 import { RiskModule } from "../risk/risk.module";
 import { AssetImageR2Service } from "./asset-image-r2.service";
+import { CatalogExternalWriteGuard } from "./catalog-external-write.guard";
 import { CatalogRuntimeSeedService } from "./catalog-runtime-seed.service";
 import { FxSnapshotService } from "./fx-snapshot.service";
 import { OpportunityRepriceService } from "./opportunity-reprice.service";
@@ -40,6 +41,7 @@ import { UserOpportunityOverrideAdminService } from "./user-opportunity-override
   ],
   providers: [
     AssetImageR2Service,
+    CatalogExternalWriteGuard,
     OpportunityRepriceService,
     OpportunitiesAdminService,
     OpportunitiesUserService,
@@ -51,6 +53,7 @@ import { UserOpportunityOverrideAdminService } from "./user-opportunity-override
   ],
   exports: [
     AssetImageR2Service,
+    CatalogExternalWriteGuard,
     OpportunityRepriceService,
     OpportunitiesAdminService,
     OpportunitiesUserService,

@@ -38,8 +38,24 @@ const mi = require(path.join(
   root,
   "services/market-intelligence/src/index.cjs",
 ));
+const catalogWrite = require(path.join(
+  root,
+  "services/api-nest/catalog-external-write.core.cjs",
+));
+
+async function evaluateSeedWrite(client, assetId) {
+  return catalogWrite.evaluateLockedAssetOnClient(
+    client,
+    assetId,
+    process.env,
+  );
+}
 
 async function upsertAsset(client, asset) {
+  const decision = await evaluateSeedWrite(client, asset.assetId);
+  if (!decision.allow) {
+    return { wrote: false, reason: decision.reason };
+  }
   await client.query(
     `INSERT INTO public.assets (
        asset_id, category, asset_label, image_url, image_source,
@@ -66,16 +82,24 @@ async function upsertAsset(client, asset) {
       JSON.stringify(asset.meta || {}),
     ],
   );
+  return { wrote: true, reason: decision.reason };
 }
 
 async function upsertListing(client, L) {
+  const assetId = L && L.assetId != null ? String(L.assetId) : "";
+  if (assetId) {
+    const decision = await evaluateSeedWrite(client, assetId);
+    if (!decision.allow) {
+      return { wrote: false, reason: decision.reason };
+    }
+  }
   // PTF-00C P0-A — this seed script only ever ingests buildEbayIngestListing
   // output (nativeCurrency=USDT identity, no FX lookup needed/possible from
   // a Nest-less one-shot script). A non-USDT row here would be a bug in the
   // seed builders, not something this script can safely FX-normalize.
   const { rows } = mi.normalizeIngestListingsForPersist([L], "ebay");
   const row = rows[0];
-  if (!row) return false;
+  if (!row) return { wrote: false, reason: "normalize-empty" };
   if (row.nativeCurrency !== "USDT") {
     throw new Error(
       `seed:catalog-runtime only supports USDT-denominated seed listings, got ${row.nativeCurrency}`,
@@ -140,15 +164,17 @@ async function upsertListing(client, L) {
       ],
     );
   }
-  return true;
+  return { wrote: true };
 }
 
 async function upsertOpportunity(client, opp) {
+  const decision = await evaluateSeedWrite(client, opp.assetId);
+  if (!decision.allow) return { wrote: false, reason: decision.reason };
   const existing = await client.query(
     `SELECT id::text FROM public.opportunities WHERE asset_id = $1 LIMIT 1`,
     [opp.assetId],
   );
-  if (existing.rows[0]) return false;
+  if (existing.rows[0]) return { wrote: false, reason: "exists" };
   await client.query(
     `INSERT INTO public.opportunities (
        asset_id, pricing_version, priced_at, expected_profit_usdt,
@@ -201,7 +227,7 @@ async function upsertOpportunity(client, opp) {
       opp.capitalBand,
     ],
   );
-  return true;
+  return { wrote: true };
 }
 
 async function main() {
@@ -242,9 +268,11 @@ async function main() {
     );
 
     let assets = 0;
+    let blocked = 0;
     for (const asset of plan.assets) {
-      await upsertAsset(client, asset);
-      assets += 1;
+      const wrote = await upsertAsset(client, asset);
+      if (wrote && wrote.wrote) assets += 1;
+      else blocked += 1;
     }
 
     let listings = 0;
@@ -253,9 +281,11 @@ async function main() {
     let crTrue = 0;
     for (const bundle of plan.bundles) {
       for (const L of bundle.listings) {
-        if (await upsertListing(client, L)) listings += 1;
+        const listingWrote = await upsertListing(client, L);
+        if (listingWrote && listingWrote.wrote) listings += 1;
       }
-      if (await upsertOpportunity(client, bundle.opportunity)) opps += 1;
+      const oppWrote = await upsertOpportunity(client, bundle.opportunity);
+      if (oppWrote && oppWrote.wrote) opps += 1;
       if (bundle.opportunity.status === "available") available += 1;
       if (bundle.opportunity.pricing.compareReady === true) crTrue += 1;
     }
@@ -272,7 +302,7 @@ async function main() {
       JSON.stringify(
         {
           ok: true,
-          seeded: { assets, listings, opportunities: opps, available, crTrue },
+          seeded: { assets, listings, opportunities: opps, available, crTrue, blocked },
           db: counts.rows[0],
           forbiddenInsertAttempts: 0,
         },
@@ -285,7 +315,16 @@ async function main() {
   }
 }
 
-main().catch((e) => {
-  console.error("[seed:catalog-runtime] FAIL", e instanceof Error ? e.message : e);
-  process.exit(1);
-});
+module.exports = {
+  evaluateSeedWrite,
+  upsertAsset,
+  upsertListing,
+  upsertOpportunity,
+};
+
+if (require.main === module) {
+  main().catch((e) => {
+    console.error("[seed:catalog-runtime] FAIL", e instanceof Error ? e.message : e);
+    process.exit(1);
+  });
+}

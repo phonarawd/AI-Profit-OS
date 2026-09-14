@@ -345,6 +345,7 @@ const RULES = [
     scripts: [
       "backend/matching-membership/membership-ladder.cjs",
       "backend/matching-membership/membership-daily-cap.cjs",
+      "backend/matching-membership/operator-quota-grade.cjs",
     ],
   },
   {
@@ -1160,8 +1161,32 @@ const RULES = [
       "backend/opportunity-engine/asset-image-surface.cjs",
       "listing-legs-day1.cjs",
       "catalog-runtime-seed.cjs",
+      "operator-row-protect.cjs",
       "ebay-resilience.cjs",
       "price-denomination-contract.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /catalog-external-write/.test(f) ||
+      /operator-row-protect/.test(f) ||
+      /opportunities_supply_source/.test(f) ||
+      /^quality\/migrations-draft\//.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/opportunity-reprice\.service\.ts$/.test(
+        f,
+      ) ||
+      /^services\/api-nest\/src\/opportunities\/opportunities\.admin\.service\.ts$/.test(
+        f,
+      ) ||
+      /^services\/api-nest\/src\/price-override\/price-override\.service\.ts$/.test(
+        f,
+      ) ||
+      /^tooling\/seed\/catalog-runtime\.cjs$/.test(f),
+    scripts: [
+      "operator-row-protect.cjs",
+      "catalog-runtime-seed.cjs",
+      "ebay-identity-ingest.cjs",
+      "adapter-ingest-fail-closed.cjs",
     ],
   },
   {

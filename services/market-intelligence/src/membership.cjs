@@ -58,6 +58,7 @@ const MEMBERSHIP_LADDER = Object.freeze({
     depositMinUsdt: "0",
     successMin: null,
     maxCapitalBand: "micro",
+    // 관측값(기존 ladder). 신규 가입 기본은 GRADE_DAILY_MATCH_DEFAULTS.sprout=5.
     dailyUserMatchCap: 8,
     matchStrictness: "lenient",
     aiPerkFlags: Object.freeze([
@@ -191,6 +192,25 @@ const MEMBERSHIP_LADDER_SNAPSHOT =
 const MEMBERSHIP_BAND_OVERLAY_SNAPSHOT =
   '{"core":{"high":"standard","micro":"standard","mid":"standard","small":"standard","whale":"standard"},"entry":{"high":"lenient","micro":"lenient","mid":"lenient","small":"lenient","whale":"lenient"},"high":{"high":"tight","micro":"tight","mid":"tight","small":"tight","whale":"tight"},"sprout":{"high":"lenient","micro":"lenient","mid":"lenient","small":"lenient","whale":"lenient"},"vip":{"high":"lenient","micro":"lenient","mid":"lenient","small":"lenient","whale":"lenient"}}';
 
+/** 운영자 확정: 신규/default 등급 하루 기본 5. 가입 후 누적 5가 아님. */
+const NEW_SIGNUP_DAILY_MATCH_CAP = 5;
+
+/**
+ * 등급별 하루 기본 기회(어드민 편집 SSOT의 컴파일 기본값).
+ * 관측 ladder 8/6/5/3/2와 분리. 다른 등급 숫자는 임의 생성하지 않음.
+ * 기존 회원 행 backfill 없음.
+ */
+const GRADE_DAILY_MATCH_DEFAULTS = Object.freeze({
+  sprout: NEW_SIGNUP_DAILY_MATCH_CAP,
+  entry: 6,
+  core: 5,
+  high: 3,
+  vip: 2,
+});
+
+/** 기본 일일 기회 경계. 시간대 재설계 없음. */
+const QUOTA_DAY_TIMEZONE = "Asia/Seoul";
+
 function isMembership(v) {
   return MEMBERSHIP_ENUM.includes(v);
 }
@@ -210,10 +230,11 @@ function membershipDefaults(membership) {
   return {
     membership,
     maxCapitalBand: row.maxCapitalBand,
-    dailyUserMatchCap: row.dailyUserMatchCap,
+    dailyUserMatchCap: GRADE_DAILY_MATCH_DEFAULTS[membership],
     matchStrictness: row.matchStrictness,
     aiPerkFlags: [...row.aiPerkFlags],
     labelKo: row.labelKo,
+    observedLadderDailyUserMatchCap: row.dailyUserMatchCap,
   };
 }
 
@@ -358,6 +379,137 @@ function pickPolicyFields(policy) {
 }
 
 /**
+ * 명시적 비음수 정수. 0은 유효(신규 참여 차단). null/undefined/""/NaN/소수/음수는 아님.
+ * Number(x)||default 가 0을 삼키는 경로를 대체한다.
+ * @param {unknown} value
+ * @returns {number|null}
+ */
+function readExplicitNonNegativeInt(value) {
+  if (value === null || value === undefined || value === "") return null;
+  if (typeof value === "boolean") return null;
+  if (typeof value === "string" && value.trim() === "") return null;
+  const n = Number(value);
+  if (!Number.isFinite(n) || !Number.isInteger(n) || n < 0) return null;
+  return n;
+}
+
+/**
+ * 회원별 일일 참여 cap. 전역 remaining 풀이 없다. 0은 fallback 하지 않는다.
+ * 우선순위: override → 회원 row → 등급 정책 → 관측 ladder → 실행정책
+ * 기존 회원 행 cap은 신규 기본 5로 덮지 않는다.
+ * @param {{
+ *   userId?: string,
+ *   overrideDailyUserMatchCap?: unknown,
+ *   membershipRowCap?: unknown,
+ *   gradePolicyCap?: unknown,
+ *   ladderCap?: unknown,
+ *   policyCap?: unknown,
+ * }} input
+ */
+function resolveMemberDailyMatchCap(input) {
+  if (input == null || typeof input !== "object") {
+    throw new Error("resolveMemberDailyMatchCap: input required");
+  }
+  const userId = input.userId != null ? String(input.userId) : "";
+  const candidates = [
+    { value: input.overrideDailyUserMatchCap, source: "user_override" },
+    { value: input.membershipRowCap, source: "membership_row" },
+    { value: input.gradePolicyCap, source: "grade_policy" },
+    { value: input.ladderCap, source: "ladder_default" },
+    { value: input.policyCap, source: "policy_default" },
+  ];
+  for (const c of candidates) {
+    const cap = readExplicitNonNegativeInt(c.value);
+    if (cap !== null) {
+      return { cap, source: c.source, userId };
+    }
+  }
+  throw new Error("dailyUserMatchCap unresolved");
+}
+
+/**
+ * 등급 변경 후 행 cap. 개별 override가 있으면 행 cap을 덮지 않는다.
+ * 추가 지급·사용 이력은 이 함수가 지우지 않는다.
+ * @param {{
+ *   hasIndividualCapOverride: boolean,
+ *   currentRowCap: unknown,
+ *   nextGradeCap: unknown,
+ * }} input
+ */
+function rowCapAfterGradeChange(input) {
+  const nextGradeCap = readExplicitNonNegativeInt(input && input.nextGradeCap);
+  if (nextGradeCap === null) {
+    throw new Error("nextGradeCap invalid");
+  }
+  if (input && input.hasIndividualCapOverride === true) {
+    const current = readExplicitNonNegativeInt(input.currentRowCap);
+    return {
+      rowCap: current === null ? nextGradeCap : current,
+      preservedOverride: true,
+      usageReset: false,
+    };
+  }
+  return {
+    rowCap: nextGradeCap,
+    preservedOverride: false,
+    usageReset: false,
+  };
+}
+
+/**
+ * KST 달력일 키. 일일 갱신은 새 날짜 사용량 계산이지 이력 삭제가 아님.
+ * @param {Date|string|number} [at]
+ */
+function kstDayKey(at) {
+  const d = at == null ? new Date() : new Date(at);
+  if (Number.isNaN(d.getTime())) {
+    throw new Error("kstDayKey invalid date");
+  }
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: QUOTA_DAY_TIMEZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(d);
+  const y = parts.find((p) => p.type === "year").value;
+  const m = parts.find((p) => p.type === "month").value;
+  const day = parts.find((p) => p.type === "day").value;
+  return `${y}-${m}-${day}`;
+}
+
+/**
+ * cap/used/remaining 동일 조회. remaining은 음수가 되지 않는다.
+ * usedCountBasis는 현재 구현 사실이며 “처음 5회 기간” 승인이 아니다.
+ * @param {{
+ *   userId?: string,
+ *   used: unknown,
+ *   overrideDailyUserMatchCap?: unknown,
+ *   membershipRowCap?: unknown,
+ *   gradePolicyCap?: unknown,
+ *   ladderCap?: unknown,
+ *   policyCap?: unknown,
+ * }} input
+ */
+function projectDailyMatchQuota(input) {
+  const resolved = resolveMemberDailyMatchCap(input);
+  const used = readExplicitNonNegativeInt(input && input.used);
+  if (used === null) {
+    throw new Error("dailyMatchesUsed invalid");
+  }
+  return {
+    userId: resolved.userId || String((input && input.userId) || ""),
+    cap: resolved.cap,
+    used,
+    remaining: Math.max(0, resolved.cap - used),
+    source: resolved.source,
+    blocked: used >= resolved.cap,
+    usedCountBasis: "accepted_participate_requests_kst_day",
+    timezone: QUOTA_DAY_TIMEZONE,
+    kstDay: kstDayKey(input && input.at),
+  };
+}
+
+/**
  * Merge order §0.0.7:
  * 1) global execution-policy
  * 2) membership×capitalBand overlay (if enabled)
@@ -404,12 +556,12 @@ function mergeEffectivePolicy(input) {
     const expanded = applyMatchStrictness({
       matchStrictness: overlayStrictness,
     });
-    // Ladder owns Day-1 dailyUserMatchCap · preset map must not loosen/tighten it
-    const ladderCap = MEMBERSHIP_LADDER[input.membership].dailyUserMatchCap;
+    // 등급 하루 기본이 횟수를 소유. preset map·관측 ladder 8이 신규 5를 덮지 않음.
+    const gradeCap = GRADE_DAILY_MATCH_DEFAULTS[input.membership];
     policy = {
       ...policy,
       ...expanded,
-      dailyUserMatchCap: ladderCap,
+      dailyUserMatchCap: gradeCap,
       retryWaitSec: policy.retryWaitSec,
     };
   }
@@ -458,6 +610,15 @@ function mergeEffectivePolicy(input) {
         retryWaitSec: policy.retryWaitSec,
       };
     }
+  }
+
+  // 횟수 단독: 품질 preset/custom 병합 뒤에 cap을 적용. 0은 명시 차단.
+  if (ov && ov.dailyUserMatchCap != null && ov.dailyUserMatchCap !== "") {
+    const capOnly = readExplicitNonNegativeInt(ov.dailyUserMatchCap);
+    if (capOnly === null) {
+      throw new Error("dailyUserMatchCap invalid");
+    }
+    policy.dailyUserMatchCap = capOnly;
   }
 
   return policy;
@@ -597,6 +758,9 @@ module.exports = {
   MEMBERSHIP_BAND_OVERLAY,
   MEMBERSHIP_LADDER_SNAPSHOT,
   MEMBERSHIP_BAND_OVERLAY_SNAPSHOT,
+  NEW_SIGNUP_DAILY_MATCH_CAP,
+  GRADE_DAILY_MATCH_DEFAULTS,
+  QUOTA_DAY_TIMEZONE,
   isMembership,
   membershipLabelKo,
   membershipDefaults,
@@ -606,6 +770,11 @@ module.exports = {
   resolveMembership,
   projectUserMembership,
   membershipBandOverlayStrictness,
+  readExplicitNonNegativeInt,
+  resolveMemberDailyMatchCap,
+  projectDailyMatchQuota,
+  rowCapAfterGradeChange,
+  kstDayKey,
   mergeEffectivePolicy,
   checkParticipateMembershipGuards,
   computeFulfillRate7d,

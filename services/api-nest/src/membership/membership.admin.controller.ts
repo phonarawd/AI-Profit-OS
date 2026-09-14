@@ -14,8 +14,12 @@ import { MembershipAdminService } from "./membership.admin.service";
 import { MEMBERSHIP_ADMIN_ROUTES } from "./membership.routes";
 import type {
   ForceMembershipRequest,
+  GrantBonusMatchesRequest,
   MembershipId,
+  PutGradeDailyCapRequest,
   PutMatchPolicyOverrideRequest,
+  PutMemberDailyMatchCapRequest,
+  ReclaimBonusMatchesRequest,
 } from "./membership.types";
 
 /**
@@ -90,14 +94,38 @@ export class MembershipAdminController {
           ? Number(body.maxRematchCount)
           : undefined,
       dailyUserMatchCap:
-        body.dailyUserMatchCap != null
+        body.dailyUserMatchCap != null && body.dailyUserMatchCap !== ""
+          ? Number(body.dailyUserMatchCap)
+          : undefined,
+      reason: String(body.reason ?? ""),
+      updatedByAdminId: operatorId,
+      clear: body.clear === true,
+      capOnly: body.capOnly === true,
+    };
+    return this.membership.putMatchPolicyOverride(id, input);
+  }
+
+  @Get(MEMBERSHIP_ADMIN_ROUTES.dailyMatchCap)
+  getDailyMatchCap(@Param("id") id: string) {
+    return this.membership.effectivePreview(id, "micro");
+  }
+
+  @Put(MEMBERSHIP_ADMIN_ROUTES.dailyMatchCap)
+  putDailyMatchCap(
+    @Param("id") id: string,
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
+    const input: PutMemberDailyMatchCapRequest = {
+      dailyUserMatchCap:
+        body.dailyUserMatchCap != null && body.dailyUserMatchCap !== ""
           ? Number(body.dailyUserMatchCap)
           : undefined,
       reason: String(body.reason ?? ""),
       updatedByAdminId: operatorId,
       clear: body.clear === true,
     };
-    return this.membership.putMatchPolicyOverride(id, input);
+    return this.membership.putMemberDailyMatchCap(id, input);
   }
 
   @Get(MEMBERSHIP_ADMIN_ROUTES.effectivePreview)
@@ -106,5 +134,88 @@ export class MembershipAdminController {
     @Query("capitalBand") capitalBand?: string,
   ) {
     return this.membership.effectivePreview(id, capitalBand || "micro");
+  }
+
+  @Get(MEMBERSHIP_ADMIN_ROUTES.gradeDailyCaps)
+  listGradeDailyCaps() {
+    return this.membership.listGradeDailyCaps();
+  }
+
+  @Put(MEMBERSHIP_ADMIN_ROUTES.gradeDailyCaps)
+  putGradeDailyCaps(
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
+    const input: PutGradeDailyCapRequest = {
+      grade: String(body.grade ?? "") as MembershipId,
+      dailyUserMatchCap: Number(body.dailyUserMatchCap),
+      reason: String(body.reason ?? ""),
+      updatedByAdminId: operatorId,
+      expectedRevision:
+        body.expectedRevision != null ? Number(body.expectedRevision) : undefined,
+    };
+    return this.membership.putGradeDailyCap(input);
+  }
+
+  @Get(MEMBERSHIP_ADMIN_ROUTES.bonusGrants)
+  listBonus(@Param("id") id: string) {
+    return this.membership.listBonus(id);
+  }
+
+  @Put(MEMBERSHIP_ADMIN_ROUTES.bonusGrants)
+  grantBonus(
+    @Param("id") id: string,
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
+    const input: GrantBonusMatchesRequest = {
+      amount: Number(body.amount),
+      reason: String(body.reason ?? ""),
+      updatedByAdminId: operatorId,
+      idempotencyKey: String(body.idempotencyKey ?? ""),
+    };
+    return this.membership.grantBonus(id, input);
+  }
+
+  @Put(MEMBERSHIP_ADMIN_ROUTES.bonusReclaim)
+  reclaimBonus(
+    @Param("id") id: string,
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
+    const input: ReclaimBonusMatchesRequest = {
+      amount: body.amount != null ? Number(body.amount) : undefined,
+      reason: String(body.reason ?? ""),
+      updatedByAdminId: operatorId,
+    };
+    return this.membership.reclaimBonus(id, input);
+  }
+
+  @Get(MEMBERSHIP_ADMIN_ROUTES.quotaProjection)
+  quotaProjection(@Param("id") id: string) {
+    return this.membership.quotaProjection(id);
+  }
+
+  @Get(MEMBERSHIP_ADMIN_ROUTES.presentationProfile)
+  listPresentationProfile() {
+    return this.membership.listPresentationProfile();
+  }
+
+  @Put(MEMBERSHIP_ADMIN_ROUTES.presentationProfile)
+  putPresentationProfile(
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
+    return this.membership.putPresentationProfile({
+      profile: (body.profile && typeof body.profile === "object"
+        ? body.profile
+        : body) as object,
+      reason: String(body.reason ?? ""),
+      updatedByAdminId: operatorId,
+      expectedRevision:
+        body.expectedRevision != null
+          ? Number(body.expectedRevision)
+          : undefined,
+    });
   }
 }

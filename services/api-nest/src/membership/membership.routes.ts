@@ -4,4 +4,10 @@ export const MEMBERSHIP_ADMIN_ROUTES = {
   membership: "users/:id/membership",
   matchPolicyOverride: "users/:id/match-policy-override",
   effectivePreview: "users/:id/membership/effective-preview",
+  dailyMatchCap: "users/:id/membership/daily-match-cap",
+  gradeDailyCaps: "membership/grade-daily-caps",
+  bonusGrants: "users/:id/membership/bonus-grants",
+  bonusReclaim: "users/:id/membership/bonus-grants/reclaim",
+  quotaProjection: "users/:id/membership/quota-projection",
+  presentationProfile: "membership/presentation-profile",
 } as const;
