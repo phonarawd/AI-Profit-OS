@@ -3,6 +3,7 @@
 const assert = require("node:assert/strict");
 const persist = require("./admin-staff-login.persist.cjs");
 const core = require("./admin-staff-login.core.cjs");
+const isolated = require("./isolated-qa-pg.cjs");
 
 const ADMIN_ID = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
 const SECRET = "a".repeat(32);
@@ -18,6 +19,7 @@ async function check(name, fn, fails) {
 }
 
 async function main() {
+  isolated.pinUnreadyIsolatedEnv(process.env);
   const fails = [];
 
   await check("unready_schema", async () => {

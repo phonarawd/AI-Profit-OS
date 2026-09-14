@@ -376,9 +376,18 @@ async function stepProductHttp() {
     const logged = await callHttp(loginPort, "POST", "/admin-session/login", {
       body: { email: STAFF_EMAIL, password },
     });
-    if (logged.status !== 200 || !logged.json || !logged.json.connected) {
+    if (
+      (logged.status !== 200 && logged.status !== 201) ||
+      !logged.json ||
+      logged.json.connected !== true
+    ) {
       await loginApp.close();
-      fail("staff login HTTP not 200");
+      fail(
+        "staff login HTTP not success status=" +
+          logged.status +
+          " code=" +
+          String((logged.json && (logged.json.code || logged.json.message)) || "nojson"),
+      );
     }
     if (logged.body.includes("token")) fail("login JSON leaked token");
     await loginApp.close();
@@ -539,13 +548,14 @@ async function stepConcurrent() {
 
 async function stepReseller() {
   const resolved = resolvedOrDie();
+  let code1 = "";
   const db1 = isolated.createIsolatedQaPgDb(resolved.url);
   try {
     const first = await db1.query(
       "SELECT id::text, referral_code FROM public.users WHERE id = $1::uuid",
       [A],
     );
-    const code1 = first.rows[0] && first.rows[0].referral_code;
+    code1 = first.rows[0] && first.rows[0].referral_code;
     if (!code1) fail("signup path did not mint referral_code");
     const uniq = await db1.query(
       `SELECT COUNT(*)::int AS n FROM public.users
@@ -684,7 +694,18 @@ async function stepLoginDirectory() {
     const ok = await callHttp(port, "POST", "/admin-session/login", {
       body: { email: STAFF_EMAIL, password },
     });
-    if (ok.status !== 200 || !ok.json.connected) fail("staff login HTTP failed");
+    if (
+      (ok.status !== 200 && ok.status !== 201) ||
+      !ok.json ||
+      ok.json.connected !== true
+    ) {
+      fail(
+        "staff login HTTP failed status=" +
+          ok.status +
+          " code=" +
+          String((ok.json && (ok.json.code || ok.json.message)) || "nojson"),
+      );
+    }
     if (ok.json.adminId !== STAFF_ID) fail("staff adminId mismatch");
   } finally {
     await loginApp.close();

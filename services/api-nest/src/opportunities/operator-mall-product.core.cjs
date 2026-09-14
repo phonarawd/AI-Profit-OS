@@ -735,7 +735,24 @@ async function applyMatchSuccessPayout(input, deps) {
     bucket: "profit",
     createdAt: (deps.now && deps.now()) || new Date().toISOString(),
   };
-  await deps.store.saveJournal(journal);
+  const saved = await deps.store.saveJournal(journal);
+  const savedId = saved && (saved.id || saved.journalId);
+  if (savedId && String(savedId) !== String(journal.id)) {
+    return {
+      ok: true,
+      applied: false,
+      replay: true,
+      httpStatus: 200,
+      payoutStatus: PAYOUT_STATUS.PAID,
+      journalId: String(savedId),
+      participation,
+      moneyAuthority: projectMoneyAuthority({
+        configuredPayoutUsdt: amount,
+        ledgerJournalId: String(savedId),
+        ledgerPaidUsdt: saved.amountUsdt || saved.amount_usdt || amount,
+      }),
+    };
+  }
   const paid = {
     ...participation,
     payoutStatus: PAYOUT_STATUS.PAID,

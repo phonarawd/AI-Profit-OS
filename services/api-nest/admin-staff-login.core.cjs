@@ -40,7 +40,16 @@ function deny(code, httpStatus, reason) {
  */
 async function loginStaff(input, deps) {
   let store = deps && deps.store;
-  if (!store || store.ready !== true || typeof store.findByEmail !== "function") {
+  const placeholder = !store || store.kind === "unready";
+  const explicitUnready =
+    store &&
+    store.ready !== true &&
+    store.kind &&
+    store.kind !== "unready";
+  if (explicitUnready) {
+    return unready(store.detail || "staff_store_unready");
+  }
+  if (placeholder || store.ready !== true || typeof store.findByEmail !== "function") {
     const persist = require("./admin-staff-login.persist.cjs");
     const resolved = await persist.resolveRuntimeStaffStore(process.env);
     if (resolved && resolved.ready === true && typeof resolved.findByEmail === "function") {
