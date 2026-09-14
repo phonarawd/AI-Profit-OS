@@ -43,4 +43,13 @@ assert.equal(
   false,
 );
 
+const guardFile = "supabase/migrations/20260808205901_rls_ledger_guards.sql";
+const guardStmts = official.pickStatements(
+  guardFile,
+  "ledger_posting_guards",
+  official.splitSqlRespectingDollar(fs.readFileSync(path.join(root, guardFile), "utf8")),
+);
+assert.ok(guardStmts.some((s) => s.includes("CREATE OR REPLACE FUNCTION public.ledger_require_posting_flag")));
+assert.equal(guardStmts.some((s) => /^\s*balance only/i.test(s)), false);
+
 console.log("[operator-mall-official-ledger-sql.isolation] PASS official_slices_only");

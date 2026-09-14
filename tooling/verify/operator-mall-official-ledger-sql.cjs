@@ -77,6 +77,13 @@ function splitSqlRespectingDollar(text) {
       i += 1;
       continue;
     }
+    if (src[i] === "-" && src[i + 1] === "-") {
+      while (i < src.length && src[i] !== "\n") {
+        cur += src[i];
+        i += 1;
+      }
+      continue;
+    }
     if (src[i] === "'") {
       inSingle = true;
       cur += src[i];
