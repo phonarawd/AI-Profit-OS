@@ -106,6 +106,10 @@ jobs:
         if: ${{ !cancelled() && steps.preflight.outcome == 'success' }}
         run: node tooling/verify/operator-mall-gha-pg.cjs --step=concurrent
 
+      - name: Selected members A/B C reject
+        if: ${{ !cancelled() && steps.preflight.outcome == 'success' }}
+        run: node tooling/verify/operator-mall-gha-pg.cjs --step=selected
+
       - name: Reseller ID
         if: ${{ !cancelled() && steps.preflight.outcome == 'success' }}
         run: node tooling/verify/operator-mall-gha-pg.cjs --step=reseller

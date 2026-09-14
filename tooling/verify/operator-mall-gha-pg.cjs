@@ -491,6 +491,18 @@ async function stepProductHttp() {
     }
     const one = await callHttp(port, "GET", PATH + "/" + id, { cookie: auth.cookie });
     if (one.status !== 200 || one.json.product.revision !== 1) fail("product get HTTP failed");
+    const n = loadNestHttp();
+    const noCsrf = await callHttp(port, "PATCH", "/admin/opportunities/" + id + "/operator-product", {
+      cookie: n.csrf.ADMIN_SESSION_COOKIE_NAME + "=" + minted.token,
+      body: { name: "csrf-should-fail", expectedRevision: 1 },
+    });
+    if (noCsrf.status !== 401) {
+      fail("cookie PATCH without CSRF must 401 got " + noCsrf.status);
+    }
+    const afterCsrf = await callHttp(port, "GET", PATH + "/" + id, { cookie: auth.cookie });
+    if (afterCsrf.json.product.name !== "gha-card" || afterCsrf.json.product.revision !== 1) {
+      fail("CSRF-less PATCH mutated product");
+    }
     const patched = await callHttp(port, "PATCH", "/admin/opportunities/" + id + "/operator-product", {
       cookie: auth.cookie,
       headers: auth.headers,
@@ -531,7 +543,7 @@ async function stepProductHttp() {
     } finally {
       await db.end();
     }
-    console.log("[operator-mall-gha-pg] product-http PASS create/list/get/patch/409/idempotent");
+    console.log("[operator-mall-gha-pg] product-http PASS create/list/get/patch/409/idempotent csrf401");
   } finally {
     await app.close();
   }
@@ -592,11 +604,75 @@ async function stepConcurrent() {
     console.log(
       "[operator-mall-gha-pg] concurrent PASS two_pools A/B overlap_ms=" +
         elapsed +
-        " C_also=1 sql=3",
+        " all_public_C_also=1 sql=3",
     );
   } finally {
     await dbA.end();
     await dbB.end();
+  }
+}
+
+async function stepSelected() {
+  const resolved = resolvedOrDie();
+  const db = isolated.createIsolatedQaPgDb(resolved.url);
+  try {
+    const members = [
+      { userId: A, cap: 5 },
+      { userId: B, cap: 5 },
+      { userId: C, cap: 5 },
+    ];
+    const store = await persist.createPersistMallStore(db, { members, testOnly: true });
+    if (!store.ready) fail("selected persist store not ready");
+    const product = (
+      await mall.registerProduct(
+        {
+          operatorId: STAFF_ID,
+          name: "sel",
+          compositionQty: 1,
+          payoutAmount: "2",
+          currency: "USDT",
+          visibility: mall.VISIBILITY.SELECTED_MEMBERS,
+          selectedMemberIds: [A, B],
+          idempotencyKey: "gha-sel",
+        },
+        { store },
+      )
+    ).product;
+    if ((await mall.listForUser(C, { store })).items.length !== 0) {
+      fail("C listed selected product");
+    }
+    const hidden = await mall.getForUser(C, product.id, { store });
+    if (hidden.httpStatus !== 404) fail("C get selected product must 404");
+    const pc = await mall.participate(
+      { userId: C, productId: product.id, idempotencyKey: "sel-c" },
+      { store },
+    );
+    if (pc.ok === true || pc.httpStatus !== 404) {
+      fail("C participate selected must 404");
+    }
+    const pa = await mall.participate(
+      { userId: A, productId: product.id, idempotencyKey: "sel-a" },
+      { store },
+    );
+    const pb = await mall.participate(
+      { userId: B, productId: product.id, idempotencyKey: "sel-b" },
+      { store },
+    );
+    if (!pa.ok || !pb.ok) fail("selected A/B participate failed");
+    const rows = await db.query(
+      `SELECT user_id::text AS uid
+         FROM public.operator_mall_participations
+        WHERE product_id = $1::uuid
+        ORDER BY user_id`,
+      [product.id],
+    );
+    const uids = rows.rows.map((r) => r.uid);
+    if (uids.length !== 2 || uids[0] !== A || uids[1] !== B) {
+      fail("selected SQL rows must be A+B only");
+    }
+    console.log("[operator-mall-gha-pg] selected PASS A/B participate C_404 sql=2");
+  } finally {
+    await db.end();
   }
 }
 
@@ -1009,6 +1085,7 @@ async function main() {
     preflight: stepPreflight,
     "product-http": stepProductHttp,
     concurrent: stepConcurrent,
+    selected: stepSelected,
     reseller: stepReseller,
     ledger: stepLedger,
     "login-directory": stepLoginDirectory,
