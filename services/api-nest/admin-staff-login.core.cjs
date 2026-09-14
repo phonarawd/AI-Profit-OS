@@ -39,9 +39,15 @@ function deny(code, httpStatus, reason) {
  * }} deps
  */
 async function loginStaff(input, deps) {
-  const store = deps && deps.store;
+  let store = deps && deps.store;
   if (!store || store.ready !== true || typeof store.findByEmail !== "function") {
-    return unready("staff_store_unready");
+    const persist = require("./admin-staff-login.persist.cjs");
+    const resolved = await persist.resolveRuntimeStaffStore(process.env);
+    if (resolved && resolved.ready === true && typeof resolved.findByEmail === "function") {
+      store = resolved;
+    } else {
+      return unready((resolved && resolved.detail) || "staff_store_unready");
+    }
   }
   if (input && input.userAccessToken) {
     return deny("ADMIN_AUTH_INVALID", 401, "user_session_rejected");

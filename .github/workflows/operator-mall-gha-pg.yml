@@ -1,0 +1,138 @@
+# QA 전용. 운영 배포·운영 DB·운영 migration 없음.
+# 이 워크플로는 qa/operator-mall-pg-20260915* 푸시에만 돈다.
+name: operator-mall-gha-pg
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - "qa/operator-mall-pg-20260915"
+      - "qa/operator-mall-pg-20260915*"
+
+concurrency:
+  group: operator-mall-gha-pg-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FORCE_COLOR: "0"
+  CI: "true"
+  NODE_OPTIONS: "--max-old-space-size=1536"
+
+jobs:
+  ephemeral-pg:
+    if: ${{ startsWith(github.ref, 'refs/heads/qa/operator-mall-pg-20260915') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: aipo_qa_mall
+          POSTGRES_PASSWORD: aipo_qa_mall_fixture_20260915
+          POSTGRES_DB: aipo_qa_mall
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U aipo_qa_mall -d aipo_qa_mall"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      AIPO_QA_PGHOST: 127.0.0.1
+      AIPO_QA_PGUSER: aipo_qa_mall
+      AIPO_QA_PGPASSWORD: aipo_qa_mall_fixture_20260915
+      AIPO_QA_PGDATABASE: aipo_qa_mall
+      AIPO_QA_PGPORT: "5432"
+      JWT_ADMIN_SECRET: gha_qa_admin_secret_min_32_chars!!
+      JWT_USER_SECRET: gha_qa_user_secret_min_32_chars!!
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - id: setup
+        uses: ./.github/actions/backend-setup
+
+      - name: Mask QA fixture secrets
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: |
+          set +x
+          echo "::add-mask::${AIPO_QA_PGPASSWORD}"
+          echo "::add-mask::${JWT_ADMIN_SECRET}"
+          echo "::add-mask::${JWT_USER_SECRET}"
+
+      - name: Generate QA staff password
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: |
+          set +x
+          PASS="$(openssl rand -hex 16)"
+          echo "::add-mask::${PASS}"
+          echo "QA_STAFF_PASSWORD=${PASS}" >> "$GITHUB_ENV"
+
+      - name: Stub .env for Docker-less stack-lock
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: printf 'SUPABASE_URL=https://mgsytcetsiecllmhcyox.supabase.co\n' > .env
+
+      - name: Nest tsc
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: pnpm verify:api-nest-build
+
+      - name: admin-boundary
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: pnpm verify:admin-boundary
+
+      - name: Prove ephemeral GHA PG
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: node tooling/verify/operator-mall-gha-pg.cjs --step=prove
+
+      - name: Apply draft SQL on QA PG only
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: node tooling/verify/operator-mall-gha-pg.cjs --step=apply
+
+      - name: Real PG preflight
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: node tooling/verify/operator-mall-gha-pg.cjs --step=preflight
+
+      - name: Product persist HTTP
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: node tooling/verify/operator-mall-gha-pg.cjs --step=product-http
+
+      - name: A/B/C concurrent participate
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: node tooling/verify/operator-mall-gha-pg.cjs --step=concurrent
+
+      - name: Reseller ID
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: node tooling/verify/operator-mall-gha-pg.cjs --step=reseller
+
+      - name: Ledger payout idempotent restart
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: node tooling/verify/operator-mall-gha-pg.cjs --step=ledger
+
+      - name: Staff login and member list
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: node tooling/verify/operator-mall-gha-pg.cjs --step=login-directory
+
+      - name: Operator row FOR UPDATE
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: node tooling/verify/operator-mall-gha-pg.cjs --step=row-protect
+
+      - name: Related isolation regression
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: node tooling/verify/backend/matching-membership/operator-quota-grade.cjs
+
+      - name: operator-row-protect
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: pnpm verify:operator-row-protect
+
+      - name: gate fast
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: pnpm verify:gate:fast
+
+      - name: Upload non-secret artifact
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: operator-mall-gha-pg
+          path: _tmp_operator_mall_gha/
+          retention-days: 14
+          if-no-files-found: warn

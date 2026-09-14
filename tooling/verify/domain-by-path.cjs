@@ -350,6 +350,8 @@ const RULES = [
       /^services\/api-nest\/isolated-qa-pg\.cjs$/.test(f) ||
       /^services\/api-nest\/src\/common\/admin-session-login\.admin-http\.cjs$/.test(f) ||
       /^services\/api-nest\/src\/opportunities\/operator-mall-product\./.test(f) ||
+      /^tooling\/verify\/operator-mall-gha-pg\.cjs$/.test(f) ||
+      /^\.github\/workflows\/operator-mall-gha-pg\.yml$/.test(f) ||
       /^services\/api-nest\/src\/referral\/reseller-id\./.test(f) ||
       /^services\/api-nest\/src\/ledger\/money-authority\./.test(f) ||
       /^tooling\/verify\/backend\/matching-membership\/membership-/.test(f) ||

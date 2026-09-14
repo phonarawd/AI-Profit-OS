@@ -78,6 +78,29 @@ const persistCore = reqCjs("./operator-control.persist.cjs") as {
     input: object,
   ) => Promise<Record<string, unknown>>;
 };
+const directoryCore = reqCjs("./admin-member-directory.core.cjs") as {
+  searchMembers: (
+    input: object,
+    store: object,
+  ) => Promise<{
+    ok: boolean;
+    applied: boolean;
+    code?: string;
+    httpStatus: number;
+    items?: Array<{
+      userId: string;
+      membership?: string | null;
+      resellerId?: string | null;
+    }>;
+    nextCursor?: string | null;
+    exact?: boolean;
+  }>;
+};
+const directoryPersist = reqCjs("./admin-member-directory.persist.cjs") as {
+  resolveRuntimeMemberDirectoryStore: (
+    env: NodeJS.ProcessEnv,
+  ) => Promise<{ ready: boolean }>;
+};
 const resellerPersist = reqCjs("../referral/reseller-id.persist.cjs") as {
   lookupResellerId: (
     db: object,
@@ -155,23 +178,47 @@ export class MembershipAdminService {
   }): Promise<{
     items: Array<{
       userId: string;
-      membership: MembershipId;
+      membership: MembershipId | null;
       resellerId: string | null;
     }>;
-    nextCursor: null;
-    exact: true;
+    nextCursor: string | null;
+    exact: boolean;
     substituted: false;
   }> {
     const q = String(input.q || "").trim();
     if (!q) {
-      throw new ServiceUnavailableException({
-        code: "STORE_UNREADY",
-        toastCode: "STORE_UNREADY",
-        message: "member directory list requires a ready store; exact uuid q reuses existing membership lookup",
-        applied: false,
-        storeStatus: "unready",
-        statusCode: 503,
+      // this.db = 앱 DATABASE_URL. 디렉터리 목록은 격리 QA persist 만.
+      const store = await directoryPersist.resolveRuntimeMemberDirectoryStore(
+        process.env,
+      );
+      const out = await directoryCore.searchMembers(
+        { cursor: input.cursor, limit: 20 },
+        store,
+      );
+      if (!out.ok || out.code === "STORE_UNREADY") {
+        throw new ServiceUnavailableException({
+          code: out.code || "STORE_UNREADY",
+          toastCode: "STORE_UNREADY",
+          message: "member directory list requires isolated QA persist; not DATABASE_URL",
+          applied: false,
+          storeStatus: "unready",
+          statusCode: 503,
+        });
+      }
+      this.bus.emit(MEMBERSHIP_EVENTS.memberLookup, {
+        operatorId: input.operatorId,
+        list: true,
       });
+      return {
+        items: (out.items || []).map((row) => ({
+          userId: row.userId,
+          membership: (row.membership as MembershipId) || null,
+          resellerId: row.resellerId || null,
+        })),
+        nextCursor: out.nextCursor ?? null,
+        exact: false,
+        substituted: false,
+      };
     }
     this.assertUuid(q, "q");
     await this.assertUserExists(q);

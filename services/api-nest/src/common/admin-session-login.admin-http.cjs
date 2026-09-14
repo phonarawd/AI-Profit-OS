@@ -50,7 +50,10 @@ function call(port, method, urlPath, opts) {
   });
 }
 
+const isolated = require(path.join(__dirname, "..", "..", "isolated-qa-pg.cjs"));
+
 async function main() {
+  isolated.pinUnreadyIsolatedEnv(process.env);
   process.env["JWT_" + "ADMIN_SECRET"] = ADMIN_SECRET;
   process.env["JWT_" + "USER_SECRET"] = USER_SECRET;
 

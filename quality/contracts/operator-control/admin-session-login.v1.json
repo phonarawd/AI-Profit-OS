@@ -1,9 +1,9 @@
 {
-  "contractVersion": "2026-09-14.p4.admin-login-v1",
+  "contractVersion": "2026-09-15.p4.admin-login-v2",
   "kind": "operator_login",
-  "implementation": "local_core_http_store_unready_persist_code",
-  "activation": "BLOCKED",
-  "activationReason": "admin staff persist code exists; Nest still createUnreadyStaffStore (protected controller + isolated QA unset + no staff schema + no ACK)",
+  "implementation": "core_resolves_isolated_persist_controller_still_unready_arg",
+  "activation": "isolated_qa_only",
+  "activationReason": "AdminSessionController still passes createUnreadyStaffStore. loginStaff then resolves isolated QA persist. unset URL or missing schema → 503. ops DATABASE_URL never used. demo staff forbidden.",
   "route": {
     "method": "POST",
     "path": "/api/v1/admin-session/login",
@@ -34,24 +34,18 @@
     "fixed operational password",
     "user JWT / aipo_session as Admin"
   ],
-  "reuse": [
-    "jwt.core.cjs admin issuer/audience",
-    "verifyPassword (password-hash)",
-    "attachAdminSessionCookies"
-  ],
   "store": {
-    "ready": false,
-    "kind": "unready",
+    "readyWhen": "isolated QA URL + admin_staff schema + fixture row",
+    "kind": "persist_or_unready",
     "persistCode": true,
-    "persistIsolation": "PASS fake_persist",
-    "nestInject": "createUnreadyStaffStore",
+    "nestInject": "createUnreadyStaffStore then resolveRuntimeStaffStore",
     "migrationDraft": "quality/migrations-draft/20260915080000_admin_staff_credentials.sql"
   },
-  "notes": "계약 작성 ≠ putduk-web/ops 수신. 활성화는 자격 저장소 + Human ACK + 보호범위 rebase 이후.",
   "verification": {
     "coreIsolation": "memory store password/user-session/disabled",
     "persistIsolation": "fake persist lookup · runtime unset · no demo seed",
-    "nestHttp": "product path still createUnreadyStaffStore → 503 STORE_UNREADY; query bearer 401; user cookie does not mint admin",
-    "realDb": "BLOCKED"
+    "nestHttp": "unready env still 503; GHA ephemeral PG is the real HTTP+SQL target",
+    "realDb": "pending_gha",
+    "officialQa": false
   }
 }

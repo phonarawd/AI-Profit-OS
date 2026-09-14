@@ -23,6 +23,7 @@ function spec(extra) {
     currency: "USDT",
     visibility: core.VISIBILITY.ALL_PUBLIC,
     priceConfirmationMemo: "확인: 12.5 USDT",
+    idempotencyKey: extra && extra.idempotencyKey ? extra.idempotencyKey : "reg-default",
   }, extra || {});
 }
 
@@ -109,7 +110,12 @@ async function main() {
     const store = mem([{ userId: A, cap: 5 }]);
     const p = (await core.registerProduct(spec({ payoutAmount: "10" }), { store })).product;
     const pa = await core.participate({ userId: A, productId: p.id, idempotencyKey: "s" }, { store });
-    await core.updateProduct(p.id, { operatorId: OP, payoutAmount: "99", visibility: core.VISIBILITY.PRIVATE }, { store });
+    await core.updateProduct(p.id, {
+      operatorId: OP,
+      payoutAmount: "99",
+      visibility: core.VISIBILITY.PRIVATE,
+      expectedRevision: p.revision,
+    }, { store });
     assert.equal((await store.getParticipation(pa.participation.id)).snapshot.payoutAmount, "10");
     assert.equal((await core.listForUser(A, { store })).items.length, 0);
   }, fails);
@@ -170,6 +176,40 @@ async function main() {
     const pub = (await core.getForUser(A, p.id, { store })).product;
     assert.equal(pub.moneyAuthority.configuredPayoutUsdt, "12.5");
     assert.equal(Object.prototype.hasOwnProperty.call(pub, "priceConfirmationMemo"), false);
+  }, fails);
+
+  await check("register_idem_and_revision_409", async () => {
+    const store = mem([{ userId: A, cap: 5 }]);
+    const first = await core.registerProduct(spec({ idempotencyKey: "same-reg" }), { store });
+    const replay = await core.registerProduct(spec({
+      idempotencyKey: "same-reg",
+      name: "other-name",
+    }), { store });
+    assert.equal(first.applied, true);
+    assert.equal(replay.replay, true);
+    assert.equal(replay.product.id, first.product.id);
+    assert.equal(replay.product.name, first.product.name);
+    const listed = await core.adminListProducts({ operatorId: OP, limit: 10 }, { store });
+    assert.equal(listed.items.length, 1);
+    assert.equal(listed.items[0].revision, 1);
+    const one = await core.adminGetProduct(first.product.id, { operatorId: OP }, { store });
+    assert.equal(one.product.revision, 1);
+    const stale = await core.updateProduct(first.product.id, {
+      operatorId: OP,
+      name: "stale",
+      expectedRevision: 99,
+    }, { store });
+    assert.equal(stale.httpStatus, 409);
+    assert.equal(stale.code, "REVISION_CONFLICT");
+    const after = await core.adminGetProduct(first.product.id, { operatorId: OP }, { store });
+    assert.equal(after.product.name, first.product.name);
+    const ok = await core.updateProduct(first.product.id, {
+      operatorId: OP,
+      name: "renamed",
+      expectedRevision: 1,
+    }, { store });
+    assert.equal(ok.applied, true);
+    assert.equal(ok.product.revision, 2);
   }, fails);
 
   await check("money_not_authority_until_journal", async () => {

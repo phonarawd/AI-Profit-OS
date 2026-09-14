@@ -18,7 +18,10 @@ function check(cond, msg) {
   if (!cond) fails.push(msg);
 }
 
+const isolated = require("./isolated-qa-pg.cjs");
+
 async function main() {
+  isolated.pinUnreadyIsolatedEnv(process.env);
   const unready = await loginStaff(
     { email: "ops@example.com", password: "any-password-value" },
     {

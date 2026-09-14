@@ -23,6 +23,7 @@ const PRODUCT_COLS = [
   "price_confirmation_memo",
   "product_revision",
   "supply_source",
+  "register_idempotency_key",
 ];
 const PARTICIPATION_COLS = [
   "id",
@@ -74,42 +75,63 @@ SELECT
     WHERE table_schema = 'public' AND table_name = 'opportunities'
       AND column_name = ANY($4::text[])) AS opp_mall_cols
 `.trim(),
-  upsertProduct: `
+  insertProduct: `
 INSERT INTO public.operator_mall_products (
   id, name, description, photos, composition_qty, configured_payout_usdt,
   currency, visibility, selected_member_ids, price_confirmation_memo,
-  product_revision, supply_source, updated_at
+  product_revision, supply_source, register_idempotency_key, updated_at
 ) VALUES (
   $1::uuid, $2, $3, $4::jsonb, $5, $6::numeric,
-  $7, $8, $9::uuid[], $10, $11, 'operator', now()
+  $7, $8, $9::uuid[], $10, $11, 'operator', $12, now()
 )
-ON CONFLICT (id) DO UPDATE SET
-  name = EXCLUDED.name,
-  description = EXCLUDED.description,
-  photos = EXCLUDED.photos,
-  composition_qty = EXCLUDED.composition_qty,
-  configured_payout_usdt = EXCLUDED.configured_payout_usdt,
-  currency = EXCLUDED.currency,
-  visibility = EXCLUDED.visibility,
-  selected_member_ids = EXCLUDED.selected_member_ids,
-  price_confirmation_memo = EXCLUDED.price_confirmation_memo,
-  product_revision = EXCLUDED.product_revision,
-  updated_at = now()
-`.trim(),
+ON CONFLICT (id) DO NOTHING
+RETURNING id::text`.trim(),
+  findProductByRegisterKey: `
+SELECT id::text, name, description, photos, composition_qty,
+       configured_payout_usdt::text, currency, visibility, selected_member_ids,
+       price_confirmation_memo, product_revision, supply_source,
+       register_idempotency_key, created_at, updated_at
+  FROM public.operator_mall_products
+ WHERE register_idempotency_key = $1`.trim(),
+  updateProductIfRevision: `
+UPDATE public.operator_mall_products
+   SET name = $3,
+       description = $4,
+       photos = $5::jsonb,
+       composition_qty = $6,
+       configured_payout_usdt = $7::numeric,
+       currency = $8,
+       visibility = $9,
+       selected_member_ids = $10::uuid[],
+       price_confirmation_memo = $11,
+       product_revision = $12,
+       updated_at = now()
+ WHERE id = $1::uuid
+   AND product_revision = $2
+RETURNING id::text`.trim(),
   getProduct: `
 SELECT id::text, name, description, photos, composition_qty,
        configured_payout_usdt::text, currency, visibility, selected_member_ids,
        price_confirmation_memo, product_revision, supply_source,
-       created_at, updated_at
+       register_idempotency_key, created_at, updated_at
   FROM public.operator_mall_products
  WHERE id = $1::uuid`.trim(),
   listProducts: `
 SELECT id::text, name, description, photos, composition_qty,
        configured_payout_usdt::text, currency, visibility, selected_member_ids,
        price_confirmation_memo, product_revision, supply_source,
-       created_at, updated_at
+       register_idempotency_key, created_at, updated_at
   FROM public.operator_mall_products
  ORDER BY created_at ASC`.trim(),
+  listProductsPage: `
+SELECT id::text, name, description, photos, composition_qty,
+       configured_payout_usdt::text, currency, visibility, selected_member_ids,
+       price_confirmation_memo, product_revision, supply_source,
+       register_idempotency_key, created_at, updated_at
+  FROM public.operator_mall_products
+ WHERE ($3::text IS NULL OR visibility = $3)
+ ORDER BY created_at ASC
+ OFFSET $1 LIMIT $2`.trim(),
   stampOpportunity: `
 UPDATE public.opportunities
    SET visibility = $2,
@@ -241,6 +263,7 @@ function rowToProduct(row) {
       ? String(row.price_confirmation_memo)
       : "",
     revision: Number(row.product_revision || 1),
+    registerIdempotencyKey: row.register_idempotency_key || null,
     supplySource: "operator",
     compositionIsNotSellableStock: true,
     createdAt: row.created_at,
@@ -303,34 +326,98 @@ async function createPersistMallStore(db, opts) {
     testOnly: Boolean(opts && opts.testOnly),
     preflight: pre,
     async saveProduct(p) {
-      await db.query(SQL.upsertProduct, [
-        p.id,
-        p.name,
-        p.description || "",
-        JSON.stringify(p.photos || []),
-        p.compositionQty,
-        p.payoutAmount,
-        p.currency || "USDT",
-        p.visibility,
-        p.selectedMemberIds || [],
-        p.priceConfirmationMemo || null,
-        p.revision,
-      ]);
-      if (stampOpportunity) {
+      return this.insertProduct(p);
+    },
+    async insertProduct(p) {
+      const runner = async (q) => {
         try {
-          await db.query(SQL.stampOpportunity, [
+          await q.query(SQL.insertProduct, [
             p.id,
+            p.name,
+            p.description || "",
+            JSON.stringify(p.photos || []),
+            p.compositionQty,
+            p.payoutAmount,
+            p.currency || "USDT",
             p.visibility,
             p.selectedMemberIds || [],
             p.priceConfirmationMemo || null,
-            p.compositionQty,
             p.revision,
-            p.payoutAmount,
+            p.registerIdempotencyKey || null,
+          ]);
+        } catch (err) {
+          if (err && err.code === "23505") {
+            const replay = await q.query(SQL.findProductByRegisterKey, [
+              p.registerIdempotencyKey,
+            ]);
+            if (replay.rows[0]) return rowToProduct(replay.rows[0]);
+          }
+          throw err;
+        }
+        const existing = await q.query(SQL.findProductByRegisterKey, [
+          p.registerIdempotencyKey,
+        ]);
+        if (existing.rows[0] && String(existing.rows[0].id) !== String(p.id)) {
+          return rowToProduct(existing.rows[0]);
+        }
+        if (stampOpportunity) {
+          try {
+            await q.query(SQL.stampOpportunity, [
+              p.id,
+              p.visibility,
+              p.selectedMemberIds || [],
+              p.priceConfirmationMemo || null,
+              p.compositionQty,
+              p.revision,
+              p.payoutAmount,
+            ]);
+          } catch {
+            /* 기회 행이 없으면 스탬프만 생략. 상품 persist 는 유지 */
+          }
+        }
+        return p;
+      };
+      if (typeof db.withTransaction === "function") {
+        return db.withTransaction(runner);
+      }
+      return runner(db);
+    },
+    async findProductByRegisterKey(key) {
+      const r = await db.query(SQL.findProductByRegisterKey, [key]);
+      return rowToProduct(r.rows[0]);
+    },
+    async updateProductIfRevision(id, expectedRevision, next) {
+      const r = await db.query(SQL.updateProductIfRevision, [
+        id,
+        expectedRevision,
+        next.name,
+        next.description || "",
+        JSON.stringify(next.photos || []),
+        next.compositionQty,
+        next.payoutAmount,
+        next.currency || "USDT",
+        next.visibility,
+        next.selectedMemberIds || [],
+        next.priceConfirmationMemo || null,
+        next.revision,
+      ]);
+      if (!r.rows[0]) return false;
+      if (stampOpportunity) {
+        try {
+          await db.query(SQL.stampOpportunity, [
+            id,
+            next.visibility,
+            next.selectedMemberIds || [],
+            next.priceConfirmationMemo || null,
+            next.compositionQty,
+            next.revision,
+            next.payoutAmount,
           ]);
         } catch {
-          /* 기회 행이 없으면 스탬프만 생략. 상품 persist 는 유지 */
+          /* 스탬프 생략 */
         }
       }
+      return true;
     },
     async getProduct(id) {
       const r = await db.query(SQL.getProduct, [id]);
@@ -339,6 +426,16 @@ async function createPersistMallStore(db, opts) {
     async listProducts() {
       const r = await db.query(SQL.listProducts, []);
       return (r.rows || []).map(rowToProduct);
+    },
+    async listProductsPage({ offset, limit, visibility }) {
+      const r = await db.query(SQL.listProductsPage, [
+        offset,
+        limit,
+        visibility || null,
+      ]);
+      const items = (r.rows || []).map(rowToProduct);
+      const nextOffset = items.length === limit ? offset + limit : null;
+      return { items, nextOffset };
     },
     async saveParticipation(p) {
       await db.query(SQL.upsertParticipation, [
@@ -502,6 +599,17 @@ function createFakePersistMallDb(opts) {
         return { rows: [readyRow()], rowCount: 1 };
       }
       if (sql.includes("INSERT INTO public.operator_mall_products")) {
+        const key = params[11] || null;
+        if (key) {
+          for (const cur of state.products.values()) {
+            if (cur.register_idempotency_key === key) {
+              const e = new Error("duplicate");
+              e.code = "23505";
+              e.constraint = "operator_mall_products_register_idem_uq";
+              throw e;
+            }
+          }
+        }
         const row = {
           id: params[0],
           name: params[1],
@@ -514,16 +622,60 @@ function createFakePersistMallDb(opts) {
           selected_member_ids: params[8],
           price_confirmation_memo: params[9],
           product_revision: params[10],
+          register_idempotency_key: key,
           supply_source: "operator",
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         };
+        if (state.products.has(row.id)) {
+          return { rows: [], rowCount: 0 };
+        }
         state.products.set(row.id, row);
         return { rows: [row], rowCount: 1 };
+      }
+      if (
+        sql.includes("UPDATE public.operator_mall_products") &&
+        sql.includes("product_revision")
+      ) {
+        const hit = state.products.get(params[0]);
+        if (!hit || Number(hit.product_revision) !== Number(params[1])) {
+          return { rows: [], rowCount: 0 };
+        }
+        Object.assign(hit, {
+          name: params[2],
+          description: params[3],
+          photos: JSON.parse(params[4]),
+          composition_qty: params[5],
+          configured_payout_usdt: params[6],
+          currency: params[7],
+          visibility: params[8],
+          selected_member_ids: params[9],
+          price_confirmation_memo: params[10],
+          product_revision: params[11],
+          updated_at: new Date().toISOString(),
+        });
+        return { rows: [{ id: hit.id }], rowCount: 1 };
+      }
+      if (
+        sql.includes("FROM public.operator_mall_products") &&
+        sql.includes("WHERE register_idempotency_key")
+      ) {
+        const hit = Array.from(state.products.values()).find(
+          (p) => p.register_idempotency_key === params[0],
+        );
+        return { rows: hit ? [hit] : [], rowCount: hit ? 1 : 0 };
       }
       if (sql.includes("FROM public.operator_mall_products") && sql.includes("WHERE id")) {
         const hit = state.products.get(params[0]);
         return { rows: hit ? [hit] : [], rowCount: hit ? 1 : 0 };
+      }
+      if (sql.includes("FROM public.operator_mall_products") && sql.includes("OFFSET")) {
+        let rows = Array.from(state.products.values());
+        if (params[2]) rows = rows.filter((p) => p.visibility === params[2]);
+        const offset = Number(params[0] || 0);
+        const limit = Number(params[1] || rows.length);
+        const slice = rows.slice(offset, offset + limit);
+        return { rows: slice, rowCount: slice.length };
       }
       if (sql.includes("FROM public.operator_mall_products")) {
         const rows = Array.from(state.products.values());

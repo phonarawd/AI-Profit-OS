@@ -1,95 +1,71 @@
 {
-  "contractVersion": "2026-09-15.persist-status-v3",
-  "measuredAgainstHead": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
-  "putdukOpsPreviousHead": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
-  "staleContractHeadWas": "ec436d4d32937f2778b4b764e89918de2ca70280",
-  "headDeltaFromStaleContract": "31c8e731 already contained persist adapter. This slice adds isolated QA resolver + Nest mall inject + staff persist code. tsc was not_run in stale contract; now PASS.",
-  "note": "셸 API 또는 503 STORE_UNREADY 만으로 구현 완료로 쓰지 말 것. persist 코드 ≠ HTTP 배선 ≠ 실DB 적용 ≠ 출시.",
+  "contractVersion": "2026-09-15.persist-status-v5",
+  "measuredAgainstHead": "9d48e58e6fa0871611fe27292e8c876ee568a18c",
+  "parentHead": "9d48e58e6fa0871611fe27292e8c876ee568a18c",
+  "headNote": "contracts authored on parent 9d48e58e. QA branch commit SHA and GHA run ID are filled after the ephemeral PG job, not invented here.",
+  "workflowName": "operator-mall-gha-pg",
+  "workflowRunId": null,
+  "workflowRunUrl": null,
+  "note": "실PG 통합 PASS ≠ 정식 QA0–QA9 ≠ 운영 DB 적용 ≠ 출시. mock PASS 와 실PG PASS 를 섞지 말 것.",
   "schemaApplied": false,
   "opsDb": false,
-  "isolatedQaUrl": "unset",
-  "isolatedQaUrlCheckedOnce": {
-    "CATALOG_TEST_DATABASE_URL": "process UNSET · dotenv key absent",
-    "QA_DATABASE_URL": "process UNSET · dotenv key absent",
-    "AIPO_QA_PG": "all parts UNSET · dotenv keys absent",
-    "DATABASE_URL": "process UNSET · dotenv key present · not used"
-  },
-  "measured": {
-    "tscApiNest": "PASS",
-    "adminBoundary": "PASS",
-    "operatorQuotaGrade": "PASS",
-    "realHttpDb": "BLOCKED",
-    "liveJournal": false,
-    "officialQa0to9": false
-  },
+  "officialQa0to9": false,
+  "isolatedQaUrl": "gha_ephemeral_only_when_workflow_runs",
   "items": {
-    "productVisibility": {
-      "intended": "opportunities.visibility all_public|selected_members|private",
-      "livePostgresColumn": false,
-      "memoryCore": true,
-      "persistCode": true,
-      "persistDraft": "quality/migrations-draft/20260915070000_operator_mall_product.sql",
-      "isolatedFakePersist": true,
-      "isolatedFakePersistIsolation": "PASS",
-      "nestProductionStore": "STORE_UNREADY",
-      "nestPersistGate": "never bind PostgresService/DATABASE_URL. resolveRuntimeMallPersistStore uses CATALOG_TEST_DATABASE_URL | QA_DATABASE_URL | AIPO_QA_PG only. this turn unset → STORE_UNREADY. fake persist forbidden as runtime.",
-      "nestHttpWiredToResolver": true,
-      "nestHttpReady": false,
-      "qaInjectionVsRuntime": "QA inject = isolated pool from the three names above. Runtime participate/ledger = existing PostgresService/DATABASE_URL. They are not the same store.",
-      "status": "persist_code_http_resolver_isolated_unset"
+    "productListGet": {
+      "route": "GET /api/v1/admin/opportunities/operator-products",
+      "persistStore": true,
+      "notGenericOpportunitiesList": true,
+      "pagination": true,
+      "includesVisibilityRevision": true,
+      "implementation": "code",
+      "realPg": "pending_gha",
+      "officialQa": false
     },
-    "selectedMemberIds": {
-      "intended": "opportunities.selected_member_ids uuid[]",
-      "livePostgresColumn": false,
-      "memoryCore": true,
-      "persistCode": true,
-      "isolatedFakePersist": true,
-      "nestProductionStore": "STORE_UNREADY",
-      "status": "persist_code_http_resolver_isolated_unset"
+    "productExactGet": {
+      "route": "GET /api/v1/admin/opportunities/operator-products/:id",
+      "persistStore": true,
+      "notGenericOpportunitiesGet": true,
+      "implementation": "code",
+      "realPg": "pending_gha",
+      "officialQa": false
     },
-    "resellerId": {
-      "sourceColumn": "public.users.referral_code",
-      "sourceColumnExists": true,
-      "displayField": "resellerId",
-      "issuedOnSignup": "classic-signup / auth.service mintReferralCode UNIQUE retry",
-      "adminDirectoryCoreProjection": true,
-      "adminHttpExactReturnsResellerId": true,
-      "adminHttpExactLivePostgresVerified": false,
-      "userMeMembershipField": true,
-      "userMeMembershipLiveHttpVerified": false,
-      "opsBackfillApplied": false,
-      "backfillDraft": "quality/migrations-draft/operator-reseller-id-backfill.v1.md",
-      "status": "issued_on_signup_lookup_wired_live_http_unverified",
-      "persistIsolation": "PASS"
+    "expectedRevision": {
+      "updateAndVisibility": true,
+      "conflictHttp": 409,
+      "doesNotOverwriteOnConflict": true,
+      "implementation": "code",
+      "realPg": "pending_gha"
     },
-    "priceConfirmationMemo": {
-      "dedicatedField": true,
-      "coreField": "priceConfirmationMemo",
-      "draftColumn": "opportunities.price_confirmation_memo / operator_mall_products.price_confirmation_memo",
-      "livePostgresColumn": false,
-      "notPatchPricingReason": true,
-      "publicUserProjection": false,
-      "status": "persist_code_http_resolver_isolated_unset"
-    },
-    "participationPayout": {
-      "snapshotField": "configuredPayoutUsdt",
-      "authoritativeOnlyWithJournal": true,
-      "mallPersistIdempotency": "settlement:{participationId}",
-      "liveTradeIdempotency": "settlement:{tradeId}",
-      "onePayoutPerParticipation": true,
-      "memberHistoryRoute": "GET /api/v1/me/ledger/journals",
-      "mallSettlementTableIsNotLiveLedger": true,
-      "liveJournalVerified": false,
-      "status": "persist_and_execution_snapshot_wired_live_pg_blocked"
+    "registerIdempotency": {
+      "headerOrBody": true,
+      "uniqueIndex": "operator_mall_products_register_idem_uq",
+      "implementation": "code",
+      "realPg": "pending_gha"
     },
     "adminStaff": {
       "persistCode": true,
-      "persistDraft": "quality/migrations-draft/20260915080000_admin_staff_credentials.sql",
-      "isolatedFakePersistIsolation": "PASS",
-      "nestInject": "createUnreadyStaffStore",
-      "nestInjectReason": "AdminSessionController is protected-scope. No isolated staff schema. No new ACK.",
+      "nestControllerStillCreateUnready": true,
+      "loginStaffResolvesIsolatedPersist": true,
       "demoStaff": false,
-      "status": "persist_code_nest_unready_protected_controller"
+      "implementation": "code",
+      "realPg": "pending_gha"
+    },
+    "memberDirectoryPage": {
+      "route": "GET /api/v1/admin/users empty q",
+      "guard": "AdminGuard users read",
+      "store": "isolated persist public.users",
+      "notMeMembership": true,
+      "implementation": "code",
+      "realPg": "pending_gha"
+    },
+    "participationPayout": {
+      "snapshotField": "configuredPayoutUsdt",
+      "qaJournalTable": "operator_mall_settlement_journals",
+      "notLiveLedgerJournals": true,
+      "idempotency": "settlement:{participationId}",
+      "implementation": "code",
+      "realPg": "pending_gha"
     }
   }
 }

@@ -32,6 +32,7 @@ export const OPPORTUNITY_ADMIN_ROUTES = {
   userOverrideByOpp: "users/:id/opportunity-overrides/:opportunityId",
   /** 운영자 쇼핑몰형 공용 상품. 스키마 미적용이면 STORE_UNREADY */
   operatorProducts: "opportunities/operator-products",
+  operatorProductExact: "opportunities/operator-products/:id",
   operatorProductById: "opportunities/:id/operator-product",
   operatorVisibility: "opportunities/:id/visibility",
   operatorParticipations: "opportunities/:id/participations",

@@ -115,6 +115,24 @@ async function main() {
       unready.status === 503 && unready.body.includes("STORE_UNREADY") && unready.body.includes("\"applied\":false"),
       unready.body,
     );
+
+    const listUnready = await call(port, "GET", PATH, { token: superTok });
+    record(
+      "list persist store unready 503",
+      listUnready.status === 503 && listUnready.body.includes("STORE_UNREADY"),
+      listUnready.body,
+    );
+    const getUnready = await call(
+      port,
+      "GET",
+      PATH + "/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      { token: superTok },
+    );
+    record(
+      "get persist store unready 503",
+      getUnready.status === 503 && getUnready.body.includes("STORE_UNREADY"),
+      getUnready.body,
+    );
   } finally {
     await app.close();
   }

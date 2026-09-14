@@ -282,27 +282,91 @@ function validateProductFields(input) {
   };
 }
 
+function assertIdempotencyKey(raw) {
+  const key = String(raw || "").trim();
+  if (!key || key.length > 200) {
+    const err = new Error("idempotencyKey required");
+    err.code = "IDEMPOTENCY_REQUIRED";
+    throw err;
+  }
+  return key;
+}
+
+function assertExpectedRevision(raw) {
+  const n = Number(raw);
+  if (!Number.isInteger(n) || n < 1) {
+    const err = new Error("expectedRevision required");
+    err.code = "EXPECTED_REVISION_REQUIRED";
+    throw err;
+  }
+  return n;
+}
+
 async function registerProduct(input, deps) {
   const blocked = requireReadyStore(deps && deps.store) || requireOperator(input);
   if (blocked) return blocked;
   const actorKind = input.actorKind === "ai_tool" ? "ai_tool" : "admin";
   let fields;
+  let idempotencyKey;
   try {
     fields = validateProductFields(input);
+    idempotencyKey = assertIdempotencyKey(input && input.idempotencyKey);
   } catch (e) {
     return fail(e.code || "VALIDATION_ERROR", 400, { message: e.message });
+  }
+  if (typeof deps.store.findProductByRegisterKey === "function") {
+    const existing = await deps.store.findProductByRegisterKey(idempotencyKey);
+    if (existing) {
+      return {
+        ok: true,
+        applied: false,
+        replay: true,
+        httpStatus: 200,
+        product: existing,
+      };
+    }
   }
   const now = (deps.now && deps.now()) || new Date().toISOString();
   const product = {
     id: crypto.randomUUID(),
     ...fields,
     revision: 1,
+    registerIdempotencyKey: idempotencyKey,
     supplySource: "operator",
     compositionIsNotSellableStock: true,
     createdAt: now,
     updatedAt: now,
   };
-  await deps.store.saveProduct(product);
+  try {
+    if (typeof deps.store.insertProduct === "function") {
+      const inserted = await deps.store.insertProduct(product);
+      if (inserted && inserted.id && inserted.id !== product.id) {
+        return {
+          ok: true,
+          applied: false,
+          replay: true,
+          httpStatus: 200,
+          product: inserted,
+        };
+      }
+    } else {
+      await deps.store.saveProduct(product);
+    }
+  } catch (e) {
+    if (e && e.code === "23505" && typeof deps.store.findProductByRegisterKey === "function") {
+      const replay = await deps.store.findProductByRegisterKey(idempotencyKey);
+      if (replay) {
+        return {
+          ok: true,
+          applied: false,
+          replay: true,
+          httpStatus: 200,
+          product: replay,
+        };
+      }
+    }
+    throw e;
+  }
   await deps.store.appendAudit({
     actorId: String(input.operatorId).toLowerCase(),
     actorKind,
@@ -321,6 +385,18 @@ async function updateProduct(productId, input, deps) {
   const id = assertUuid(productId, "productId");
   const current = await deps.store.getProduct(id);
   if (!current) return fail("PRODUCT_NOT_FOUND", 404);
+  let expectedRevision;
+  try {
+    expectedRevision = assertExpectedRevision(input && input.expectedRevision);
+  } catch (e) {
+    return fail(e.code || "EXPECTED_REVISION_REQUIRED", 400, { message: e.message });
+  }
+  if (expectedRevision !== Number(current.revision)) {
+    return fail("REVISION_CONFLICT", 409, {
+      currentRevision: current.revision,
+      expectedRevision,
+    });
+  }
   let patch = {};
   try {
     const merged = {
@@ -352,7 +428,22 @@ async function updateProduct(productId, input, deps) {
     revision: current.revision + 1,
     updatedAt: now,
   };
-  await deps.store.saveProduct(next);
+  if (typeof deps.store.updateProductIfRevision === "function") {
+    const applied = await deps.store.updateProductIfRevision(
+      id,
+      expectedRevision,
+      next,
+    );
+    if (applied !== true) {
+      const latest = await deps.store.getProduct(id);
+      return fail("REVISION_CONFLICT", 409, {
+        currentRevision: latest ? latest.revision : current.revision,
+        expectedRevision,
+      });
+    }
+  } else {
+    await deps.store.saveProduct(next);
+  }
   await deps.store.appendAudit({
     actorId: String(input.operatorId).toLowerCase(),
     actorKind,
@@ -362,6 +453,95 @@ async function updateProduct(productId, input, deps) {
     at: now,
   });
   return { ok: true, applied: true, httpStatus: 200, product: next };
+}
+
+function projectAdminProduct(product) {
+  return {
+    id: product.id,
+    name: product.name,
+    description: product.description,
+    photos: Array.isArray(product.photos) ? product.photos.slice() : [],
+    compositionQty: product.compositionQty,
+    payoutAmount: product.payoutAmount,
+    currency: product.currency,
+    visibility: product.visibility,
+    selectedMemberIds: Array.isArray(product.selectedMemberIds)
+      ? product.selectedMemberIds.slice()
+      : [],
+    priceConfirmationMemo: product.priceConfirmationMemo || "",
+    revision: product.revision,
+    supplySource: "operator",
+    registerIdempotencyKey: product.registerIdempotencyKey || null,
+    createdAt: product.createdAt,
+    updatedAt: product.updatedAt,
+  };
+}
+
+function decodePageCursor(raw) {
+  if (raw == null || raw === "") return 0;
+  const n = Number(raw);
+  if (!Number.isInteger(n) || n < 0) {
+    const err = new Error("cursor must be a non-negative integer");
+    err.code = "INVALID_CURSOR";
+    throw err;
+  }
+  return n;
+}
+
+async function adminListProducts(input, deps) {
+  const blocked = requireReadyStore(deps && deps.store) || requireOperator(input);
+  if (blocked) return blocked;
+  let offset = 0;
+  try {
+    offset = decodePageCursor(input && input.cursor);
+  } catch (e) {
+    return fail(e.code || "INVALID_CURSOR", 400, { message: e.message });
+  }
+  const limitRaw = Number((input && input.limit) || 20);
+  const limit = Number.isInteger(limitRaw) && limitRaw > 0 && limitRaw <= 50 ? limitRaw : 20;
+  let visibility = null;
+  if (input && input.visibility) {
+    try {
+      visibility = assertVisibility(input.visibility);
+    } catch (e) {
+      return fail(e.code || "INVALID_VISIBILITY", 400, { message: e.message });
+    }
+  }
+  let page;
+  if (typeof deps.store.listProductsPage === "function") {
+    page = await deps.store.listProductsPage({ offset, limit, visibility });
+  } else {
+    const all = await deps.store.listProducts();
+    const filtered = visibility
+      ? all.filter((p) => p.visibility === visibility)
+      : all;
+    const slice = filtered.slice(offset, offset + limit);
+    page = {
+      items: slice,
+      nextOffset: offset + limit < filtered.length ? offset + limit : null,
+    };
+  }
+  return {
+    ok: true,
+    applied: true,
+    httpStatus: 200,
+    items: (page.items || []).map(projectAdminProduct),
+    nextCursor: page.nextOffset != null ? String(page.nextOffset) : null,
+  };
+}
+
+async function adminGetProduct(productId, input, deps) {
+  const blocked = requireReadyStore(deps && deps.store) || requireOperator(input);
+  if (blocked) return blocked;
+  const id = assertUuid(productId, "productId");
+  const product = await deps.store.getProduct(id);
+  if (!product) return fail("PRODUCT_NOT_FOUND", 404);
+  return {
+    ok: true,
+    applied: true,
+    httpStatus: 200,
+    product: projectAdminProduct(product),
+  };
 }
 
 function projectPublicProduct(product) {
@@ -623,11 +803,42 @@ function createMemoryMallStore(seed) {
     async saveProduct(p) {
       products.set(p.id, p);
     },
+    async insertProduct(p) {
+      if (p.registerIdempotencyKey) {
+        for (const cur of products.values()) {
+          if (cur.registerIdempotencyKey === p.registerIdempotencyKey) return cur;
+        }
+      }
+      products.set(p.id, p);
+      return p;
+    },
+    async findProductByRegisterKey(key) {
+      for (const cur of products.values()) {
+        if (cur.registerIdempotencyKey === key) return cur;
+      }
+      return null;
+    },
+    async updateProductIfRevision(id, expectedRevision, next) {
+      const cur = products.get(id);
+      if (!cur || Number(cur.revision) !== Number(expectedRevision)) return false;
+      products.set(id, next);
+      return true;
+    },
     async getProduct(id) {
       return products.get(id) || null;
     },
     async listProducts() {
       return Array.from(products.values());
+    },
+    async listProductsPage({ offset, limit, visibility }) {
+      const all = Array.from(products.values()).filter((p) =>
+        visibility ? p.visibility === visibility : true,
+      );
+      const slice = all.slice(offset, offset + limit);
+      return {
+        items: slice,
+        nextOffset: offset + limit < all.length ? offset + limit : null,
+      };
     },
     async saveParticipation(p) {
       participations.set(p.id, p);
@@ -696,6 +907,9 @@ module.exports = {
   personalGuard,
   registerProduct,
   updateProduct,
+  adminListProducts,
+  adminGetProduct,
+  projectAdminProduct,
   listForUser,
   getForUser,
   participate,

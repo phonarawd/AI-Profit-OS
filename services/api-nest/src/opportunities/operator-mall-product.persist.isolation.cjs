@@ -21,6 +21,7 @@ function spec(extra) {
       currency: "USDT",
       visibility: core.VISIBILITY.ALL_PUBLIC,
       priceConfirmationMemo: "확인: 12.5 USDT",
+      idempotencyKey: extra && extra.idempotencyKey ? extra.idempotencyKey : "reg-persist",
     },
     extra || {},
   );
@@ -230,6 +231,34 @@ async function main() {
     assert.ok(found && found.id);
     const listed = await core.listPayoutsForUser(A, { store });
     assert.equal(listed.items.length, 1);
+  }, fails);
+
+  await check("register_idem_revision_409_persist", async () => {
+    const db = persist.createFakePersistMallDb({
+      schemaReady: true,
+      members: [{ userId: A, cap: 5 }],
+    });
+    const store = await persist.createPersistMallStore(db, {
+      members: [{ userId: A, cap: 5 }],
+      testOnly: true,
+    });
+    const first = await core.registerProduct(spec({ idempotencyKey: "k-once" }), { store });
+    const replay = await core.registerProduct(spec({
+      idempotencyKey: "k-once",
+      name: "changed",
+    }), { store });
+    assert.equal(first.applied, true);
+    assert.equal(replay.replay, true);
+    assert.equal(replay.product.id, first.product.id);
+    const conflict = await core.updateProduct(first.product.id, {
+      operatorId: OP,
+      name: "nope",
+      expectedRevision: 7,
+    }, { store });
+    assert.equal(conflict.code, "REVISION_CONFLICT");
+    const listed = await core.adminListProducts({ operatorId: OP }, { store });
+    assert.equal(listed.items[0].name, first.product.name);
+    assert.equal(listed.items[0].revision, 1);
   }, fails);
 
   await check("draft_not_in_supabase_migrations", async () => {

@@ -5,7 +5,16 @@
  * 없으면 STORE_UNREADY. fake persist 를 runtime 으로 넣지 않는다.
  * S1 legacy writer 보호를 해제하지 않는다.
  */
-import { Injectable, Optional, ServiceUnavailableException } from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+  Optional,
+  ServiceUnavailableException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { createRequire } from "node:module";
 import { join } from "node:path";
 import { PostgresService } from "../db/postgres";
@@ -40,6 +49,28 @@ const mall = requireCjs(join(__dirname, "operator-mall-product.core.cjs")) as {
     httpStatus: number;
     items?: object[];
   }>;
+  adminListProducts: (
+    input: object,
+    deps: object,
+  ) => Promise<{
+    ok: boolean;
+    applied: boolean;
+    code?: string;
+    httpStatus: number;
+    items?: object[];
+    nextCursor?: string | null;
+  }>;
+  adminGetProduct: (
+    id: string,
+    input: object,
+    deps: object,
+  ) => Promise<{
+    ok: boolean;
+    applied: boolean;
+    code?: string;
+    httpStatus: number;
+    product?: object;
+  }>;
 };
 const persist = requireCjs(join(__dirname, "operator-mall-product.persist.cjs")) as {
   resolveRuntimeMallPersistStore: (
@@ -62,7 +93,7 @@ export class OperatorMallProductAdminService {
     return this.storePromise;
   }
 
-  private rejectUnready(out: { code?: string }) {
+  private rejectMall(out: { code?: string; httpStatus?: number }) {
     if (out.code === "STORE_UNREADY") {
       throw new ServiceUnavailableException({
         code: "STORE_UNREADY",
@@ -71,6 +102,12 @@ export class OperatorMallProductAdminService {
         statusCode: 503,
       });
     }
+    const status = Number(out.httpStatus || 0);
+    if (status === 409) throw new ConflictException(out);
+    if (status === 404) throw new NotFoundException(out);
+    if (status === 400) throw new BadRequestException(out);
+    if (status === 401) throw new UnauthorizedException(out);
+    if (status === 403) throw new ForbiddenException(out);
     return out;
   }
 
@@ -79,7 +116,27 @@ export class OperatorMallProductAdminService {
       { ...body, operatorId },
       { store: await this.store() },
     );
-    return this.rejectUnready(out);
+    return this.rejectMall(out);
+  }
+
+  async list(
+    query: Record<string, unknown>,
+    operatorId: string,
+  ) {
+    const out = await mall.adminListProducts(
+      { ...query, operatorId },
+      { store: await this.store() },
+    );
+    return this.rejectMall(out);
+  }
+
+  async get(id: string, operatorId: string) {
+    const out = await mall.adminGetProduct(
+      id,
+      { operatorId },
+      { store: await this.store() },
+    );
+    return this.rejectMall(out);
   }
 
   async update(
@@ -92,7 +149,7 @@ export class OperatorMallProductAdminService {
       { ...body, operatorId },
       { store: await this.store() },
     );
-    return this.rejectUnready(out);
+    return this.rejectMall(out);
   }
 
   async listParticipations(
@@ -104,6 +161,6 @@ export class OperatorMallProductAdminService {
       { operatorId, productId: id, userId },
       { store: await this.store() },
     );
-    return this.rejectUnready(out);
+    return this.rejectMall(out);
   }
 }

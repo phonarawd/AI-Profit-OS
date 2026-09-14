@@ -119,6 +119,8 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     evaluateWatchMatch: write("all"),
     registerAssetImage: write("all"),
     registerOperatorProduct: write("all"),
+    listOperatorProducts: read("all"),
+    getOperatorProduct: read("all"),
     updateOperatorProduct: write("all"),
     updateOperatorVisibility: write("all"),
     listOperatorParticipations: read("all"),

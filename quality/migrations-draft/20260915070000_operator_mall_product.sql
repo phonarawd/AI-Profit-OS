@@ -47,9 +47,14 @@ CREATE TABLE IF NOT EXISTS public.operator_mall_products (
   product_revision integer NOT NULL DEFAULT 1 CHECK (product_revision >= 1),
   supply_source text NOT NULL DEFAULT 'operator' CHECK (supply_source = 'operator'),
   opportunity_id uuid,
+  register_idempotency_key text,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS operator_mall_products_register_idem_uq
+  ON public.operator_mall_products (register_idempotency_key)
+  WHERE register_idempotency_key IS NOT NULL;
 
 CREATE TABLE IF NOT EXISTS public.operator_mall_participations (
   id uuid PRIMARY KEY,

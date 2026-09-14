@@ -1,18 +1,18 @@
 {
-  "contractVersion": "2026-09-14.p4.member-directory-v1",
+  "contractVersion": "2026-09-15.p4.member-directory-v2",
   "kind": "operator_member_directory",
-  "implementation": "local_core_plus_exact_reuse",
+  "implementation": "exact_uuid_reuse_plus_isolated_persist_page",
   "activation": {
     "exactUuidLookup": "implemented_reuses_getMembership",
-    "paginatedList": "BLOCKED",
-    "paginatedListReason": "unbounded directory store not ready; no /me/membership substitute"
+    "paginatedList": "isolated_persist_when_ready",
+    "paginatedListReason": "GET /admin/users empty q uses resolveRuntimeMemberDirectoryStore. unset URL → 503. not /me/membership."
   },
   "routes": [
     {
       "method": "GET",
       "path": "/api/v1/admin/users",
       "query": {
-        "q": "uuid required for this slice",
+        "q": "uuid for exact; omit for page list",
         "cursor": "optional"
       },
       "guard": "AdminGuard",
@@ -35,11 +35,6 @@
       "layer": "directory_core_isolation"
     },
     {
-      "http": 400,
-      "code": "q must be uuid",
-      "layer": "http_assertUuid"
-    },
-    {
       "http": 404,
       "code": "user not found"
     },
@@ -47,32 +42,28 @@
       "http": 503,
       "code": "STORE_UNREADY",
       "applied": false,
-      "when": "q empty (list)"
+      "when": "empty q and isolated persist unready"
     }
   ],
   "verification": {
     "coreIsolation": "memory store exact/404/mask/page",
-    "nestHttp": "AdminGuard capability CSRF-GET real Nest; service stub",
-    "realDb": "BLOCKED"
+    "nestHttp": "AdminGuard capability CSRF-GET; empty q 503 when isolated unset",
+    "realDb": "pending_gha",
+    "officialQa": false
   },
   "pii": "directory core masks email/phone; HTTP exact path returns membership id + resellerId",
   "audit": "in-process emit admin.user.directory.lookup",
   "forbidden": [
     "GET /me/membership as admin list",
     "demo user substitution",
-    "open PII dump"
-  ],
-  "backendPathsForUiOps": [
-    "C:\\Users\\PC\\Desktop\\AI_PROFIT_OS\\quality\\contracts\\operator-control\\admin-member-directory.v1.json",
-    "C:\\Users\\PC\\Desktop\\AI_PROFIT_OS\\quality\\contracts\\operator-control\\admin-session-login.v1.json",
-    "C:\\Users\\PC\\Desktop\\AI_PROFIT_OS\\quality\\contracts\\operator-control\\manifest.json"
+    "open PII dump",
+    "ops backfill"
   ],
   "resellerId": {
     "source": "users.referral_code",
     "field": "resellerId",
     "notAuthToken": true,
-    "adminHttpExactReturnsResellerId": true,
-    "adminHttpExactLivePostgresVerified": false,
-    "backfillApplied": false
+    "issuedOnSignupMint": true,
+    "opsBackfillApplied": false
   }
 }

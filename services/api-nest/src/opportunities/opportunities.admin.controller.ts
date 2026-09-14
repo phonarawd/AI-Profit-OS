@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   Param,
   Patch,
   Post,
@@ -98,6 +99,32 @@ export class OpportunitiesAdminController {
     return this.opportunities.list(q);
   }
 
+  /** 정적 경로. opportunities/:id 보다 먼저 등록해야 한다. */
+  @Get(OPPORTUNITY_ADMIN_ROUTES.operatorProducts)
+  listOperatorProducts(
+    @Query("cursor") cursor: string | undefined,
+    @Query("limit") limitRaw: string | undefined,
+    @Query("visibility") visibility: string | undefined,
+    @AdminOperator() operatorId: string,
+  ) {
+    return this.mallProducts.list(
+      {
+        cursor,
+        limit: limitRaw != null ? Number(limitRaw) : undefined,
+        visibility,
+      },
+      operatorId,
+    );
+  }
+
+  @Get(OPPORTUNITY_ADMIN_ROUTES.operatorProductExact)
+  getOperatorProduct(
+    @Param("id") id: string,
+    @AdminOperator() operatorId: string,
+  ) {
+    return this.mallProducts.get(id, operatorId);
+  }
+
   @Get(OPPORTUNITY_ADMIN_ROUTES.get)
   get(@Param("id") id: string) {
     return this.opportunities.get(id);
@@ -185,9 +212,16 @@ export class OpportunitiesAdminController {
   @Post(OPPORTUNITY_ADMIN_ROUTES.operatorProducts)
   registerOperatorProduct(
     @Body() body: Record<string, unknown>,
+    @Headers("idempotency-key") idempotencyKey: string | undefined,
     @AdminOperator() operatorId: string,
   ) {
-    return this.mallProducts.register(body, operatorId);
+    return this.mallProducts.register(
+      {
+        ...body,
+        idempotencyKey: body.idempotencyKey || idempotencyKey,
+      },
+      operatorId,
+    );
   }
 
   @Patch(OPPORTUNITY_ADMIN_ROUTES.operatorProductById)

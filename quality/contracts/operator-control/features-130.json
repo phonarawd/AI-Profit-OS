@@ -63,6 +63,6 @@
     "C01": "verified_local",
     "C02": "blocked",
     "C03": "blocked",
-    "C04": "persist_code_http_resolver_isolated_unset"
+    "C04": "code_ready_real_pg_pending_gha"
   }
 }
