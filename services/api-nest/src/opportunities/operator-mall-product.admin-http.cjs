@@ -25,6 +25,7 @@ const {
 } = require("../common/admin-session.csrf.ts");
 
 const jwtCore = require(path.join(__dirname, "..", "..", "jwt.core.cjs"));
+const isolated = require(path.join(__dirname, "..", "..", "isolated-qa-pg.cjs"));
 const ADMIN_SECRET = "selftest_admin_secret_min_32_chars_ok!";
 const ADMIN_ID = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
 const PATH = "/admin/opportunities/operator-products";
@@ -59,6 +60,7 @@ function call(port, method, urlPath, opts) {
 }
 
 async function main() {
+  isolated.pinUnreadyIsolatedEnv(process.env);
   process.env["JWT_" + "ADMIN_SECRET"] = ADMIN_SECRET;
   class SelfTestModule {}
   Module({

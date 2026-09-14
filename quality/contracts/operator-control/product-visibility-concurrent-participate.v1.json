@@ -1,11 +1,11 @@
 {
-  "contractVersion": "2026-09-15.mall-persist-v3",
+  "contractVersion": "2026-09-15.mall-persist-v4",
   "kind": "operator_product_visibility_and_concurrent_participate",
-  "implementationStatus": "persist_code_schema_unapplied_http_unready",
+  "implementationStatus": "persist_code_http_resolver_isolated_unset",
   "replacesInterpretation": "특정 회원 배정이 기본",
   "defaultModel": "mall_public_same_product_multi_member",
-  "s2Implementation": "PERSIST_CODE_LIVE_SCHEMA_UNAPPLIED",
-  "s2BlockReason": "real Postgres persist and ops schema not applied. persist adapter + fake persist isolation exist. Nest never binds app DATABASE_URL for mall persist. live catalog S2 still BLOCKED.",
+  "s2Implementation": "PERSIST_CODE_HTTP_RESOLVER_ISOLATED_UNSET",
+  "s2BlockReason": "isolated QA URL unset. persist adapter + Nest resolver exist. schema not applied. fake persist is isolation-only. Nest never binds app DATABASE_URL for mall persist. live catalog S2 still BLOCKED.",
   "schemaApplied": false,
   "publishedToUiRepo": false,
   "productMutationThisSlice": 0,
@@ -174,32 +174,36 @@
     ],
     "realPostgresConcurrency": "BLOCKED",
     "persist": "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
-    "persistIsolation": "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs"
+    "persistIsolation": "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
+    "isolatedUrlResolver": "services/api-nest/isolated-qa-pg.cjs",
+    "nestMallInject": "OperatorMallProductAdminService.resolveRuntimeMallPersistStore",
+    "staffPersist": "services/api-nest/admin-staff-login.persist.cjs",
+    "staffNestInject": "createUnreadyStaffStore protected controller"
   },
   "implementedAdminRoutes": [
     {
       "method": "POST",
       "path": "/api/v1/admin/opportunities/operator-products",
       "capability": "all",
-      "store": "STORE_UNREADY until schema"
+      "store": "resolver wired; STORE_UNREADY while isolated QA URL unset or schema unready"
     },
     {
       "method": "PATCH",
       "path": "/api/v1/admin/opportunities/:id/operator-product",
       "capability": "all",
-      "store": "STORE_UNREADY"
+      "store": "resolver wired; STORE_UNREADY this turn"
     },
     {
       "method": "PATCH",
       "path": "/api/v1/admin/opportunities/:id/visibility",
       "capability": "all",
-      "store": "STORE_UNREADY"
+      "store": "resolver wired; STORE_UNREADY this turn"
     },
     {
       "method": "GET",
       "path": "/api/v1/admin/opportunities/:id/participations",
       "capability": "all",
-      "store": "STORE_UNREADY"
+      "store": "resolver wired; STORE_UNREADY this turn"
     }
   ],
   "implementedUserRoutesExisting": [

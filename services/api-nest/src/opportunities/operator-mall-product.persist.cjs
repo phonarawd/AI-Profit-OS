@@ -4,10 +4,11 @@
  */
 "use strict";
 
-const crypto = require("node:crypto");
+const path = require("node:path");
 const mall = require("./operator-mall-product.core.cjs");
+const isolated = require(path.join(__dirname, "..", "..", "isolated-qa-pg.cjs"));
 
-const PRODUCTION_SUPABASE_REF = "mgsytcetsiecllmhcyox";
+const PRODUCTION_SUPABASE_REF = isolated.PRODUCTION_SUPABASE_REF;
 
 const PRODUCT_COLS = [
   "id",
@@ -167,24 +168,15 @@ SELECT id::text, idempotency_key, journal_type, reference_type,
 });
 
 function isOpsDbTarget(env) {
-  const blob = [
-    env && env.databaseUrl,
-    env && env.catalogTestDatabaseUrl,
-    env && env.supabaseUrl,
-    env && env.supabaseProjectRef,
-  ]
-    .filter(Boolean)
-    .join("\n")
-    .toLowerCase();
-  return blob.includes(PRODUCTION_SUPABASE_REF);
+  return isolated.isOpsDbTarget(env || {});
 }
 
 function allowsMallPersistWrite(env) {
-  const testUrl = (env && (env.catalogTestDatabaseUrl || env.CATALOG_TEST_DATABASE_URL)) || "";
-  if (!testUrl) return false;
-  if (isOpsDbTarget(env || {})) return false;
-  if (String(testUrl).toLowerCase().includes(PRODUCTION_SUPABASE_REF)) return false;
-  return true;
+  return isolated.allowsIsolatedQaPg(env || {});
+}
+
+function resolveIsolatedMallPersistUrl(env) {
+  return isolated.resolveIsolatedQaPgUrl(env || {});
 }
 
 function evaluateSchemaPreflight(row) {
@@ -660,6 +652,44 @@ function draftSqlPath() {
   return "quality/migrations-draft/20260915070000_operator_mall_product.sql";
 }
 
+async function resolveRuntimeMallPersistStore(env, opts) {
+  if (opts && opts.useFake === true) {
+    const err = new Error("fake mall persist cannot be runtime store");
+    err.code = "FAKE_PERSIST_FORBIDDEN_IN_RUNTIME";
+    throw err;
+  }
+  const resolved = resolveIsolatedMallPersistUrl(env || {});
+  if (resolved.allowed !== true) {
+    return createUnreadyPersistStore(resolved.denied || "isolated_url_unset");
+  }
+  let db;
+  try {
+    db = isolated.createIsolatedQaPgDb(resolved.url);
+    const store = await createPersistMallStore(db, {
+      members: (opts && opts.members) || [],
+      testOnly: true,
+    });
+    if (store.ready !== true) {
+      if (db.end) await db.end();
+      return createUnreadyPersistStore("schema_unready");
+    }
+    store.isolatedSource = resolved.source;
+    store.qaInjection = true;
+    store.notProductionPostgresService = true;
+    store._db = db;
+    return store;
+  } catch {
+    if (db && db.end) {
+      try {
+        await db.end();
+      } catch {
+        /* ignore */
+      }
+    }
+    return createUnreadyPersistStore("isolated_connect_failed");
+  }
+}
+
 module.exports = {
   SQL,
   PRODUCT_COLS,
@@ -669,6 +699,8 @@ module.exports = {
   PRODUCTION_SUPABASE_REF,
   isOpsDbTarget,
   allowsMallPersistWrite,
+  resolveIsolatedMallPersistUrl,
+  resolveRuntimeMallPersistStore,
   evaluateSchemaPreflight,
   preflightMallPersistSchema,
   createPersistMallStore,

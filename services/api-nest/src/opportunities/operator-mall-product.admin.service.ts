@@ -1,7 +1,8 @@
 /**
  * 운영자 공용 상품 Admin 면.
  * 앱 PostgresService(DATABASE_URL)로 persist 하지 않는다. 운영 쓰기 0.
- * persist 는 adapter + fake isolation. Nest HTTP 는 STORE_UNREADY.
+ * 격리 QA URL + 스키마 preflight 가 맞으면 persist 주입.
+ * 없으면 STORE_UNREADY. fake persist 를 runtime 으로 넣지 않는다.
  * S1 legacy writer 보호를 해제하지 않는다.
  */
 import { Injectable, Optional, ServiceUnavailableException } from "@nestjs/common";
@@ -39,17 +40,26 @@ const mall = requireCjs(join(__dirname, "operator-mall-product.core.cjs")) as {
     httpStatus: number;
     items?: object[];
   }>;
-  createUnreadyMallStore: () => { ready: false };
+};
+const persist = requireCjs(join(__dirname, "operator-mall-product.persist.cjs")) as {
+  resolveRuntimeMallPersistStore: (
+    env: NodeJS.ProcessEnv,
+  ) => Promise<{ ready: boolean; kind?: string }>;
 };
 
 @Injectable()
 export class OperatorMallProductAdminService {
   constructor(@Optional() private readonly db?: PostgresService) {}
 
+  private storePromise: Promise<{ ready: boolean; kind?: string }> | null = null;
+
   private async store() {
     // this.db = 앱 DATABASE_URL. mall persist 대상이 아니다.
     void this.db;
-    return mall.createUnreadyMallStore();
+    if (!this.storePromise) {
+      this.storePromise = persist.resolveRuntimeMallPersistStore(process.env);
+    }
+    return this.storePromise;
   }
 
   private rejectUnready(out: { code?: string }) {

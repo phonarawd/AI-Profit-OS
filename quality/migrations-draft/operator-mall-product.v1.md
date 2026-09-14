@@ -25,7 +25,21 @@ SQL 초안: `quality/migrations-draft/20260915070000_operator_mall_product.sql`
 
 ## 적용 전
 
-1. 승인된 격리 QA Postgres dry-run만 (`CATALOG_TEST_DATABASE_URL`)
+1. 승인된 격리 QA Postgres dry-run만 (`CATALOG_TEST_DATABASE_URL` 또는 `QA_DATABASE_URL` 또는 조립된 `AIPO_QA_PG*`). 운영 `DATABASE_URL` 대체 금지
 2. `operator-mall-product.isolation.cjs` · `operator-mall-product.persist.isolation.cjs` PASS
 3. 운영 `DATABASE_URL` 적용 금지
 4. S1 `supply_source` 가드 해제 금지
+5. 적용 순서(승인된 QA + 해당 QA 적용 권한이 모두 있을 때만):
+   - `quality/migrations-draft/20260913220000_opportunities_supply_source.sql`
+   - `quality/migrations-draft/20260915070000_operator_mall_product.sql`
+   - 직원 로그인 시험이면 `quality/migrations-draft/20260915080000_admin_staff_credentials.sql` (시드 없음)
+6. 이번 지시만으로는 적용 승인이 아님. `supabase/migrations` 승격 금지.
+
+준비 명령(승인 후, 값은 출력하지 말 것):
+
+```
+psql "$CATALOG_TEST_DATABASE_URL" -v ON_ERROR_STOP=1 -f quality/migrations-draft/20260913220000_opportunities_supply_source.sql
+psql "$CATALOG_TEST_DATABASE_URL" -v ON_ERROR_STOP=1 -f quality/migrations-draft/20260915070000_operator_mall_product.sql
+```
+
+롤백 스케치(실행 금지, 승인 후만): `operator_mall_*` DROP TABLE · `opportunities` 추가 컬럼 DROP. 기존 카탈로그 행 DELETE 금지.

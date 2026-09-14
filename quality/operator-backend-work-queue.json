@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-15T01:42:00+09:00",
-  "head": "ec436d4d32937f2778b4b764e89918de2ca70280",
+  "updatedAt": "2026-09-15T02:40:00+09:00",
+  "head": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
   "commitPushDeploy": 0,
   "contractPath": "quality/contracts/operator-control/",
-  "contractVersion": "2026-09-15.mall-persist-v3",
+  "contractVersion": "2026-09-15.mall-persist-v4",
   "baseline": "ea-baseline-efdd6b742285-e9b11ff430e4",
   "protectedDirtyThisSlice": [
     "services/api-nest/admin-staff-login.core.cjs",
@@ -18,107 +18,71 @@
     "services/api-nest/src/common/admin-session.controller.ts",
     "services/api-nest/src/common/admin-session.runtime.test.ts"
   ],
-  "protectedDirtyNote": "승인된 baseline 보호 바이트가 달라짐. 새 baseline ACK · ISSUED 는 BLOCKED. 로컬 진단만.",
+  "protectedDirtyNote": "이번 슬라이스는 보호 파일을 수정하지 않음. 직원 Nest 주입은 컨트롤러가 보호범위라 보류. 새 baseline ACK · ISSUED 는 BLOCKED.",
   "items": [
     {
       "id": "B1",
-      "alias": [
-        "Q03",
-        "Q04",
-        "T08"
-      ],
+      "alias": ["Q03", "Q04", "T08"],
       "status": "verified_local",
       "note": "cap-only + 0 + force preserve isolation"
     },
     {
       "id": "B2a",
-      "alias": [
-        "Q01",
-        "Q11"
-      ],
+      "alias": ["Q01", "Q11"],
       "status": "verified_local",
       "note": "new signup 5, no backfill; persist path added in B3"
     },
     {
       "id": "B2b",
-      "alias": [
-        "Q05",
-        "Q07"
-      ],
+      "alias": ["Q05", "Q07"],
       "status": "verified_local",
       "note": "runtime persist + memory no longer authorizes participate; real DB consume BLOCKED"
     },
     {
       "id": "B2c",
-      "alias": [
-        "T01",
-        "T02",
-        "T03"
-      ],
+      "alias": ["T01", "T02", "T03"],
       "status": "verified_local",
       "note": "AUTO/MANUAL; downgrade disabled"
     },
     {
       "id": "B3-provider",
-      "alias": [
-        "Q07",
-        "Q11"
-      ],
+      "alias": ["Q07", "Q11"],
       "status": "verified_local",
       "note": "runtime vs test provider split; STORE_UNREADY"
     },
     {
       "id": "B3-contract",
-      "alias": [
-        "U04",
-        "U05"
-      ],
+      "alias": ["U04", "U05"],
       "status": "handoff",
       "note": "live bundle 2026-09-14.b3.display-v19 display vs execution split; b3 original preserved; Journey consumer unconnected"
     },
     {
       "id": "B3-admin-http",
-      "alias": [
-        "U06"
-      ],
+      "alias": ["U06"],
       "status": "verified_local",
       "note": "real AdminGuard Nest HTTP 18 checks; not real Postgres"
     },
     {
       "id": "B3",
-      "alias": [
-        "U02"
-      ],
+      "alias": ["U02"],
       "status": "draft_only",
       "note": "360 exact id kept; JwtAuthGuard DB revoke UNVERIFIED"
     },
     {
       "id": "B4",
-      "alias": [
-        "J01",
-        "J02",
-        "J03",
-        "J07"
-      ],
+      "alias": ["J01", "J02", "J03", "J07"],
       "status": "verified_local",
       "note": "v19 profile GET/PUT persist-blocked when schema unready"
     },
     {
       "id": "B5",
-      "alias": [
-        "I01",
-        "I02",
-        "S01"
-      ],
+      "alias": ["I01", "I02", "S01"],
       "status": "draft_only",
       "note": "ownership/preview contract; no full transcript policy"
     },
     {
       "id": "B6",
-      "alias": [
-        "F09",
-        "F10"
-      ],
+      "alias": ["F09", "F10"],
       "status": "draft_only",
       "note": "dry-run only; fake success excluded; write 0"
     },
@@ -144,27 +108,23 @@
     },
     {
       "id": "P4-admin-login",
-      "status": "implemented_local_activation_blocked",
-      "note": "Nest HTTP 6 checks STORE_UNREADY. real DB BLOCKED"
+      "status": "persist_code_nest_unready_protected_controller",
+      "note": "staff persist + isolation PASS. Nest still createUnreadyStaffStore. real DB BLOCKED"
     },
     {
       "id": "P4-member-directory",
       "status": "implemented_local_list_blocked",
-      "note": "Nest HTTP 14 checks. list STORE_UNREADY. real DB BLOCKED"
+      "note": "Nest HTTP 15 checks. list STORE_UNREADY. real DB BLOCKED"
     },
     {
       "id": "Q08",
-      "alias": [
-        "Q10"
-      ],
+      "alias": ["Q10"],
       "status": "blocked",
-      "note": "need CATALOG_TEST_DATABASE_URL / QA Postgres"
+      "note": "CATALOG_TEST_DATABASE_URL / QA_DATABASE_URL / AIPO_QA_PG unset. do not re-check"
     },
     {
       "id": "C-S2",
-      "alias": [
-        "C03"
-      ],
+      "alias": ["C03"],
       "status": "blocked",
       "note": "live catalog S2 persist still BLOCKED. local mall core approved without lifting S1 guards."
     },
@@ -180,15 +140,13 @@
     },
     {
       "id": "V-visibility",
-      "alias": [
-        "C04"
-      ],
-      "status": "persist_code_schema_unapplied_http_unready",
-      "note": "persist adapter + fake persist isolation. Nest STORE_UNREADY without CATALOG_TEST_DATABASE_URL. ops apply BLOCKED"
+      "alias": ["C04"],
+      "status": "persist_code_http_resolver_isolated_unset",
+      "note": "Nest mall resolver wired. isolated QA URL unset. HTTP still 503. ops apply BLOCKED"
     },
     {
       "id": "V-register",
-      "status": "persist_code_schema_unapplied_http_unready",
+      "status": "persist_code_http_resolver_isolated_unset",
       "note": "same validate admin/ai_tool. persist code exists. production unready"
     },
     {
@@ -199,25 +157,27 @@
     {
       "id": "V-payout",
       "status": "persist_and_execution_snapshot_wired_live_pg_blocked",
-      "note": "snapshot configuredPayout + journal authority. mall persist unique. live journal BLOCKED"
+      "note": "snapshot configuredPayout + journal authority. mall persist unique. mall settlement table is not live ledger. live journal BLOCKED"
     }
   ],
   "visibilityContract": {
     "file": "quality/contracts/operator-control/product-visibility-concurrent-participate.v1.json",
-    "status": "persist_code_schema_unapplied_http_unready"
+    "status": "persist_code_http_resolver_isolated_unset"
   },
   "verifyThisSlice": {
     "mallIsolation": "PASS exit=0 mock_memory",
     "mallPersistIsolation": "PASS exit=0 fake_persist",
+    "staffPersistIsolation": "PASS exit=0 fake_persist",
     "resellerIsolation": "PASS exit=0 memory",
     "resellerPersistIsolation": "PASS exit=0 fake_persist",
-    "mallHttp": "PASS exit=0 Nest_unready_503",
+    "mallHttp": "PASS exit=0 Nest_resolver_unready_503",
     "directoryIsolation": "PASS exit=0",
     "directoryHttp": "PASS exit=0 Nest_fixture_not_live_pg",
     "moneyAuthority": "PASS exit=0",
-    "tscApiNest": "not_run",
+    "tscApiNest": "PASS exit=0",
+    "adminBoundary": "PASS exit=0",
     "operatorQuotaGrade": "PASS exit=0",
-    "gateFastCommit": "PASS exit=0 staged_related_only",
+    "gateFastCommit": "pending",
     "realPgConcurrency": "BLOCKED",
     "opsDbApply": "BLOCKED"
   },

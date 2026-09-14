@@ -61,6 +61,33 @@ async function main() {
       }),
       true,
     );
+    assert.equal(
+      persist.allowsMallPersistWrite({
+        DATABASE_URL: "postgres://x@127.0.0.1:5432/app",
+      }),
+      false,
+    );
+    assert.equal(
+      persist.allowsMallPersistWrite({
+        QA_DATABASE_URL: "postgres://x@127.0.0.1:5432/qa",
+      }),
+      true,
+    );
+    assert.equal(
+      persist.allowsMallPersistWrite({
+        AIPO_QA_PGHOST: "127.0.0.1",
+        AIPO_QA_PGUSER: "qa",
+        AIPO_QA_PGPASSWORD: "qa",
+        AIPO_QA_PGDATABASE: "aipo_qa_synth",
+      }),
+      true,
+    );
+    const resolvedDbUrl = persist.resolveIsolatedMallPersistUrl({
+      DATABASE_URL: "postgres://x@127.0.0.1:5432/app",
+      catalogTestDatabaseUrl: "postgres://x@127.0.0.1:5432/catalog_qa",
+    });
+    assert.equal(resolvedDbUrl.allowed, true);
+    assert.equal(resolvedDbUrl.source, "CATALOG_TEST_DATABASE_URL");
   }, fails);
 
   await check("unready_not_success", async () => {
@@ -208,6 +235,19 @@ async function main() {
   await check("draft_not_in_supabase_migrations", async () => {
     assert.equal(persist.draftSqlPath().includes("quality/migrations-draft"), true);
     assert.equal(persist.draftSqlPath().includes("supabase/migrations"), false);
+  }, fails);
+
+  await check("runtime_unset_not_fake", async () => {
+    const store = await persist.resolveRuntimeMallPersistStore({});
+    assert.equal(store.ready, false);
+    assert.equal(store.kind, "persist_unready");
+    let fakeThrown = false;
+    try {
+      await persist.resolveRuntimeMallPersistStore({}, { useFake: true });
+    } catch (e) {
+      fakeThrown = e && e.code === "FAKE_PERSIST_FORBIDDEN_IN_RUNTIME";
+    }
+    assert.equal(fakeThrown, true);
   }, fails);
 
   console.log("[operator-mall-product.persist.isolation] scope=fake_persist real_pg=BLOCKED");

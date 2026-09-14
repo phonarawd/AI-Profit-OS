@@ -11,8 +11,8 @@ atSec 0,8,18,28,48,58,66 · totalDurationSec 70 · 필드 atSec
 실행 정책(별도): GET/PUT /api/v1/admin/execution-policy
 DAY1 5단계 product_check… · durationSecMin 8 / Max 15. Soft60/Hard90 과 다름.
 
-상품 공개·동시 참여(2026-09-15.mall-persist-v3): `product-visibility-concurrent-participate.v1.json`
-금액 권위: expectedProfitUsdt / configuredPayoutUsdt / ledgerPaidUsdt. persist 실태: persist-status.v1.json. persist 코드+draft+가짜 persist 격리. 라이브 스키마 미적용이면 Nest STORE_UNREADY. 실 Postgres persist 아님. 기본은 쇼핑몰형 전체 공개. 선택 회원 공개는 권한이지 독점 예약이 아님. 구현 필드와 제안(라이브 스키마) 필드를 구분한다.
+상품 공개·동시 참여(2026-09-15.mall-persist-v4): `product-visibility-concurrent-participate.v1.json`
+금액 권위: expectedProfitUsdt / configuredPayoutUsdt / ledgerPaidUsdt. persist 실태: persist-status.v1.json. persist 코드+draft+가짜 persist 격리. Nest Admin 상품은 격리 QA resolver. 이 턴 URL unset → STORE_UNREADY. 실 Postgres persist 아님. 기본은 쇼핑몰형 전체 공개. 선택 회원 공개는 권한이지 독점 예약이 아님. 구현 필드와 제안(라이브 스키마) 필드를 구분한다.
 
 사용자 API: GET /api/v1/me/membership
 Admin 표시 연출: GET/PUT /api/v1/admin/membership/presentation-profile

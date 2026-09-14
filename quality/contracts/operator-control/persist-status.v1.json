@@ -1,8 +1,27 @@
 {
-  "contractVersion": "2026-09-15.persist-status-v2",
-  "note": "셸 API 또는 503 STORE_UNREADY 만으로 구현 완료로 쓰지 말 것. persist 코드 ≠ 실DB 적용 ≠ 출시.",
+  "contractVersion": "2026-09-15.persist-status-v3",
+  "measuredAgainstHead": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
+  "putdukOpsPreviousHead": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
+  "staleContractHeadWas": "ec436d4d32937f2778b4b764e89918de2ca70280",
+  "headDeltaFromStaleContract": "31c8e731 already contained persist adapter. This slice adds isolated QA resolver + Nest mall inject + staff persist code. tsc was not_run in stale contract; now PASS.",
+  "note": "셸 API 또는 503 STORE_UNREADY 만으로 구현 완료로 쓰지 말 것. persist 코드 ≠ HTTP 배선 ≠ 실DB 적용 ≠ 출시.",
   "schemaApplied": false,
   "opsDb": false,
+  "isolatedQaUrl": "unset",
+  "isolatedQaUrlCheckedOnce": {
+    "CATALOG_TEST_DATABASE_URL": "process UNSET · dotenv key absent",
+    "QA_DATABASE_URL": "process UNSET · dotenv key absent",
+    "AIPO_QA_PG": "all parts UNSET · dotenv keys absent",
+    "DATABASE_URL": "process UNSET · dotenv key present · not used"
+  },
+  "measured": {
+    "tscApiNest": "PASS",
+    "adminBoundary": "PASS",
+    "operatorQuotaGrade": "PASS",
+    "realHttpDb": "BLOCKED",
+    "liveJournal": false,
+    "officialQa0to9": false
+  },
   "items": {
     "productVisibility": {
       "intended": "opportunities.visibility all_public|selected_members|private",
@@ -13,8 +32,11 @@
       "isolatedFakePersist": true,
       "isolatedFakePersistIsolation": "PASS",
       "nestProductionStore": "STORE_UNREADY",
-      "nestPersistGate": "never bind PostgresService/DATABASE_URL. dedicated isolated pool absent. Nest HTTP stays STORE_UNREADY",
-      "status": "persist_code_unapplied_schema"
+      "nestPersistGate": "never bind PostgresService/DATABASE_URL. resolveRuntimeMallPersistStore uses CATALOG_TEST_DATABASE_URL | QA_DATABASE_URL | AIPO_QA_PG only. this turn unset → STORE_UNREADY. fake persist forbidden as runtime.",
+      "nestHttpWiredToResolver": true,
+      "nestHttpReady": false,
+      "qaInjectionVsRuntime": "QA inject = isolated pool from the three names above. Runtime participate/ledger = existing PostgresService/DATABASE_URL. They are not the same store.",
+      "status": "persist_code_http_resolver_isolated_unset"
     },
     "selectedMemberIds": {
       "intended": "opportunities.selected_member_ids uuid[]",
@@ -23,7 +45,7 @@
       "persistCode": true,
       "isolatedFakePersist": true,
       "nestProductionStore": "STORE_UNREADY",
-      "status": "persist_code_unapplied_schema"
+      "status": "persist_code_http_resolver_isolated_unset"
     },
     "resellerId": {
       "sourceColumn": "public.users.referral_code",
@@ -47,7 +69,7 @@
       "livePostgresColumn": false,
       "notPatchPricingReason": true,
       "publicUserProjection": false,
-      "status": "persist_code_unapplied_schema"
+      "status": "persist_code_http_resolver_isolated_unset"
     },
     "participationPayout": {
       "snapshotField": "configuredPayoutUsdt",
@@ -56,8 +78,18 @@
       "liveTradeIdempotency": "settlement:{tradeId}",
       "onePayoutPerParticipation": true,
       "memberHistoryRoute": "GET /api/v1/me/ledger/journals",
+      "mallSettlementTableIsNotLiveLedger": true,
       "liveJournalVerified": false,
       "status": "persist_and_execution_snapshot_wired_live_pg_blocked"
+    },
+    "adminStaff": {
+      "persistCode": true,
+      "persistDraft": "quality/migrations-draft/20260915080000_admin_staff_credentials.sql",
+      "isolatedFakePersistIsolation": "PASS",
+      "nestInject": "createUnreadyStaffStore",
+      "nestInjectReason": "AdminSessionController is protected-scope. No isolated staff schema. No new ACK.",
+      "demoStaff": false,
+      "status": "persist_code_nest_unready_protected_controller"
     }
   }
 }

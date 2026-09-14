@@ -16,6 +16,7 @@ const files = [
   "services/api-nest/src/membership/admin-member-directory.isolation.cjs",
   "services/api-nest/src/membership/admin-member-directory.admin-http.cjs",
   "services/api-nest/admin-staff-login.isolation.cjs",
+  "services/api-nest/admin-staff-login.persist.isolation.cjs",
   "services/api-nest/src/common/admin-session-login.admin-http.cjs",
   "services/api-nest/src/opportunities/operator-mall-product.isolation.cjs",
   "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",

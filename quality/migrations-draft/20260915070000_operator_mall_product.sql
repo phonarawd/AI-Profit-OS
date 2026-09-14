@@ -82,3 +82,14 @@ CREATE TABLE IF NOT EXISTS public.operator_mall_settlement_journals (
 CREATE UNIQUE INDEX IF NOT EXISTS operator_mall_settlement_one_payout_uq
   ON public.operator_mall_settlement_journals (reference_id)
   WHERE journal_type = 'settlement' AND reference_type = 'participation';
+
+CREATE INDEX IF NOT EXISTS operator_mall_participations_product_idx
+  ON public.operator_mall_participations (product_id);
+CREATE INDEX IF NOT EXISTS operator_mall_participations_user_idx
+  ON public.operator_mall_participations (user_id);
+
+-- opportunities.supply_source 는 별도 draft
+-- quality/migrations-draft/20260913220000_opportunities_supply_source.sql
+-- 참여 loadMallAccess 는 visibility + supply_source 가 같이 있어야 42703 을 피한다.
+-- 이 파일은 supply_source 를 중복 ADD 하지 않는다.
+-- 실 원장 권위는 public.ledger_journals. 이 settlement 표는 posting 없을 때의 연결 의도만.
