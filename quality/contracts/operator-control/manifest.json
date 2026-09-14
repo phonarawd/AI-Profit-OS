@@ -1,11 +1,11 @@
 {
-  "contractVersion": "2026-09-15.mall-admin-v5",
-  "generatedAt": "2026-09-15T04:16:00+09:00",
+  "contractVersion": "2026-09-15.mall-ledger-v6",
+  "generatedAt": "2026-09-15T07:53:13+09:00",
   "repo": "phonarawd/AI-Profit-OS",
   "branch": "qa/operator-mall-pg-20260915",
-  "head": "87f033995ee0ee2e42d72eae8a809b2037f229a4",
+  "head": "d626126c0083f82be993d028750088babd256ec2",
   "parentHead": "9d48e58e6fa0871611fe27292e8c876ee568a18c",
-  "headNote": "head=GHA run 34885649558가 검증한 SHA. 이 기록 커밋은 그 이후. 부모 구현 HEAD는 9d48e58e.",
+  "headNote": "head=GHA run 34906126441가 검증한 SHA. 이 기록 커밋은 그 이후. 부모 구현 HEAD는 9d48e58e. 중간 실패 34905783882는 최종 아님.",
   "implementation": "gha_ephemeral_pg_pass",
   "schemaApplied": false,
   "storeReady": false,
@@ -14,24 +14,29 @@
   "opsDb": false,
   "fingerprintAlgo": "sha256",
   "workflowName": "operator-mall-gha-pg",
-  "workflowRunId": "34885649558",
-  "workflowRunUrl": "https://github.com/phonarawd/AI-Profit-OS/actions/runs/34885649558",
+  "workflowRunId": "34906126441",
+  "workflowRunUrl": "https://github.com/phonarawd/AI-Profit-OS/actions/runs/34906126441",
+  "measuredAt": "2026-09-14T22:53:13Z",
   "files": [
     {
       "file": "PUTDUK_OPS-handoff-mall-admin-v5.md",
       "fingerprint": "490198ef0a8c2949d159f4901187d872d03e6358c4abb117216a4d6043abb850"
     },
     {
+      "file": "PUTDUK_OPS-handoff-mall-ledger-v6.md",
+      "fingerprint": "a643cd992fa0927f0b9331580a2795382827339e4fc18c5f99215e8abb88a9a9"
+    },
+    {
       "file": "README.md",
-      "fingerprint": "59cb1ef6d1c4569a37e9eaa5ed7994f8f0bc7dc9bc300ebb8110d89f15b7d6df"
+      "fingerprint": "d005a69ef04a1a4f74eeaa5927830349fdd2448a256a535220f175b7f7270748"
     },
     {
       "file": "admin-member-directory.v1.json",
-      "fingerprint": "f530e7edea749d02d9b85b0ce293b214b9d29d57e8500126d60b81685cfafe5f"
+      "fingerprint": "c501c0732b635d5278cec4758692fc1486d71f6117529f3e1c7d46f436775032"
     },
     {
       "file": "admin-session-login.v1.json",
-      "fingerprint": "55739bba86e113c2250ae75bfea02b01748750ef016b1001248909e634b9f4f7"
+      "fingerprint": "893b5c4a19bf9d403f46e6e55ac76604c817e79a275378eb00646e10eaf4f6d6"
     },
     {
       "file": "b2-vs-b3-user-dto.v1.json",
@@ -51,7 +56,7 @@
     },
     {
       "file": "persist-status.v1.json",
-      "fingerprint": "5b24b341869d08897415047c1eb7a730cd84aa29a73e756778c688c601733e20"
+      "fingerprint": "6706c7b3a7183ba5908a30d232b3fc9727c8add04af25e8472e58d6c2d0cdd68"
     },
     {
       "file": "presentation-journey-v19.v1.json",
@@ -60,6 +65,10 @@
     {
       "file": "product-admin-http.v5.json",
       "fingerprint": "fd809ce3a063147e9aff1ab3aa70aff47a26d491600452116931afe81039fd96"
+    },
+    {
+      "file": "product-admin-http.v6.json",
+      "fingerprint": "d95e77108747a136641420017b1bd418fd9a2983ef34a65b90d955e7f7e3ce6c"
     },
     {
       "file": "product-visibility-concurrent-participate.v1.json",

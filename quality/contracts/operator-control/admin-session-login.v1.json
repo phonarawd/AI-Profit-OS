@@ -46,8 +46,10 @@
     "persistIsolation": "fake persist lookup · runtime unset · no demo seed",
     "nestHttp": "unready env still 503; GHA ephemeral PG is the real HTTP+SQL target",
     "realDb": "gha_ephemeral_pass",
-    "workflowRunId": "34885649558",
-    "verifiedHead": "87f033995ee0ee2e42d72eae8a809b2037f229a4",
+    "workflowRunId": "34906126441",
+    "verifiedHead": "d626126c0083f82be993d028750088babd256ec2",
+    "previousVerifiedHead": "87f033995ee0ee2e42d72eae8a809b2037f229a4",
+    "previousWorkflowRunId": "34885649558",
     "officialQa": false
   }
 }
