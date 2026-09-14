@@ -32,6 +32,8 @@ const dirCore = require(path.join(
   root,
   "services/api-nest/src/membership/admin-member-directory.core.cjs",
 ));
+const { createRequire } = require("node:module");
+const nestRequire = createRequire(path.join(root, "services/api-nest/package.json"));
 const { mintReferralCode, uniqueViolationTarget } = require(
   path.join(root, "services/api-nest/src/referral/referral-code.util.ts"),
 );
@@ -39,49 +41,53 @@ const { hashPassword } = require(
   path.join(root, "services/api-nest/src/auth/password-hash.ts"),
 );
 
-const { Module } = require("@nestjs/common");
-const { APP_GUARD, NestFactory } = require("@nestjs/core");
-const cookieParser = require("cookie-parser");
-const { AdminGuard } = require(
-  path.join(root, "services/api-nest/src/common/admin.guard.ts"),
-);
-const { OpportunitiesAdminController } = require(
-  path.join(root, "services/api-nest/src/opportunities/opportunities.admin.controller.ts"),
-);
-const { OpportunitiesAdminService } = require(
-  path.join(root, "services/api-nest/src/opportunities/opportunities.admin.service.ts"),
-);
-const { CatalogRuntimeSeedService } = require(
-  path.join(root, "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts"),
-);
-const { PriceOverrideService } = require(
-  path.join(root, "services/api-nest/src/price-override/price-override.service.ts"),
-);
-const { OperatorMallProductAdminService } = require(
-  path.join(root, "services/api-nest/src/opportunities/operator-mall-product.admin.service.ts"),
-);
-const { AdminSessionController } = require(
-  path.join(root, "services/api-nest/src/common/admin-session.controller.ts"),
-);
-const { MembershipAdminController } = require(
-  path.join(root, "services/api-nest/src/membership/membership.admin.controller.ts"),
-);
-const { MembershipAdminService } = require(
-  path.join(root, "services/api-nest/src/membership/membership.admin.service.ts"),
-);
-const { PostgresService } = require(path.join(root, "services/api-nest/src/db/postgres.ts"));
-const { InProcessEventBus } = require(
-  path.join(root, "services/api-nest/src/events/in-process.bus.ts"),
-);
-const { MembershipRuntimeService } = require(
-  path.join(root, "services/api-nest/src/membership/membership.runtime.service.ts"),
-);
-const {
-  ADMIN_CSRF_COOKIE_NAME,
-  ADMIN_CSRF_HEADER,
-  ADMIN_SESSION_COOKIE_NAME,
-  mintAdminCsrfToken,
-} = require(path.join(root, "services/api-nest/src/common/admin-session.csrf.ts"));
+let nestHttp = null;
+function loadNestHttp() {
+  if (nestHttp) return nestHttp;
+  const { Module } = nestRequire("@nestjs/common");
+  const { APP_GUARD, NestFactory } = nestRequire("@nestjs/core");
+  const cookieParser = nestRequire("cookie-parser");
+  nestHttp = {
+    Module,
+    APP_GUARD,
+    NestFactory,
+    cookieParser,
+    AdminGuard: require(path.join(root, "services/api-nest/src/common/admin.guard.ts")).AdminGuard,
+    OpportunitiesAdminController: require(
+      path.join(root, "services/api-nest/src/opportunities/opportunities.admin.controller.ts"),
+    ).OpportunitiesAdminController,
+    OpportunitiesAdminService: require(
+      path.join(root, "services/api-nest/src/opportunities/opportunities.admin.service.ts"),
+    ).OpportunitiesAdminService,
+    CatalogRuntimeSeedService: require(
+      path.join(root, "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts"),
+    ).CatalogRuntimeSeedService,
+    PriceOverrideService: require(
+      path.join(root, "services/api-nest/src/price-override/price-override.service.ts"),
+    ).PriceOverrideService,
+    OperatorMallProductAdminService: require(
+      path.join(root, "services/api-nest/src/opportunities/operator-mall-product.admin.service.ts"),
+    ).OperatorMallProductAdminService,
+    AdminSessionController: require(
+      path.join(root, "services/api-nest/src/common/admin-session.controller.ts"),
+    ).AdminSessionController,
+    MembershipAdminController: require(
+      path.join(root, "services/api-nest/src/membership/membership.admin.controller.ts"),
+    ).MembershipAdminController,
+    MembershipAdminService: require(
+      path.join(root, "services/api-nest/src/membership/membership.admin.service.ts"),
+    ).MembershipAdminService,
+    PostgresService: require(path.join(root, "services/api-nest/src/db/postgres.ts")).PostgresService,
+    InProcessEventBus: require(
+      path.join(root, "services/api-nest/src/events/in-process.bus.ts"),
+    ).InProcessEventBus,
+    MembershipRuntimeService: require(
+      path.join(root, "services/api-nest/src/membership/membership.runtime.service.ts"),
+    ).MembershipRuntimeService,
+    csrf: require(path.join(root, "services/api-nest/src/common/admin-session.csrf.ts")),
+  };
+  return nestHttp;
+}
 
 const ARTIFACT_DIR = path.join(root, "_tmp_operator_mall_gha");
 const A = "11111111-1111-4111-8111-111111111111";
@@ -181,59 +187,69 @@ function callHttp(port, method, urlPath, opts) {
 }
 
 async function bootMallApp() {
+  const n = loadNestHttp();
   class MallQaModule {}
-  Module({
-    controllers: [OpportunitiesAdminController],
+  n.Module({
+    controllers: [n.OpportunitiesAdminController],
     providers: [
-      { provide: APP_GUARD, useClass: AdminGuard },
-      { provide: OpportunitiesAdminService, useValue: {} },
-      { provide: CatalogRuntimeSeedService, useValue: {} },
-      { provide: PriceOverrideService, useValue: {} },
-      OperatorMallProductAdminService,
+      { provide: n.APP_GUARD, useClass: n.AdminGuard },
+      { provide: n.OpportunitiesAdminService, useValue: {} },
+      { provide: n.CatalogRuntimeSeedService, useValue: {} },
+      { provide: n.PriceOverrideService, useValue: {} },
+      n.OperatorMallProductAdminService,
     ],
   })(MallQaModule);
-  const app = await NestFactory.create(MallQaModule, { logger: false });
-  app.use(cookieParser());
+  const app = await n.NestFactory.create(MallQaModule, { logger: false });
+  app.use(n.cookieParser());
   await app.listen(0);
   return app;
 }
 
 async function bootLoginApp() {
+  const n = loadNestHttp();
   class LoginQaModule {}
-  Module({
-    controllers: [AdminSessionController],
-    providers: [{ provide: APP_GUARD, useClass: AdminGuard }],
+  n.Module({
+    controllers: [n.AdminSessionController],
+    providers: [{ provide: n.APP_GUARD, useClass: n.AdminGuard }],
   })(LoginQaModule);
-  const app = await NestFactory.create(LoginQaModule, { logger: false });
-  app.use(cookieParser());
+  const app = await n.NestFactory.create(LoginQaModule, { logger: false });
+  app.use(n.cookieParser());
   await app.listen(0);
   return app;
 }
 
 async function bootDirectoryApp() {
+  const n = loadNestHttp();
   class DirQaModule {}
-  Module({
-    controllers: [MembershipAdminController],
+  n.Module({
+    controllers: [n.MembershipAdminController],
     providers: [
-      { provide: APP_GUARD, useClass: AdminGuard },
-      PostgresService,
-      InProcessEventBus,
-      { provide: MembershipRuntimeService, useValue: {} },
-      MembershipAdminService,
+      { provide: n.APP_GUARD, useClass: n.AdminGuard },
+      n.PostgresService,
+      n.InProcessEventBus,
+      { provide: n.MembershipRuntimeService, useValue: {} },
+      n.MembershipAdminService,
     ],
   })(DirQaModule);
-  const app = await NestFactory.create(DirQaModule, { logger: false });
-  app.use(cookieParser());
+  const app = await n.NestFactory.create(DirQaModule, { logger: false });
+  app.use(n.cookieParser());
   await app.listen(0);
   return app;
 }
 
 function adminCookie(token) {
-  const csrf = mintAdminCsrfToken(token);
+  const n = loadNestHttp();
+  const csrf = n.csrf.mintAdminCsrfToken(token);
   return {
     cookie:
-      ADMIN_SESSION_COOKIE_NAME + "=" + token + "; " + ADMIN_CSRF_COOKIE_NAME + "=" + csrf,
-    headers: { [ADMIN_CSRF_HEADER]: csrf },
+      n.csrf.ADMIN_SESSION_COOKIE_NAME +
+      "=" +
+      token +
+      "; " +
+      n.csrf.ADMIN_CSRF_COOKIE_NAME +
+      "=" +
+      csrf,
+    headers: { [n.csrf.ADMIN_CSRF_HEADER]: csrf },
   };
 }
 
@@ -691,7 +707,7 @@ async function stepLoginDirectory() {
     );
     const port = dirApp.getHttpServer().address().port;
     const listed = await callHttp(port, "GET", "/admin/users", {
-      cookie: ADMIN_SESSION_COOKIE_NAME + "=" + minted.token,
+      cookie: loadNestHttp().csrf.ADMIN_SESSION_COOKIE_NAME + "=" + minted.token,
     });
     if (listed.status !== 200 || !Array.isArray(listed.json.items)) {
       fail("member list HTTP failed status=" + listed.status);

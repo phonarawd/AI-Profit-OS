@@ -70,7 +70,7 @@ jobs:
 
       - name: Stub .env for Docker-less stack-lock
         if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
-        run: printf 'SUPABASE_URL=https://mgsytcetsiecllmhcyox.supabase.co\n' > .env
+        run: printf 'SUPABASE_URL=https://aipo-qa-ephemeral.supabase.co\n' > .env
 
       - name: Nest tsc
         if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
@@ -80,40 +80,43 @@ jobs:
         if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
         run: pnpm verify:admin-boundary
 
-      - name: Prove ephemeral GHA PG
+      - id: prove
+        name: Prove ephemeral GHA PG
         if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
         run: node tooling/verify/operator-mall-gha-pg.cjs --step=prove
 
-      - name: Apply draft SQL on QA PG only
-        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+      - id: apply
+        name: Apply draft SQL on QA PG only
+        if: ${{ !cancelled() && steps.prove.outcome == 'success' }}
         run: node tooling/verify/operator-mall-gha-pg.cjs --step=apply
 
-      - name: Real PG preflight
-        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+      - id: preflight
+        name: Real PG preflight
+        if: ${{ !cancelled() && steps.apply.outcome == 'success' }}
         run: node tooling/verify/operator-mall-gha-pg.cjs --step=preflight
 
       - name: Product persist HTTP
-        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.preflight.outcome == 'success' }}
         run: node tooling/verify/operator-mall-gha-pg.cjs --step=product-http
 
       - name: A/B/C concurrent participate
-        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.preflight.outcome == 'success' }}
         run: node tooling/verify/operator-mall-gha-pg.cjs --step=concurrent
 
       - name: Reseller ID
-        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.preflight.outcome == 'success' }}
         run: node tooling/verify/operator-mall-gha-pg.cjs --step=reseller
 
       - name: Ledger payout idempotent restart
-        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.preflight.outcome == 'success' }}
         run: node tooling/verify/operator-mall-gha-pg.cjs --step=ledger
 
       - name: Staff login and member list
-        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.preflight.outcome == 'success' }}
         run: node tooling/verify/operator-mall-gha-pg.cjs --step=login-directory
 
       - name: Operator row FOR UPDATE
-        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.preflight.outcome == 'success' }}
         run: node tooling/verify/operator-mall-gha-pg.cjs --step=row-protect
 
       - name: Related isolation regression
