@@ -638,8 +638,13 @@ async function stepSelected() {
         { store },
       )
     ).product;
-    if ((await mall.listForUser(C, { store })).items.length !== 0) {
+    const listedC = await mall.listForUser(C, { store });
+    if ((listedC.items || []).some((p) => p.id === product.id)) {
       fail("C listed selected product");
+    }
+    const listedA = await mall.listForUser(A, { store });
+    if (!(listedA.items || []).some((p) => p.id === product.id)) {
+      fail("A missing selected product");
     }
     const hidden = await mall.getForUser(C, product.id, { store });
     if (hidden.httpStatus !== 404) fail("C get selected product must 404");
