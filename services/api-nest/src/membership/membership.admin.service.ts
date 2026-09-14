@@ -78,6 +78,12 @@ const persistCore = reqCjs("./operator-control.persist.cjs") as {
     input: object,
   ) => Promise<Record<string, unknown>>;
 };
+const resellerPersist = reqCjs("../referral/reseller-id.persist.cjs") as {
+  lookupResellerId: (
+    db: object,
+    userId: string,
+  ) => Promise<{ ok: boolean; resellerId: string | null; code?: string }>;
+};
 const providerCore = reqCjs("./operator-control.provider.cjs") as {
   PROVIDER_KIND: { RUNTIME_PERSIST: string };
   projectRuntimeParticipateQuota: (input: object) => Promise<DailyMatchQuotaV1>;
@@ -147,7 +153,11 @@ export class MembershipAdminService {
     cursor?: string;
     operatorId: string;
   }): Promise<{
-    items: Array<{ userId: string; membership: MembershipId }>;
+    items: Array<{
+      userId: string;
+      membership: MembershipId;
+      resellerId: string | null;
+    }>;
     nextCursor: null;
     exact: true;
     substituted: false;
@@ -171,7 +181,13 @@ export class MembershipAdminService {
       operatorId: input.operatorId,
     });
     return {
-      items: [{ userId: q, membership: found.membership.membership }],
+      items: [
+        {
+          userId: q,
+          membership: found.membership.membership,
+          resellerId: found.resellerId,
+        },
+      ],
       nextCursor: null,
       exact: true,
       substituted: false,
@@ -187,6 +203,7 @@ export class MembershipAdminService {
     autoDowngrade: false;
     fulfillRateReadOnly: true;
     ledgerMutated: false;
+    resellerId: string | null;
   }> {
     this.assertUuid(userId, "userId");
     await this.assertUserExists(userId);
@@ -197,6 +214,7 @@ export class MembershipAdminService {
       fulfill_rate_7d:
         rate != null ? String(rate) : row.fulfill_rate_7d,
     });
+    const reseller = await this.lookupResellerId(userId);
     return {
       membership: item,
       labelKo: membershipLabelKo(item.membership),
@@ -207,6 +225,7 @@ export class MembershipAdminService {
       autoDowngrade: false,
       fulfillRateReadOnly: true,
       ledgerMutated: false,
+      resellerId: reseller,
     };
   }
 
@@ -964,6 +983,20 @@ export class MembershipAdminService {
       out.dailyUserMatchCap = Number(row.daily_user_match_cap);
     }
     return out;
+  }
+
+  private async lookupResellerId(userId: string): Promise<string | null> {
+    try {
+      const out = await resellerPersist.lookupResellerId(this.db, userId);
+      return out.ok === true ? out.resellerId : null;
+    } catch (e) {
+      const code =
+        e && typeof e === "object" && "code" in e
+          ? String((e as { code?: string }).code)
+          : "";
+      if (code === "42703") return null;
+      throw e;
+    }
   }
 
   private async assertUserExists(userId: string): Promise<void> {

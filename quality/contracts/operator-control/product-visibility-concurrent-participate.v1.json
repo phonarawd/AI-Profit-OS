@@ -1,11 +1,11 @@
 {
-  "contractVersion": "2026-09-15.mall-local-v2",
+  "contractVersion": "2026-09-15.mall-persist-v3",
   "kind": "operator_product_visibility_and_concurrent_participate",
-  "implementationStatus": "implemented_local_memory_http_unready",
+  "implementationStatus": "persist_code_schema_unapplied_http_unready",
   "replacesInterpretation": "특정 회원 배정이 기본",
   "defaultModel": "mall_public_same_product_multi_member",
-  "s2Implementation": "LOCAL_CORE_ONLY_LIVE_PERSIST_UNREADY",
-  "s2BlockReason": "real Postgres persist and ops schema not applied. local memory core + Nest STORE_UNREADY approved. live catalog S2 still BLOCKED.",
+  "s2Implementation": "PERSIST_CODE_LIVE_SCHEMA_UNAPPLIED",
+  "s2BlockReason": "real Postgres persist and ops schema not applied. persist adapter + fake persist isolation exist. Nest never binds app DATABASE_URL for mall persist. live catalog S2 still BLOCKED.",
   "schemaApplied": false,
   "publishedToUiRepo": false,
   "productMutationThisSlice": 0,
@@ -83,13 +83,14 @@
     "crossUserInFlightSlot": {
       "function": "countActiveTradesForOpportunity",
       "file": "services/api-nest/src/opportunities/participate.service.ts",
-      "sql": "COUNT trade_executions WHERE opportunity_id= AND status IN (running, requeue) — user_id 필터 없음",
-      "slotsLeft": "dailyOppSlotsDefault - activeTrades (null이면 1)",
-      "effect": "A가 같은 상품에서 running/requeue 이면 B의 slotsLeft가 줄어 타인 참여를 막을 수 있음",
+      "sql": "COUNT trade_executions WHERE opportunity_id= AND user_id= AND status IN (running, requeue)",
+      "slotsLeft": "dailyOppSlotsDefault - member activeTrades",
+      "effect": "member in-flight. A running/requeue does not reduce B slotsLeft",
       "purposeInvestigated": "P2-1 상품 슬롯을 전역 상수 대신 실측. 물리 재고/단일 오케스트레이션 용량으로 읽힘. 쇼핑몰형 공용 동시 참여와 충돌.",
       "doNotRemoveUnconditionally": true,
       "minimumProposedChange": "타인 참여를 부당하게 막는 집계만 회원별 in-flight 또는 공용 비독점 용량으로 재해석. 원장 FOR UPDATE·idempotency UNIQUE·회원 cap 행 보호는 유지.",
-      "changeNotApplied": true
+      "changeNotApplied": false,
+      "userIdFilterApplied": true
     },
     "memberGuardsImplemented": [
       "dailyMatchesUsed / dailyUserMatchCap",
@@ -125,7 +126,11 @@
       "GET /api/v1/opportunities 서버가 visibility 강제",
       "GET /api/v1/opportunities/:id 비대상 404",
       "POST /api/v1/opportunities/:id/participate 참여 시점 재확인"
-    ]
+    ],
+    "priceConfirmationMemo": {
+      "type": "text",
+      "notPatchPricingReason": true
+    }
   },
   "testPlan": {
     "required": [
@@ -140,8 +145,9 @@
     "realPostgresMultiConnection": "CATALOG_TEST_DATABASE_URL / 격리 QA Postgres 없으면 BLOCKED. PASS 금지."
   },
   "backendPathsForUiOps": [
-    "C:\\Users\\PC\\Desktop\\AI_PROFIT_OS\\quality\\contracts\\operator-control\\product-visibility-concurrent-participate.v1.json",
-    "C:\\Users\\PC\\Desktop\\AI_PROFIT_OS\\quality\\contracts\\operator-control\\manifest.json"
+    "C:\\\\Users\\\\PC\\\\Desktop\\\\AI_PROFIT_OS\\\\quality\\\\contracts\\\\operator-control\\\\product-visibility-concurrent-participate.v1.json",
+    "C:\\\\Users\\\\PC\\\\Desktop\\\\AI_PROFIT_OS\\\\quality\\\\contracts\\\\operator-control\\\\persist-status.v1.json",
+    "C:\\\\Users\\\\PC\\\\Desktop\\\\AI_PROFIT_OS\\\\quality\\\\contracts\\\\operator-control\\\\manifest.json"
   ],
   "s2SafetyHonored": [
     "legacy Admin/CLI/ingest does not pass OPERATOR_CANONICAL",
@@ -157,14 +163,18 @@
     "resellerId": {
       "source": "users.referral_code",
       "displayField": "resellerId",
-      "notAuthToken": true
+      "notAuthToken": true,
+      "lookupWired": "GET /me/membership + admin exact directory",
+      "liveHttpVerified": false
     },
-    "payoutCondition": "MATCH_SUCCESS from settlement_rule only",
+    "payoutCondition": "MATCH_SUCCESS from settlement_rule + ledger journal. payoutAuthoritative only with journal.",
     "payoutRoutesExisting": [
       "POST /api/v1/trades/:id/execute-tick",
       "GET /api/v1/me/ledger/journals"
     ],
-    "realPostgresConcurrency": "BLOCKED"
+    "realPostgresConcurrency": "BLOCKED",
+    "persist": "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
+    "persistIsolation": "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs"
   },
   "implementedAdminRoutes": [
     {
@@ -199,7 +209,8 @@
     "GET /api/v1/trades",
     "GET /api/v1/trades/:id",
     "POST /api/v1/trades/:id/execute-tick",
-    "GET /api/v1/me/ledger/journals"
+    "GET /api/v1/me/ledger/journals",
+    "GET /api/v1/me/membership"
   ],
   "persistStatusFile": "persist-status.v1.json",
   "moneyAuthority": "expectedProfitUsdt vs configuredPayoutUsdt vs ledgerPaidUsdt. payoutAuthoritative only with journal."

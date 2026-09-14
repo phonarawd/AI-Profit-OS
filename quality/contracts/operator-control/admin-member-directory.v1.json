@@ -55,7 +55,7 @@
     "nestHttp": "AdminGuard capability CSRF-GET real Nest; service stub",
     "realDb": "BLOCKED"
   },
-  "pii": "directory core masks email/phone; HTTP exact path returns membership id only",
+  "pii": "directory core masks email/phone; HTTP exact path returns membership id + resellerId",
   "audit": "in-process emit admin.user.directory.lookup",
   "forbidden": [
     "GET /me/membership as admin list",
@@ -71,6 +71,8 @@
     "source": "users.referral_code",
     "field": "resellerId",
     "notAuthToken": true,
+    "adminHttpExactReturnsResellerId": true,
+    "adminHttpExactLivePostgresVerified": false,
     "backfillApplied": false
   }
 }

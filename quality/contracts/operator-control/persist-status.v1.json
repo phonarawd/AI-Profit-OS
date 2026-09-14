@@ -1,6 +1,6 @@
 {
-  "contractVersion": "2026-09-15.persist-status-v1",
-  "note": "셸 API 또는 503 STORE_UNREADY 만으로 구현 완료로 쓰지 말 것.",
+  "contractVersion": "2026-09-15.persist-status-v2",
+  "note": "셸 API 또는 503 STORE_UNREADY 만으로 구현 완료로 쓰지 말 것. persist 코드 ≠ 실DB 적용 ≠ 출시.",
   "schemaApplied": false,
   "opsDb": false,
   "items": {
@@ -8,30 +8,56 @@
       "intended": "opportunities.visibility all_public|selected_members|private",
       "livePostgresColumn": false,
       "memoryCore": true,
+      "persistCode": true,
+      "persistDraft": "quality/migrations-draft/20260915070000_operator_mall_product.sql",
+      "isolatedFakePersist": true,
+      "isolatedFakePersistIsolation": "PASS",
       "nestProductionStore": "STORE_UNREADY",
-      "status": "not_persisted"
+      "nestPersistGate": "never bind PostgresService/DATABASE_URL. dedicated isolated pool absent. Nest HTTP stays STORE_UNREADY",
+      "status": "persist_code_unapplied_schema"
     },
     "selectedMemberIds": {
       "intended": "opportunities.selected_member_ids uuid[]",
       "livePostgresColumn": false,
       "memoryCore": true,
+      "persistCode": true,
+      "isolatedFakePersist": true,
       "nestProductionStore": "STORE_UNREADY",
-      "status": "not_persisted"
+      "status": "persist_code_unapplied_schema"
     },
     "resellerId": {
       "sourceColumn": "public.users.referral_code",
       "sourceColumnExists": true,
       "displayField": "resellerId",
+      "issuedOnSignup": "classic-signup / auth.service mintReferralCode UNIQUE retry",
       "adminDirectoryCoreProjection": true,
-      "adminHttpExactReturnsResellerId": false,
-      "userMeMembershipField": false,
+      "adminHttpExactReturnsResellerId": true,
+      "adminHttpExactLivePostgresVerified": false,
+      "userMeMembershipField": true,
+      "userMeMembershipLiveHttpVerified": false,
       "opsBackfillApplied": false,
-      "status": "source_column_exists_display_not_wired_to_live_http"
+      "backfillDraft": "quality/migrations-draft/operator-reseller-id-backfill.v1.md",
+      "status": "issued_on_signup_lookup_wired_live_http_unverified",
+      "persistIsolation": "PASS"
     },
     "priceConfirmationMemo": {
-      "dedicatedField": false,
-      "closestExisting": "Admin patchPricing reason/reasonCode audit only",
-      "status": "absent_not_implemented"
+      "dedicatedField": true,
+      "coreField": "priceConfirmationMemo",
+      "draftColumn": "opportunities.price_confirmation_memo / operator_mall_products.price_confirmation_memo",
+      "livePostgresColumn": false,
+      "notPatchPricingReason": true,
+      "publicUserProjection": false,
+      "status": "persist_code_unapplied_schema"
+    },
+    "participationPayout": {
+      "snapshotField": "configuredPayoutUsdt",
+      "authoritativeOnlyWithJournal": true,
+      "mallPersistIdempotency": "settlement:{participationId}",
+      "liveTradeIdempotency": "settlement:{tradeId}",
+      "onePayoutPerParticipation": true,
+      "memberHistoryRoute": "GET /api/v1/me/ledger/journals",
+      "liveJournalVerified": false,
+      "status": "persist_and_execution_snapshot_wired_live_pg_blocked"
     }
   }
 }

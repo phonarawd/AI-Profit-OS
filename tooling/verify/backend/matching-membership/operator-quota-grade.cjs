@@ -18,8 +18,10 @@ const files = [
   "services/api-nest/admin-staff-login.isolation.cjs",
   "services/api-nest/src/common/admin-session-login.admin-http.cjs",
   "services/api-nest/src/opportunities/operator-mall-product.isolation.cjs",
+  "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
   "services/api-nest/src/opportunities/operator-mall-product.admin-http.cjs",
   "services/api-nest/src/referral/reseller-id.isolation.cjs",
+  "services/api-nest/src/referral/reseller-id.persist.isolation.cjs",
   "services/api-nest/src/ledger/money-authority.isolation.cjs",
 ];
 

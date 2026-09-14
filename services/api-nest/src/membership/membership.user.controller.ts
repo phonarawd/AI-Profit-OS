@@ -43,6 +43,7 @@ export class MembershipUserController {
     const presentation = await this.membership.listUserPresentationProfile();
     return {
       contractVersion: "2026-09-14.b3.display-v19",
+      resellerId: full.resellerId ?? null,
       membership: m.membership,
       labelKo: full.labelKo,
       maxCapitalBand: m.maxCapitalBand,

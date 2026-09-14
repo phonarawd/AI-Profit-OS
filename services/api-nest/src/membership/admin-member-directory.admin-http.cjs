@@ -93,7 +93,7 @@ async function main() {
       }
       if (q === MISSING) throw new NotFoundException("user not found");
       return {
-        items: [{ userId: q, membership: "sprout" }],
+        items: [{ userId: q, membership: "sprout", resellerId: "AAAA1111" }],
         nextCursor: null,
         exact: true,
         substituted: false,
@@ -161,6 +161,7 @@ async function main() {
 
     const ok = await call(port, "GET", `${LIST_PATH}?q=${USER_A}`, { token: signAdmin("super") });
     record("exact uuid 200", ok.status === 200, `status=${ok.status} body=${ok.body}`);
+    record("exact returns resellerId", ok.body.includes("AAAA1111") && ok.body.includes("resellerId"), ok.body);
     record("min pii no email", !ok.body.includes("@") && ok.body.includes(USER_A), ok.body);
     record(
       "audit operator from token",

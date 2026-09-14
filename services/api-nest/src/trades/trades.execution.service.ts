@@ -55,6 +55,12 @@ const moneyAuthorityCore = req(
     clientComputedNotAuthority: true;
   };
 };
+function configuredPayoutFromAsset(asset: Record<string, unknown> | null | undefined): string | null {
+  const raw = asset && asset.configuredPayoutUsdt;
+  if (typeof raw !== "string" || raw === "") return null;
+  return formatAmount(parseAmount(raw));
+}
+
 const settlementRule = req(
   join(__dirname, "..", "..", "..", "engine-rust", "settlement_rule.cjs"),
 ) as {
@@ -293,6 +299,9 @@ export class TradeExecutionService {
       return this.toState(trade);
     }
 
+    const configuredPayout = configuredPayoutFromAsset(trade.asset);
+    const payoutUsdt = configuredPayout || input.expectedProfitUsdt;
+
     const lines: PostingLineInput[] = [
       {
         account: { userId: trade.user_id, bucket: "locked" },
@@ -307,12 +316,12 @@ export class TradeExecutionService {
       {
         account: { systemCode: SYSTEM_ACCOUNT_CODES.OPPORTUNITY_POOL },
         direction: "debit",
-        amountUsdt: input.expectedProfitUsdt,
+        amountUsdt: payoutUsdt,
       },
       {
         account: { userId: trade.user_id, bucket: "profit" },
         direction: "credit",
-        amountUsdt: input.expectedProfitUsdt,
+        amountUsdt: payoutUsdt,
       },
     ];
     if (cmpAmount(input.platformMarginUsdt, "0") > 0) {
@@ -346,6 +355,7 @@ export class TradeExecutionService {
     const asset = {
       ...trade.asset,
       rematchCount: input.rematchCount,
+      ...(configuredPayout ? { configuredPayoutUsdt: configuredPayout } : {}),
     };
     // P1-3: status-guarded WHERE — a concurrent execute-tick that already
     // finalized this trade must not be overwritten (0 rows ⇒ reload+return
@@ -358,9 +368,9 @@ export class TradeExecutionService {
               progress_pct = 100,
               log_line = $2,
               expected_profit_usdt = $3::numeric,
-              settled_profit_usdt = $3::numeric,
-              ledger_journal_id = $4::uuid,
-              asset = $5::jsonb,
+              settled_profit_usdt = $4::numeric,
+              ledger_journal_id = $5::uuid,
+              asset = $6::jsonb,
               updated_at = now()
         WHERE id = $1::uuid
           AND status IN ('running', 'requeue')
@@ -373,6 +383,7 @@ export class TradeExecutionService {
         trade.id,
         "MATCH_SUCCESS",
         input.expectedProfitUsdt,
+        payoutUsdt,
         journal.id,
         JSON.stringify(asset),
       ],
@@ -714,6 +725,7 @@ export class TradeExecutionService {
           : undefined,
       moneyAuthority: moneyAuthorityCore.projectMoneyAuthority({
         expectedProfitUsdt: formatAmount(parseAmount(trade.expected_profit_usdt)),
+        configuredPayoutUsdt: configuredPayoutFromAsset(asset),
         ledgerJournalId: trade.ledger_journal_id,
         ledgerPaidUsdt:
           trade.settled_profit_usdt != null

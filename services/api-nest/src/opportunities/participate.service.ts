@@ -183,7 +183,16 @@ type ExistingTrade = {
   status: string;
   expected_profit_usdt: string;
   pricing_version: number;
+  asset?: Record<string, unknown> | null;
 };
+
+function tradeAssetConfiguredPayout(trade: {
+  asset?: Record<string, unknown> | null;
+}): string | null {
+  const raw = trade.asset && trade.asset.configuredPayoutUsdt;
+  if (typeof raw !== "string" || raw === "") return null;
+  return formatAmount(parseAmount(raw));
+}
 
 @Injectable()
 export class ParticipateService {
@@ -433,7 +442,11 @@ export class ParticipateService {
           label: opp.asset_label,
           category: opp.category,
           fxSnapshotId: opp.fx_snapshot_id,
+          ...(mall.configuredPayoutUsdt
+            ? { configuredPayoutUsdt: mall.configuredPayoutUsdt }
+            : {}),
         },
+        configuredPayoutUsdt: mall.configuredPayoutUsdt,
       });
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : String(e);
@@ -555,14 +568,17 @@ export class ParticipateService {
     visibility: string | null;
     selectedMemberIds: string[];
     supplySource: string | null;
+    configuredPayoutUsdt: string | null;
   }> {
     try {
       const r = await this.db.query<{
         visibility: string | null;
         selected_member_ids: string[] | null;
         supply_source: string | null;
+        configured_payout_usdt: string | null;
       }>(
-        `SELECT visibility, selected_member_ids, supply_source
+        `SELECT visibility, selected_member_ids, supply_source,
+                configured_payout_usdt::text
            FROM public.opportunities
           WHERE id = $1::uuid`,
         [opportunityId],
@@ -575,6 +591,10 @@ export class ParticipateService {
           ? row.selected_member_ids
           : [],
         supplySource: row?.supply_source ?? null,
+        configuredPayoutUsdt:
+          row?.configured_payout_usdt != null && row.configured_payout_usdt !== ""
+            ? formatAmount(parseAmount(row.configured_payout_usdt))
+            : null,
       };
     } catch (e) {
       const code = e && typeof e === "object" && "code" in e ? String((e as { code?: string }).code) : "";
@@ -584,6 +604,7 @@ export class ParticipateService {
           visibility: null,
           selectedMemberIds: [],
           supplySource: null,
+          configuredPayoutUsdt: null,
         };
       }
       throw e;
@@ -792,7 +813,7 @@ export class ParticipateService {
     assertFingerprintMatch({ stored, incoming: incomingFingerprint });
 
     const tr = await this.db.query<ExistingTrade>(
-      `SELECT id::text, status, expected_profit_usdt::text, pricing_version
+      `SELECT id::text, status, expected_profit_usdt::text, pricing_version, asset
          FROM public.trade_executions
         WHERE id = $1::uuid`,
       [row.trade_id],
@@ -816,6 +837,7 @@ export class ParticipateService {
       priceSoftAccept: false,
       moneyAuthority: moneyAuthorityCore.projectMoneyAuthority({
         expectedProfitUsdt: formatAmount(parseAmount(trade.expected_profit_usdt)),
+        configuredPayoutUsdt: tradeAssetConfiguredPayout(trade),
       }),
     };
   }
@@ -860,7 +882,9 @@ export class ParticipateService {
       label: string;
       category: string;
       fxSnapshotId: string;
+      configuredPayoutUsdt?: string;
     };
+    configuredPayoutUsdt?: string | null;
   }): Promise<ParticipateResult> {
     // Lock capital principal → locked (§49) before trade rows
     const lockJournal = await this.posting.postJournal({
@@ -908,6 +932,9 @@ export class ParticipateService {
             category: input.asset.category,
             priceSoftAccept: input.priceSoftAccept,
             lockJournalId: lockJournal.id,
+            ...(input.configuredPayoutUsdt
+              ? { configuredPayoutUsdt: input.configuredPayoutUsdt }
+              : {}),
           }),
         ],
       );
@@ -1027,6 +1054,7 @@ export class ParticipateService {
       proof: created.proof,
       moneyAuthority: moneyAuthorityCore.projectMoneyAuthority({
         expectedProfitUsdt: input.expectedProfitUsdt,
+        configuredPayoutUsdt: input.configuredPayoutUsdt || null,
       }),
     };
   }

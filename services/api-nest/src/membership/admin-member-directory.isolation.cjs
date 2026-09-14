@@ -17,8 +17,8 @@ async function main() {
   check(unready.code === "STORE_UNREADY" && unready.applied === false, "unready");
 
   const store = createMemoryMemberStore([
-    { userId: USER_A, membership: "sprout", email: "alpha@example.com", phone: "01012345678" },
-    { userId: USER_B, membership: "entry", email: "beta@example.com", phone: "01099998888" },
+    { userId: USER_A, membership: "sprout", email: "alpha@example.com", phone: "01012345678", referralCode: "AAAA1111" },
+    { userId: USER_B, membership: "entry", email: "beta@example.com", phone: "01099998888", referralCode: "BBBB2222" },
   ]);
 
   const badQ = await searchMembers({ q: "not-a-uuid" }, store);
@@ -33,6 +33,7 @@ async function main() {
   check(one.items[0].emailMasked !== "alpha@example.com", "email masked");
   check(one.items[0].phoneMasked !== "01012345678", "phone masked");
   check(one.items[0].userId === USER_A, "id exact");
+  check(one.items[0].resellerId === "AAAA1111", "resellerId from referral_code");
 
   const page = await searchMembers({ cursor: "0", limit: 1 }, store);
   check(page.ok === true && page.items.length === 1 && page.nextCursor === "1", "page 1");

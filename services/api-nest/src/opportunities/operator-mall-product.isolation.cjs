@@ -22,6 +22,7 @@ function spec(extra) {
     payoutAmount: "12.5",
     currency: "USDT",
     visibility: core.VISIBILITY.ALL_PUBLIC,
+    priceConfirmationMemo: "확인: 12.5 USDT",
   }, extra || {});
 }
 
@@ -159,6 +160,16 @@ async function main() {
     assert.equal(core.countMemberInFlight(rows, "p1", A), 2);
     assert.equal(core.countMemberInFlight(rows, "p1", B), 1);
     assert.equal(core.countMemberInFlight(rows, "p1", C), 0);
+  }, fails);
+
+  await check("price_memo_not_payout", async () => {
+    const store = mem([{ userId: A, cap: 5 }]);
+    const p = (await core.registerProduct(spec(), { store })).product;
+    assert.equal(p.priceConfirmationMemo, "확인: 12.5 USDT");
+    assert.equal(p.payoutAmount, "12.5");
+    const pub = (await core.getForUser(A, p.id, { store })).product;
+    assert.equal(pub.moneyAuthority.configuredPayoutUsdt, "12.5");
+    assert.equal(Object.prototype.hasOwnProperty.call(pub, "priceConfirmationMemo"), false);
   }, fails);
 
   await check("money_not_authority_until_journal", async () => {

@@ -63,6 +63,6 @@
     "C01": "verified_local",
     "C02": "blocked",
     "C03": "blocked",
-    "C04": "implemented_local_memory_http_unready"
+    "C04": "persist_code_schema_unapplied_http_unready"
   }
 }

@@ -164,6 +164,24 @@ function assertCompositionQty(raw) {
   return n;
 }
 
+const MEMO_MAX = 2000;
+
+function assertPriceConfirmationMemo(raw) {
+  if (raw == null || raw === "") return "";
+  if (typeof raw !== "string") {
+    const err = new Error("priceConfirmationMemo must be string");
+    err.code = "INVALID_PRICE_CONFIRMATION_MEMO";
+    throw err;
+  }
+  const s = raw.trim();
+  if (s.length > MEMO_MAX) {
+    const err = new Error("priceConfirmationMemo too long");
+    err.code = "INVALID_PRICE_CONFIRMATION_MEMO";
+    throw err;
+  }
+  return s;
+}
+
 /**
  * 진행 중 슬롯은 회원별. 상품 전체 독점·판매 재고가 아니다.
  * compositionQty 는 구성 수량. 원장 FOR UPDATE 는 여기 없음.
@@ -248,6 +266,9 @@ function validateProductFields(input) {
     err.code = "INVALID_SELECTED_MEMBERS";
     throw err;
   }
+  const priceConfirmationMemo = assertPriceConfirmationMemo(
+    input && input.priceConfirmationMemo,
+  );
   return {
     name,
     description,
@@ -257,6 +278,7 @@ function validateProductFields(input) {
     currency,
     visibility,
     selectedMemberIds,
+    priceConfirmationMemo,
   };
 }
 
@@ -314,6 +336,10 @@ async function updateProduct(productId, input, deps) {
         input.selectedMemberIds != null
           ? input.selectedMemberIds
           : current.selectedMemberIds,
+      priceConfirmationMemo:
+        input.priceConfirmationMemo != null
+          ? input.priceConfirmationMemo
+          : current.priceConfirmationMemo,
     };
     patch = validateProductFields(merged);
   } catch (e) {
@@ -664,6 +690,7 @@ module.exports = {
   parseAmount,
   formatAmount,
   assertPayoutAmount,
+  assertPriceConfirmationMemo,
   canSeeProduct,
   countMemberInFlight,
   personalGuard,
