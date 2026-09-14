@@ -1,23 +1,227 @@
 {
-  "updatedAt": "2026-09-14T16:30:00+09:00",
-  "head": "27b5b9f71f4350ca69f3e657be9b26957e91d8d1",
+  "updatedAt": "2026-09-15T00:45:00+09:00",
+  "head": "efdd6b742285651d0a8060ec3ecbc31d35520a73",
   "commitPushDeploy": 0,
   "contractPath": "quality/contracts/operator-control/",
-  "contractVersion": "2026-09-14.b3.display-v19",
+  "contractVersion": "2026-09-15.mall-local-v2",
+  "baseline": "ea-baseline-efdd6b742285-e9b11ff430e4",
+  "protectedDirtyThisSlice": [
+    "services/api-nest/admin-staff-login.core.cjs",
+    "services/api-nest/admin-staff-login.isolation.cjs",
+    "services/api-nest/src/membership/admin-member-directory.core.cjs",
+    "services/api-nest/src/membership/admin-member-directory.isolation.cjs",
+    "services/api-nest/src/membership/membership.admin.controller.ts",
+    "services/api-nest/src/membership/membership.admin.service.ts",
+    "services/api-nest/src/membership/membership.routes.ts",
+    "services/api-nest/src/membership/membership.events.ts",
+    "services/api-nest/src/common/admin-capabilities.ts",
+    "services/api-nest/src/common/admin-session.controller.ts",
+    "services/api-nest/src/common/admin-session.runtime.test.ts"
+  ],
+  "protectedDirtyNote": "승인된 baseline 보호 바이트가 달라짐. 새 baseline ACK · ISSUED 는 BLOCKED. 로컬 진단만.",
   "items": [
-    { "id": "B1", "alias": ["Q03", "Q04", "T08"], "status": "verified_local", "note": "cap-only + 0 + force preserve isolation" },
-    { "id": "B2a", "alias": ["Q01", "Q11"], "status": "verified_local", "note": "new signup 5, no backfill; persist path added in B3" },
-    { "id": "B2b", "alias": ["Q05", "Q07"], "status": "verified_local", "note": "runtime persist + memory no longer authorizes participate; real DB consume BLOCKED" },
-    { "id": "B2c", "alias": ["T01", "T02", "T03"], "status": "verified_local", "note": "AUTO/MANUAL; downgrade disabled" },
-    { "id": "B3-provider", "alias": ["Q07", "Q11"], "status": "verified_local", "note": "runtime vs test provider split; STORE_UNREADY" },
-    { "id": "B3-contract", "alias": ["U04", "U05"], "status": "handoff", "note": "live bundle 2026-09-14.b3.display-v19 display vs execution split; b3 original preserved; Journey consumer unconnected" },
-    { "id": "B3-admin-http", "alias": ["U06"], "status": "verified_local", "note": "real AdminGuard Nest HTTP 18 checks; not real Postgres" },
-    { "id": "B3", "alias": ["U02"], "status": "draft_only", "note": "360 exact id kept; JwtAuthGuard DB revoke UNVERIFIED" },
-    { "id": "B4", "alias": ["J01", "J02", "J03", "J07"], "status": "verified_local", "note": "v19 profile GET/PUT persist-blocked when schema unready" },
-    { "id": "B5", "alias": ["I01", "I02", "S01"], "status": "draft_only", "note": "ownership/preview contract; no full transcript policy" },
-    { "id": "B6", "alias": ["F09", "F10"], "status": "draft_only", "note": "dry-run only; fake success excluded; write 0" },
-    { "id": "Q08", "alias": ["Q10"], "status": "blocked", "note": "need CATALOG_TEST_DATABASE_URL / QA Postgres" },
-    { "id": "C-S2", "alias": ["C03"], "status": "blocked", "note": "S1 real DB BLOCKED; spec only" },
-    { "id": "Release", "status": "blocked", "note": "no deploy approval" }
-  ]
+    {
+      "id": "B1",
+      "alias": [
+        "Q03",
+        "Q04",
+        "T08"
+      ],
+      "status": "verified_local",
+      "note": "cap-only + 0 + force preserve isolation"
+    },
+    {
+      "id": "B2a",
+      "alias": [
+        "Q01",
+        "Q11"
+      ],
+      "status": "verified_local",
+      "note": "new signup 5, no backfill; persist path added in B3"
+    },
+    {
+      "id": "B2b",
+      "alias": [
+        "Q05",
+        "Q07"
+      ],
+      "status": "verified_local",
+      "note": "runtime persist + memory no longer authorizes participate; real DB consume BLOCKED"
+    },
+    {
+      "id": "B2c",
+      "alias": [
+        "T01",
+        "T02",
+        "T03"
+      ],
+      "status": "verified_local",
+      "note": "AUTO/MANUAL; downgrade disabled"
+    },
+    {
+      "id": "B3-provider",
+      "alias": [
+        "Q07",
+        "Q11"
+      ],
+      "status": "verified_local",
+      "note": "runtime vs test provider split; STORE_UNREADY"
+    },
+    {
+      "id": "B3-contract",
+      "alias": [
+        "U04",
+        "U05"
+      ],
+      "status": "handoff",
+      "note": "live bundle 2026-09-14.b3.display-v19 display vs execution split; b3 original preserved; Journey consumer unconnected"
+    },
+    {
+      "id": "B3-admin-http",
+      "alias": [
+        "U06"
+      ],
+      "status": "verified_local",
+      "note": "real AdminGuard Nest HTTP 18 checks; not real Postgres"
+    },
+    {
+      "id": "B3",
+      "alias": [
+        "U02"
+      ],
+      "status": "draft_only",
+      "note": "360 exact id kept; JwtAuthGuard DB revoke UNVERIFIED"
+    },
+    {
+      "id": "B4",
+      "alias": [
+        "J01",
+        "J02",
+        "J03",
+        "J07"
+      ],
+      "status": "verified_local",
+      "note": "v19 profile GET/PUT persist-blocked when schema unready"
+    },
+    {
+      "id": "B5",
+      "alias": [
+        "I01",
+        "I02",
+        "S01"
+      ],
+      "status": "draft_only",
+      "note": "ownership/preview contract; no full transcript policy"
+    },
+    {
+      "id": "B6",
+      "alias": [
+        "F09",
+        "F10"
+      ],
+      "status": "draft_only",
+      "note": "dry-run only; fake success excluded; write 0"
+    },
+    {
+      "id": "P1-QA4-time",
+      "status": "verified_local_tiny",
+      "note": "selftest-local-domain-executor PASS. not isolated-PG HTTP"
+    },
+    {
+      "id": "P1-QA5-ai429",
+      "status": "verified_local_tiny",
+      "note": "ai_429 + success-text rejected. not official isolated-PG"
+    },
+    {
+      "id": "P1-QA5-ledger",
+      "status": "blocked",
+      "note": "BLOCKED_ENV_CAPABILITY"
+    },
+    {
+      "id": "P2-QA9-gate",
+      "status": "verified_local",
+      "note": "selftest-qa9-verifier PASS. ISSUED not current"
+    },
+    {
+      "id": "P4-admin-login",
+      "status": "implemented_local_activation_blocked",
+      "note": "Nest HTTP 6 checks STORE_UNREADY. real DB BLOCKED"
+    },
+    {
+      "id": "P4-member-directory",
+      "status": "implemented_local_list_blocked",
+      "note": "Nest HTTP 14 checks. list STORE_UNREADY. real DB BLOCKED"
+    },
+    {
+      "id": "Q08",
+      "alias": [
+        "Q10"
+      ],
+      "status": "blocked",
+      "note": "need CATALOG_TEST_DATABASE_URL / QA Postgres"
+    },
+    {
+      "id": "C-S2",
+      "alias": [
+        "C03"
+      ],
+      "status": "blocked",
+      "note": "live catalog S2 persist still BLOCKED. local mall core approved without lifting S1 guards."
+    },
+    {
+      "id": "QA9-aggregate",
+      "status": "blocked",
+      "note": "engine-acceptance FAIL: protected_scope_clean stale + aggregate/pathCount drift. ACK required. no new baseline issued"
+    },
+    {
+      "id": "Release",
+      "status": "blocked",
+      "note": "no deploy approval · 운영준비 아님"
+    },
+    {
+      "id": "V-visibility",
+      "alias": [
+        "C04"
+      ],
+      "status": "implemented_local_memory_http_unready",
+      "note": "isolation 11 + Nest HTTP 3. real PG concurrency BLOCKED"
+    },
+    {
+      "id": "V-register",
+      "status": "implemented_local_memory_http_unready",
+      "note": "same validate admin/ai_tool. production unready"
+    },
+    {
+      "id": "V-reseller",
+      "status": "verified_local_memory",
+      "note": "referral_code reuse. ops backfill not applied"
+    },
+    {
+      "id": "V-payout",
+      "status": "implemented_local_match_success_only",
+      "note": "MATCH_SUCCESS only. live journal BLOCKED"
+    }
+  ],
+  "visibilityContract": {
+    "file": "quality/contracts/operator-control/product-visibility-concurrent-participate.v1.json",
+    "status": "implemented_local_memory_http_unready"
+  },
+  "verifyThisSlice": {
+    "mallIsolation": "PASS",
+    "resellerIsolation": "PASS",
+    "qa9Selftest": "PASS",
+    "p1Selftest": "PASS",
+    "loginIsolation": "PASS",
+    "directoryIsolation": "PASS",
+    "loginHttp": "PASS 6",
+    "directoryHttp": "PASS 14",
+    "mallHttp": "PASS 3",
+    "tscApiNest": "PASS exit 0",
+    "adminBoundary": "PASS 134 routes",
+    "operatorQuotaGrade": "PASS",
+    "operatorRowProtect": "PASS (FOR UPDATE BLOCKED)",
+    "engineAcceptance": "FAIL protected dirty + aggregate + pathCount",
+    "gateFastCommit": "not_yet",
+    "realPgConcurrency": "BLOCKED"
+  }
 }

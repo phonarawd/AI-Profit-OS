@@ -1,0 +1,76 @@
+{
+  "contractVersion": "2026-09-14.p4.member-directory-v1",
+  "kind": "operator_member_directory",
+  "implementation": "local_core_plus_exact_reuse",
+  "activation": {
+    "exactUuidLookup": "implemented_reuses_getMembership",
+    "paginatedList": "BLOCKED",
+    "paginatedListReason": "unbounded directory store not ready; no /me/membership substitute"
+  },
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/api/v1/admin/users",
+      "query": {
+        "q": "uuid required for this slice",
+        "cursor": "optional"
+      },
+      "guard": "AdminGuard",
+      "capability": {
+        "name": "users",
+        "level": "read"
+      },
+      "csrf": "not_required_for_GET"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/admin/users/:id/membership",
+      "note": "existing detail · not replaced by /me/membership"
+    }
+  ],
+  "errors": [
+    {
+      "http": 400,
+      "code": "INVALID_USER",
+      "layer": "directory_core_isolation"
+    },
+    {
+      "http": 400,
+      "code": "q must be uuid",
+      "layer": "http_assertUuid"
+    },
+    {
+      "http": 404,
+      "code": "user not found"
+    },
+    {
+      "http": 503,
+      "code": "STORE_UNREADY",
+      "applied": false,
+      "when": "q empty (list)"
+    }
+  ],
+  "verification": {
+    "coreIsolation": "memory store exact/404/mask/page",
+    "nestHttp": "AdminGuard capability CSRF-GET real Nest; service stub",
+    "realDb": "BLOCKED"
+  },
+  "pii": "directory core masks email/phone; HTTP exact path returns membership id only",
+  "audit": "in-process emit admin.user.directory.lookup",
+  "forbidden": [
+    "GET /me/membership as admin list",
+    "demo user substitution",
+    "open PII dump"
+  ],
+  "backendPathsForUiOps": [
+    "C:\\Users\\PC\\Desktop\\AI_PROFIT_OS\\quality\\contracts\\operator-control\\admin-member-directory.v1.json",
+    "C:\\Users\\PC\\Desktop\\AI_PROFIT_OS\\quality\\contracts\\operator-control\\admin-session-login.v1.json",
+    "C:\\Users\\PC\\Desktop\\AI_PROFIT_OS\\quality\\contracts\\operator-control\\manifest.json"
+  ],
+  "resellerId": {
+    "source": "users.referral_code",
+    "field": "resellerId",
+    "notAuthToken": true,
+    "backfillApplied": false
+  }
+}

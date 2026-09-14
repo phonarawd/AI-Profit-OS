@@ -13,6 +13,13 @@ const files = [
   "services/api-nest/src/membership/member-daily-cap.http.cjs",
   "services/api-nest/src/membership/operator-quota-grade.isolation.cjs",
   "services/api-nest/src/membership/operator-quota-grade.admin-http.cjs",
+  "services/api-nest/src/membership/admin-member-directory.isolation.cjs",
+  "services/api-nest/src/membership/admin-member-directory.admin-http.cjs",
+  "services/api-nest/admin-staff-login.isolation.cjs",
+  "services/api-nest/src/common/admin-session-login.admin-http.cjs",
+  "services/api-nest/src/opportunities/operator-mall-product.isolation.cjs",
+  "services/api-nest/src/opportunities/operator-mall-product.admin-http.cjs",
+  "services/api-nest/src/referral/reseller-id.isolation.cjs",
 ];
 
 const failed = [];

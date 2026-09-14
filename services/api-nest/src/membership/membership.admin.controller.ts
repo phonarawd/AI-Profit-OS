@@ -32,6 +32,15 @@ import type {
 export class MembershipAdminController {
   constructor(private readonly membership: MembershipAdminService) {}
 
+  @Get(MEMBERSHIP_ADMIN_ROUTES.userDirectory)
+  listUsers(
+    @Query("q") q: string,
+    @Query("cursor") cursor: string,
+    @AdminOperator() operatorId: string,
+  ) {
+    return this.membership.searchUsers({ q, cursor, operatorId });
+  }
+
   @Get(MEMBERSHIP_ADMIN_ROUTES.membership)
   get(@Param("id") id: string) {
     return this.membership.getMembership(id);

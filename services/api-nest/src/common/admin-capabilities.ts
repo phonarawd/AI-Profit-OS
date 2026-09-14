@@ -86,6 +86,7 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     balanceAdjust: write("balanceAdjust"),
   },
   MembershipAdminController: {
+    listUsers: read("users"),
     get: read("userMembershipForce"),
     force: write("userMembershipForce"),
     getMatchPolicy: read("userMatchPolicy"),
@@ -117,6 +118,10 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     evaluateBagMatch: write("all"),
     evaluateWatchMatch: write("all"),
     registerAssetImage: write("all"),
+    registerOperatorProduct: write("all"),
+    updateOperatorProduct: write("all"),
+    updateOperatorVisibility: write("all"),
+    listOperatorParticipations: read("all"),
   },
   UserOpportunityOverrideAdminController: {
     list: read("userOpportunityOverride"),

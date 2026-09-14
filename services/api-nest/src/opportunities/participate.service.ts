@@ -210,6 +210,11 @@ export class ParticipateService {
     const hidden = await this.isHiddenForUser(userId, pathOpportunityId);
     if (hidden) throw new NotFoundException("opportunity not found");
 
+    const mall = await this.loadMallAccess(pathOpportunityId);
+    if (mall.schemaReady && !this.canSeeMall(userId, mall)) {
+      throw new NotFoundException("opportunity not found");
+    }
+
     const expectedProfitUsdt = await this.resolveExpectedProfit(
       userId,
       pathOpportunityId,
@@ -221,36 +226,48 @@ export class ParticipateService {
 
     // P1 + P5 — compareReady · priceHardStale (no external API)
     const pricing = opp.pricing || {};
-    const compareReady = Boolean(pricing.compareReady);
-    const nowMs = this.clock.nowMs();
-    const staleAtMs = new Date(opp.stale_at).getTime();
-    const guard = settlementRule.guardParticipate({
-      matchBlocked,
-      compareReady,
-      nowMs,
-      staleAtMs,
-      priceStaleMaxSec: settlementRule.DEFAULT_PRICE_STALE_MAX_SEC,
-    });
-    if (guard === "MATCH_BLOCKED") {
-      throw new ForbiddenException({
-        code: "MATCH_BLOCKED",
-        toastCode: "MATCH_BLOCKED",
-        statusCode: 403,
+    const operatorMall =
+      mall.schemaReady && mall.supplySource === "operator";
+    if (operatorMall) {
+      if (matchBlocked) {
+        throw new ForbiddenException({
+          code: "MATCH_BLOCKED",
+          toastCode: "MATCH_BLOCKED",
+          statusCode: 403,
+        });
+      }
+    } else {
+      const compareReady = Boolean(pricing.compareReady);
+      const nowMs = this.clock.nowMs();
+      const staleAtMs = new Date(opp.stale_at).getTime();
+      const guard = settlementRule.guardParticipate({
+        matchBlocked,
+        compareReady,
+        nowMs,
+        staleAtMs,
+        priceStaleMaxSec: settlementRule.DEFAULT_PRICE_STALE_MAX_SEC,
       });
-    }
-    if (guard === "COMPARE_NOT_READY") {
-      throw new ConflictException({
-        code: "COMPARE_NOT_READY",
-        toastCode: "COMPARE_NOT_READY",
-        statusCode: 409,
-      });
-    }
-    if (guard === "PRICE_STALE_DATA") {
-      throw new ConflictException({
-        code: "PRICE_STALE_DATA",
-        toastCode: "PRICE_STALE_DATA",
-        statusCode: 409,
-      });
+      if (guard === "MATCH_BLOCKED") {
+        throw new ForbiddenException({
+          code: "MATCH_BLOCKED",
+          toastCode: "MATCH_BLOCKED",
+          statusCode: 403,
+        });
+      }
+      if (guard === "COMPARE_NOT_READY") {
+        throw new ConflictException({
+          code: "COMPARE_NOT_READY",
+          toastCode: "COMPARE_NOT_READY",
+          statusCode: 409,
+        });
+      }
+      if (guard === "PRICE_STALE_DATA") {
+        throw new ConflictException({
+          code: "PRICE_STALE_DATA",
+          toastCode: "PRICE_STALE_DATA",
+          statusCode: 409,
+        });
+      }
     }
 
     // P2 — practice / circuit / frozen · principal
@@ -492,6 +509,61 @@ export class ParticipateService {
     return rows[0] ?? null;
   }
 
+  private canSeeMall(
+    userId: string,
+    mall: {
+      visibility: string | null;
+      selectedMemberIds: string[];
+    },
+  ): boolean {
+    const vis = mall.visibility || "all_public";
+    if (vis === "private") return false;
+    if (vis === "selected_members") {
+      return mall.selectedMemberIds.includes(userId);
+    }
+    return true;
+  }
+
+  private async loadMallAccess(opportunityId: string): Promise<{
+    schemaReady: boolean;
+    visibility: string | null;
+    selectedMemberIds: string[];
+    supplySource: string | null;
+  }> {
+    try {
+      const r = await this.db.query<{
+        visibility: string | null;
+        selected_member_ids: string[] | null;
+        supply_source: string | null;
+      }>(
+        `SELECT visibility, selected_member_ids, supply_source
+           FROM public.opportunities
+          WHERE id = $1::uuid`,
+        [opportunityId],
+      );
+      const row = r.rows[0];
+      return {
+        schemaReady: true,
+        visibility: row?.visibility ?? null,
+        selectedMemberIds: Array.isArray(row?.selected_member_ids)
+          ? row.selected_member_ids
+          : [],
+        supplySource: row?.supply_source ?? null,
+      };
+    } catch (e) {
+      const code = e && typeof e === "object" && "code" in e ? String((e as { code?: string }).code) : "";
+      if (code === "42703") {
+        return {
+          schemaReady: false,
+          visibility: null,
+          selectedMemberIds: [],
+          supplySource: null,
+        };
+      }
+      throw e;
+    }
+  }
+
   private async isHiddenForUser(
     userId: string,
     opportunityId: string,
@@ -549,15 +621,21 @@ export class ParticipateService {
    * P2-1 fix — real remaining capacity, not the global policy constant.
    * Counts concurrently running/requeue trades on THIS opportunity only.
    */
+  /**
+   * 회원별 in-flight만 센다. 같은 공용 상품에서 A의 running이 B 슬롯을 깎지 않는다.
+   * 원장 FOR UPDATE · 멱등 UNIQUE · 회원 cap 행 보호는 여기 없음.
+   */
   private async countActiveTradesForOpportunity(
     opportunityId: string,
+    userId: string,
   ): Promise<number> {
     const r = await this.db.query<{ n: string }>(
       `SELECT count(*)::text AS n
          FROM public.trade_executions
         WHERE opportunity_id = $1::uuid
+          AND user_id = $2::uuid
           AND status IN ('running', 'requeue')`,
-      [opportunityId],
+      [opportunityId, userId],
     );
     return Number(r.rows[0]?.n ?? 0);
   }
@@ -604,6 +682,7 @@ export class ParticipateService {
     const dailyOppSlotsDefault = slotsRaw === null ? 1 : slotsRaw;
     const activeTrades = await this.countActiveTradesForOpportunity(
       opportunityId,
+      userId,
     );
     const slotsLeft = Math.max(0, dailyOppSlotsDefault - activeTrades);
 

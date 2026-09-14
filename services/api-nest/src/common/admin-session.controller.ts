@@ -2,6 +2,8 @@
  * Admin 세션 교환 — 토큰을 HttpOnly 쿠키로만 남긴다. JSON에 bearer를 돌려주지 않는다.
  */
 
+import { createRequire } from "node:module";
+import { join } from "node:path";
 import {
   Body,
   Controller,
@@ -9,12 +11,35 @@ import {
   Post,
   Req,
   Res,
+  ServiceUnavailableException,
   UnauthorizedException,
 } from "@nestjs/common";
+import { loadPhase0Env } from "../config/phase0.env";
+import { verifyPassword } from "../auth/password-hash";
 import {
   AdminTokenError,
   verifyAdminAccessToken,
 } from "./admin-token";
+import { USER_SESSION_COOKIE_NAME } from "../auth/auth.constants";
+
+const requireCjs = createRequire(__filename);
+const staffLogin = requireCjs(
+  join(__dirname, "..", "..", "admin-staff-login.core.cjs"),
+) as {
+  loginStaff: (
+    input: object,
+    deps: object,
+  ) => Promise<{
+    ok: boolean;
+    applied: boolean;
+    code: string;
+    httpStatus: number;
+    adminId?: string;
+    role?: string;
+    token?: string;
+  }>;
+  createUnreadyStaffStore: () => { ready: false };
+};
 import {
   ADMIN_SESSION_COOKIE_NAME,
   attachAdminSessionCookies,
@@ -45,6 +70,47 @@ type CookieResponse = {
 
 @Controller("admin-session")
 export class AdminSessionController {
+  @Post("login")
+  async login(
+    @Body() body: Record<string, unknown>,
+    @Req() req: CookieRequest,
+    @Res({ passthrough: true }) res: CookieResponse,
+  ) {
+    if (requestHasQueryBearer(req.url ?? req.originalUrl)) {
+      throw new UnauthorizedException("ADMIN_AUTH_INVALID");
+    }
+    const userCookie = String(req.cookies?.[USER_SESSION_COOKIE_NAME] ?? "").trim();
+    const out = await staffLogin.loginStaff(
+      {
+        email: body?.email,
+        password: body?.password,
+        userAccessToken: userCookie || body?.userAccessToken || null,
+      },
+      {
+        store: staffLogin.createUnreadyStaffStore(),
+        verifyPassword,
+        adminJwtSecret: loadPhase0Env().jwtAdminSecret || "",
+      },
+    );
+    if (out.code === "STORE_UNREADY" || out.code === "ADMIN_AUTH_NOT_CONFIGURED") {
+      throw new ServiceUnavailableException({
+        code: out.code,
+        applied: false,
+        storeStatus: "unready",
+        statusCode: 503,
+      });
+    }
+    if (!out.ok || !out.token) {
+      throw new UnauthorizedException(out.code || "ADMIN_AUTH_INVALID");
+    }
+    attachAdminSessionCookies(res, out.token);
+    return {
+      connected: true,
+      adminId: out.adminId,
+      role: out.role,
+    };
+  }
+
   @Post()
   exchange(
     @Body() body: Record<string, unknown>,

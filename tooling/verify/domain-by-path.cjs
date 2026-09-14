@@ -346,6 +346,10 @@ const RULES = [
   {
     test: (f) =>
       /^services\/api-nest\/src\/membership\//.test(f) ||
+      /^services\/api-nest\/admin-staff-login\.(core|isolation)\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/common\/admin-session-login\.admin-http\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/operator-mall-product\./.test(f) ||
+      /^services\/api-nest\/src\/referral\/reseller-id\./.test(f) ||
       /^tooling\/verify\/backend\/matching-membership\/membership-/.test(f) ||
       /^services\/market-intelligence\/src\/membership\.cjs$/.test(f),
     scripts: [

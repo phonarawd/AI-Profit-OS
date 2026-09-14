@@ -1,0 +1,53 @@
+{
+  "contractVersion": "2026-09-14.p4.admin-login-v1",
+  "kind": "operator_login",
+  "implementation": "local_core_http_store_unready",
+  "activation": "BLOCKED",
+  "activationReason": "admin staff credential store is not ready; HTTP always STORE_UNREADY until staff table + ACK",
+  "route": {
+    "method": "POST",
+    "path": "/api/v1/admin-session/login",
+    "outsideAdminGuard": true,
+    "csrfOnFirstLogin": false,
+    "sessionCookies": ["aipo_admin_session", "admin CSRF cookie"]
+  },
+  "dtoIn": {
+    "email": "string",
+    "password": "string",
+    "userAccessToken": "forbidden_if_present"
+  },
+  "dtoOutSuccess": {
+    "connected": true,
+    "adminId": "uuid",
+    "role": "rbac role",
+    "token": "MUST_NOT_appear_in_json"
+  },
+  "errors": [
+    { "http": 503, "code": "STORE_UNREADY", "applied": false },
+    { "http": 503, "code": "ADMIN_AUTH_NOT_CONFIGURED" },
+    { "http": 401, "code": "ADMIN_AUTH_INVALID" },
+    { "http": 401, "code": "ADMIN_AUTH_REQUIRED" }
+  ],
+  "forbidden": [
+    "Supabase Auth",
+    "demo login",
+    "fixed operational password",
+    "user JWT / aipo_session as Admin"
+  ],
+  "reuse": [
+    "jwt.core.cjs admin issuer/audience",
+    "verifyPassword (password-hash)",
+    "attachAdminSessionCookies"
+  ],
+  "store": {
+    "ready": false,
+    "kind": "unready",
+    "migrationDraft": "quality/migrations-draft/admin-staff-credentials.v1.md"
+  },
+  "notes": "계약 작성 ≠ putduk-web/ops 수신. 활성화는 자격 저장소 + Human ACK 이후.",
+  "verification": {
+    "coreIsolation": "memory store password/user-session/disabled",
+    "nestHttp": "product path always createUnreadyStaffStore → 503 STORE_UNREADY; query bearer 401; user cookie does not mint admin",
+    "realDb": "BLOCKED"
+  }
+}

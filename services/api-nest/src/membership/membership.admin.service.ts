@@ -142,6 +142,42 @@ export class MembershipAdminService {
     private readonly runtime: MembershipRuntimeService,
   ) {}
 
+  async searchUsers(input: {
+    q?: string;
+    cursor?: string;
+    operatorId: string;
+  }): Promise<{
+    items: Array<{ userId: string; membership: MembershipId }>;
+    nextCursor: null;
+    exact: true;
+    substituted: false;
+  }> {
+    const q = String(input.q || "").trim();
+    if (!q) {
+      throw new ServiceUnavailableException({
+        code: "STORE_UNREADY",
+        toastCode: "STORE_UNREADY",
+        message: "member directory list requires a ready store; exact uuid q reuses existing membership lookup",
+        applied: false,
+        storeStatus: "unready",
+        statusCode: 503,
+      });
+    }
+    this.assertUuid(q, "q");
+    await this.assertUserExists(q);
+    const found = await this.getMembership(q);
+    this.bus.emit(MEMBERSHIP_EVENTS.memberLookup, {
+      userId: q,
+      operatorId: input.operatorId,
+    });
+    return {
+      items: [{ userId: q, membership: found.membership.membership }],
+      nextCursor: null,
+      exact: true,
+      substituted: false,
+    };
+  }
+
   async getMembership(userId: string): Promise<{
     membership: UserMembershipV1;
     labelKo: string;

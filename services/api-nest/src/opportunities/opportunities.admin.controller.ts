@@ -15,6 +15,7 @@ import { AdminOperator } from "../common/admin-operator.decorator";
 import type { RequestWithAdmin } from "../common/admin.guard";
 import { PriceOverrideService } from "../price-override/price-override.service";
 import { CatalogRuntimeSeedService } from "./catalog-runtime-seed.service";
+import { OperatorMallProductAdminService } from "./operator-mall-product.admin.service";
 import { OpportunitiesAdminService } from "./opportunities.admin.service";
 import { isCapitalBand } from "./opportunities.mi";
 import { OPPORTUNITY_ADMIN_ROUTES } from "./opportunities.routes";
@@ -36,6 +37,7 @@ export class OpportunitiesAdminController {
     private readonly opportunities: OpportunitiesAdminService,
     private readonly catalogSeed: CatalogRuntimeSeedService,
     private readonly priceOverride: PriceOverrideService,
+    private readonly mallProducts: OperatorMallProductAdminService,
   ) {}
 
   @Get(OPPORTUNITY_ADMIN_ROUTES.assets)
@@ -178,5 +180,40 @@ export class OpportunitiesAdminController {
     @Body() body: Record<string, unknown>,
   ) {
     return this.opportunities.registerAssetImage(assetId, body);
+  }
+
+  @Post(OPPORTUNITY_ADMIN_ROUTES.operatorProducts)
+  registerOperatorProduct(
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
+    return this.mallProducts.register(body, operatorId);
+  }
+
+  @Patch(OPPORTUNITY_ADMIN_ROUTES.operatorProductById)
+  updateOperatorProduct(
+    @Param("id") id: string,
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
+    return this.mallProducts.update(id, body, operatorId);
+  }
+
+  @Patch(OPPORTUNITY_ADMIN_ROUTES.operatorVisibility)
+  updateOperatorVisibility(
+    @Param("id") id: string,
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
+    return this.mallProducts.update(id, body, operatorId);
+  }
+
+  @Get(OPPORTUNITY_ADMIN_ROUTES.operatorParticipations)
+  listOperatorParticipations(
+    @Param("id") id: string,
+    @Query("userId") userId: string | undefined,
+    @AdminOperator() operatorId: string,
+  ) {
+    return this.mallProducts.listParticipations(id, operatorId, userId);
   }
 }

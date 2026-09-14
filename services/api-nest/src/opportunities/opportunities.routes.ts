@@ -30,6 +30,11 @@ export const OPPORTUNITY_ADMIN_ROUTES = {
   /** Admin §9.8.9 */
   userOverrides: "users/:id/opportunity-overrides",
   userOverrideByOpp: "users/:id/opportunity-overrides/:opportunityId",
+  /** 운영자 쇼핑몰형 공용 상품. 스키마 미적용이면 STORE_UNREADY */
+  operatorProducts: "opportunities/operator-products",
+  operatorProductById: "opportunities/:id/operator-product",
+  operatorVisibility: "opportunities/:id/visibility",
+  operatorParticipations: "opportunities/:id/participations",
 } as const;
 
 /** Admin list filter query keys (contract) */
