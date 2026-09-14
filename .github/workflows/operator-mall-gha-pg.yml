@@ -49,6 +49,9 @@ jobs:
       JWT_USER_SECRET: gha_qa_user_secret_min_32_chars!!
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          # backend-ci와 동일. shallow면 github.event.before 객체가 없어 gate-fast가 CI_DIFF_UNRESOLVED로 죽는다.
+          fetch-depth: 0
       - id: setup
         uses: ./.github/actions/backend-setup
 
