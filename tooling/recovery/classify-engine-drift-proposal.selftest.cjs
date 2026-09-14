@@ -1,136 +1,159 @@
 /**
- * 공식 classify()를 바꾸지 않는다.
- * 현재 규칙의 UNCLASSIFIED 40 + ADMIN_SESSION 1을 고정하고,
- * 승인 대기 분류안이 경로를 빠뜨리거나 보호범위를 줄이지 않는지 검사한다.
+ * 공식 classify() 회귀.
+ * 분류 가능 ≠ 변경 안전성 승인 ≠ QA 완료 ≠ 플랫폼 운영 준비.
+ * Human/PO ACK·rebase·ISSUED를 대신하지 않는다.
  */
 "use strict";
 
 const fs = require("fs");
 const path = require("path");
 const psm = require("../verify/lib/rel-502-psm.cjs");
+const {
+  classify,
+  OPERATOR_MEMBERSHIP_PATHS,
+  CATALOG_EXTERNAL_WRITE_PATHS,
+  CLASSIFY_IS_NOT,
+} = require("./lib/classify-engine-drift.cjs");
 
 const root = path.resolve(__dirname, "../..");
 const GEN_REL = "tooling/recovery/build-engine-drift-inventory.cjs";
+const LIB_REL = "tooling/recovery/lib/classify-engine-drift.cjs";
 const PROP_REL =
   "quality/contracts/operator-control/engine-drift-classification-proposal.v1.json";
 
-function officialClassify(rel) {
-  const p = rel.replace(/\\/g, "/");
-  if (p.includes("/migrations/") || p.endsWith(".sql")) return "DB_MIGRATION";
-  if (p.startsWith("schemas/")) return "CONTRACT_SCHEMA";
-  if (
-    p.includes("identity-proof") ||
-    p.includes("magic-link") ||
-    p.includes("oauth-identity") ||
-    p.includes("webauthn") ||
-    p.includes("passkey") ||
-    p.includes("auth.controller") ||
-    p.includes("auth.service") ||
-    p.includes("auth.module") ||
-    p.includes("auth.stage") ||
-    p.includes("jwt-auth.guard")
-  ) {
-    return "AUTH_SECURITY";
-  }
-  if (
-    p.includes("admin-session") ||
-    p.includes("admin-token") ||
-    p.includes("admin.guard") ||
-    p.includes("admin-csrf") ||
-    p.includes("admin-capabilities") ||
-    p.includes("bearer-header") ||
-    p.includes("admin-audit")
-  ) {
-    return "ADMIN_SESSION";
-  }
-  if (
-    p.includes("/wallet/") ||
-    p.includes("tron-address") ||
-    p.includes("deposit-") ||
-    p.includes("withdraw-") ||
-    p.includes("krw-deposit") ||
-    p.includes("min-holding") ||
-    p.includes("chain-sweep") ||
-    p.includes("chain-watch") ||
-    p.includes("resend-email.provider")
-  ) {
-    return "MONEY_WALLET";
-  }
-  if (p.includes("idempotency") || p.includes("/ledger/")) return "LEDGER";
-  if (p.includes("referral")) return "REFERRAL";
-  if (p.includes("ux-prefs")) return "UX_PREFS";
-  if (p.includes("health")) return "HEALTH";
-  if (p.includes("/ai/") || p.includes("coach.") || p.includes("fact-tool")) {
-    return "AI_COACH";
-  }
-  if (p.includes("adapters.ingest")) return "ADAPTER_INGEST";
-  if (
-    p.includes("app.module") ||
-    p.includes("common.module") ||
-    p.includes("wallet.module") ||
-    p.includes("wallet/index.ts") ||
-    p.includes("wallet.routes") ||
-    p.includes("wallet.types") ||
-    p.includes("wallet.events") ||
-    p.includes("nest-provenance") ||
-    p.includes("tsconfig.json") ||
-    p.includes("admin-audit.core.cjs")
-  ) {
-    return "MODULE_WIRING";
-  }
-  return "UNCLASSIFIED";
+const fails = [];
+
+function expectEq(got, want, label) {
+  if (got !== want) fails.push(label + " want " + want + " got " + got);
 }
 
-const fails = [];
+function expectCat(rel, want) {
+  expectEq(classify(rel).category, want, rel);
+}
+
+if (CLASSIFY_IS_NOT.change_safety_approved !== false) {
+  fails.push("CLASSIFY_IS_NOT.change_safety_approved must stay false");
+}
+if (CLASSIFY_IS_NOT.qa_complete !== false) {
+  fails.push("CLASSIFY_IS_NOT.qa_complete must stay false");
+}
+if (CLASSIFY_IS_NOT.platform_ops_ready !== false) {
+  fails.push("CLASSIFY_IS_NOT.platform_ops_ready must stay false");
+}
+if (CLASSIFY_IS_NOT.human_po_ack !== false) {
+  fails.push("CLASSIFY_IS_NOT.human_po_ack must stay false");
+}
+
+const libSrc = fs.readFileSync(path.join(root, LIB_REL), "utf8");
 const genSrc = fs.readFileSync(path.join(root, GEN_REL), "utf8");
-if (!genSrc.includes('category: "UNCLASSIFIED"')) {
-  fails.push("official generator lost UNCLASSIFIED fallback");
+if (!genSrc.includes('require("./lib/classify-engine-drift.cjs")')) {
+  fails.push("official generator must use shared classify()");
 }
-if (!genSrc.includes("admin-capabilities")) {
-  fails.push("official generator lost ADMIN_SESSION matcher");
+if (!libSrc.includes('category: "UNCLASSIFIED"')) {
+  fails.push("official classify lost UNCLASSIFIED fallback");
 }
-if (genSrc.includes("OPERATOR_MEMBERSHIP") || genSrc.includes("CATALOG_EXTERNAL_WRITE")) {
-  fails.push("official generator was expanded without approval");
+if (!libSrc.includes("admin-capabilities")) {
+  fails.push("official classify lost ADMIN_SESSION matcher");
+}
+if (!libSrc.includes("jwt-revocation")) {
+  fails.push("official classify missing approved jwt-revocation AUTH_SECURITY matcher");
+}
+if (!libSrc.includes("ledger-adjustment")) {
+  fails.push("official classify missing approved ledger-adjustment LEDGER matcher");
+}
+if (libSrc.includes('"/membership/"') || libSrc.includes("'/membership/'")) {
+  fails.push("directory matcher /membership/ is forbidden");
+}
+if (libSrc.includes('"/opportunities/"') || libSrc.includes("'/opportunities/'")) {
+  fails.push("directory matcher /opportunities/ is forbidden");
 }
 
 const proposal = JSON.parse(fs.readFileSync(path.join(root, PROP_REL), "utf8"));
-if (proposal.status !== "NEEDS_APPROVAL") {
-  fails.push("proposal.status must stay NEEDS_APPROVAL until classify rules are approved");
+if (proposal.status !== "CLASSIFY_RULES_APPLIED") {
+  fails.push("proposal.status must be CLASSIFY_RULES_APPLIED after classify apply");
 }
-if (proposal.official_generator_changed !== false) {
-  fails.push("proposal must record official generator unchanged");
+if (proposal.official_generator_changed !== true) {
+  fails.push("proposal must record official generator changed");
+}
+if (proposal.human_po_ack_issued === true || proposal.FINAL_ACCEPTANCE === "ISSUED") {
+  fails.push("proposal must not claim ACK or ISSUED");
 }
 
-const live = psm.compareProtectedScope();
-const livePaths = [...live.added, ...live.changed, ...live.missing].map((p) =>
-  p.replace(/\\/g, "/"),
+expectCat(
+  "services/api-nest/src/membership/jwt-revocation.core.cjs",
+  "AUTH_SECURITY",
 );
-if (livePaths.length !== live.changedPathCount) {
-  fails.push("live path union != changedPathCount");
+expectCat(
+  "services/api-nest/src/membership/ledger-adjustment.contract.cjs",
+  "LEDGER",
+);
+
+for (const p of OPERATOR_MEMBERSHIP_PATHS) {
+  expectCat(p, "OPERATOR_MEMBERSHIP");
+}
+for (const p of CATALOG_EXTERNAL_WRITE_PATHS) {
+  expectCat(p, "CATALOG_EXTERNAL_WRITE");
 }
 
-const officialCounts = {};
-for (const p of livePaths) {
-  const cat = officialClassify(p);
-  officialCounts[cat] = (officialCounts[cat] || 0) + 1;
-}
-if (officialCounts.ADMIN_SESSION !== 1) {
-  fails.push("official ADMIN_SESSION want 1 got " + officialCounts.ADMIN_SESSION);
-}
-if (officialCounts.UNCLASSIFIED !== live.changedPathCount - 1) {
-  fails.push(
-    "official UNCLASSIFIED want " +
-      (live.changedPathCount - 1) +
-      " got " +
-      officialCounts.UNCLASSIFIED,
-  );
-}
-const adminCap = "services/api-nest/src/common/admin-capabilities.ts";
-if (!livePaths.includes(adminCap)) {
-  fails.push("admin-capabilities missing from live drift");
-} else if (officialClassify(adminCap) !== "ADMIN_SESSION") {
-  fails.push("admin-capabilities must stay ADMIN_SESSION under official rules");
-}
+expectCat(
+  "services/api-nest/src/membership/not-in-allowlist.core.cjs",
+  "UNCLASSIFIED",
+);
+expectCat(
+  "services/api-nest/src/opportunities/unrelated.service.ts",
+  "UNCLASSIFIED",
+);
+expectCat(
+  "services/api-nest/src/adapters/adapters.user.service.ts",
+  "UNCLASSIFIED",
+);
+expectCat("services/api-nest/src/foo/bar.ts", "UNCLASSIFIED");
+
+expectCat(
+  "services/api-nest/src/common/admin-capabilities.ts",
+  "ADMIN_SESSION",
+);
+expectCat("services/api-nest/src/auth/jwt-auth.guard.ts", "AUTH_SECURITY");
+expectCat("services/api-nest/src/auth/auth.controller.ts", "AUTH_SECURITY");
+expectCat("services/api-nest/src/ledger/posting.ts", "LEDGER");
+expectCat(
+  "services/api-nest/src/adapters/adapters.ingest.controller.ts",
+  "ADAPTER_INGEST",
+);
+expectCat("services/api-nest/src/app.module.ts", "MODULE_WIRING");
+expectCat("schemas/foo.v1.json", "CONTRACT_SCHEMA");
+expectCat("supabase/migrations/x.sql", "DB_MIGRATION");
+expectCat(
+  "services/api-nest/src/wallet/withdraw-intent.service.ts",
+  "MONEY_WALLET",
+);
+expectCat("services/api-nest/src/referral/referral.controller.ts", "REFERRAL");
+expectCat("services/api-nest/src/ux-prefs/store.ts", "UX_PREFS");
+expectCat("services/api-nest/src/health.controller.ts", "HEALTH");
+expectCat("services/api-nest/src/ai/coach.orchestrator.ts", "AI_COACH");
+
+expectEq(
+  classify("services/api-nest/src/membership/jwt-revocation.core.cjs").required_rerun.join(","),
+  "QA1,QA2,QA8",
+  "jwt-revocation rerun",
+);
+expectEq(
+  classify("services/api-nest/src/membership/ledger-adjustment.contract.cjs")
+    .required_rerun.join(","),
+  "QA3,QA4,QA8",
+  "ledger-adjustment rerun",
+);
+expectEq(
+  classify("services/api-nest/src/membership/operator-control.persist.cjs")
+    .required_rerun.join(","),
+  "QA0,QA1,QA2,QA8",
+  "operator-membership rerun",
+);
+expectEq(
+  classify("services/api-nest/catalog-external-write.core.cjs").required_rerun.join(","),
+  "QA0,QA5,QA8",
+  "catalog-external-write rerun",
+);
 
 const proposed = new Map();
 for (const row of proposal.existing_class_extensions || []) {
@@ -143,11 +166,22 @@ for (const p of proposal.official_rule_result.ADMIN_SESSION || []) {
   proposed.set(p, "ADMIN_SESSION");
 }
 
+const live = psm.compareProtectedScope();
+const livePaths = [...live.added, ...live.changed, ...live.missing].map((p) =>
+  p.replace(/\\/g, "/"),
+);
+if (livePaths.length !== live.changedPathCount) {
+  fails.push("live path union != changedPathCount");
+}
+
+const officialCounts = {};
 for (const p of livePaths) {
-  if (!proposed.has(p)) fails.push("proposal dropped live path " + p);
-  if (proposed.get(p) === "UNCLASSIFIED") {
-    fails.push("proposal still UNCLASSIFIED " + p);
-  }
+  const cat = classify(p).category;
+  officialCounts[cat] = (officialCounts[cat] || 0) + 1;
+  if (cat === "UNCLASSIFIED") fails.push("live still UNCLASSIFIED " + p);
+  const want = proposed.get(p);
+  if (!want) fails.push("proposal dropped live path " + p);
+  else if (want !== cat) fails.push(p + " official=" + cat + " proposal=" + want);
 }
 for (const p of proposed.keys()) {
   if (!livePaths.includes(p)) {
@@ -155,30 +189,26 @@ for (const p of proposed.keys()) {
   }
 }
 
-const allProposedReruns = new Set();
-for (const row of [
-  ...(proposal.existing_class_extensions || []),
-  ...(proposal.new_categories || []),
-]) {
-  for (const qa of row.required_rerun || []) allProposedReruns.add(qa);
-}
-for (const qa of ["QA0", "QA1", "QA2", "QA3", "QA4", "QA5", "QA8"]) {
-  if (!allProposedReruns.has(qa)) {
-    fails.push("proposal required_rerun missing " + qa);
-  }
+expectEq(officialCounts.ADMIN_SESSION, 1, "live ADMIN_SESSION");
+const adminCap = "services/api-nest/src/common/admin-capabilities.ts";
+if (!livePaths.includes(adminCap)) {
+  fails.push("admin-capabilities missing from live drift");
+} else if (classify(adminCap).category !== "ADMIN_SESSION") {
+  fails.push("admin-capabilities must stay ADMIN_SESSION");
 }
 
 if (fails.length) {
-  console.error("[classify-engine-drift-proposal] FAIL");
+  console.error("[classify-engine-drift] FAIL");
   for (const f of fails) console.error(" - " + f);
   process.exit(1);
 }
 console.log(
-  "[classify-engine-drift-proposal] PASS · live=" +
+  "[classify-engine-drift] PASS · live=" +
     live.changedPathCount +
-    " · official UNCLASSIFIED=" +
-    officialCounts.UNCLASSIFIED +
-    " · proposal mapped=" +
-    proposed.size +
-    " · generator unchanged",
+    " · " +
+    Object.keys(officialCounts)
+      .sort()
+      .map((k) => k + "=" + officialCounts[k])
+      .join(" · ") +
+    " · classify≠safety≠QA",
 );

@@ -1,36 +1,1154 @@
 {
   "schema": "governance.recovery.engine-drift-inventory.v1",
-  "computed_at": "2026-09-12T22:39:02.327Z",
-  "predecessor_head_sha": "b11140abaafa519762136c904e9229810f34e415",
-  "inventory_head_sha": "137241804ff24e5de48556e1385f97fd1c8b8cee",
-  "changed_paths": 0,
-  "expected_changed_paths": 0,
+  "computed_at": "2026-09-14T13:31:10.093Z",
+  "predecessor_head_sha": "137241804ff24e5de48556e1385f97fd1c8b8cee",
+  "inventory_head_sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+  "changed_paths": 41,
+  "expected_changed_paths": 41,
   "count_match": true,
-  "by_category": {},
+  "by_category": {
+    "CATALOG_EXTERNAL_WRITE": 15,
+    "OPERATOR_MEMBERSHIP": 23,
+    "AUTH_SECURITY": 1,
+    "LEDGER": 1,
+    "ADMIN_SESSION": 1
+  },
   "unexplained_count": 0,
   "ACK_RECEIVED": 0,
   "FINAL_ACCEPTANCE": "NOT_ISSUED",
   "REBASE_REQUIRED": 1,
-  "REBASE_APPLIED": 1,
-  "predecessor_baseline_id": "ea-baseline-b11140abaafa-af15bf5b43ff",
-  "current_baseline_id": "ea-baseline-137241804ff2-83935adcdf57",
-  "rebase_id": "ea-rebase-eb7ca64a8d6b-83935adcdf57",
-  "historical_inventory_ref": "governance/recovery/archive/engine-drift-inventory.pre-rebase-20260902.v1.json",
-  "historical_evidence_ref": "governance/recovery/archive/engine-rebase-evidence.pre-rebase-20260902.v1.json",
-  "CURRENT_AUTHORITATIVE": true,
-  "HISTORICAL_PRE_REBASE_EVIDENCE": false,
-  "note": "Historical pre-rebase drift is preserved in archive. Current epoch was formally rebased under ENGINE_ACCEPTANCE_REBASE_V1. Protected scope matches the new baseline (drift 0). FINAL_ACCEPTANCE is NOT_ISSUED because current-epoch QA1-QA9 have not been rerun. Predecessor evidence remains historical. No in-place predecessor hash washing occurred.",
+  "note": "Classification only. Formal rebase + QA0-QA9 rerun are still required. Do not treat this file as an ACK.",
   "required_rerun_matrix": {
-    "QA0": [],
-    "QA1": [],
-    "QA2": [],
-    "QA3": [],
-    "QA4": [],
-    "QA5": [],
+    "QA0": [
+      "services/api-nest/catalog-external-write.core.cjs",
+      "services/api-nest/src/membership/auto-downgrade.core.cjs",
+      "services/api-nest/src/membership/bonus-match-grant.core.cjs",
+      "services/api-nest/src/membership/bulk-operator-job.core.cjs",
+      "services/api-nest/src/membership/grade-daily-policy.core.cjs",
+      "services/api-nest/src/membership/member-360.core.cjs",
+      "services/api-nest/src/membership/member-daily-cap.core.cjs",
+      "services/api-nest/src/membership/member-daily-cap.http.cjs",
+      "services/api-nest/src/membership/member-daily-cap.isolation.cjs",
+      "services/api-nest/src/membership/operator-control.persist.cjs",
+      "services/api-nest/src/membership/operator-control.provider.cjs",
+      "services/api-nest/src/membership/operator-control.store.cjs",
+      "services/api-nest/src/membership/operator-quota-grade.admin-http.cjs",
+      "services/api-nest/src/membership/operator-quota-grade.isolation.cjs",
+      "services/api-nest/src/membership/presentation-profile.core.cjs",
+      "services/api-nest/src/membership/support-conversation.contract.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.admin-writers.isolation.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.guard.ts",
+      "services/api-nest/src/opportunities/catalog-external-write.ingest-http.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.ingest-http.selftest.ts",
+      "services/api-nest/src/opportunities/catalog-external-write.ingest-isolation.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts",
+      "services/api-nest/src/opportunities/catalog-external-write.ts-hook.cjs",
+      "services/api-nest/src/adapters/adapters.admin.service.ts",
+      "services/api-nest/src/membership/membership.admin.controller.ts",
+      "services/api-nest/src/membership/membership.admin.service.ts",
+      "services/api-nest/src/membership/membership.mi.ts",
+      "services/api-nest/src/membership/membership.routes.ts",
+      "services/api-nest/src/membership/membership.runtime.service.ts",
+      "services/api-nest/src/membership/membership.types.ts",
+      "services/api-nest/src/membership/membership.user.controller.ts",
+      "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts",
+      "services/api-nest/src/opportunities/opportunities.admin.service.ts",
+      "services/api-nest/src/opportunities/opportunities.module.ts",
+      "services/api-nest/src/opportunities/opportunity-reprice.service.ts",
+      "services/api-nest/src/opportunities/participate.service.ts",
+      "services/api-nest/src/price-override/price-override.service.ts"
+    ],
+    "QA1": [
+      "services/api-nest/src/membership/auto-downgrade.core.cjs",
+      "services/api-nest/src/membership/bonus-match-grant.core.cjs",
+      "services/api-nest/src/membership/bulk-operator-job.core.cjs",
+      "services/api-nest/src/membership/grade-daily-policy.core.cjs",
+      "services/api-nest/src/membership/jwt-revocation.core.cjs",
+      "services/api-nest/src/membership/member-360.core.cjs",
+      "services/api-nest/src/membership/member-daily-cap.core.cjs",
+      "services/api-nest/src/membership/member-daily-cap.http.cjs",
+      "services/api-nest/src/membership/member-daily-cap.isolation.cjs",
+      "services/api-nest/src/membership/operator-control.persist.cjs",
+      "services/api-nest/src/membership/operator-control.provider.cjs",
+      "services/api-nest/src/membership/operator-control.store.cjs",
+      "services/api-nest/src/membership/operator-quota-grade.admin-http.cjs",
+      "services/api-nest/src/membership/operator-quota-grade.isolation.cjs",
+      "services/api-nest/src/membership/presentation-profile.core.cjs",
+      "services/api-nest/src/membership/support-conversation.contract.cjs",
+      "services/api-nest/src/common/admin-capabilities.ts",
+      "services/api-nest/src/membership/membership.admin.controller.ts",
+      "services/api-nest/src/membership/membership.admin.service.ts",
+      "services/api-nest/src/membership/membership.mi.ts",
+      "services/api-nest/src/membership/membership.routes.ts",
+      "services/api-nest/src/membership/membership.runtime.service.ts",
+      "services/api-nest/src/membership/membership.types.ts",
+      "services/api-nest/src/membership/membership.user.controller.ts",
+      "services/api-nest/src/opportunities/participate.service.ts"
+    ],
+    "QA2": [
+      "services/api-nest/src/membership/auto-downgrade.core.cjs",
+      "services/api-nest/src/membership/bonus-match-grant.core.cjs",
+      "services/api-nest/src/membership/bulk-operator-job.core.cjs",
+      "services/api-nest/src/membership/grade-daily-policy.core.cjs",
+      "services/api-nest/src/membership/jwt-revocation.core.cjs",
+      "services/api-nest/src/membership/member-360.core.cjs",
+      "services/api-nest/src/membership/member-daily-cap.core.cjs",
+      "services/api-nest/src/membership/member-daily-cap.http.cjs",
+      "services/api-nest/src/membership/member-daily-cap.isolation.cjs",
+      "services/api-nest/src/membership/operator-control.persist.cjs",
+      "services/api-nest/src/membership/operator-control.provider.cjs",
+      "services/api-nest/src/membership/operator-control.store.cjs",
+      "services/api-nest/src/membership/operator-quota-grade.admin-http.cjs",
+      "services/api-nest/src/membership/operator-quota-grade.isolation.cjs",
+      "services/api-nest/src/membership/presentation-profile.core.cjs",
+      "services/api-nest/src/membership/support-conversation.contract.cjs",
+      "services/api-nest/src/common/admin-capabilities.ts",
+      "services/api-nest/src/membership/membership.admin.controller.ts",
+      "services/api-nest/src/membership/membership.admin.service.ts",
+      "services/api-nest/src/membership/membership.mi.ts",
+      "services/api-nest/src/membership/membership.routes.ts",
+      "services/api-nest/src/membership/membership.runtime.service.ts",
+      "services/api-nest/src/membership/membership.types.ts",
+      "services/api-nest/src/membership/membership.user.controller.ts",
+      "services/api-nest/src/opportunities/participate.service.ts"
+    ],
+    "QA3": [
+      "services/api-nest/src/membership/ledger-adjustment.contract.cjs"
+    ],
+    "QA4": [
+      "services/api-nest/src/membership/ledger-adjustment.contract.cjs"
+    ],
+    "QA5": [
+      "services/api-nest/catalog-external-write.core.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.admin-writers.isolation.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.guard.ts",
+      "services/api-nest/src/opportunities/catalog-external-write.ingest-http.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.ingest-http.selftest.ts",
+      "services/api-nest/src/opportunities/catalog-external-write.ingest-isolation.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts",
+      "services/api-nest/src/opportunities/catalog-external-write.ts-hook.cjs",
+      "services/api-nest/src/adapters/adapters.admin.service.ts",
+      "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts",
+      "services/api-nest/src/opportunities/opportunities.admin.service.ts",
+      "services/api-nest/src/opportunities/opportunities.module.ts",
+      "services/api-nest/src/opportunities/opportunity-reprice.service.ts",
+      "services/api-nest/src/price-override/price-override.service.ts"
+    ],
     "QA6": [],
     "QA7": [],
-    "QA8": [],
+    "QA8": [
+      "services/api-nest/catalog-external-write.core.cjs",
+      "services/api-nest/src/membership/auto-downgrade.core.cjs",
+      "services/api-nest/src/membership/bonus-match-grant.core.cjs",
+      "services/api-nest/src/membership/bulk-operator-job.core.cjs",
+      "services/api-nest/src/membership/grade-daily-policy.core.cjs",
+      "services/api-nest/src/membership/jwt-revocation.core.cjs",
+      "services/api-nest/src/membership/ledger-adjustment.contract.cjs",
+      "services/api-nest/src/membership/member-360.core.cjs",
+      "services/api-nest/src/membership/member-daily-cap.core.cjs",
+      "services/api-nest/src/membership/member-daily-cap.http.cjs",
+      "services/api-nest/src/membership/member-daily-cap.isolation.cjs",
+      "services/api-nest/src/membership/operator-control.persist.cjs",
+      "services/api-nest/src/membership/operator-control.provider.cjs",
+      "services/api-nest/src/membership/operator-control.store.cjs",
+      "services/api-nest/src/membership/operator-quota-grade.admin-http.cjs",
+      "services/api-nest/src/membership/operator-quota-grade.isolation.cjs",
+      "services/api-nest/src/membership/presentation-profile.core.cjs",
+      "services/api-nest/src/membership/support-conversation.contract.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.admin-writers.isolation.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.guard.ts",
+      "services/api-nest/src/opportunities/catalog-external-write.ingest-http.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.ingest-http.selftest.ts",
+      "services/api-nest/src/opportunities/catalog-external-write.ingest-isolation.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts",
+      "services/api-nest/src/opportunities/catalog-external-write.ts-hook.cjs",
+      "services/api-nest/src/adapters/adapters.admin.service.ts",
+      "services/api-nest/src/common/admin-capabilities.ts",
+      "services/api-nest/src/membership/membership.admin.controller.ts",
+      "services/api-nest/src/membership/membership.admin.service.ts",
+      "services/api-nest/src/membership/membership.mi.ts",
+      "services/api-nest/src/membership/membership.routes.ts",
+      "services/api-nest/src/membership/membership.runtime.service.ts",
+      "services/api-nest/src/membership/membership.types.ts",
+      "services/api-nest/src/membership/membership.user.controller.ts",
+      "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts",
+      "services/api-nest/src/opportunities/opportunities.admin.service.ts",
+      "services/api-nest/src/opportunities/opportunities.module.ts",
+      "services/api-nest/src/opportunities/opportunity-reprice.service.ts",
+      "services/api-nest/src/opportunities/participate.service.ts",
+      "services/api-nest/src/price-override/price-override.service.ts"
+    ],
     "QA9": []
   },
-  "paths": []
+  "paths": [
+    {
+      "path": "services/api-nest/catalog-external-write.core.cjs",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "CATALOG_EXTERNAL_WRITE",
+      "reason": "S1 운영자 행 보호·외부 카탈로그 쓰기 게이트. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/auto-downgrade.core.cjs",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/bonus-match-grant.core.cjs",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/bulk-operator-job.core.cjs",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/grade-daily-policy.core.cjs",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/jwt-revocation.core.cjs",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "AUTH_SECURITY",
+      "reason": "Identity proof / session mint path changed. CSRF design stays; ACK waits rebase QA.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/ledger-adjustment.contract.cjs",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "LEDGER",
+      "reason": "Idempotency/ledger fingerprint drift. Money truth must be re-proven.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA3",
+        "QA4",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/member-360.core.cjs",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/member-daily-cap.core.cjs",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/member-daily-cap.http.cjs",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/member-daily-cap.isolation.cjs",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/operator-control.persist.cjs",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/operator-control.provider.cjs",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/operator-control.store.cjs",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/operator-quota-grade.admin-http.cjs",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/operator-quota-grade.isolation.cjs",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/presentation-profile.core.cjs",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/support-conversation.contract.cjs",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/catalog-external-write.admin-writers.isolation.cjs",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "CATALOG_EXTERNAL_WRITE",
+      "reason": "S1 운영자 행 보호·외부 카탈로그 쓰기 게이트. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/catalog-external-write.guard.ts",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "CATALOG_EXTERNAL_WRITE",
+      "reason": "S1 운영자 행 보호·외부 카탈로그 쓰기 게이트. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/catalog-external-write.ingest-http.cjs",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "CATALOG_EXTERNAL_WRITE",
+      "reason": "S1 운영자 행 보호·외부 카탈로그 쓰기 게이트. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/catalog-external-write.ingest-http.selftest.ts",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "CATALOG_EXTERNAL_WRITE",
+      "reason": "S1 운영자 행 보호·외부 카탈로그 쓰기 게이트. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/catalog-external-write.ingest-isolation.cjs",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "CATALOG_EXTERNAL_WRITE",
+      "reason": "S1 운영자 행 보호·외부 카탈로그 쓰기 게이트. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "CATALOG_EXTERNAL_WRITE",
+      "reason": "S1 운영자 행 보호·외부 카탈로그 쓰기 게이트. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "CATALOG_EXTERNAL_WRITE",
+      "reason": "S1 운영자 행 보호·외부 카탈로그 쓰기 게이트. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/catalog-external-write.ts-hook.cjs",
+      "kind": "added",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "CATALOG_EXTERNAL_WRITE",
+      "reason": "S1 운영자 행 보호·외부 카탈로그 쓰기 게이트. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/adapters/adapters.admin.service.ts",
+      "kind": "mutated",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "CATALOG_EXTERNAL_WRITE",
+      "reason": "S1 운영자 행 보호·외부 카탈로그 쓰기 게이트. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/common/admin-capabilities.ts",
+      "kind": "mutated",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "ADMIN_SESSION",
+      "reason": "Admin cookie/CSRF/capability surface. Double-submit cookie remains JS-readable by design.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/membership.admin.controller.ts",
+      "kind": "mutated",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/membership.admin.service.ts",
+      "kind": "mutated",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/membership.mi.ts",
+      "kind": "mutated",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/membership.routes.ts",
+      "kind": "mutated",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/membership.runtime.service.ts",
+      "kind": "mutated",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/membership.types.ts",
+      "kind": "mutated",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/membership.user.controller.ts",
+      "kind": "mutated",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts",
+      "kind": "mutated",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "CATALOG_EXTERNAL_WRITE",
+      "reason": "S1 운영자 행 보호·외부 카탈로그 쓰기 게이트. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/opportunities.admin.service.ts",
+      "kind": "mutated",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "CATALOG_EXTERNAL_WRITE",
+      "reason": "S1 운영자 행 보호·외부 카탈로그 쓰기 게이트. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/opportunities.module.ts",
+      "kind": "mutated",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "CATALOG_EXTERNAL_WRITE",
+      "reason": "S1 운영자 행 보호·외부 카탈로그 쓰기 게이트. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/opportunity-reprice.service.ts",
+      "kind": "mutated",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "CATALOG_EXTERNAL_WRITE",
+      "reason": "S1 운영자 행 보호·외부 카탈로그 쓰기 게이트. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/participate.service.ts",
+      "kind": "mutated",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/price-override/price-override.service.ts",
+      "kind": "mutated",
+      "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+      "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
+          "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "CATALOG_EXTERNAL_WRITE",
+      "reason": "S1 운영자 행 보호·외부 카탈로그 쓰기 게이트. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA5",
+        "QA8"
+      ]
+    }
+  ]
 }

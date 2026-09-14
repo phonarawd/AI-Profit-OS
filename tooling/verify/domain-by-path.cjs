@@ -66,8 +66,14 @@ const RULES = [
         f,
       ) ||
       /^tooling\/recovery\/build-engine-drift-inventory\.cjs$/.test(f) ||
-      /^tooling\/verify\/engine-drift-inventory\.cjs$/.test(f),
-    scripts: ["engine-drift-inventory.cjs"],
+      /^tooling\/recovery\/classify-engine-drift-proposal\.selftest\.cjs$/.test(f) ||
+      /^tooling\/recovery\/lib\/classify-engine-drift\.cjs$/.test(f) ||
+      /^tooling\/verify\/engine-drift-inventory\.cjs$/.test(f) ||
+      /^tooling\/verify\/classify-engine-drift\.cjs$/.test(f) ||
+      /^quality\/contracts\/operator-control\/engine-drift-classification-proposal\.v1\.json$/.test(
+        f,
+      ),
+    scripts: ["engine-drift-inventory.cjs", "classify-engine-drift.cjs"],
   },
   {
     test: (f) =>

@@ -1,9 +1,13 @@
 {
   "schema": "quality.operator-control.engine-drift-classification-proposal.v1",
-  "status": "NEEDS_APPROVAL",
+  "status": "CLASSIFY_RULES_APPLIED",
   "official_generator": "tooling/recovery/build-engine-drift-inventory.cjs",
-  "official_generator_changed": false,
-  "measured_at_note": "Live protected-scope remesure. Do not treat this file as an ACK or as official classify() output.",
+  "official_classify": "tooling/recovery/lib/classify-engine-drift.cjs",
+  "official_generator_changed": true,
+  "human_po_ack_issued": false,
+  "FINAL_ACCEPTANCE": "NOT_ISSUED",
+  "applied_meaning": "Official classify() maps the approved paths. Classification possible ≠ change-safety approved ≠ QA complete ≠ platform-ops ready. This file is not a Human/PO ACK.",
+  "measured_at_note": "Classify rules applied from the approved minimum proposal. Do not treat this file as an ACK, rebase, or QA issuance.",
   "official_rule_result": {
     "ADMIN_SESSION": [
       "services/api-nest/src/common/admin-capabilities.ts"
