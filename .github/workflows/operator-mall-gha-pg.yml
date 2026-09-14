@@ -129,7 +129,14 @@ jobs:
 
       - name: gate fast
         if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
-        run: pnpm verify:gate:fast
+        env:
+          AIPO_DOMAIN_DIFF_MODE: ci_push
+          AIPO_PUSH_BEFORE_SHA: ${{ github.event.before }}
+        run: |
+          if [[ "${AIPO_PUSH_BEFORE_SHA}" =~ ^0+$ ]]; then
+            export AIPO_PUSH_BEFORE_SHA="$(git rev-parse HEAD^)"
+          fi
+          pnpm verify:gate:fast
 
       - name: Upload non-secret artifact
         if: ${{ !cancelled() }}

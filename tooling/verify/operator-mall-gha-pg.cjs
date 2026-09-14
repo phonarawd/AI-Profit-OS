@@ -644,7 +644,12 @@ async function stepLedger() {
     if (!paid.moneyAuthority || paid.moneyAuthority.payoutAuthoritative !== true) {
       fail("payoutAuthoritative false after journal");
     }
-    if (paid.moneyAuthority.ledgerPaidUsdt !== "4.25") fail("paid amount mismatch");
+    if (
+      mall.parseAmount(String(paid.moneyAuthority.ledgerPaidUsdt)) !==
+      mall.parseAmount("4.25")
+    ) {
+      fail("paid amount mismatch got=" + String(paid.moneyAuthority.ledgerPaidUsdt));
+    }
     const dbRestart = isolated.createIsolatedQaPgDb(resolved.url);
     try {
       const storeR = await persist.createPersistMallStore(dbRestart, {
