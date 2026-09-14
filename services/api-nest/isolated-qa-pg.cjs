@@ -113,7 +113,7 @@ function createIsolatedQaPgDb(url) {
   const { Pool } = require("pg");
   const pool = new Pool({
     connectionString: url,
-    max: 2,
+    max: 4,
     idleTimeoutMillis: 10_000,
     connectionTimeoutMillis: 5_000,
   });

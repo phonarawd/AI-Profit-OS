@@ -89,7 +89,7 @@ jobs:
         run: node tooling/verify/operator-mall-gha-pg.cjs --step=prove
 
       - id: apply
-        name: Apply draft SQL on QA PG only
+        name: Apply draft SQL and official ledger migrations on QA PG only
         if: ${{ !cancelled() && steps.prove.outcome == 'success' }}
         run: node tooling/verify/operator-mall-gha-pg.cjs --step=apply
 

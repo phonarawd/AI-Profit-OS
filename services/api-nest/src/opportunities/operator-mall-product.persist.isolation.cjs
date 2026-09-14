@@ -213,6 +213,8 @@ async function main() {
       testOnly: true,
       poolBalance: "1000",
     });
+    assert.equal(store.postingKind, "test_only_fallback");
+    assert.equal(store.qaSettlementNotAuthority, true);
     const p = (await core.registerProduct(spec(), { store })).product;
     const pa = await core.participate({ userId: A, productId: p.id, idempotencyKey: "pay" }, { store });
     assert.equal(pa.moneyAuthority.payoutAuthoritative, false);

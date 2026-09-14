@@ -21,6 +21,8 @@ const files = [
   "services/api-nest/src/opportunities/operator-mall-product.isolation.cjs",
   "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
   "services/api-nest/src/opportunities/operator-mall-product.admin-http.cjs",
+  "services/api-nest/src/opportunities/operator-mall-ledger-posting.isolation.cjs",
+  "tooling/verify/operator-mall-official-ledger-sql.isolation.cjs",
   "services/api-nest/src/referral/reseller-id.isolation.cjs",
   "services/api-nest/src/referral/reseller-id.persist.isolation.cjs",
   "services/api-nest/src/ledger/money-authority.isolation.cjs",

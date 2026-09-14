@@ -23,6 +23,10 @@ const persist = require(path.join(
   root,
   "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
 ));
+const officialLedger = require(path.join(root, "tooling/verify/operator-mall-official-ledger-sql.cjs"));
+const moneyAuth = require(
+  path.join(root, "services/api-nest/src/ledger/money-authority.core.cjs"),
+);
 const staffPersist = require(path.join(root, "services/api-nest/admin-staff-login.persist.cjs"));
 const dirPersist = require(path.join(
   root,
@@ -85,6 +89,16 @@ function loadNestHttp() {
       path.join(root, "services/api-nest/src/membership/membership.runtime.service.ts"),
     ).MembershipRuntimeService,
     csrf: require(path.join(root, "services/api-nest/src/common/admin-session.csrf.ts")),
+    JwtAuthGuard: require(path.join(root, "services/api-nest/src/auth/jwt-auth.guard.ts"))
+      .JwtAuthGuard,
+    LedgerUserController: require(
+      path.join(root, "services/api-nest/src/ledger/ledger.user.controller.ts"),
+    ).LedgerUserController,
+    LedgerUserQueryService: require(
+      path.join(root, "services/api-nest/src/ledger/ledger.user-query.service.ts"),
+    ).LedgerUserQueryService,
+    authConstants: require(path.join(root, "services/api-nest/src/auth/auth.constants.ts")),
+    jwtCore: require(path.join(root, "services/api-nest/jwt.core.cjs")),
   };
   return nestHttp;
 }
@@ -218,6 +232,39 @@ async function bootLoginApp() {
   return app;
 }
 
+async function bootLedgerApp(db) {
+  const n = loadNestHttp();
+  class LedgerQaModule {}
+  n.Module({
+    controllers: [n.LedgerUserController],
+    providers: [
+      {
+        provide: n.PostgresService,
+        useValue: {
+          query: (text, params) => db.query(text, params),
+          configured: () => true,
+        },
+      },
+      n.LedgerUserQueryService,
+    ],
+  })(LedgerQaModule);
+  const app = await n.NestFactory.create(LedgerQaModule, { logger: false });
+  app.setGlobalPrefix("api/v1");
+  await app.listen(0);
+  return app;
+}
+
+function mintUserJwt(userId) {
+  const n = loadNestHttp();
+  const secret = process.env["JWT_" + "USER_SECRET"];
+  if (!secret) fail("user jwt secret unset");
+  return n.jwtCore.sign({ sub: userId }, secret, {
+    issuer: n.authConstants.USER_JWT_ISSUER,
+    audience: n.authConstants.USER_JWT_AUDIENCE,
+    expiresInSec: n.authConstants.ACCESS_TOKEN_TTL_SEC,
+  });
+}
+
 async function bootDirectoryApp() {
   const n = loadNestHttp();
   class DirQaModule {}
@@ -323,6 +370,11 @@ async function stepApply() {
       await applySqlFile(db, rel);
     }
     console.log("[operator-mall-gha-pg] re-apply PASS (IF NOT EXISTS)");
+    const official = await officialLedger.applyOfficialLedgerSchema(db);
+    await officialLedger.applyOfficialLedgerSchema(db);
+    console.log(
+      "[operator-mall-gha-pg] official ledger apply PASS files=" + official.files.join(","),
+    );
     const password = String(process.env.QA_STAFF_PASSWORD || "").trim();
     if (!password) fail("QA_STAFF_PASSWORD unset");
     const hash = await hashPassword(password);
@@ -340,8 +392,9 @@ async function stepApply() {
          ON CONFLICT (user_id) DO NOTHING`,
         [id],
       );
+      await db.query("SELECT public.provision_user_bucket_accounts($1::uuid)", [id]);
     }
-    console.log("[operator-mall-gha-pg] apply PASS drafts+staff_fixture+signup_users");
+    console.log("[operator-mall-gha-pg] apply PASS drafts+official_ledger+staff_fixture+signup_users");
   } finally {
     await db.end();
   }
@@ -353,11 +406,12 @@ async function stepPreflight() {
   try {
     const mallPre = await persist.preflightMallPersistSchema(db);
     if (mallPre.ready !== true) fail("mall schema preflight not ready");
+    if (mallPre.ledgerReady !== true) fail("official ledger schema not ready");
     const staffPre = await staffPersist.preflightStaffSchema(db);
     if (staffPre.ready !== true) fail("staff schema preflight not ready");
     const dirPre = await dirPersist.preflightDirectorySchema(db);
     if (dirPre.ready !== true) fail("directory schema preflight not ready");
-    console.log("[operator-mall-gha-pg] preflight PASS mall+staff+directory");
+    console.log("[operator-mall-gha-pg] preflight PASS mall+official_ledger+staff+directory");
   } finally {
     await db.end();
   }
@@ -580,22 +634,45 @@ async function stepReseller() {
   }
 }
 
+async function countOfficialJournals(db, participationId) {
+  const r = await db.query(
+    `SELECT COUNT(*)::int AS n
+       FROM public.ledger_journals
+      WHERE journal_type = 'settlement'
+        AND reference_type = 'participation'
+        AND reference_id = $1`,
+    [participationId],
+  );
+  return Number(r.rows[0].n);
+}
+
+async function countQaSettlementRows(db, participationId) {
+  const r = await db.query(
+    `SELECT COUNT(*)::int AS n
+       FROM public.operator_mall_settlement_journals
+      WHERE reference_id = $1::uuid`,
+    [participationId],
+  );
+  return Number(r.rows[0].n);
+}
+
 async function stepLedger() {
   const resolved = resolvedOrDie();
   const dbA = isolated.createIsolatedQaPgDb(resolved.url);
   const dbB = isolated.createIsolatedQaPgDb(resolved.url);
+  const D = "44444444-4444-4444-8444-444444444444";
   try {
-    const members = [{ userId: A, cap: 5 }];
-    const storeA = await persist.createPersistMallStore(dbA, {
-      members,
-      testOnly: true,
-      poolBalance: "1000",
-    });
-    const storeB = await persist.createPersistMallStore(dbB, {
-      members,
-      testOnly: true,
-      poolBalance: "1000",
-    });
+    await signupUser(dbA, D);
+    const members = [
+      { userId: A, cap: 5 },
+      { userId: B, cap: 5 },
+      { userId: D, cap: 5 },
+    ];
+    const storeA = await persist.createPersistMallStore(dbA, { members });
+    const storeB = await persist.createPersistMallStore(dbB, { members });
+    if (storeA.postingKind !== "official_ledger_posting") {
+      fail("store must use official ledger posting got=" + storeA.postingKind);
+    }
     const product = (
       await mall.registerProduct(
         {
@@ -614,6 +691,18 @@ async function stepLedger() {
       { userId: A, productId: product.id, idempotencyKey: "pay-a" },
       { store: storeA },
     );
+    const beforeA = await storeA.readOfficialBucketSnapshot(A);
+    const beforeB = await storeA.readOfficialBucketSnapshot(B);
+    if (Number(await countOfficialJournals(dbA, part.participation.id)) !== 0) {
+      fail("journal existed before payout condition");
+    }
+    const noEval = await mall.applyMatchSuccessPayout(
+      { participationId: part.participation.id },
+      { store: storeA },
+    );
+    if (noEval.applied !== false || noEval.code !== "PAYOUT_CONDITION_UNAPPROVED") {
+      fail("missing evaluator must not pay");
+    }
     const noFx = await mall.applyMatchSuccessPayout(
       { participationId: part.participation.id },
       { store: storeA, evaluator: mall.createMatchSuccessEvaluator(), requireFx: true },
@@ -621,6 +710,28 @@ async function stepLedger() {
     if (noFx.code !== "FX_SNAPSHOT_MISSING" || noFx.applied !== false) {
       fail("FX missing must not pay");
     }
+    if (Number(await countOfficialJournals(dbA, part.participation.id)) !== 0) {
+      fail("condition-fail wrote ledger journal");
+    }
+    const partD = await mall.participate(
+      { userId: D, productId: product.id, idempotencyKey: "pay-d" },
+      { store: storeA },
+    );
+    const failD = await mall.applyMatchSuccessPayout(
+      { participationId: partD.participation.id },
+      { store: storeA, evaluator: mall.createMatchSuccessEvaluator() },
+    );
+    if (failD.ok === true || failD.applied === true) {
+      fail("unprovisioned user must not pay");
+    }
+    if (Number(await countOfficialJournals(dbA, partD.participation.id)) !== 0) {
+      fail("failed payout left journal");
+    }
+    const midA = await storeA.readOfficialBucketSnapshot(A);
+    if (midA.profit !== beforeA.profit || midA.principal !== beforeA.principal) {
+      fail("partial balance after failed paths");
+    }
+
     const [p1, p2] = await Promise.all([
       mall.applyMatchSuccessPayout(
         { participationId: part.participation.id },
@@ -635,11 +746,12 @@ async function stepLedger() {
     const okCount = [p1, p2].filter((x) => x.ok === true).length;
     if (okCount !== 2) fail("concurrent payout did not settle/replay");
     if (appliedCount !== 1) fail("concurrent payout applied != 1");
-    const journals = await dbA.query(
-      "SELECT COUNT(*)::int AS n FROM public.operator_mall_settlement_journals WHERE reference_id = $1::uuid",
-      [part.participation.id],
-    );
-    if (Number(journals.rows[0].n) !== 1) fail("journal count != 1");
+    if (Number(await countOfficialJournals(dbA, part.participation.id)) !== 1) {
+      fail("official journal count != 1");
+    }
+    if (Number(await countQaSettlementRows(dbA, part.participation.id)) !== 0) {
+      fail("QA settlement table must stay unused");
+    }
     const paid = p1.applied ? p1 : p2;
     if (!paid.moneyAuthority || paid.moneyAuthority.payoutAuthoritative !== true) {
       fail("payoutAuthoritative false after journal");
@@ -650,26 +762,111 @@ async function stepLedger() {
     ) {
       fail("paid amount mismatch got=" + String(paid.moneyAuthority.ledgerPaidUsdt));
     }
+    const dbRow = await dbA.query(
+      `SELECT j.id::text, e.amount_usdt::text, a.owner_user_id::text, a.bucket
+         FROM public.ledger_journals j
+         JOIN public.ledger_entries e ON e.journal_id = j.id
+         JOIN public.ledger_accounts a ON a.id = e.account_id
+        WHERE j.id = $1::uuid AND e.direction = 'credit'`,
+      [paid.journalId],
+    );
+    if (!dbRow.rows[0]) fail("posted journal missing in ledger_journals");
+    if (dbRow.rows[0].owner_user_id !== A) fail("journal user mismatch");
+    if (dbRow.rows[0].bucket !== "profit") fail("journal bucket mismatch");
+    if (mall.parseAmount(dbRow.rows[0].amount_usdt) !== mall.parseAmount("4.25")) {
+      fail("journal amount mismatch");
+    }
+    if (String(paid.moneyAuthority.ledgerJournalId) !== dbRow.rows[0].id) {
+      fail("moneyAuthority journalId != DB");
+    }
+    const afterA = await storeA.readOfficialBucketSnapshot(A);
+    const afterB = await storeA.readOfficialBucketSnapshot(B);
+    if (mall.parseAmount(afterA.profit) - mall.parseAmount(beforeA.profit) !== mall.parseAmount("4.25")) {
+      fail("A profit did not receive snapshot");
+    }
+    if (afterA.principal !== beforeA.principal || afterA.locked !== beforeA.locked) {
+      fail("A principal/locked changed");
+    }
+    if (afterA.practice !== beforeA.practice) fail("A practice changed");
+    if (
+      afterB.profit !== beforeB.profit ||
+      afterB.principal !== beforeB.principal ||
+      afterB.locked !== beforeB.locked ||
+      afterB.practice !== beforeB.practice
+    ) {
+      fail("B balances changed by A payout");
+    }
+
+    const lost = await mall.applyMatchSuccessPayout(
+      { participationId: part.participation.id },
+      { store: storeA, evaluator: mall.createMatchSuccessEvaluator() },
+    );
+    if (lost.replay !== true) fail("HTTP-lost retry must replay");
+    if (Number(await countOfficialJournals(dbA, part.participation.id)) !== 1) {
+      fail("lost-retry created extra journal");
+    }
+
     const dbRestart = isolated.createIsolatedQaPgDb(resolved.url);
     try {
-      const storeR = await persist.createPersistMallStore(dbRestart, {
-        members,
-        testOnly: true,
-      });
+      const storeR = await persist.createPersistMallStore(dbRestart, { members });
       const replay = await mall.applyMatchSuccessPayout(
         { participationId: part.participation.id },
         { store: storeR, evaluator: mall.createMatchSuccessEvaluator() },
       );
       if (replay.replay !== true) fail("restart payout must replay");
-      const n2 = await dbRestart.query(
-        "SELECT COUNT(*)::int AS n FROM public.operator_mall_settlement_journals WHERE reference_id = $1::uuid",
-        [part.participation.id],
-      );
-      if (Number(n2.rows[0].n) !== 1) fail("restart created extra journal");
+      if (Number(await countOfficialJournals(dbRestart, part.participation.id)) !== 1) {
+        fail("restart created extra journal");
+      }
     } finally {
       await dbRestart.end();
     }
-    console.log("[operator-mall-gha-pg] ledger PASS fx_block concurrent_1 restart_1 authoritative");
+
+    await dbA.query(
+      `UPDATE public.operator_mall_participations
+          SET payout_status = 'paid', status = 'success', journal_id = NULL
+        WHERE id = $1::uuid`,
+      [partD.participation.id],
+    );
+    const fakeSettled = await dbA.query(
+      `SELECT snapshot, payout_status, journal_id
+         FROM public.operator_mall_participations WHERE id = $1::uuid`,
+      [partD.participation.id],
+    );
+    const fakeAuth = moneyAuth.projectMoneyAuthority({
+      configuredPayoutUsdt: fakeSettled.rows[0].snapshot.payoutAmount,
+      ledgerPaidUsdt: fakeSettled.rows[0].snapshot.payoutAmount,
+      ledgerJournalId: fakeSettled.rows[0].journal_id,
+    });
+    if (fakeAuth.payoutAuthoritative === true) {
+      fail("settled without journal must not be complete");
+    }
+
+    process.env["JWT_" + "USER_SECRET"] =
+      process.env["JWT_" + "USER_SECRET"] || "gha_qa_user_secret_min_32_chars!!";
+    const ledgerApp = await bootLedgerApp(dbA);
+    try {
+      const port = ledgerApp.getHttpServer().address().port;
+      const listed = await callHttp(port, "GET", "/api/v1/me/ledger/journals", {
+        headers: { authorization: "Bearer " + mintUserJwt(A) },
+      });
+      if (listed.status !== 200 || !Array.isArray(listed.json && listed.json.items)) {
+        fail("GET /api/v1/me/ledger/journals failed status=" + listed.status);
+      }
+      const hit = listed.json.items.find((j) => j && j.id === paid.journalId);
+      if (!hit) fail("user journal API missing posted id");
+      const other = await callHttp(port, "GET", "/api/v1/me/ledger/journals", {
+        headers: { authorization: "Bearer " + mintUserJwt(B) },
+      });
+      if (other.status !== 200) fail("B journal list HTTP failed");
+      if ((other.json.items || []).some((j) => j && j.id === paid.journalId)) {
+        fail("B saw A's journal");
+      }
+    } finally {
+      await ledgerApp.close();
+    }
+    console.log(
+      "[operator-mall-gha-pg] ledger PASS official_journals fx_block concurrent_1 retry_1 restart_1 isolate_B http_match",
+    );
   } finally {
     await dbA.end();
     await dbB.end();

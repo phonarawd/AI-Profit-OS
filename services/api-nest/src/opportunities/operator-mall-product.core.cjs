@@ -735,9 +735,34 @@ async function applyMatchSuccessPayout(input, deps) {
     bucket: "profit",
     createdAt: (deps.now && deps.now()) || new Date().toISOString(),
   };
-  const saved = await deps.store.saveJournal(journal);
+  let saved;
+  try {
+    saved = await deps.store.saveJournal(journal);
+  } catch (err) {
+    const code = err && err.code;
+    const msg = String((err && err.message) || "");
+    if (code === "LEDGER_POSTING_REQUIRED") {
+      return {
+        ok: false,
+        applied: false,
+        code: "LEDGER_POSTING_REQUIRED",
+        httpStatus: 503,
+        payoutStatus: PAYOUT_STATUS.BLOCKED,
+      };
+    }
+    if (msg.includes("user bucket missing") || msg.includes("provision_user_bucket")) {
+      return fail("LEDGER_ACCOUNTS_UNREADY", 503, {
+        payoutStatus: PAYOUT_STATUS.BLOCKED,
+      });
+    }
+    throw err;
+  }
   const savedId = saved && (saved.id || saved.journalId);
-  if (savedId && String(savedId) !== String(journal.id)) {
+  const paidAmount = (saved && (saved.amountUsdt || saved.amount_usdt)) || amount;
+  if (!savedId) {
+    return fail("JOURNAL_WRITE_FAILED", 500, { payoutStatus: PAYOUT_STATUS.FAILED });
+  }
+  if (saved.reused === true) {
     return {
       ok: true,
       applied: false,
@@ -749,14 +774,14 @@ async function applyMatchSuccessPayout(input, deps) {
       moneyAuthority: projectMoneyAuthority({
         configuredPayoutUsdt: amount,
         ledgerJournalId: String(savedId),
-        ledgerPaidUsdt: saved.amountUsdt || saved.amount_usdt || amount,
+        ledgerPaidUsdt: paidAmount,
       }),
     };
   }
   const paid = {
     ...participation,
     payoutStatus: PAYOUT_STATUS.PAID,
-    journalId: journal.id,
+    journalId: String(savedId),
     status: "success",
   };
   await deps.store.saveParticipation(paid);
@@ -765,12 +790,12 @@ async function applyMatchSuccessPayout(input, deps) {
     applied: true,
     httpStatus: 200,
     payoutStatus: PAYOUT_STATUS.PAID,
-    journalId: journal.id,
+    journalId: String(savedId),
     participation: paid,
     moneyAuthority: projectMoneyAuthority({
       configuredPayoutUsdt: amount,
-      ledgerJournalId: journal.id,
-      ledgerPaidUsdt: amount,
+      ledgerJournalId: String(savedId),
+      ledgerPaidUsdt: paidAmount,
     }),
   };
 }
@@ -884,8 +909,13 @@ function createMemoryMallStore(seed) {
       if (m) m.dailyUsed += 1;
     },
     async saveJournal(j) {
+      const existing = journals.get(j.idempotencyKey);
+      if (existing) {
+        return { ...existing, reused: true };
+      }
       journals.set(j.idempotencyKey, j);
       poolBalance = formatAmount(parseAmount(poolBalance) - parseAmount(j.amountUsdt));
+      return { ...j, reused: false };
     },
     async findJournal(key) {
       return journals.get(key) || null;

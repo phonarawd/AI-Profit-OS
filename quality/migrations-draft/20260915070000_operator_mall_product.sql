@@ -70,8 +70,8 @@ CREATE TABLE IF NOT EXISTS public.operator_mall_participations (
   CONSTRAINT operator_mall_participations_user_idem_uq UNIQUE (user_id, idempotency_key)
 );
 
--- 실 원장 전표는 기존 ledger_journals.idempotency_key UNIQUE 재사용.
--- 이 표는 posting 어댑터 없을 때의 연결 의도만. 잔액 UPDATE 금지.
+-- 실 원장 권위는 public.ledger_journals + ledger_entries + posting TX.
+-- 이 표는 QA 초안 잔재. 지급 완료/잔액 권위가 아니다. 잔액 UPDATE 금지.
 CREATE TABLE IF NOT EXISTS public.operator_mall_settlement_journals (
   id uuid PRIMARY KEY,
   idempotency_key text NOT NULL UNIQUE,
@@ -97,4 +97,4 @@ CREATE INDEX IF NOT EXISTS operator_mall_participations_user_idx
 -- quality/migrations-draft/20260913220000_opportunities_supply_source.sql
 -- 참여 loadMallAccess 는 visibility + supply_source 가 같이 있어야 42703 을 피한다.
 -- 이 파일은 supply_source 를 중복 ADD 하지 않는다.
--- 실 원장 권위는 public.ledger_journals. 이 settlement 표는 posting 없을 때의 연결 의도만.
+-- 실 원장 권위는 public.ledger_journals. 이 settlement 표 행만으로 payoutAuthoritative 금지.

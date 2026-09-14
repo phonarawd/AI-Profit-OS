@@ -6,6 +6,7 @@
 
 const path = require("node:path");
 const mall = require("./operator-mall-product.core.cjs");
+const ledgerPosting = require("./operator-mall-ledger-posting.cjs");
 const isolated = require(path.join(__dirname, "..", "..", "isolated-qa-pg.cjs"));
 
 const PRODUCTION_SUPABASE_REF = isolated.PRODUCTION_SUPABASE_REF;
@@ -35,15 +36,15 @@ const PARTICIPATION_COLS = [
   "snapshot",
   "journal_id",
 ];
-const JOURNAL_COLS = [
+const LEDGER_JOURNAL_COLS = [
   "id",
   "idempotency_key",
   "journal_type",
   "reference_type",
   "reference_id",
-  "user_id",
-  "amount_usdt",
 ];
+/** 가짜 persist 격리 전용. 실PG 권위 아님. */
+const JOURNAL_COLS = LEDGER_JOURNAL_COLS;
 const OPP_MALL_COLS = [
   "visibility",
   "selected_member_ids",
@@ -67,10 +68,19 @@ SELECT
     WHERE table_schema = 'public' AND table_name = 'operator_mall_participations'
       AND column_name = ANY($2::text[])) AS participation_cols,
   (SELECT COUNT(*)::int FROM information_schema.tables
-    WHERE table_schema = 'public' AND table_name = 'operator_mall_settlement_journals') AS journal_table,
+    WHERE table_schema = 'public' AND table_name = 'ledger_journals') AS ledger_journal_table,
   (SELECT COUNT(*)::int FROM information_schema.columns
-    WHERE table_schema = 'public' AND table_name = 'operator_mall_settlement_journals'
-      AND column_name = ANY($3::text[])) AS journal_cols,
+    WHERE table_schema = 'public' AND table_name = 'ledger_journals'
+      AND column_name = ANY($3::text[])) AS ledger_journal_cols,
+  (SELECT COUNT(*)::int FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'ledger_accounts') AS ledger_account_table,
+  (SELECT COUNT(*)::int FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'ledger_entries') AS ledger_entry_table,
+  (SELECT COUNT(*)::int FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = 'ledger_journals'
+      AND column_name = 'request_fingerprint') AS ledger_fingerprint,
+  (SELECT COUNT(*)::int FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'ledger_outbox_events') AS ledger_outbox_table,
   (SELECT COUNT(*)::int FROM information_schema.columns
     WHERE table_schema = 'public' AND table_name = 'opportunities'
       AND column_name = ANY($4::text[])) AS opp_mall_cols
@@ -168,7 +178,7 @@ SELECT id::text, user_id::text, product_id::text, idempotency_key, status,
 SELECT id::text, user_id::text, product_id::text, idempotency_key, status,
        payout_status, snapshot, journal_id::text, created_at
   FROM public.operator_mall_participations`.trim(),
-  insertJournal: `
+  insertJournalTestOnly: `
 INSERT INTO public.operator_mall_settlement_journals (
   id, idempotency_key, journal_type, reference_type, reference_id,
   user_id, amount_usdt, bucket
@@ -176,17 +186,50 @@ INSERT INTO public.operator_mall_settlement_journals (
   $1::uuid, $2, 'settlement', 'participation', $3::uuid, $4::uuid, $5::numeric, 'profit'
 )
 RETURNING id::text, idempotency_key, user_id::text, amount_usdt::text`.trim(),
-  findJournal: `
+  findJournalTestOnly: `
 SELECT id::text, idempotency_key, journal_type, reference_type,
        reference_id::text, user_id::text, amount_usdt::text, created_at
   FROM public.operator_mall_settlement_journals
  WHERE idempotency_key = $1`.trim(),
-  listJournalsByUser: `
+  listJournalsByUserTestOnly: `
 SELECT id::text, idempotency_key, journal_type, reference_type,
        reference_id::text, user_id::text, amount_usdt::text, created_at
   FROM public.operator_mall_settlement_journals
  WHERE user_id = $1::uuid
  ORDER BY created_at ASC`.trim(),
+  findLedgerJournal: `
+SELECT j.id::text, j.idempotency_key, j.journal_type, j.reference_type,
+       j.reference_id::text, a.owner_user_id::text AS user_id,
+       e.amount_usdt::text, j.created_at
+  FROM public.ledger_journals j
+  JOIN public.ledger_entries e ON e.journal_id = j.id
+  JOIN public.ledger_accounts a ON a.id = e.account_id
+ WHERE j.idempotency_key = $1
+   AND j.journal_type = 'settlement'
+   AND a.owner_user_id IS NOT NULL
+   AND a.bucket = 'profit'
+   AND e.direction = 'credit'`.trim(),
+  listLedgerJournalsByUser: `
+SELECT j.id::text, j.idempotency_key, j.journal_type, j.reference_type,
+       j.reference_id::text, a.owner_user_id::text AS user_id,
+       e.amount_usdt::text, j.created_at
+  FROM public.ledger_journals j
+  JOIN public.ledger_entries e ON e.journal_id = j.id
+  JOIN public.ledger_accounts a ON a.id = e.account_id
+ WHERE a.owner_user_id = $1::uuid
+   AND j.journal_type = 'settlement'
+   AND a.bucket = 'profit'
+   AND e.direction = 'credit'
+ ORDER BY j.created_at ASC`.trim(),
+  poolBalance: `
+SELECT balance_usdt::text AS balance_usdt
+  FROM public.ledger_accounts
+ WHERE code = 'SYS:OPPORTUNITY_POOL'`.trim(),
+  bucketSnapshot: `
+SELECT bucket, balance_usdt::text AS balance_usdt
+  FROM public.ledger_accounts
+ WHERE owner_user_id = $1::uuid
+   AND bucket IN ('principal', 'profit', 'locked', 'practice')`.trim(),
 });
 
 function isOpsDbTarget(env) {
@@ -208,15 +251,22 @@ function evaluateSchemaPreflight(row) {
   const participationReady =
     Number(r.participation_table) >= 1 &&
     Number(r.participation_cols) >= PARTICIPATION_COLS.length;
-  const journalReady =
-    Number(r.journal_table) >= 1 && Number(r.journal_cols) >= JOURNAL_COLS.length;
+  const ledgerReady =
+    Number(r.ledger_journal_table) >= 1 &&
+    Number(r.ledger_journal_cols) >= LEDGER_JOURNAL_COLS.length &&
+    Number(r.ledger_account_table) >= 1 &&
+    Number(r.ledger_entry_table) >= 1 &&
+    Number(r.ledger_fingerprint) >= 1 &&
+    Number(r.ledger_outbox_table) >= 1;
   const oppMallReady = Number(r.opp_mall_cols) >= OPP_MALL_COLS.length;
-  const ready = productReady && participationReady && journalReady;
+  const ready = productReady && participationReady && ledgerReady;
   return {
     ready,
     productReady,
     participationReady,
-    journalReady,
+    journalReady: ledgerReady,
+    ledgerReady,
+    qaSettlementNotAuthority: true,
     oppMallReady,
     code: ready ? "READY" : "STORE_UNREADY",
     persistence: ready ? "runtime_persist" : "schema_unready",
@@ -233,7 +283,7 @@ async function preflightMallPersistSchema(db) {
     const out = await db.query(SQL.schemaPreflight, [
       PRODUCT_COLS,
       PARTICIPATION_COLS,
-      JOURNAL_COLS,
+      LEDGER_JOURNAL_COLS,
       OPP_MALL_COLS,
     ]);
     return evaluateSchemaPreflight(out && out.rows && out.rows[0]);
@@ -314,7 +364,10 @@ async function createPersistMallStore(db, opts) {
       matchBlocked: m.matchBlocked === true,
     });
   }
-  const posting = opts && opts.posting;
+  let posting = opts && opts.posting;
+  if (posting === undefined && db && db.kind === "isolated_qa_pool") {
+    posting = ledgerPosting.createMallLedgerPosting(db);
+  }
   const stampOpportunity = pre.oppMallReady === true;
   let poolBalance = opts && opts.poolBalance != null ? opts.poolBalance : null;
   const audit = [];
@@ -324,6 +377,13 @@ async function createPersistMallStore(db, opts) {
     kind: "persist",
     persist: true,
     testOnly: Boolean(opts && opts.testOnly),
+    postingKind:
+      posting && posting.kind
+        ? posting.kind
+        : opts && opts.testOnly
+          ? "test_only_fallback"
+          : "none",
+    qaSettlementNotAuthority: true,
     preflight: pre,
     async saveProduct(p) {
       return this.insertProduct(p);
@@ -499,42 +559,78 @@ async function createPersistMallStore(db, opts) {
       }
     },
     async saveJournal(j) {
-      if (posting && typeof posting.postJournal === "function") {
-        const posted = await posting.postJournal({
-          idempotencyKey: j.idempotencyKey,
-          journalType: "settlement",
-          referenceType: "participation",
-          referenceId: j.referenceId,
-          memo: "MATCH_SUCCESS mall settlement",
-          createdBy: j.userId,
+      if (posting && typeof posting.postMallSettlement === "function") {
+        return posting.postMallSettlement({
+          participationId: j.referenceId,
+          userId: j.userId,
           amountUsdt: j.amountUsdt,
+          idempotencyKey: j.idempotencyKey,
+          fxSnapshotId: j.fxSnapshotId || null,
         });
-        return posted;
       }
-      try {
-        const r = await db.query(SQL.insertJournal, [
-          j.id,
-          j.idempotencyKey,
-          j.referenceId,
-          j.userId,
-          j.amountUsdt,
-        ]);
-        if (poolBalance != null) {
-          poolBalance = mall.formatAmount(
-            mall.parseAmount(poolBalance) - mall.parseAmount(j.amountUsdt),
-          );
+      if (opts && opts.testOnly === true) {
+        try {
+          const r = await db.query(SQL.insertJournalTestOnly, [
+            j.id,
+            j.idempotencyKey,
+            j.referenceId,
+            j.userId,
+            j.amountUsdt,
+          ]);
+          if (poolBalance != null) {
+            poolBalance = mall.formatAmount(
+              mall.parseAmount(poolBalance) - mall.parseAmount(j.amountUsdt),
+            );
+          }
+          const row = r.rows[0];
+          return row
+            ? {
+                id: String(row.id),
+                journalId: String(row.id),
+                amountUsdt: String(row.amount_usdt),
+                userId: String(row.user_id),
+                reused: false,
+                testOnly: true,
+              }
+            : null;
+        } catch (err) {
+          if (err && err.code === "23505") {
+            const replay = await db.query(SQL.findJournalTestOnly, [j.idempotencyKey]);
+            if (replay.rows[0]) {
+              return {
+                id: String(replay.rows[0].id),
+                journalId: String(replay.rows[0].id),
+                amountUsdt: String(replay.rows[0].amount_usdt),
+                userId: String(replay.rows[0].user_id),
+                reused: true,
+                testOnly: true,
+              };
+            }
+          }
+          throw err;
         }
-        return r.rows[0];
-      } catch (err) {
-        if (err && err.code === "23505") {
-          const replay = await db.query(SQL.findJournal, [j.idempotencyKey]);
-          if (replay.rows[0]) return replay.rows[0];
-        }
-        throw err;
       }
+      const err = new Error("LEDGER_POSTING_REQUIRED");
+      err.code = "LEDGER_POSTING_REQUIRED";
+      throw err;
     },
     async findJournal(key) {
-      const r = await db.query(SQL.findJournal, [key]);
+      if (posting && typeof posting.getByIdempotencyKey === "function") {
+        return posting.getByIdempotencyKey(key);
+      }
+      if (opts && opts.testOnly === true) {
+        const r = await db.query(SQL.findJournalTestOnly, [key]);
+        const row = r.rows[0];
+        if (!row) return null;
+        return {
+          id: String(row.id),
+          idempotencyKey: row.idempotency_key,
+          amountUsdt: String(row.amount_usdt),
+          userId: String(row.user_id),
+          testOnly: true,
+        };
+      }
+      const r = await db.query(SQL.findLedgerJournal, [key]);
       const row = r.rows[0];
       if (!row) return null;
       return {
@@ -542,10 +638,22 @@ async function createPersistMallStore(db, opts) {
         idempotencyKey: row.idempotency_key,
         amountUsdt: String(row.amount_usdt),
         userId: String(row.user_id),
+        referenceId: row.reference_id ? String(row.reference_id) : null,
       };
     },
     async listJournalsByUser(userId) {
-      const r = await db.query(SQL.listJournalsByUser, [userId]);
+      if (opts && opts.testOnly === true && !(posting && posting.getByIdempotencyKey)) {
+        const r = await db.query(SQL.listJournalsByUserTestOnly, [userId]);
+        return (r.rows || []).map((row) => ({
+          id: String(row.id),
+          idempotencyKey: row.idempotency_key,
+          amountUsdt: String(row.amount_usdt),
+          userId: String(row.user_id),
+          referenceId: row.reference_id ? String(row.reference_id) : null,
+          testOnly: true,
+        }));
+      }
+      const r = await db.query(SQL.listLedgerJournalsByUser, [userId]);
       return (r.rows || []).map((row) => ({
         id: String(row.id),
         idempotencyKey: row.idempotency_key,
@@ -556,6 +664,21 @@ async function createPersistMallStore(db, opts) {
     },
     async getPoolBalance() {
       return poolBalance;
+    },
+    async readOfficialBucketSnapshot(userId) {
+      const pool = await db.query(SQL.poolBalance);
+      const buckets = userId ? await db.query(SQL.bucketSnapshot, [userId]) : { rows: [] };
+      const byBucket = {};
+      for (const row of buckets.rows || []) {
+        byBucket[row.bucket] = String(row.balance_usdt);
+      }
+      return {
+        pool: pool.rows[0] ? String(pool.rows[0].balance_usdt) : null,
+        principal: byBucket.principal || "0",
+        profit: byBucket.profit || "0",
+        locked: byBucket.locked || "0",
+        practice: byBucket.practice || "0",
+      };
     },
     async appendAudit(row) {
       audit.push(row);
@@ -587,6 +710,12 @@ function createFakePersistMallDb(opts) {
       participation_cols: ready ? PARTICIPATION_COLS.length : 0,
       journal_table: ready ? 1 : 0,
       journal_cols: ready ? JOURNAL_COLS.length : 0,
+      ledger_journal_table: ready ? 1 : 0,
+      ledger_journal_cols: ready ? LEDGER_JOURNAL_COLS.length : 0,
+      ledger_account_table: ready ? 1 : 0,
+      ledger_entry_table: ready ? 1 : 0,
+      ledger_fingerprint: ready ? 1 : 0,
+      ledger_outbox_table: ready ? 1 : 0,
       opp_mall_cols: oppReady ? OPP_MALL_COLS.length : 0,
     };
   }
@@ -847,6 +976,7 @@ module.exports = {
   PRODUCT_COLS,
   PARTICIPATION_COLS,
   JOURNAL_COLS,
+  LEDGER_JOURNAL_COLS,
   OPP_MALL_COLS,
   PRODUCTION_SUPABASE_REF,
   isOpsDbTarget,
