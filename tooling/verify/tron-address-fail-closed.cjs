@@ -1,0 +1,10 @@
+"use strict";
+const assert=require("node:assert/strict"),fs=require("node:fs"),path=require("node:path");
+const root=path.resolve(__dirname,"../..");
+const tron=fs.readFileSync(path.join(root,"services/api-nest/src/wallet/tron-address.ts"),"utf8");
+const deposit=fs.readFileSync(path.join(root,"services/api-nest/src/wallet/deposit-address.service.ts"),"utf8");
+assert.doesNotMatch(tron,/createHmac/);assert.doesNotMatch(tron,/HMAC-SHA256\(secretRef/);assert.doesNotMatch(tron,/createHash\([^\n]*secretRef|update\([^\n]*secretRef/);assert.match(tron,/TRON_HD_DERIVATION_UNAVAILABLE/);assert.match(tron,/TronHdDerivationUnavailableError/);assert.match(tron,/resolveCanonicalTrc20Deriver/);assert.match(tron,/requireCanonicalTrc20Deriver/);assert.match(tron,/allocateCanonicalTrc20Address/);
+const resolverStart=tron.indexOf("export function resolveCanonicalTrc20Deriver"),resolverEnd=tron.indexOf("\n}",resolverStart);assert.ok(resolverStart>=0&&resolverEnd>resolverStart);assert.match(tron.slice(resolverStart,resolverEnd+2),/return null;/);
+assert.match(deposit,/requireCanonicalTrc20Deriver\(\)/);assert.match(deposit,/allocateCanonicalTrc20Address/);assert.match(deposit,/ServiceUnavailableException/);assert.match(deposit,/TRON_HD_DERIVATION_UNAVAILABLE/);
+const requireAt=deposit.indexOf("requireCanonicalTrc20Deriver();"),allocateAt=deposit.indexOf("derived = allocateCanonicalTrc20Address"),insertAt=deposit.indexOf("INSERT INTO public.user_deposit_addresses");assert.ok(requireAt>=0);assert.ok(allocateAt>requireAt);assert.ok(insertAt>allocateAt);
+console.log("[verify:tron-address-fail-closed] PASS");
