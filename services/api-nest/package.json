@@ -5,7 +5,7 @@
   "description": "NestJS API — JWT auth SoT (ADR-006) · Phase0 in-process bus · Supabase+Upstash hosts",
   "scripts": {
     "dev": "tsc -w",
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && node ../../tooling/verify/api-nest-build.cjs --copy-src-cjs",
     "start": "node dist/main.js"
   },
   "dependencies": {
