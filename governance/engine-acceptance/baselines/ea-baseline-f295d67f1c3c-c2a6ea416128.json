@@ -1,17 +1,54 @@
 {
   "schema": "governance.engine-acceptance.baseline.v1",
   "version": "1.0.0",
-  "id": "ea-baseline-35ec80eeb89d-77e54a036c46",
+  "id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
   "todoId": "engine-acceptance-rebase-v1",
-  "measuredAt": "2026-09-15T20:00:11.500Z",
-  "commit_sha": "35ec80eeb89d4727db3544854a1f840109f4bdbb",
-  "tree_sha": "3c4bf1ec57a1f307ca5ebcb423088618b31a807e",
+  "measuredAt": "2026-09-15T10:57:12.671Z",
+  "commit_sha": "f295d67f1c3c5b0cbc824c06e568074fd382e85a",
+  "tree_sha": "337d363ea85699b87ef325d56f23513c348c0f54",
   "working_tree_clean": false,
   "protected_scope_clean": true,
   "dirty_paths_all": [
-    "package.json",
-    "quality/backend-doc-ownership.json",
-    "tooling/verify/CATALOG.md",
+    ".cursor/rules/git-safety.mdc",
+    ".cursor/rules/legal-out-of-plan.mdc",
+    ".cursor/rules/money-ledger.mdc",
+    ".cursor/rules/phase0-ram.mdc",
+    ".cursor/rules/plan-file-serial.mdc",
+    ".cursor/rules/product-drift-lock.mdc",
+    ".cursor/rules/verify-before-done.mdc",
+    ".env.example",
+    ".github/workflows/deploy-cloudflare.yml",
+    ".husky/pre-commit",
+    ".husky/pre-push",
+    ".vscode/extensions.json",
+    ".vscode/settings.json",
+    "COMPANY_REGISTRATION_SUMMARY.md",
+    "services/market-intelligence/src/asset-image.cjs",
+    "services/market-intelligence/src/asset-master.cjs",
+    "services/market-intelligence/src/card-grade.cjs",
+    "services/market-intelligence/src/index.d.ts",
+    "tooling/deploy/cf-preflight.cjs",
+    "tooling/engine-acceptance/checks/failure-world.cjs",
+    "tooling/engine-acceptance/checks/stateful-time-lifecycle.cjs",
+    "tooling/engine-acceptance/run-qa4.cjs",
+    "tooling/engine-acceptance/run-qa5.cjs",
+    "tooling/engine-acceptance/selftest-product-rebase.cjs",
+    "tooling/github/apply-main-gate.ps1",
+    "tooling/schemas/_write-trade-license-html.cjs",
+    "tooling/verify/ai-feature-platform.cjs",
+    "tooling/verify/brand-consumer.cjs",
+    "tooling/verify/engine-acceptance.cjs",
+    "tooling/verify/kyc-r2-only.cjs",
+    "tooling/verify/market-partner-trust.cjs",
+    "tooling/verify/root-domain-env.cjs",
+    "tooling/verify/secrets.cjs",
+    "tooling/verify/shadow-replay-drift.cjs",
+    "tooling/verify/stack-lock.cjs",
+    "tooling/verify/stubs/run-all.cjs",
+    "tooling/verify/webauthn-fallback-pointer.cjs",
+    "workers/chain-sweeper/wrangler.toml",
+    "workers/push-dispatcher/wrangler.toml",
+    "workers/yahoo-jp-adapter/src/index.ts",
     ".cursor/hooks.json.bak-20260914-hook-temp-disable",
     "PUTDUK_BACKEND_CURSOR_FINAL_PROMPT_QUOTA_GRADE_20260914.md",
     "PUTDUK_BACKEND_PARALLEL_CROSSCHECK_20260913.md",
@@ -19,67 +56,19 @@
     "PUTDUK_GLOBAL_OPERATOR_CONTROL_RESEARCH_20260914.md",
     "PUTDUK_LEGACY_ADMIN_REMAINS_AUDIT_20260913.md",
     "PUTDUK_ONBOARDING_DEEP_RESEARCH_2026-09-06.md",
-    "_tmp_ci_jobs.json",
-    "_tmp_ea_34967320699/",
-    "_tmp_ea_34968710565/",
-    "_tmp_official_acceptance_34998389520/",
-    "_tmp_official_deploy_34999084022/",
-    "_tmp_official_post001_019/",
-    "_tmp_official_rebase_35ec80ee/",
-    "_tmp_official_rel702_smoke/",
-    "_tmp_official_rel703_obs/",
-    "_tmp_official_rel704_closure/",
     "_tmp_qa_harness/",
-    "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_FOUNDER_LEFTOVER_RELEASE_BUILD_V1.md",
-    "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_MAIN_FULL_DISPATCH_THEN_RELEASE_V1.json",
-    "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_BLANKET_OFFICIAL_RELEASE_V1.json",
-    "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_BLANKET_OFFICIAL_RELEASE_V1.md",
-    "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_TRIGGERED_ACCEPTANCE_34998389520_V1.json",
-    "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_TRIGGERED_ACCEPTANCE_34998389520_V1.md",
-    "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_TRIGGERED_DEPLOY_34999084022_V1.json",
-    "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_TRIGGERED_DEPLOY_34999084022_V1.md",
-    "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_TRIGGERED_RELEASE_BUILD_34998016673_V1.json",
-    "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_TRIGGERED_RELEASE_BUILD_34998016673_V1.md",
-    "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_POST001_TO_019_PLUS_ALERT_AUTO_V1.json",
-    "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_POST001_TO_019_PLUS_ALERT_AUTO_V1.md",
-    "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_PR228_MAIN_MERGE_V1.json",
-    "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REBASE_V1.json",
-    "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REBASE_V1.md",
-    "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REL701_PRODUCTION_DISPATCH_V1.json",
-    "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REL702_PRODUCTION_SMOKE_V1.json",
-    "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REL702_PRODUCTION_SMOKE_V1.md",
-    "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REL703_PRODUCTION_OBSERVABILITY_V1.json",
-    "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REL703_PRODUCTION_OBSERVABILITY_V1.md",
-    "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REL704_CLOSURE_V1.json",
-    "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REL704_CLOSURE_V1.md",
-    "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_RELEASE_BUILD_ACCEPTANCE_V1.json",
-    "governance/release-master/RELEASE_CLOSURE.md",
-    "packages/sdk/",
-    "services/_wip_unrelated_marketing/",
-    "services/ads-budget-guardrail/",
-    "services/ads-orchestrator/",
-    "services/marketing-attribution/METRICS.md",
+    "governance/engine-acceptance/baselines/ea-baseline-137241804ff2-83935adcdf57.json",
     "tooling/engine-acceptance/harness/local-domain-executor.cjs",
+    "tooling/engine-acceptance/lib/qa9-current-epoch-policy.cjs",
     "tooling/engine-acceptance/selftest-local-domain-executor.cjs",
-    "tooling/verify/ads-budget-guardrail.cjs",
-    "tooling/verify/ads-orchestrator-boundary.cjs",
-    "tooling/verify/ads-provider-capability.cjs",
-    "tooling/verify/ads-standing-authorization.cjs",
-    "tooling/verify/alert-oneshot-dry-run.cjs",
-    "tooling/verify/attribution-chain.cjs",
-    "tooling/verify/capi-config.cjs",
-    "tooling/verify/capi-consent.cjs",
-    "tooling/verify/fixtures/attribution-chain.v1.json",
+    "tooling/engine-acceptance/selftest-qa9-verifier.cjs",
     "tooling/verify/heavy-qa-lock.cjs",
     "tooling/verify/heavy-qa-lock.isolation.cjs",
-    "tooling/verify/heavy-qa-lock.ps1",
-    "tooling/verify/lib/attribution-chain-fixture.cjs",
-    "tooling/verify/marketing-compliance.cjs",
-    "workers/marketing-capi-dispatcher/src/capi-core.cjs"
+    "tooling/verify/heavy-qa-lock.ps1"
   ],
   "dirty_paths_protected": [],
   "lockfile_hash": "5e842f9da69d407c8cb1b3e0d67ec7e220cd715a26ba1c4400466c57d7e147a3",
-  "schema_migration_hash": "ddc6b36d8d1052f5715222ccd35b9270265a582f39bde95c790813ffeb650229",
+  "schema_migration_hash": "69cabbecc2673bb9980615a949e58f2997968b18f19d01bebd3a166da44a0748",
   "prompt_hash": "b58b3f2c15d0234e13ac617f26f41acbd41e8b3186218b7e652f8ae36ec6dafb",
   "eval_dataset_hash": "710cc5f7e3f1ac7ad6ee934eb9028d7bb8f0adbce38e94c44c1c6445cda0a47d",
   "acceptance_workflow_hash": "1d5485d0fb73966dc7b78daa3e609e56eda1edea63fe359e816e5e2cf1b7bd10",
@@ -89,8 +78,8 @@
   "protected_scope_manifest": {
     "pathSeparator": "/",
     "hashAlgorithm": "sha256",
-    "aggregate": "77e54a036c46db905040d6254fe8838bac1690e71d2cd3e5eeb8eca5e22a72a3",
-    "pathCount": 559,
+    "aggregate": "c2a6ea416128aa648eb9ddb0ceb6249a0633f12e0eb6fbabc4d986c80fc3c3bf",
+    "pathCount": 556,
     "entries": [
       {
         "path": "eval/coach_redteam.jsonl",
@@ -486,7 +475,7 @@
       },
       {
         "path": "services/api-nest/catalog-external-write.core.cjs",
-        "sha256": "c8250d51ab033cc0653ed35089f3382986670734b5a74ee788825652d0bdceec"
+        "sha256": "5887eca2ad32f77fedddd718ac437b65408a665b8a409eb7acd53daa757c87fe"
       },
       {
         "path": "services/api-nest/clock.core.cjs",
@@ -1406,11 +1395,11 @@
       },
       {
         "path": "services/api-nest/src/opportunities/catalog-external-write.admin-writers.isolation.cjs",
-        "sha256": "e6534385c3598d775fc1d6ba1b03192432f18386a79a24e412d085904697cec8"
+        "sha256": "ef91693b9d7dcb14dca7b4471d2e5e20056ff7f27004075d223f017f3c642a9b"
       },
       {
         "path": "services/api-nest/src/opportunities/catalog-external-write.guard.ts",
-        "sha256": "127d4742ff2787c4d502153284115b56825f4399eff57fb02ba2fa9ddad7ca78"
+        "sha256": "0e1e3f136a9a66b28cb95c12f75580a18287703e2ad1236c2bd0c0bb35ce664e"
       },
       {
         "path": "services/api-nest/src/opportunities/catalog-external-write.ingest-http.cjs",
@@ -1422,15 +1411,15 @@
       },
       {
         "path": "services/api-nest/src/opportunities/catalog-external-write.ingest-isolation.cjs",
-        "sha256": "608bbee3c62608b884125d6e584b90412e1a4ab8027e809dd136927754751e79"
+        "sha256": "92acb4e0bdc9497d42100c95633c9267f649bc92307d5549f0a38f78cb7631dd"
       },
       {
         "path": "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs",
-        "sha256": "4491665335027675cdbe5af980376710932b5ffe3eb5816d7c4021cf6d3730d4"
+        "sha256": "6ddae4176c5e29892c76a4beae093fd5bffd460fa4fb31225559efc2b74e4cdd"
       },
       {
         "path": "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts",
-        "sha256": "9e3e3ee05154f811eb1a65838513e9c462efaeea5e5ddbbc1fa25cf6997b105a"
+        "sha256": "d2e00620b8e9fa5a8873a4e867b4ade4ab647b49b9ac804b5755a3795a356807"
       },
       {
         "path": "services/api-nest/src/opportunities/catalog-external-write.ts-hook.cjs",
@@ -1478,7 +1467,7 @@
       },
       {
         "path": "services/api-nest/src/opportunities/operator-mall-product.admin.service.ts",
-        "sha256": "ccfa2e02076b7ae349737fa7905160c7f95be7c35803916434c3dd2e98cf9141"
+        "sha256": "197d51c4aa3d6451ee36dd9785d581a1bc9fcdd2cf3123f2f3fc17a87b0ec0b6"
       },
       {
         "path": "services/api-nest/src/opportunities/operator-mall-product.core.cjs",
@@ -1490,15 +1479,11 @@
       },
       {
         "path": "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
-        "sha256": "e30d9d4917de6a33d3c60f55a7facd9d79c2d99c5b71831abec6627065ad911c"
+        "sha256": "aeb4b2470d848ba116585685eb83aa8133d1011bcfb58ebae95a3c5433d69afa"
       },
       {
         "path": "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
-        "sha256": "44f2acbeb00d9eea88411cb54de9f3ff6c2284aa6f7cae97548642665331dbcf"
-      },
-      {
-        "path": "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
-        "sha256": "0b5571e3d188d1a3ae351477f166ba307a1710f1d199774af0460912ffba4b2e"
+        "sha256": "692f2c52b8552bcc4507d886de6be57e5e5f8ccaa31c5e0c94876b37e3d365dc"
       },
       {
         "path": "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
@@ -1538,7 +1523,7 @@
       },
       {
         "path": "services/api-nest/src/opportunities/opportunities.user.service.ts",
-        "sha256": "df8d7fbab871a91c2831b256e60879cf7598017d2051308d75d762438248617b"
+        "sha256": "28014648d94134eb3f685d7d9f6f333da33b7b85111adee138586807b94d3dc4"
       },
       {
         "path": "services/api-nest/src/opportunities/opportunity-reprice.service.ts",
@@ -1546,7 +1531,7 @@
       },
       {
         "path": "services/api-nest/src/opportunities/participate.service.ts",
-        "sha256": "6fbde929d24b391236a805ad14934926b9daa7630fdddb9531b8a7079b6c5c95"
+        "sha256": "5102433b4893581f266b2d2372e2fa1ecec96beaa78aa6813e50b0506b4839cc"
       },
       {
         "path": "services/api-nest/src/opportunities/user-opportunity-override.admin.controller.ts",
@@ -2319,14 +2304,6 @@
       {
         "path": "supabase/migrations/20260905110000_classic_signup_sessions_and_admin.sql",
         "sha256": "21aa45cdfb0138689dbe2cfd92c91401be4f2cb91ec2fb267ea2838f6c462489"
-      },
-      {
-        "path": "supabase/migrations/20260916033000_opportunities_supply_source.sql",
-        "sha256": "481f960d7852030f6e1874502b19c7f073be061c56331f3bd91c52c21e2e47a1"
-      },
-      {
-        "path": "supabase/migrations/20260916033100_operator_mall_product.sql",
-        "sha256": "1dfd8699b16c8ed218e97fa7a23f3ce64badf265fd9b8908c81f24ed68293e34"
       }
     ]
   },
@@ -2336,8 +2313,8 @@
   "next": "QA1_DETERMINISTIC_TRUTH",
   "epoch": {
     "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
-    "rebase_id": "ea-rebase-35ec80eeb89d-77e54a036c46",
-    "predecessor_baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
+    "rebase_id": "ea-rebase-f295d67f1c3c-c2a6ea416128",
+    "predecessor_baseline_id": "ea-baseline-137241804ff2-83935adcdf57",
     "kind": "product_rebase"
   }
 }
