@@ -4,8 +4,8 @@
   "suite_id": "QA2",
   "run_id": "qa2-synthetic-personas-20260915",
   "todoId": "qa2-synthetic-personas",
-  "measuredAt": "2026-09-15T20:07:16.534Z",
-  "baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
+  "measuredAt": "2026-09-15T22:16:44.954Z",
+  "baseline_id": "ea-baseline-009750f0bef8-60f2feeec9d3",
   "mode": "full",
   "kill_switch": {
     "verified_before_checks": true,
@@ -192,9 +192,9 @@
           "journey_id": "J-DIRTY-RETRY-01",
           "invariant_id": "INV-IDEMPOTENCY-01",
           "attack_face": null,
-          "seed": 4021893633,
+          "seed": 1788136321,
           "rng_version": "aipo-ea-rng-v1",
-          "clock_as_of": "2026-09-15T20:07:16.534Z",
+          "clock_as_of": "2026-09-15T22:16:44.954Z",
           "clock_source": "wall_clock_iso",
           "request_sequence": [
             {
@@ -235,14 +235,14 @@
               "note": "same Idempotency-Key",
               "sanitized": {
                 "authorization": "[REDACTED]",
-                "idempotencyKey": "qa-synth-key-988110729",
+                "idempotencyKey": "qa-synth-key-978142905",
                 "body": null
               }
             }
           ],
-          "baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
+          "baseline_id": "ea-baseline-009750f0bef8-60f2feeec9d3",
           "model_identifier": null,
-          "configuration_fingerprint": "073295b2b1ea1aa588b69a1459cb2dd3",
+          "configuration_fingerprint": "ab4ca2a8e5aca3a81f3d40a9e5ea71f3",
           "live_http": false,
           "product_mutation": 0
         },
@@ -252,9 +252,9 @@
           "journey_id": "J-DIRTY-ISOLATION-01",
           "invariant_id": "INV-ISOLATION-01",
           "attack_face": "interleave",
-          "seed": 2117708758,
+          "seed": 602441046,
           "rng_version": "aipo-ea-rng-v1",
-          "clock_as_of": "2026-09-15T20:07:16.534Z",
+          "clock_as_of": "2026-09-15T22:16:44.954Z",
           "clock_source": "wall_clock_iso",
           "request_sequence": [
             {
@@ -314,9 +314,9 @@
               }
             }
           ],
-          "baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
+          "baseline_id": "ea-baseline-009750f0bef8-60f2feeec9d3",
           "model_identifier": null,
-          "configuration_fingerprint": "955fb02ccd2c7afb35a51f5b59e76c91",
+          "configuration_fingerprint": "24ea65b922bf62a50cfbfbbad52bcc6f",
           "live_http": false,
           "product_mutation": 0
         },
@@ -326,9 +326,9 @@
           "journey_id": "J-DIRTY-TOKEN-CROSS-01",
           "invariant_id": "INV-ISOLATION-01",
           "attack_face": "token_cross",
-          "seed": 225150539,
+          "seed": 2005825483,
           "rng_version": "aipo-ea-rng-v1",
-          "clock_as_of": "2026-09-15T20:07:16.534Z",
+          "clock_as_of": "2026-09-15T22:16:44.954Z",
           "clock_source": "wall_clock_iso",
           "request_sequence": [
             {
@@ -388,9 +388,9 @@
               }
             }
           ],
-          "baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
+          "baseline_id": "ea-baseline-009750f0bef8-60f2feeec9d3",
           "model_identifier": null,
-          "configuration_fingerprint": "2d207a44a91a1f7f8a2ed5bcd503712f",
+          "configuration_fingerprint": "d45cf9a3d2eca5a705c35794b43ff4a4",
           "live_http": false,
           "product_mutation": 0
         },
@@ -400,9 +400,9 @@
           "journey_id": "J-DIRTY-IDOR-01",
           "invariant_id": "INV-ISOLATION-01",
           "attack_face": "object_id_swap",
-          "seed": 2493551951,
+          "seed": 978284239,
           "rng_version": "aipo-ea-rng-v1",
-          "clock_as_of": "2026-09-15T20:07:16.534Z",
+          "clock_as_of": "2026-09-15T22:16:44.954Z",
           "clock_source": "wall_clock_iso",
           "request_sequence": [
             {
@@ -448,9 +448,9 @@
               }
             }
           ],
-          "baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
+          "baseline_id": "ea-baseline-009750f0bef8-60f2feeec9d3",
           "model_identifier": null,
-          "configuration_fingerprint": "c3894ce3e586fa8b2f8492617799d0b2",
+          "configuration_fingerprint": "eda5f8014430f7fff705a900947572ec",
           "live_http": false,
           "product_mutation": 0
         },
@@ -460,9 +460,9 @@
           "journey_id": "J-HAPPY-01",
           "invariant_id": "INV-LIFECYCLE-01",
           "attack_face": null,
-          "seed": 2830880362,
+          "seed": 4232884202,
           "rng_version": "aipo-ea-rng-v1",
-          "clock_as_of": "2026-09-15T20:07:16.534Z",
+          "clock_as_of": "2026-09-15T22:16:44.954Z",
           "clock_source": "wall_clock_iso",
           "request_sequence": [
             {
@@ -606,9 +606,9 @@
               }
             }
           ],
-          "baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
+          "baseline_id": "ea-baseline-009750f0bef8-60f2feeec9d3",
           "model_identifier": null,
-          "configuration_fingerprint": "54d7cff2ddcba3ecb969d01aee46cffb",
+          "configuration_fingerprint": "0d408c6d99141751532cbd7c4795f155",
           "live_http": false,
           "product_mutation": 0
         }
@@ -635,5 +635,5 @@
     "Local default mode=tiny smoke. Case counts are not KPIs.",
     "Does not issue ENGINE_ACCEPTED_FOR_UI."
   ],
-  "checksum": "ebf153d6f3ef236ced7a915253d9180d5998df7d7d67922d17efab85e68906de"
+  "checksum": "4cc4aaab6993a169add87fdbf6de34e0d70e2b7ed4ff40c7c6f65833af265112"
 }
