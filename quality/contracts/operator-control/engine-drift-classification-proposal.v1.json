@@ -113,7 +113,21 @@
         "services/api-nest/src/opportunities/operator-mall-product.core.cjs",
         "services/api-nest/src/opportunities/operator-mall-product.isolation.cjs",
         "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
-        "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs"
+        "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
+        "services/api-nest/src/opportunities/opportunities.user.service.ts",
+        "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs"
+      ]
+    },
+    {
+      "category": "DB_MIGRATION",
+      "reason": "Schema/ledger change after Engine baseline. Formal rebase must re-prove money invariants.",
+      "required_rerun": ["QA0", "QA3", "QA4", "QA5", "QA8"],
+      "security_impact": "HIGH",
+      "schema_impact": true,
+      "prompt_impact": false,
+      "paths": [
+        "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+        "supabase/migrations/20260916033100_operator_mall_product.sql"
       ]
     },
     {

@@ -1,36 +1,419 @@
 {
   "schema": "governance.recovery.engine-drift-inventory.v1",
-  "computed_at": "2026-09-15T12:33:22.170Z",
-  "predecessor_head_sha": "137241804ff24e5de48556e1385f97fd1c8b8cee",
-  "inventory_head_sha": "9d51acabe034fd4ceffa18bc01c530a378638c38",
-  "changed_paths": 0,
-  "expected_changed_paths": 0,
+  "computed_at": "2026-09-15T19:03:12.302Z",
+  "predecessor_head_sha": "f295d67f1c3c5b0cbc824c06e568074fd382e85a",
+  "inventory_head_sha": "3d3ab5cbef92e57a230caa2ea24945035ae660ed",
+  "changed_paths": 14,
+  "expected_changed_paths": 14,
   "count_match": true,
-  "by_category": {},
+  "by_category": {
+    "OPERATOR_MALL": 5,
+    "DB_MIGRATION": 2,
+    "CATALOG_EXTERNAL_WRITE": 6,
+    "OPERATOR_MEMBERSHIP": 1
+  },
   "unexplained_count": 0,
-  "ACK_RECEIVED": 1,
-  "FINAL_ACCEPTANCE": "ISSUED",
-  "REBASE_REQUIRED": 0,
-  "REBASE_APPLIED": 1,
-  "predecessor_baseline_id": "ea-baseline-137241804ff2-83935adcdf57",
-  "current_baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
-  "rebase_id": "ea-rebase-f295d67f1c3c-c2a6ea416128",
-  "historical_inventory_ref": "governance/recovery/archive/engine-drift-inventory.pre-rebase-20260902.v1.json",
-  "historical_evidence_ref": "governance/recovery/archive/engine-rebase-evidence.pre-rebase-20260902.v1.json",
-  "CURRENT_AUTHORITATIVE": true,
-  "HISTORICAL_PRE_REBASE_EVIDENCE": false,
-  "note": "Historical pre-rebase drift is preserved in archive. Current epoch was formally rebased under ENGINE_ACCEPTANCE_REBASE_V1. QA0-QA9 were rerun on the current epoch. FINAL_ACCEPTANCE is ISSUED. No in-place predecessor hash washing occurred.",
+  "ACK_RECEIVED": 0,
+  "FINAL_ACCEPTANCE": "NOT_ISSUED",
+  "REBASE_REQUIRED": 1,
+  "note": "Classification only. Formal rebase + QA0-QA9 rerun are still required. Do not treat this file as an ACK.",
   "required_rerun_matrix": {
-    "QA0": [],
-    "QA1": [],
-    "QA2": [],
-    "QA3": [],
-    "QA4": [],
-    "QA5": [],
+    "QA0": [
+      "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
+      "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+      "supabase/migrations/20260916033100_operator_mall_product.sql",
+      "services/api-nest/catalog-external-write.core.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.admin-writers.isolation.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.guard.ts",
+      "services/api-nest/src/opportunities/catalog-external-write.ingest-isolation.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts",
+      "services/api-nest/src/opportunities/operator-mall-product.admin.service.ts",
+      "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
+      "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
+      "services/api-nest/src/opportunities/opportunities.user.service.ts",
+      "services/api-nest/src/opportunities/participate.service.ts"
+    ],
+    "QA1": [
+      "services/api-nest/src/opportunities/participate.service.ts"
+    ],
+    "QA2": [
+      "services/api-nest/src/opportunities/participate.service.ts"
+    ],
+    "QA3": [
+      "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
+      "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+      "supabase/migrations/20260916033100_operator_mall_product.sql",
+      "services/api-nest/src/opportunities/operator-mall-product.admin.service.ts",
+      "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
+      "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
+      "services/api-nest/src/opportunities/opportunities.user.service.ts"
+    ],
+    "QA4": [
+      "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+      "supabase/migrations/20260916033100_operator_mall_product.sql"
+    ],
+    "QA5": [
+      "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+      "supabase/migrations/20260916033100_operator_mall_product.sql",
+      "services/api-nest/catalog-external-write.core.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.admin-writers.isolation.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.guard.ts",
+      "services/api-nest/src/opportunities/catalog-external-write.ingest-isolation.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts"
+    ],
     "QA6": [],
     "QA7": [],
-    "QA8": [],
+    "QA8": [
+      "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
+      "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+      "supabase/migrations/20260916033100_operator_mall_product.sql",
+      "services/api-nest/catalog-external-write.core.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.admin-writers.isolation.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.guard.ts",
+      "services/api-nest/src/opportunities/catalog-external-write.ingest-isolation.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs",
+      "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts",
+      "services/api-nest/src/opportunities/operator-mall-product.admin.service.ts",
+      "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
+      "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
+      "services/api-nest/src/opportunities/opportunities.user.service.ts",
+      "services/api-nest/src/opportunities/participate.service.ts"
+    ],
     "QA9": []
   },
-  "paths": []
+  "paths": [
+    {
+      "path": "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
+      "kind": "added",
+      "owning_commit": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+      "owning_subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+          "subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다."
+        }
+      ],
+      "category": "OPERATOR_MALL",
+      "reason": "운영자 쇼핑몰 상품·원장 posting 연결. 분류만이며 지급 완료·QA 완료·운영 적용이 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA3",
+        "QA8"
+      ]
+    },
+    {
+      "path": "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+      "kind": "added",
+      "owning_commit": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+      "owning_subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+          "subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다."
+        }
+      ],
+      "category": "DB_MIGRATION",
+      "reason": "Schema/ledger change after Engine baseline. Formal rebase must re-prove money invariants.",
+      "security_impact": "HIGH",
+      "schema_impact": true,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "supabase/migrations/20260916033100_operator_mall_product.sql",
+      "kind": "added",
+      "owning_commit": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+      "owning_subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+          "subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다."
+        }
+      ],
+      "category": "DB_MIGRATION",
+      "reason": "Schema/ledger change after Engine baseline. Formal rebase must re-prove money invariants.",
+      "security_impact": "HIGH",
+      "schema_impact": true,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/catalog-external-write.core.cjs",
+      "kind": "mutated",
+      "owning_commit": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+      "owning_subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+          "subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다."
+        }
+      ],
+      "category": "CATALOG_EXTERNAL_WRITE",
+      "reason": "S1 운영자 행 보호·외부 카탈로그 쓰기 게이트. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/catalog-external-write.admin-writers.isolation.cjs",
+      "kind": "mutated",
+      "owning_commit": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+      "owning_subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+          "subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다."
+        }
+      ],
+      "category": "CATALOG_EXTERNAL_WRITE",
+      "reason": "S1 운영자 행 보호·외부 카탈로그 쓰기 게이트. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/catalog-external-write.guard.ts",
+      "kind": "mutated",
+      "owning_commit": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+      "owning_subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+          "subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다."
+        }
+      ],
+      "category": "CATALOG_EXTERNAL_WRITE",
+      "reason": "S1 운영자 행 보호·외부 카탈로그 쓰기 게이트. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/catalog-external-write.ingest-isolation.cjs",
+      "kind": "mutated",
+      "owning_commit": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+      "owning_subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+          "subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다."
+        }
+      ],
+      "category": "CATALOG_EXTERNAL_WRITE",
+      "reason": "S1 운영자 행 보호·외부 카탈로그 쓰기 게이트. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs",
+      "kind": "mutated",
+      "owning_commit": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+      "owning_subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+          "subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다."
+        }
+      ],
+      "category": "CATALOG_EXTERNAL_WRITE",
+      "reason": "S1 운영자 행 보호·외부 카탈로그 쓰기 게이트. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts",
+      "kind": "mutated",
+      "owning_commit": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+      "owning_subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+          "subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다."
+        }
+      ],
+      "category": "CATALOG_EXTERNAL_WRITE",
+      "reason": "S1 운영자 행 보호·외부 카탈로그 쓰기 게이트. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/operator-mall-product.admin.service.ts",
+      "kind": "mutated",
+      "owning_commit": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+      "owning_subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+          "subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다."
+        }
+      ],
+      "category": "OPERATOR_MALL",
+      "reason": "운영자 쇼핑몰 상품·원장 posting 연결. 분류만이며 지급 완료·QA 완료·운영 적용이 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA3",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
+      "kind": "mutated",
+      "owning_commit": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+      "owning_subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+          "subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다."
+        }
+      ],
+      "category": "OPERATOR_MALL",
+      "reason": "운영자 쇼핑몰 상품·원장 posting 연결. 분류만이며 지급 완료·QA 완료·운영 적용이 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA3",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
+      "kind": "mutated",
+      "owning_commit": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+      "owning_subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+          "subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다."
+        }
+      ],
+      "category": "OPERATOR_MALL",
+      "reason": "운영자 쇼핑몰 상품·원장 posting 연결. 분류만이며 지급 완료·QA 완료·운영 적용이 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA3",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/opportunities.user.service.ts",
+      "kind": "mutated",
+      "owning_commit": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+      "owning_subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다.",
+      "commit_count": 2,
+      "commits": [
+        {
+          "sha": "3d3ab5cbef92e57a230caa2ea24945035ae660ed",
+          "subject": "유저 피드 freshness 권위를 유지한 채 operator-only SQL 필터만 적용한다."
+        },
+        {
+          "sha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+          "subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다."
+        }
+      ],
+      "category": "OPERATOR_MALL",
+      "reason": "운영자 쇼핑몰 상품·원장 posting 연결. 분류만이며 지급 완료·QA 완료·운영 적용이 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA3",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/participate.service.ts",
+      "kind": "mutated",
+      "owning_commit": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+      "owning_subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+          "subject": "운영 기본을 외부 상품 ingest 잠금으로 두고, 운영자 mall persist와 유저 operator-only 조회를 연다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    }
+  ]
 }

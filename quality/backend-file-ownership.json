@@ -1,10 +1,10 @@
 {
- "generatedAt": "2026-09-15T12:49:07.920Z",
- "headSha": "40ab321bbaf0d7e15bd27f690e842ca5489686c7",
+ "generatedAt": "2026-09-15T19:03:22.180Z",
+ "headSha": "3d3ab5cbef92e57a230caa2ea24945035ae660ed",
  "generator": "tooling/backend/ownership-graph.cjs",
  "overrides": "tooling/backend/ownership-overrides.json",
  "inputs": {
-  "gitLsFiles": 1509,
+  "gitLsFiles": 1512,
   "deletedUiPrefixes": [
    "apps/admin/",
    "apps/web/",
@@ -47,24 +47,24 @@
  },
  "totals": {
   "byClass": {
-   "BACKEND_INFRA": 245,
+   "BACKEND_INFRA": 247,
    "BACKEND_DOC": 291,
    "FUTURE_ADMIN_REQUIREMENT": 2,
    "BACKEND_TEST": 354,
    "BACKEND_CONTRACT": 83,
-   "BACKEND_RUNTIME": 529,
+   "BACKEND_RUNTIME": 530,
    "GENERATED": 5
   },
   "byDecision": {
-   "KEEP": 1509
+   "KEEP": 1512
   },
   "byClassDecision": {
-   "BACKEND_INFRA/KEEP": 245,
+   "BACKEND_INFRA/KEEP": 247,
    "BACKEND_DOC/KEEP": 291,
    "FUTURE_ADMIN_REQUIREMENT/KEEP": 2,
    "BACKEND_TEST/KEEP": 354,
    "BACKEND_CONTRACT/KEEP": 83,
-   "BACKEND_RUNTIME/KEEP": 529,
+   "BACKEND_RUNTIME/KEEP": 530,
    "GENERATED/KEEP": 5
   },
   "unknown": 0,
@@ -230,8 +230,8 @@
    "SPLIT": 0
   },
   "governance/engine-acceptance": {
-   "total": 44,
-   "KEEP": 44,
+   "total": 45,
+   "KEEP": 45,
    "DELETE": 0,
    "MOVE": 0,
    "SPLIT": 0
@@ -384,8 +384,8 @@
    "SPLIT": 0
   },
   "services/api-nest": {
-   "total": 400,
-   "KEEP": 400,
+   "total": 401,
+   "KEEP": 401,
    "DELETE": 0,
    "MOVE": 0,
    "SPLIT": 0
@@ -454,8 +454,8 @@
    "SPLIT": 0
   },
   "supabase/migrations": {
-   "total": 55,
-   "KEEP": 55,
+   "total": 57,
+   "KEEP": 57,
    "DELETE": 0,
    "MOVE": 0,
    "SPLIT": 0
@@ -2813,6 +2813,96 @@
     "reason": "대상 파일 KEEP: tooling/verify/observability.cjs"
    },
    {
+    "script": "verify:attribution-chain",
+    "command": "node tooling/verify/attribution-chain.cjs",
+    "targets": [
+     "tooling/verify/attribution-chain.cjs"
+    ],
+    "class": "OBSOLETE",
+    "decision": "DELETE",
+    "reason": "대상 파일이 레포에 없음: tooling/verify/attribution-chain.cjs"
+   },
+   {
+    "script": "verify:marketing-compliance",
+    "command": "node tooling/verify/marketing-compliance.cjs",
+    "targets": [
+     "tooling/verify/marketing-compliance.cjs"
+    ],
+    "class": "OBSOLETE",
+    "decision": "DELETE",
+    "reason": "대상 파일이 레포에 없음: tooling/verify/marketing-compliance.cjs"
+   },
+   {
+    "script": "verify:capi-config",
+    "command": "node tooling/verify/capi-config.cjs",
+    "targets": [
+     "tooling/verify/capi-config.cjs"
+    ],
+    "class": "OBSOLETE",
+    "decision": "DELETE",
+    "reason": "대상 파일이 레포에 없음: tooling/verify/capi-config.cjs"
+   },
+   {
+    "script": "verify:capi-consent",
+    "command": "node tooling/verify/capi-consent.cjs",
+    "targets": [
+     "tooling/verify/capi-consent.cjs"
+    ],
+    "class": "OBSOLETE",
+    "decision": "DELETE",
+    "reason": "대상 파일이 레포에 없음: tooling/verify/capi-consent.cjs"
+   },
+   {
+    "script": "verify:ads-provider-capability",
+    "command": "node tooling/verify/ads-provider-capability.cjs",
+    "targets": [
+     "tooling/verify/ads-provider-capability.cjs"
+    ],
+    "class": "OBSOLETE",
+    "decision": "DELETE",
+    "reason": "대상 파일이 레포에 없음: tooling/verify/ads-provider-capability.cjs"
+   },
+   {
+    "script": "verify:ads-standing-authorization",
+    "command": "node tooling/verify/ads-standing-authorization.cjs",
+    "targets": [
+     "tooling/verify/ads-standing-authorization.cjs"
+    ],
+    "class": "OBSOLETE",
+    "decision": "DELETE",
+    "reason": "대상 파일이 레포에 없음: tooling/verify/ads-standing-authorization.cjs"
+   },
+   {
+    "script": "verify:ads-budget-guardrail",
+    "command": "node tooling/verify/ads-budget-guardrail.cjs",
+    "targets": [
+     "tooling/verify/ads-budget-guardrail.cjs"
+    ],
+    "class": "OBSOLETE",
+    "decision": "DELETE",
+    "reason": "대상 파일이 레포에 없음: tooling/verify/ads-budget-guardrail.cjs"
+   },
+   {
+    "script": "verify:ads-orchestrator-boundary",
+    "command": "node tooling/verify/ads-orchestrator-boundary.cjs",
+    "targets": [
+     "tooling/verify/ads-orchestrator-boundary.cjs"
+    ],
+    "class": "OBSOLETE",
+    "decision": "DELETE",
+    "reason": "대상 파일이 레포에 없음: tooling/verify/ads-orchestrator-boundary.cjs"
+   },
+   {
+    "script": "verify:alert-oneshot-dry-run",
+    "command": "node tooling/verify/alert-oneshot-dry-run.cjs",
+    "targets": [
+     "tooling/verify/alert-oneshot-dry-run.cjs"
+    ],
+    "class": "OBSOLETE",
+    "decision": "DELETE",
+    "reason": "대상 파일이 레포에 없음: tooling/verify/alert-oneshot-dry-run.cjs"
+   },
+   {
     "script": "engine-acceptance:freeze-baseline",
     "command": "node tooling/engine-acceptance/freeze-baseline.cjs",
     "targets": [
@@ -4901,7 +4991,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "doc-link",
@@ -4989,7 +5079,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations** (55 files)"
+     "ref": "supabase/migrations** (57 files)"
     },
     {
      "kind": "doc-link",
@@ -5193,7 +5283,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest (400 files)"
+     "ref": "services/api-nest (401 files)"
     },
     {
      "kind": "doc-link",
@@ -5213,7 +5303,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations/* (55 files)"
+     "ref": "supabase/migrations/* (57 files)"
     },
     {
      "kind": "doc-link",
@@ -5428,7 +5518,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "governance/engine-acceptance/** (43 files)"
+     "ref": "governance/engine-acceptance/** (45 files)"
     },
     {
      "kind": "doc-link",
@@ -5460,7 +5550,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/** (501 files)"
+     "ref": "services/** (502 files)"
     },
     {
      "kind": "doc-link",
@@ -5480,7 +5570,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "governance/engine-acceptance/ (43 files)"
+     "ref": "governance/engine-acceptance/ (45 files)"
     },
     {
      "kind": "doc-link",
@@ -5650,7 +5740,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest/src/opportunities/ (40 files)"
+     "ref": "services/api-nest/src/opportunities/ (41 files)"
     },
     {
      "kind": "doc-link",
@@ -6204,7 +6294,7 @@
    "evidence": [
     {
      "kind": "doc-link",
-     "ref": "services/**/api*/** (400 files)"
+     "ref": "services/**/api*/** (401 files)"
     }
    ],
    "referrers": [
@@ -6868,7 +6958,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "governance/engine-acceptance/ (43 files)"
+     "ref": "governance/engine-acceptance/ (45 files)"
     },
     {
      "kind": "doc-link",
@@ -6923,7 +7013,7 @@
    "evidence": [
     {
      "kind": "doc-link",
-     "ref": "services/**/opportunities/** (40 files)"
+     "ref": "services/**/opportunities/** (41 files)"
     },
     {
      "kind": "doc-link",
@@ -7287,7 +7377,7 @@
    "evidence": [
     {
      "kind": "doc-link",
-     "ref": "supabase/** (62 files)"
+     "ref": "supabase/** (64 files)"
     }
    ],
    "referrers": [
@@ -7919,7 +8009,7 @@
     },
     {
      "kind": "workflow-run",
-     "ref": "governance/engine-acceptance/ (43 files)"
+     "ref": "governance/engine-acceptance/ (45 files)"
     },
     {
      "kind": "workflow-run",
@@ -7999,7 +8089,7 @@
    "evidence": [
     {
      "kind": "workflow-run",
-     "ref": "governance/engine-acceptance/** (43 files)"
+     "ref": "governance/engine-acceptance/** (45 files)"
     },
     {
      "kind": "workflow-run",
@@ -8232,7 +8322,7 @@
     },
     {
      "kind": "workflow-run",
-     "ref": "governance/engine-acceptance/ (43 files)"
+     "ref": "governance/engine-acceptance/ (45 files)"
     },
     {
      "kind": "workflow-run",
@@ -9361,7 +9451,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest (400 files)"
+     "ref": "services/api-nest (401 files)"
     },
     {
      "kind": "doc-link",
@@ -10488,7 +10578,7 @@
    "evidence": [
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "doc-link",
@@ -10726,7 +10816,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "governance/engine-acceptance/ (43 files)"
+     "ref": "governance/engine-acceptance/ (45 files)"
     },
     {
      "kind": "doc-link",
@@ -10734,7 +10824,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations/ (55 files)"
+     "ref": "supabase/migrations/ (57 files)"
     },
     {
      "kind": "doc-link",
@@ -10826,7 +10916,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "doc-link",
@@ -10842,7 +10932,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest (400 files)"
+     "ref": "services/api-nest (401 files)"
     },
     {
      "kind": "doc-link",
@@ -11487,7 +11577,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations/* (55 files)"
+     "ref": "supabase/migrations/* (57 files)"
     },
     {
      "kind": "doc-link",
@@ -12303,7 +12393,7 @@
    "evidence": [
     {
      "kind": "doc-link",
-     "ref": "services/api-nest/src/** (382 files)"
+     "ref": "services/api-nest/src/** (383 files)"
     },
     {
      "kind": "doc-link",
@@ -12315,7 +12405,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "governance/engine-acceptance/** (43 files)"
+     "ref": "governance/engine-acceptance/** (45 files)"
     },
     {
      "kind": "doc-link",
@@ -12436,7 +12526,7 @@
    "blockers": [],
    "lastCommit": "2026-09-15T21:36:41+09:00",
    "lastCommitSha": "40ab321bbaf0d7e15bd27f690e842ca5489686c7",
-   "sizeBytes": 3222,
+   "sizeBytes": 2047,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -12639,7 +12729,7 @@
    "evidence": [
     {
      "kind": "doc-link",
-     "ref": "governance/engine-acceptance/** (43 files)"
+     "ref": "governance/engine-acceptance/** (45 files)"
     },
     {
      "kind": "doc-link",
@@ -12761,7 +12851,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src/** (382 files)"
+     "ref": "services/api-nest/src/** (383 files)"
     }
    ],
    "referrers": [
@@ -23108,8 +23198,8 @@
     ".github/workflows/engine-acceptance.yml|workflow-run|paths:governance/engine-acceptance/**"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-16T00:45:00+09:00",
-   "lastCommitSha": "03571802b9e9d0f2d89fe7dd3d5ac0a69a7b1e5d",
+   "lastCommit": "2026-09-16T00:54:34+09:00",
+   "lastCommitSha": "f89d4413f40f920df333270b012960e608b31a70",
    "sizeBytes": 1440,
    "refSummary": {
     "deletedUiRefs": [],
@@ -23925,7 +24015,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest (400 files)"
+     "ref": "services/api-nest (401 files)"
     },
     {
      "kind": "verifier-reads",
@@ -23933,7 +24023,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "verifier-reads",
@@ -24285,7 +24375,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/** (501 files)"
+     "ref": "services/** (502 files)"
     }
    ],
    "referrers": [
@@ -24393,7 +24483,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/** (501 files)"
+     "ref": "services/** (502 files)"
     }
    ],
    "referrers": [
@@ -25795,7 +25885,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/** (501 files)"
+     "ref": "services/** (502 files)"
     },
     {
      "kind": "doc-link",
@@ -25807,7 +25897,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "governance/*.vN (174 files)"
+     "ref": "governance/*.vN (176 files)"
     },
     {
      "kind": "doc-link",
@@ -26057,7 +26147,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest (400 files)"
+     "ref": "services/api-nest (401 files)"
     },
     {
      "kind": "verifier-reads",
@@ -26813,7 +26903,6 @@
     "README.md|doc-link|governance/recovery/",
     "governance/platform-redesign/change-control.v1.md|doc-link|governance/*.vN",
     "governance/recovery/archive/engine-pre-rebase-20260902.INDEX.md|doc-link",
-    "governance/recovery/engine-drift-inventory.current.v1.json|verifier-reads",
     "governance/recovery/engine-rebase-evidence.current.v1.json|verifier-reads",
     "governance/release-master/rc-formal.v1.json|verifier-reads",
     "quality/backend-deletion-ledger.md|doc-link|governance/recovery",
@@ -27154,7 +27243,6 @@
     "README.md|doc-link|governance/recovery/",
     "governance/platform-redesign/change-control.v1.md|doc-link|governance/*.vN",
     "governance/recovery/archive/engine-pre-rebase-20260902.INDEX.md|doc-link",
-    "governance/recovery/engine-drift-inventory.current.v1.json|verifier-reads",
     "governance/recovery/engine-rebase-evidence.current.v1.json|verifier-reads",
     "governance/release-master/rc-formal.v1.json|verifier-reads",
     "quality/backend-deletion-ledger.md|doc-link|governance/recovery",
@@ -28741,7 +28829,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "governance/engine-acceptance/** (43 files)"
+     "ref": "governance/engine-acceptance/** (45 files)"
     },
     {
      "kind": "verifier-reads",
@@ -28939,11 +29027,59 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "governance/recovery/archive/engine-drift-inventory.pre-rebase-20260902.v1.json"
+     "ref": "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs"
     },
     {
      "kind": "verifier-reads",
-     "ref": "governance/recovery/archive/engine-rebase-evidence.pre-rebase-20260902.v1.json"
+     "ref": "supabase/migrations/20260916033000_opportunities_supply_source.sql"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "supabase/migrations/20260916033100_operator_mall_product.sql"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/catalog-external-write.core.cjs"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/catalog-external-write.admin-writers.isolation.cjs"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/catalog-external-write.guard.ts"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/catalog-external-write.ingest-isolation.cjs"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/operator-mall-product.admin.service.ts"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/operator-mall-product.persist.cjs"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/opportunities.user.service.ts"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/participate.service.ts"
     }
    ],
    "referrers": [
@@ -28970,15 +29106,27 @@
    "blockers": [],
    "lastCommit": "2026-09-15T21:36:41+09:00",
    "lastCommitSha": "40ab321bbaf0d7e15bd27f690e842ca5489686c7",
-   "sizeBytes": 1409,
+   "sizeBytes": 18664,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
-    "backendRefs": [],
-    "governanceBackendRefs": [
-     "governance/recovery/archive/engine-drift-inventory.pre-rebase-20260902.v1.json",
-     "governance/recovery/archive/engine-rebase-evidence.pre-rebase-20260902.v1.json"
+    "backendRefs": [
+     "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
+     "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+     "supabase/migrations/20260916033100_operator_mall_product.sql",
+     "services/api-nest/catalog-external-write.core.cjs",
+     "services/api-nest/src/opportunities/catalog-external-write.admin-writers.isolation.cjs",
+     "services/api-nest/src/opportunities/catalog-external-write.guard.ts",
+     "services/api-nest/src/opportunities/catalog-external-write.ingest-isolation.cjs",
+     "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs",
+     "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts",
+     "services/api-nest/src/opportunities/operator-mall-product.admin.service.ts",
+     "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
+     "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
+     "services/api-nest/src/opportunities/opportunities.user.service.ts",
+     "services/api-nest/src/opportunities/participate.service.ts"
     ],
+    "governanceBackendRefs": [],
     "sdkOnlyUi": false,
     "browserHarness": false,
     "uiMarkers": false
@@ -28995,6 +29143,62 @@
     "보유: .github/workflows/engine-current-epoch-finalize-once.yml(workflow-run:governance/recovery/), .github/workflows/engine-evidence-refresh-check.yml(workflow-run), tooling/recovery/build-engine-drift-inventory.cjs(deploy-cmd), tooling/recovery/classify-local-state.cjs(deploy-cmd:governance/recovery) ..."
    ],
    "evidence": [
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "supabase/migrations/20260916033000_opportunities_supply_source.sql"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "supabase/migrations/20260916033100_operator_mall_product.sql"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/catalog-external-write.core.cjs"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/catalog-external-write.admin-writers.isolation.cjs"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/catalog-external-write.guard.ts"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/catalog-external-write.ingest-isolation.cjs"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/operator-mall-product.admin.service.ts"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/operator-mall-product.persist.cjs"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/opportunities.user.service.ts"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/participate.service.ts"
+    },
     {
      "kind": "verifier-reads",
      "ref": "governance/recovery/engine-drift-inventory.current.v1.json"
@@ -29029,11 +29233,26 @@
    "blockers": [],
    "lastCommit": "2026-09-15T21:36:41+09:00",
    "lastCommitSha": "40ab321bbaf0d7e15bd27f690e842ca5489686c7",
-   "sizeBytes": 2197,
+   "sizeBytes": 3419,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
-    "backendRefs": [],
+    "backendRefs": [
+     "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
+     "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+     "supabase/migrations/20260916033100_operator_mall_product.sql",
+     "services/api-nest/catalog-external-write.core.cjs",
+     "services/api-nest/src/opportunities/catalog-external-write.admin-writers.isolation.cjs",
+     "services/api-nest/src/opportunities/catalog-external-write.guard.ts",
+     "services/api-nest/src/opportunities/catalog-external-write.ingest-isolation.cjs",
+     "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs",
+     "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts",
+     "services/api-nest/src/opportunities/operator-mall-product.admin.service.ts",
+     "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
+     "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
+     "services/api-nest/src/opportunities/opportunities.user.service.ts",
+     "services/api-nest/src/opportunities/participate.service.ts"
+    ],
     "governanceBackendRefs": [
      "governance/recovery/engine-drift-inventory.current.v1.json",
      "governance/recovery/archive/engine-drift-inventory.pre-rebase-20260902.v1.json",
@@ -29189,7 +29408,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations/** (55 files)"
+     "ref": "supabase/migrations/** (57 files)"
     },
     {
      "kind": "doc-link",
@@ -29764,7 +29983,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest (400 files)"
+     "ref": "services/api-nest (401 files)"
     },
     {
      "kind": "verifier-reads",
@@ -30829,7 +31048,7 @@
    "evidence": [
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations/** (55 files)"
+     "ref": "supabase/migrations/** (57 files)"
     },
     {
      "kind": "doc-link",
@@ -30841,7 +31060,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations/*.sql (55 files)"
+     "ref": "supabase/migrations/*.sql (57 files)"
     },
     {
      "kind": "doc-link",
@@ -30871,9 +31090,9 @@
     "tooling/verify/release-engine-truth-consistency.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-15T21:36:41+09:00",
-   "lastCommitSha": "40ab321bbaf0d7e15bd27f690e842ca5489686c7",
-   "sizeBytes": 5128,
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 5232,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -30904,7 +31123,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations/** (55 files)"
+     "ref": "supabase/migrations/** (57 files)"
     },
     {
      "kind": "doc-link",
@@ -30956,16 +31175,7 @@
     "백엔드 release evidence (원장·보안·RBAC·kill-switch·마이그레이션·staging·rollback)",
     "보유: tooling/verify/backend-data-alignment.cjs(verifier-reads), tooling/verify/rel-505-r7-backend-alignment.cjs(verifier-reads), tooling/verify/rel-508-current-fx-approx.cjs(verifier-reads), tooling/verify/release-engine-truth-consistency.cjs(verifier-reads)"
    ],
-   "evidence": [
-    {
-     "kind": "doc-link",
-     "ref": "services/api-nest (400 files)"
-    },
-    {
-     "kind": "doc-link",
-     "ref": "supabase/migrations (55 files)"
-    }
-   ],
+   "evidence": [],
    "referrers": [
     ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md|doc-link",
     "governance/platform-redesign/change-control.v1.md|doc-link|governance/*.vN",
@@ -30991,7 +31201,7 @@
    "blockers": [],
    "lastCommit": "2026-09-15T21:36:41+09:00",
    "lastCommitSha": "40ab321bbaf0d7e15bd27f690e842ca5489686c7",
-   "sizeBytes": 3849,
+   "sizeBytes": 3748,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -31109,9 +31319,9 @@
     ".github/workflows/engine-evidence-refresh-check.yml|workflow-run|paths"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-13T04:19:29+09:00",
-   "lastCommitSha": "885ae79af90d6200c6cbd22d86c81938c72c7e37",
-   "sizeBytes": 2004,
+   "lastCommit": "2026-09-15T22:05:30+09:00",
+   "lastCommitSha": "4ee3cc06bf4780eb30c9420e60669f23da3abb84",
+   "sizeBytes": 2281,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -32941,9 +33151,9 @@
     ".github/workflows/engine-evidence-refresh-check.yml|workflow-run|paths"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-13T04:19:29+09:00",
-   "lastCommitSha": "885ae79af90d6200c6cbd22d86c81938c72c7e37",
-   "sizeBytes": 3059,
+   "lastCommit": "2026-09-15T22:05:30+09:00",
+   "lastCommitSha": "4ee3cc06bf4780eb30c9420e60669f23da3abb84",
+   "sizeBytes": 3228,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -33136,7 +33346,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/** (400 files)"
+     "ref": "services/api-nest/** (401 files)"
     },
     {
      "kind": "verifier-reads",
@@ -33694,7 +33904,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest (400 files)"
+     "ref": "services/api-nest (401 files)"
     }
    ],
    "referrers": [
@@ -33843,7 +34053,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest (400 files)"
+     "ref": "services/api-nest (401 files)"
     },
     {
      "kind": "verifier-reads",
@@ -33911,7 +34121,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest (400 files)"
+     "ref": "services/api-nest (401 files)"
     },
     {
      "kind": "doc-link",
@@ -34316,7 +34526,7 @@
    "blockers": [],
    "lastCommit": "2026-09-15T03:25:11+09:00",
    "lastCommitSha": "cbbda52892273ba5cd6326af222bb7b2644437ff",
-   "sizeBytes": 18730,
+   "sizeBytes": 19476,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -34480,7 +34690,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/* (501 files)"
+     "ref": "services/* (502 files)"
     },
     {
      "kind": "verifier-reads",
@@ -34626,11 +34836,11 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest (400 files)"
+     "ref": "services/api-nest (401 files)"
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest/src (382 files)"
+     "ref": "services/api-nest/src (383 files)"
     },
     {
      "kind": "doc-link",
@@ -35540,9 +35750,9 @@
     "tooling/backend/ownership-graph.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-15T19:22:18+09:00",
-   "lastCommitSha": "af6d08623c21517a9705e839d8bdf9191007dc21",
-   "sizeBytes": 3507332,
+   "lastCommit": "2026-09-16T00:54:34+09:00",
+   "lastCommitSha": "f89d4413f40f920df333270b012960e608b31a70",
+   "sizeBytes": 3602986,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -35574,7 +35784,7 @@
    "blockers": [],
    "lastCommit": "2026-09-15T19:15:21+09:00",
    "lastCommitSha": "86a0ba2adf503c652b2369aba90ec1a0b3e24aaf",
-   "sizeBytes": 27644,
+   "sizeBytes": 27813,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -35606,9 +35816,9 @@
     "tooling/verify/workers-typecheck.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-15T19:22:18+09:00",
-   "lastCommitSha": "af6d08623c21517a9705e839d8bdf9191007dc21",
-   "sizeBytes": 5325095,
+   "lastCommit": "2026-09-16T00:54:34+09:00",
+   "lastCommitSha": "f89d4413f40f920df333270b012960e608b31a70",
+   "sizeBytes": 5436452,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -35639,7 +35849,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest/** (400 files)"
+     "ref": "services/api-nest/** (401 files)"
     },
     {
      "kind": "doc-link",
@@ -35651,7 +35861,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations/** (55 files)"
+     "ref": "supabase/migrations/** (57 files)"
     },
     {
      "kind": "doc-link",
@@ -35852,7 +36062,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest (400 files)"
+     "ref": "services/api-nest (401 files)"
     },
     {
      "kind": "doc-link",
@@ -35940,7 +36150,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "doc-link",
@@ -35956,7 +36166,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/* (501 files)"
+     "ref": "services/* (502 files)"
     },
     {
      "kind": "doc-link",
@@ -36164,7 +36374,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/* (501 files)"
+     "ref": "services/* (502 files)"
     },
     {
      "kind": "doc-link",
@@ -36200,7 +36410,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest (400 files)"
+     "ref": "services/api-nest (401 files)"
     },
     {
      "kind": "doc-link",
@@ -36244,7 +36454,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations/*.sql (55 files)"
+     "ref": "supabase/migrations/*.sql (57 files)"
     },
     {
      "kind": "doc-link",
@@ -36345,7 +36555,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest (400 files)"
+     "ref": "services/api-nest (401 files)"
     },
     {
      "kind": "doc-link",
@@ -36353,7 +36563,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/* (501 files)"
+     "ref": "services/* (502 files)"
     },
     {
      "kind": "doc-link",
@@ -36373,7 +36583,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "doc-link",
@@ -36511,7 +36721,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest/** (400 files)"
+     "ref": "services/api-nest/** (401 files)"
     },
     {
      "kind": "doc-link",
@@ -36531,7 +36741,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/** (62 files)"
+     "ref": "supabase/** (64 files)"
     },
     {
      "kind": "doc-link",
@@ -36607,7 +36817,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "governance/** (174 files)"
+     "ref": "governance/** (176 files)"
     },
     {
      "kind": "doc-link",
@@ -36623,7 +36833,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/** (501 files)"
+     "ref": "services/** (502 files)"
     },
     {
      "kind": "doc-link",
@@ -36702,6 +36912,14 @@
     {
      "kind": "doc-link",
      "ref": "quality/contracts/operator-control/admin-member-directory.v1.json"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "supabase/migrations/20260916033000_opportunities_supply_source.sql"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "supabase/migrations/20260916033100_operator_mall_product.sql"
     }
    ],
    "referrers": [
@@ -36710,13 +36928,16 @@
     "quality/operator-backend-work-queue.json|verifier-reads|quality/contracts/operator-control/"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-15T04:20:54+09:00",
-   "lastCommitSha": "06f359e6f17936d95a51be9a9bb5a2276ec6253b",
-   "sizeBytes": 1814,
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 3025,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
-    "backendRefs": [],
+    "backendRefs": [
+     "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+     "supabase/migrations/20260916033100_operator_mall_product.sql"
+    ],
     "governanceBackendRefs": [],
     "sdkOnlyUi": false,
     "browserHarness": false,
@@ -36739,7 +36960,11 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations/20260916033000_opportunities_supply_source.sql"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "doc-link",
@@ -36752,9 +36977,9 @@
     "quality/operator-backend-work-queue.json|verifier-reads|quality/contracts/operator-control/"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-15T07:56:02+09:00",
-   "lastCommitSha": "b98f5664919d5af7d271e675f5ec5130c0afe868",
-   "sizeBytes": 5982,
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 6590,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -36778,6 +37003,10 @@
     {
      "kind": "doc-link",
      "ref": "quality/contracts/operator-control/preserved-b3/ (2 files)"
+    },
+    {
+     "kind": "doc-link",
+     "ref": "supabase/migrations (57 files)"
     }
    ],
    "referrers": [
@@ -36786,9 +37015,9 @@
     "quality/operator-backend-work-queue.json|verifier-reads|quality/contracts/operator-control/"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-15T07:56:02+09:00",
-   "lastCommitSha": "b98f5664919d5af7d271e675f5ec5130c0afe868",
-   "sizeBytes": 1621,
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 1763,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -37118,7 +37347,7 @@
    "blockers": [],
    "lastCommit": "2026-09-15T19:15:26+09:00",
    "lastCommitSha": "c832ab91c0ed2598904562c7e00d3759a3745765",
-   "sizeBytes": 9734,
+   "sizeBytes": 10402,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -37174,6 +37403,10 @@
      "services/api-nest/src/opportunities/operator-mall-product.isolation.cjs",
      "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
      "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
+     "services/api-nest/src/opportunities/opportunities.user.service.ts",
+     "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
+     "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+     "supabase/migrations/20260916033100_operator_mall_product.sql",
      "services/api-nest/isolated-qa-pg.cjs",
      "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
      "services/api-nest/src/opportunities/opportunities.routes.ts",
@@ -37272,7 +37505,12 @@
    "reasons": [
     "백엔드 전용 전환 문서"
    ],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "verifier-reads",
+     "ref": "supabase/migrations (57 files)"
+    }
+   ],
    "referrers": [
     "quality/backend-only-deletion-plan.md|doc-link|quality/**",
     "quality/backend-residual-report.md|doc-link|quality/**",
@@ -37280,9 +37518,9 @@
     "quality/operator-backend-work-queue.json|verifier-reads|quality/contracts/operator-control/"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-15T07:56:02+09:00",
-   "lastCommitSha": "b98f5664919d5af7d271e675f5ec5130c0afe868",
-   "sizeBytes": 3004,
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 3147,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -37637,7 +37875,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     }
    ],
    "referrers": [
@@ -37776,7 +38014,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "verifier-reads",
@@ -37820,7 +38058,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     }
    ],
    "referrers": [
@@ -37862,7 +38100,7 @@
    "evidence": [
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "doc-link",
@@ -37903,7 +38141,7 @@
    "evidence": [
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "doc-link",
@@ -37985,7 +38223,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     }
    ],
    "referrers": [
@@ -38268,7 +38506,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "doc-link",
@@ -38276,7 +38514,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest (400 files)"
+     "ref": "services/api-nest (401 files)"
     },
     {
      "kind": "doc-link",
@@ -38414,7 +38652,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations/ (55 files)"
+     "ref": "supabase/migrations/ (57 files)"
     },
     {
      "kind": "doc-link",
@@ -38569,7 +38807,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "doc-link",
@@ -38724,7 +38962,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "doc-link",
@@ -39164,7 +39402,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/** (501 files)"
+     "ref": "services/** (502 files)"
     },
     {
      "kind": "doc-link",
@@ -39256,7 +39494,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/** (501 files)"
+     "ref": "services/** (502 files)"
     },
     {
      "kind": "doc-link",
@@ -39264,7 +39502,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/** (62 files)"
+     "ref": "supabase/** (64 files)"
     },
     {
      "kind": "doc-link",
@@ -39276,7 +39514,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "governance/** (174 files)"
+     "ref": "governance/** (176 files)"
     },
     {
      "kind": "doc-link",
@@ -47512,7 +47750,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     }
    ],
    "referrers": [
@@ -47645,6 +47883,8 @@
     "governance/engine-acceptance/qa4-result.v1.json|verifier-reads|services/**",
     "governance/engine-acceptance/qa5-result.v1.json|verifier-reads|services/**",
     "governance/platform-redesign/change-control.v1.md|doc-link|services/**",
+    "governance/recovery/engine-drift-inventory.current.v1.json|verifier-reads",
+    "governance/recovery/engine-rebase-evidence.current.v1.json|verifier-reads",
     "governance/release-master/staging-topology.current.v1.json|verifier-reads|services/api-nest/**",
     "pnpm-workspace.yaml|verifier-reads|services/*",
     "quality/backend-only-deletion-plan.md|doc-link|services/api-nest/**",
@@ -47659,6 +47899,9 @@
     "quality/operator-registered-catalog-s1-supplement-2026-09-14.md|doc-link",
     "quality/putduk-web-sdk-handoff.md|doc-link|services/**",
     "quality/putduk-web-ui-assertions-handoff.md|doc-link|services/**",
+    "services/api-nest/src/opportunities/catalog-external-write.admin-writers.isolation.cjs|require",
+    "services/api-nest/src/opportunities/catalog-external-write.ingest-isolation.cjs|require",
+    "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs|require",
     "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts|dynamic-import",
     "tooling/backend/ownership-overrides.json|verifier-reads|services/**/ai",
     "tooling/recovery/classify-engine-drift-proposal.selftest.cjs|deploy-cmd",
@@ -47669,9 +47912,9 @@
     "tooling/verify/unit-tests.cjs|verifier-reads|services/**/*.test.cjs"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-14T22:09:57+09:00",
-   "lastCommitSha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
-   "sizeBytes": 18692,
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 23182,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -48843,7 +49086,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest (400 files)"
+     "ref": "services/api-nest (401 files)"
     }
    ],
    "referrers": [
@@ -52529,7 +52772,7 @@
    "blockers": [],
    "lastCommit": "2026-09-13T07:10:54+09:00",
    "lastCommitSha": "eb7ca64a8d6bec1e515e3bc5bd660ad0d68989dd",
-   "sizeBytes": 2464,
+   "sizeBytes": 2531,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -52751,7 +52994,7 @@
    "blockers": [],
    "lastCommit": "2026-09-13T07:10:54+09:00",
    "lastCommitSha": "eb7ca64a8d6bec1e515e3bc5bd660ad0d68989dd",
-   "sizeBytes": 26914,
+   "sizeBytes": 27689,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -66729,6 +66972,10 @@
      "ref": "tooling/seed/catalog-runtime.cjs"
     },
     {
+     "kind": "require",
+     "ref": "services/api-nest/catalog-external-write.core.cjs"
+    },
+    {
      "kind": "verifier-reads",
      "ref": "MISSING:assets/watch/"
     }
@@ -66746,6 +66993,8 @@
     "governance/engine-acceptance/qa4-result.v1.json|verifier-reads|services/**",
     "governance/engine-acceptance/qa5-result.v1.json|verifier-reads|services/**",
     "governance/platform-redesign/change-control.v1.md|doc-link|services/**",
+    "governance/recovery/engine-drift-inventory.current.v1.json|verifier-reads",
+    "governance/recovery/engine-rebase-evidence.current.v1.json|verifier-reads",
     "governance/release-master/staging-topology.current.v1.json|verifier-reads|services/api-nest/**",
     "pnpm-workspace.yaml|verifier-reads|services/*",
     "quality/backend-only-deletion-plan.md|doc-link|services/api-nest/**",
@@ -66767,9 +67016,9 @@
     "tooling/verify/unit-tests.cjs|verifier-reads|services/**/*.test.cjs"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-14T22:09:57+09:00",
-   "lastCommitSha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
-   "sizeBytes": 10950,
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 11316,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -66779,7 +67028,8 @@
      "./catalog-external-write.guard.ts",
      "./opportunity-reprice.service.ts",
      "../events/in-process.bus.ts",
-     "../../../../tooling/seed/catalog-runtime.cjs"
+     "../../../../tooling/seed/catalog-runtime.cjs",
+     "../../catalog-external-write.core.cjs"
     ],
     "governanceBackendRefs": [],
     "sdkOnlyUi": false,
@@ -66823,6 +67073,8 @@
     "governance/engine-acceptance/qa4-result.v1.json|verifier-reads|services/**",
     "governance/engine-acceptance/qa5-result.v1.json|verifier-reads|services/**",
     "governance/platform-redesign/change-control.v1.md|doc-link|services/**",
+    "governance/recovery/engine-drift-inventory.current.v1.json|verifier-reads",
+    "governance/recovery/engine-rebase-evidence.current.v1.json|verifier-reads",
     "governance/release-master/staging-topology.current.v1.json|verifier-reads|services/api-nest/**",
     "pnpm-workspace.yaml|verifier-reads|services/*",
     "quality/backend-only-deletion-plan.md|doc-link|services/api-nest/**",
@@ -66848,14 +67100,12 @@
     "services/api-nest/src/opportunities/opportunity-reprice.service.ts|import",
     "tooling/backend/ownership-overrides.json|verifier-reads|services/**/ai",
     "tooling/engine-acceptance/run-qa9.cjs|test-ref|services/api-nest/src/**",
-    "tooling/recovery/lib/classify-engine-drift.cjs|deploy-cmd",
-    "tooling/verify/operator-row-protect.cjs|verifier-reads",
-    "tooling/verify/unit-tests.cjs|verifier-reads|services/**/*.test.cjs"
+    "tooling/recovery/lib/classify-engine-drift.cjs|deploy-cmd"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-14T22:09:57+09:00",
-   "lastCommitSha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
-   "sizeBytes": 6579,
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 7119,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -67067,6 +67317,10 @@
     {
      "kind": "require",
      "ref": "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts"
+    },
+    {
+     "kind": "require",
+     "ref": "services/api-nest/catalog-external-write.core.cjs"
     }
    ],
    "referrers": [
@@ -67082,6 +67336,8 @@
     "governance/engine-acceptance/qa4-result.v1.json|verifier-reads|services/**",
     "governance/engine-acceptance/qa5-result.v1.json|verifier-reads|services/**",
     "governance/platform-redesign/change-control.v1.md|doc-link|services/**",
+    "governance/recovery/engine-drift-inventory.current.v1.json|verifier-reads",
+    "governance/recovery/engine-rebase-evidence.current.v1.json|verifier-reads",
     "governance/release-master/staging-topology.current.v1.json|verifier-reads|services/api-nest/**",
     "pnpm-workspace.yaml|verifier-reads|services/*",
     "quality/backend-only-deletion-plan.md|doc-link|services/api-nest/**",
@@ -67104,9 +67360,9 @@
     "tooling/verify/unit-tests.cjs|verifier-reads|services/**/*.test.cjs"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-14T22:09:57+09:00",
-   "lastCommitSha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
-   "sizeBytes": 12256,
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 12698,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -67114,7 +67370,8 @@
      "../adapters/adapters.admin.service.ts",
      "../events/in-process.bus.ts",
      "./catalog-external-write.guard.ts",
-     "./catalog-runtime-seed.service.ts"
+     "./catalog-runtime-seed.service.ts",
+     "../../catalog-external-write.core.cjs"
     ],
     "governanceBackendRefs": [],
     "sdkOnlyUi": false,
@@ -67155,6 +67412,10 @@
     {
      "kind": "require",
      "ref": "services/api-nest/src/events/in-process.bus.ts"
+    },
+    {
+     "kind": "require",
+     "ref": "services/api-nest/catalog-external-write.core.cjs"
     }
    ],
    "referrers": [
@@ -67170,6 +67431,8 @@
     "governance/engine-acceptance/qa4-result.v1.json|verifier-reads|services/**",
     "governance/engine-acceptance/qa5-result.v1.json|verifier-reads|services/**",
     "governance/platform-redesign/change-control.v1.md|doc-link|services/**",
+    "governance/recovery/engine-drift-inventory.current.v1.json|verifier-reads",
+    "governance/recovery/engine-rebase-evidence.current.v1.json|verifier-reads",
     "governance/release-master/staging-topology.current.v1.json|verifier-reads|services/api-nest/**",
     "pnpm-workspace.yaml|verifier-reads|services/*",
     "quality/backend-only-deletion-plan.md|doc-link|services/api-nest/**",
@@ -67190,9 +67453,9 @@
     "tooling/verify/unit-tests.cjs|verifier-reads|services/**/*.test.cjs"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-14T22:09:57+09:00",
-   "lastCommitSha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
-   "sizeBytes": 9678,
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 10471,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -67201,7 +67464,8 @@
      "./catalog-external-write.guard.ts",
      "./opportunity-reprice.service.ts",
      "../price-override/price-override.service.ts",
-     "../events/in-process.bus.ts"
+     "../events/in-process.bus.ts",
+     "../../catalog-external-write.core.cjs"
     ],
     "governanceBackendRefs": [],
     "sdkOnlyUi": false,
@@ -67237,6 +67501,8 @@
     "governance/engine-acceptance/qa4-result.v1.json|verifier-reads|services/**",
     "governance/engine-acceptance/qa5-result.v1.json|verifier-reads|services/**",
     "governance/platform-redesign/change-control.v1.md|doc-link|services/**",
+    "governance/recovery/engine-drift-inventory.current.v1.json|verifier-reads",
+    "governance/recovery/engine-rebase-evidence.current.v1.json|verifier-reads",
     "governance/release-master/staging-topology.current.v1.json|verifier-reads|services/api-nest/**",
     "pnpm-workspace.yaml|verifier-reads|services/*",
     "quality/backend-only-deletion-plan.md|doc-link|services/api-nest/**",
@@ -67264,9 +67530,9 @@
     "tooling/verify/unit-tests.cjs|verifier-reads|services/**/*.test.cjs"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-14T22:09:57+09:00",
-   "lastCommitSha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
-   "sizeBytes": 11735,
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 13631,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -68258,6 +68524,8 @@
     "governance/engine-acceptance/qa4-result.v1.json|verifier-reads|services/**",
     "governance/engine-acceptance/qa5-result.v1.json|verifier-reads|services/**",
     "governance/platform-redesign/change-control.v1.md|doc-link|services/**",
+    "governance/recovery/engine-drift-inventory.current.v1.json|verifier-reads",
+    "governance/recovery/engine-rebase-evidence.current.v1.json|verifier-reads",
     "governance/release-master/staging-topology.current.v1.json|verifier-reads|services/api-nest/**",
     "pnpm-workspace.yaml|verifier-reads|services/*",
     "quality/backend-only-deletion-plan.md|doc-link|services/api-nest/**",
@@ -68282,9 +68550,9 @@
     "tooling/verify/unit-tests.cjs|verifier-reads|services/**/*.test.cjs"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-15T03:25:11+09:00",
-   "lastCommitSha": "cbbda52892273ba5cd6326af222bb7b2644437ff",
-   "sizeBytes": 4313,
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 4426,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -68452,6 +68720,14 @@
     {
      "kind": "verifier-reads",
      "ref": "quality/migrations-draft/20260915070000_operator_mall_product.sql"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "supabase/migrations/20260916033000_opportunities_supply_source.sql"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "supabase/migrations/20260916033100_operator_mall_product.sql"
     }
    ],
    "referrers": [
@@ -68467,6 +68743,8 @@
     "governance/engine-acceptance/qa4-result.v1.json|verifier-reads|services/**",
     "governance/engine-acceptance/qa5-result.v1.json|verifier-reads|services/**",
     "governance/platform-redesign/change-control.v1.md|doc-link|services/**",
+    "governance/recovery/engine-drift-inventory.current.v1.json|verifier-reads",
+    "governance/recovery/engine-rebase-evidence.current.v1.json|verifier-reads",
     "governance/release-master/staging-topology.current.v1.json|verifier-reads|services/api-nest/**",
     "pnpm-workspace.yaml|verifier-reads|services/*",
     "quality/backend-only-deletion-plan.md|doc-link|services/api-nest/**",
@@ -68490,15 +68768,17 @@
     "tooling/verify/unit-tests.cjs|verifier-reads|services/**/*.test.cjs"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-15T05:58:43+09:00",
-   "lastCommitSha": "caa49c87ad5e6b0ae2bfbf3e14f0c389171b5053",
-   "sizeBytes": 34304,
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 38525,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
     "backendRefs": [
      "./operator-mall-product.core.cjs",
-     "./operator-mall-ledger-posting.cjs"
+     "./operator-mall-ledger-posting.cjs",
+     "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+     "supabase/migrations/20260916033100_operator_mall_product.sql"
     ],
     "governanceBackendRefs": [],
     "sdkOnlyUi": false,
@@ -68530,7 +68810,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations/ (57 files)"
     }
    ],
    "referrers": [
@@ -68546,6 +68826,8 @@
     "governance/engine-acceptance/qa4-result.v1.json|verifier-reads|services/**",
     "governance/engine-acceptance/qa5-result.v1.json|verifier-reads|services/**",
     "governance/platform-redesign/change-control.v1.md|doc-link|services/**",
+    "governance/recovery/engine-drift-inventory.current.v1.json|verifier-reads",
+    "governance/recovery/engine-rebase-evidence.current.v1.json|verifier-reads",
     "governance/release-master/staging-topology.current.v1.json|verifier-reads|services/api-nest/**",
     "pnpm-workspace.yaml|verifier-reads|services/*",
     "quality/backend-only-deletion-plan.md|doc-link|services/api-nest/**",
@@ -68567,9 +68849,9 @@
     "tooling/verify/unit-tests.cjs|verifier-reads|services/**/*.test.cjs"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-15T05:58:43+09:00",
-   "lastCommitSha": "caa49c87ad5e6b0ae2bfbf3e14f0c389171b5053",
-   "sizeBytes": 9894,
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 10925,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -68577,6 +68859,62 @@
      "./operator-mall-product.persist.cjs",
      "./operator-mall-product.core.cjs"
     ],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
+   }
+  },
+  {
+   "path": "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "api-nest",
+   "reasons": [
+    "Nest API 런타임 (tsconfig include src/**)"
+   ],
+   "evidence": [],
+   "referrers": [
+    ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md|doc-link|services/api-nest/**",
+    ".cursor/plans/ai_profit_os_02_5_engine_acceptance_qa_fd1cd7cc.plan.md|doc-link|services/**",
+    ".cursor/plans/ai_profit_os_02_engine_b2c3d4e5.plan.md|doc-link|services/api-nest/src/opportunities/",
+    ".cursor/rules/auth-boundary.mdc|doc-link|services/**/api*/**",
+    ".cursor/rules/product-drift-lock.mdc|doc-link|services/**/opportunities/**",
+    "governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md|doc-link|services/api-nest/src/**",
+    "governance/engine-acceptance/asvs-mapping.v1.json|verifier-reads|services/api-nest/src/**",
+    "governance/engine-acceptance/qa4-result.v1.json|verifier-reads|services/**",
+    "governance/engine-acceptance/qa5-result.v1.json|verifier-reads|services/**",
+    "governance/platform-redesign/change-control.v1.md|doc-link|services/**",
+    "governance/recovery/engine-drift-inventory.current.v1.json|verifier-reads",
+    "governance/recovery/engine-rebase-evidence.current.v1.json|verifier-reads",
+    "governance/release-master/staging-topology.current.v1.json|verifier-reads|services/api-nest/**",
+    "pnpm-workspace.yaml|verifier-reads|services/*",
+    "quality/backend-only-deletion-plan.md|doc-link|services/api-nest/**",
+    "quality/backend-only-inventory.md|doc-link|services/*",
+    "quality/backend-only-inventory.md|doc-link|services/api-nest/**",
+    "quality/backend-only-inventory.md|doc-link|services/api-nest/src/**",
+    "quality/backend-only-official-basis.md|doc-link|services/*",
+    "quality/backend-only-verification.md|doc-link|services/*",
+    "quality/backend-residual-report.md|doc-link|services/api-nest/**",
+    "quality/backend-residual-report.md|doc-link|services/**",
+    "quality/contracts/operator-control/engine-drift-classification-proposal.v1.json|verifier-reads",
+    "quality/putduk-web-sdk-handoff.md|doc-link|services/**",
+    "quality/putduk-web-ui-assertions-handoff.md|doc-link|services/**",
+    "tooling/backend/ownership-overrides.json|verifier-reads|services/**/ai",
+    "tooling/engine-acceptance/run-qa9.cjs|test-ref|services/api-nest/src/**",
+    "tooling/recovery/lib/classify-engine-drift.cjs|deploy-cmd",
+    "tooling/verify/operator-row-protect.cjs|verifier-reads",
+    "tooling/verify/unit-tests.cjs|verifier-reads|services/**/*.test.cjs"
+   ],
+   "blockers": [],
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 861,
+   "refSummary": {
+    "deletedUiRefs": [],
+    "uiRefs": [],
+    "backendRefs": [],
     "governanceBackendRefs": [],
     "sdkOnlyUi": false,
     "browserHarness": false,
@@ -69520,6 +69858,8 @@
     "governance/engine-acceptance/qa4-result.v1.json|verifier-reads|services/**",
     "governance/engine-acceptance/qa5-result.v1.json|verifier-reads|services/**",
     "governance/platform-redesign/change-control.v1.md|doc-link|services/**",
+    "governance/recovery/engine-drift-inventory.current.v1.json|verifier-reads",
+    "governance/recovery/engine-rebase-evidence.current.v1.json|verifier-reads",
     "governance/release-master/staging-topology.current.v1.json|verifier-reads|services/api-nest/**",
     "pnpm-workspace.yaml|verifier-reads|services/*",
     "quality/backend-only-deletion-plan.md|doc-link|services/api-nest/**",
@@ -69530,15 +69870,13 @@
     "quality/backend-only-verification.md|doc-link|services/*",
     "quality/backend-residual-report.md|doc-link|services/api-nest/**",
     "quality/backend-residual-report.md|doc-link|services/**",
-    "quality/putduk-web-sdk-handoff.md|doc-link|services/**",
-    "quality/putduk-web-ui-assertions-handoff.md|doc-link|services/**",
-    "services/api-nest/src/home-read/home-read.service.ts|import",
-    "services/api-nest/src/opportunities/index.ts|import"
+    "quality/contracts/operator-control/engine-drift-classification-proposal.v1.json|verifier-reads",
+    "quality/putduk-web-sdk-handoff.md|doc-link|services/**"
    ],
    "blockers": [],
-   "lastCommit": "2026-08-23T17:07:47+09:00",
-   "lastCommitSha": "a391f8ad63317996a934ac3c336b9a1750743e97",
-   "sizeBytes": 15959,
+   "lastCommit": "2026-09-16T03:51:08+09:00",
+   "lastCommitSha": "3d3ab5cbef92e57a230caa2ea24945035ae660ed",
+   "sizeBytes": 16952,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -69753,6 +70091,8 @@
     "governance/engine-acceptance/qa4-result.v1.json|verifier-reads|services/**",
     "governance/engine-acceptance/qa5-result.v1.json|verifier-reads|services/**",
     "governance/platform-redesign/change-control.v1.md|doc-link|services/**",
+    "governance/recovery/engine-drift-inventory.current.v1.json|verifier-reads",
+    "governance/recovery/engine-rebase-evidence.current.v1.json|verifier-reads",
     "governance/release-master/staging-topology.current.v1.json|verifier-reads|services/api-nest/**",
     "pnpm-workspace.yaml|verifier-reads|services/*",
     "quality/backend-deletion-ledger.md|doc-link",
@@ -69764,14 +70104,12 @@
     "quality/backend-only-verification.md|doc-link|services/*",
     "quality/backend-residual-report.md|doc-link|services/api-nest/**",
     "quality/backend-residual-report.md|doc-link|services/**",
-    "quality/contracts/operator-control/engine-drift-classification-proposal.v1.json|verifier-reads",
-    "quality/contracts/operator-control/product-visibility-concurrent-participate.v1.json|verifier-reads",
-    "quality/putduk-web-sdk-handoff.md|doc-link|services/**"
+    "quality/contracts/operator-control/engine-drift-classification-proposal.v1.json|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-15T01:32:55+09:00",
-   "lastCommitSha": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
-   "sizeBytes": 33784,
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 33895,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -87451,7 +87789,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest (400 files)"
+     "ref": "services/api-nest (401 files)"
     }
    ],
    "referrers": [
@@ -88591,6 +88929,103 @@
    }
   },
   {
+   "path": "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "supabase",
+   "reasons": [
+    "Supabase migration/config (ADR-001 · apply는 별도 절차)"
+   ],
+   "evidence": [],
+   "referrers": [
+    ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md|doc-link|supabase/migrations/**",
+    ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md|doc-link|supabase/migrations**",
+    ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md|doc-link|supabase/migrations/*.sql",
+    ".cursor/plans/ai_profit_os_01_money_c3d4e5f6.plan.md|doc-link|supabase/migrations/*",
+    ".cursor/rules/supabase-db-only.mdc|doc-link|supabase/**",
+    "governance/admin/control-plane-superset.md|doc-link|supabase/migrations/*",
+    "governance/recovery/engine-drift-inventory.current.v1.json|verifier-reads",
+    "governance/recovery/engine-rebase-evidence.current.v1.json|verifier-reads",
+    "governance/recovery/founder-gates-executed-20260904.md|doc-link|supabase/migrations/**",
+    "governance/release-master/MIGRATION_READINESS.md|doc-link|supabase/migrations/**",
+    "governance/release-master/MIGRATION_READINESS.md|doc-link|supabase/migrations/*.sql",
+    "governance/release-master/PROD_READINESS.md|doc-link|supabase/migrations/**",
+    "quality/backend-only-deletion-plan.md|doc-link|supabase/migrations/**",
+    "quality/backend-only-inventory.md|doc-link|supabase/migrations/**",
+    "quality/backend-only-official-basis.md|doc-link|supabase/migrations/*.sql",
+    "quality/backend-residual-report.md|doc-link|supabase/**",
+    "quality/contracts/operator-control/PUTDUK_OPS-handoff-mall-admin-v5.md|doc-link",
+    "quality/contracts/operator-control/PUTDUK_OPS-handoff-mall-ledger-v6.md|doc-link",
+    "quality/contracts/operator-control/engine-drift-classification-proposal.v1.json|verifier-reads",
+    "quality/putduk-web-ui-assertions-handoff.md|doc-link|supabase/**",
+    "services/api-nest/src/opportunities/operator-mall-product.persist.cjs|verifier-reads",
+    "tooling/verify/CATALOG.md|verifier-reads|supabase/migrations/**",
+    "tooling/verify/operator-row-protect.cjs|verifier-reads"
+   ],
+   "blockers": [],
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 808,
+   "refSummary": {
+    "deletedUiRefs": [],
+    "uiRefs": [],
+    "backendRefs": [],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
+   }
+  },
+  {
+   "path": "supabase/migrations/20260916033100_operator_mall_product.sql",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "supabase",
+   "reasons": [
+    "Supabase migration/config (ADR-001 · apply는 별도 절차)"
+   ],
+   "evidence": [],
+   "referrers": [
+    ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md|doc-link|supabase/migrations/**",
+    ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md|doc-link|supabase/migrations**",
+    ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md|doc-link|supabase/migrations/*.sql",
+    ".cursor/plans/ai_profit_os_01_money_c3d4e5f6.plan.md|doc-link|supabase/migrations/*",
+    ".cursor/rules/supabase-db-only.mdc|doc-link|supabase/**",
+    "governance/admin/control-plane-superset.md|doc-link|supabase/migrations/*",
+    "governance/recovery/engine-drift-inventory.current.v1.json|verifier-reads",
+    "governance/recovery/engine-rebase-evidence.current.v1.json|verifier-reads",
+    "governance/recovery/founder-gates-executed-20260904.md|doc-link|supabase/migrations/**",
+    "governance/release-master/MIGRATION_READINESS.md|doc-link|supabase/migrations/**",
+    "governance/release-master/MIGRATION_READINESS.md|doc-link|supabase/migrations/*.sql",
+    "governance/release-master/PROD_READINESS.md|doc-link|supabase/migrations/**",
+    "quality/backend-only-deletion-plan.md|doc-link|supabase/migrations/**",
+    "quality/backend-only-inventory.md|doc-link|supabase/migrations/**",
+    "quality/backend-only-official-basis.md|doc-link|supabase/migrations/*.sql",
+    "quality/backend-residual-report.md|doc-link|supabase/**",
+    "quality/contracts/operator-control/PUTDUK_OPS-handoff-mall-admin-v5.md|doc-link",
+    "quality/contracts/operator-control/engine-drift-classification-proposal.v1.json|verifier-reads",
+    "quality/putduk-web-ui-assertions-handoff.md|doc-link|supabase/**",
+    "services/api-nest/src/opportunities/operator-mall-product.persist.cjs|verifier-reads",
+    "tooling/verify/CATALOG.md|verifier-reads|supabase/migrations/**",
+    "tooling/verify/operator-row-protect.cjs|verifier-reads"
+   ],
+   "blockers": [],
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 4235,
+   "refSummary": {
+    "deletedUiRefs": [],
+    "uiRefs": [],
+    "backendRefs": [],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
+   }
+  },
+  {
    "path": "supabase/staging/20260901120000_admin_audit_append_only.sql",
    "class": "BACKEND_INFRA",
    "decision": "KEEP",
@@ -88724,7 +89159,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     }
    ],
    "referrers": [
@@ -88922,7 +89357,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "governance/engine-acceptance/ (43 files)"
+     "ref": "governance/engine-acceptance/ (45 files)"
     },
     {
      "kind": "verifier-reads",
@@ -88986,15 +89421,15 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest (400 files)"
+     "ref": "services/api-nest (401 files)"
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src (382 files)"
+     "ref": "services/api-nest/src (383 files)"
     },
     {
      "kind": "verifier-reads",
@@ -89113,7 +89548,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/**/ai (501 files)"
+     "ref": "services/**/ai (502 files)"
     },
     {
      "kind": "verifier-reads",
@@ -90441,7 +90876,7 @@
     },
     {
      "kind": "deploy-cmd",
-     "ref": "services/api-nest (400 files)"
+     "ref": "services/api-nest (401 files)"
     }
    ],
    "referrers": [
@@ -91621,7 +92056,7 @@
     },
     {
      "kind": "test-ref",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "test-ref",
@@ -92187,7 +92622,7 @@
     },
     {
      "kind": "test-ref",
-     "ref": "services/api-nest/src (382 files)"
+     "ref": "services/api-nest/src (383 files)"
     },
     {
      "kind": "test-ref",
@@ -92704,7 +93139,7 @@
     },
     {
      "kind": "test-ref",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "test-ref",
@@ -94056,7 +94491,7 @@
     },
     {
      "kind": "test-ref",
-     "ref": "services/api-nest (400 files)"
+     "ref": "services/api-nest (401 files)"
     }
    ],
    "referrers": [
@@ -94645,7 +95080,7 @@
     },
     {
      "kind": "test-ref",
-     "ref": "services/api-nest (400 files)"
+     "ref": "services/api-nest (401 files)"
     }
    ],
    "referrers": [
@@ -94833,8 +95268,8 @@
     ".github/workflows/engine-acceptance.yml|workflow-run|paths:tooling/engine-acceptance/**"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-15T20:18:46+09:00",
-   "lastCommitSha": "d7db49ff2f1d7239b3d3eb25048552a190904630",
+   "lastCommit": "2026-09-15T21:50:46+09:00",
+   "lastCommitSha": "81b34e53b244ca5820eb44a5f53d226bca43ac11",
    "sizeBytes": 4118,
    "refSummary": {
     "deletedUiRefs": [],
@@ -95286,7 +95721,7 @@
     },
     {
      "kind": "test-ref",
-     "ref": "governance/engine-acceptance (43 files)"
+     "ref": "governance/engine-acceptance (45 files)"
     },
     {
      "kind": "test-ref",
@@ -95374,7 +95809,7 @@
     },
     {
      "kind": "test-ref",
-     "ref": "services/api-nest/src (382 files)"
+     "ref": "services/api-nest/src (383 files)"
     },
     {
      "kind": "test-ref",
@@ -95577,7 +96012,7 @@
     },
     {
      "kind": "test-ref",
-     "ref": "governance/engine-acceptance (43 files)"
+     "ref": "governance/engine-acceptance (45 files)"
     },
     {
      "kind": "test-ref",
@@ -95710,7 +96145,7 @@
     },
     {
      "kind": "test-ref",
-     "ref": "governance/engine-acceptance (43 files)"
+     "ref": "governance/engine-acceptance (45 files)"
     },
     {
      "kind": "test-ref",
@@ -97210,7 +97645,7 @@
     },
     {
      "kind": "test-ref",
-     "ref": "governance/engine-acceptance (43 files)"
+     "ref": "governance/engine-acceptance (45 files)"
     },
     {
      "kind": "test-ref",
@@ -97218,7 +97653,7 @@
     },
     {
      "kind": "test-ref",
-     "ref": "services/api-nest/src/** (382 files)"
+     "ref": "services/api-nest/src/** (383 files)"
     },
     {
      "kind": "test-ref",
@@ -97230,7 +97665,7 @@
     },
     {
      "kind": "test-ref",
-     "ref": "governance/engine-acceptance/** (43 files)"
+     "ref": "governance/engine-acceptance/** (45 files)"
     },
     {
      "kind": "test-ref",
@@ -97474,7 +97909,7 @@
     },
     {
      "kind": "test-ref",
-     "ref": "governance/engine-acceptance (43 files)"
+     "ref": "governance/engine-acceptance (45 files)"
     },
     {
      "kind": "test-ref",
@@ -97713,8 +98148,8 @@
     ".github/workflows/engine-acceptance.yml|workflow-run|paths:tooling/engine-acceptance/**"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-15T20:18:46+09:00",
-   "lastCommitSha": "d7db49ff2f1d7239b3d3eb25048552a190904630",
+   "lastCommit": "2026-09-15T21:50:46+09:00",
+   "lastCommitSha": "81b34e53b244ca5820eb44a5f53d226bca43ac11",
    "sizeBytes": 5329,
    "refSummary": {
     "deletedUiRefs": [],
@@ -98831,7 +99266,7 @@
     },
     {
      "kind": "deploy-cmd",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "deploy-cmd",
@@ -99021,7 +99456,7 @@
    "blockers": [],
    "lastCommit": "2026-09-15T21:36:41+09:00",
    "lastCommitSha": "40ab321bbaf0d7e15bd27f690e842ca5489686c7",
-   "sizeBytes": 7902,
+   "sizeBytes": 7800,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -99448,7 +99883,7 @@
    "rule": "recovery",
    "reasons": [
     "복구/증거 재구축 도구",
-    "백엔드 경로 참조 59 · UI 참조 0"
+    "백엔드 경로 참조 61 · UI 참조 0"
    ],
    "evidence": [
     {
@@ -99628,7 +100063,7 @@
    "blockers": [],
    "lastCommit": "2026-09-15T19:15:26+09:00",
    "lastCommitSha": "c832ab91c0ed2598904562c7e00d3759a3745765",
-   "sizeBytes": 12070,
+   "sizeBytes": 12231,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -99673,6 +100108,8 @@
      "services/api-nest/src/opportunities/operator-mall-product.isolation.cjs",
      "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
      "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
+     "services/api-nest/src/opportunities/opportunities.user.service.ts",
+     "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
      "services/api-nest/isolated-qa-pg.cjs",
      "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
      "services/api-nest/src/opportunities/opportunities.routes.ts",
@@ -101051,7 +101488,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "governance/engine-acceptance/** (43 files)"
+     "ref": "governance/engine-acceptance/** (45 files)"
     },
     {
      "kind": "verifier-reads",
@@ -101191,7 +101628,7 @@
    "blockers": [],
    "lastCommit": "2026-09-14T22:09:57+09:00",
    "lastCommitSha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
-   "sizeBytes": 43827,
+   "sizeBytes": 44529,
    "refSummary": {
     "deletedUiRefs": [
      "apps/web/public/brand",
@@ -101378,7 +101815,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src (382 files)"
+     "ref": "services/api-nest/src (383 files)"
     },
     {
      "kind": "verifier-reads",
@@ -102107,7 +102544,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "verifier-reads",
@@ -102393,7 +102830,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest (400 files)"
+     "ref": "services/api-nest (401 files)"
     },
     {
      "kind": "gate-tier",
@@ -103173,7 +103610,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src (382 files)"
+     "ref": "services/api-nest/src (383 files)"
     },
     {
      "kind": "verifier-reads",
@@ -103189,11 +103626,11 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations/ (55 files)"
+     "ref": "supabase/migrations/ (57 files)"
     },
     {
      "kind": "verifier-reads",
@@ -103337,7 +103774,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src (382 files)"
+     "ref": "services/api-nest/src (383 files)"
     },
     {
      "kind": "verifier-reads",
@@ -103734,7 +104171,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src (382 files)"
+     "ref": "services/api-nest/src (383 files)"
     },
     {
      "kind": "verifier-reads",
@@ -104344,7 +104781,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "verifier-reads",
@@ -105184,7 +105621,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src (382 files)"
+     "ref": "services/api-nest/src (383 files)"
     }
    ],
    "referrers": [
@@ -105984,7 +106421,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     }
    ],
    "referrers": [
@@ -107058,7 +107495,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src (382 files)"
+     "ref": "services/api-nest/src (383 files)"
     },
     {
      "kind": "verifier-reads",
@@ -109414,9 +109851,9 @@
     "tooling/verify/settlement-rule-parity.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-15T05:58:43+09:00",
-   "lastCommitSha": "caa49c87ad5e6b0ae2bfbf3e14f0c389171b5053",
-   "sizeBytes": 63859,
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 64139,
    "refSummary": {
     "deletedUiRefs": [
      "apps/web/",
@@ -109811,7 +110248,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src (382 files)"
+     "ref": "services/api-nest/src (383 files)"
     },
     {
      "kind": "verifier-reads",
@@ -109931,9 +110368,9 @@
     ".github/workflows/backend-ci.yml|workflow-run|verify:ebay-worker-deploy-path"
    ],
    "blockers": [],
-   "lastCommit": "2026-08-25T19:27:57+09:00",
-   "lastCommitSha": "3b3c151ee9eb10a45902738e32f03eb15e5afab1",
-   "sizeBytes": 10639,
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 10655,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -110120,7 +110557,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "governance/engine-acceptance (43 files)"
+     "ref": "governance/engine-acceptance (45 files)"
     },
     {
      "kind": "verifier-reads",
@@ -110698,7 +111135,7 @@
    "blockers": [],
    "lastCommit": "2026-09-15T21:36:41+09:00",
    "lastCommitSha": "40ab321bbaf0d7e15bd27f690e842ca5489686c7",
-   "sizeBytes": 3827,
+   "sizeBytes": 3826,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -110735,7 +111172,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "verifier-reads",
@@ -110774,9 +111211,9 @@
     "tooling/verify/shadow-replay-drift.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-13T07:28:57+09:00",
-   "lastCommitSha": "137241804ff24e5de48556e1385f97fd1c8b8cee",
-   "sizeBytes": 5437,
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 5486,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -111328,7 +111765,7 @@
    "blockers": [],
    "lastCommit": "2026-09-15T21:36:41+09:00",
    "lastCommitSha": "40ab321bbaf0d7e15bd27f690e842ca5489686c7",
-   "sizeBytes": 207,
+   "sizeBytes": 206,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -113413,7 +113850,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "gate-tier",
@@ -113466,7 +113903,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "verifier-reads",
@@ -113761,7 +114198,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src (382 files)"
+     "ref": "services/api-nest/src (383 files)"
     },
     {
      "kind": "verifier-reads",
@@ -114944,7 +115381,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations/ (55 files)"
+     "ref": "supabase/migrations/ (57 files)"
     }
    ],
    "referrers": [
@@ -115005,7 +115442,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations/ (55 files)"
+     "ref": "supabase/migrations/ (57 files)"
     },
     {
      "kind": "verifier-reads",
@@ -115056,7 +115493,7 @@
    "rule": "verify",
    "reasons": [
     "검증기 (evidence 재판정)",
-    "UI 참조 2 + 백엔드 참조 18 · 백엔드 어서션 39 / UI 어서션 0",
+    "UI 참조 2 + 백엔드 참조 23 · 백엔드 어서션 43 / UI 어서션 0",
     "[override] S1 운영자 행 보호 백엔드 검증기. UI 어서션 0. apps/admin·packages/ui 문자열은 이번 슬라이스 금지 경로 차단용. tooling/e2e/lib/qa-env-isolation-guard.cjs는 기존 KEEP 운영 DB fail-closed 가드만 참조하며 live FOR UPDATE는 CATALOG_TEST_DATABASE_URL 없을 때 BLOCKED."
    ],
    "evidence": [
@@ -115134,6 +115571,26 @@
     },
     {
      "kind": "verifier-reads",
+     "ref": "supabase/migrations/20260916033000_opportunities_supply_source.sql"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "supabase/migrations/20260916033100_operator_mall_product.sql"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/opportunities.user.service.ts"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/participate.service.ts"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs"
+    },
+    {
+     "kind": "verifier-reads",
      "ref": "services/api-nest/src/opportunities/opportunities.admin.service.ts"
     },
     {
@@ -115147,10 +115604,6 @@
     {
      "kind": "verifier-reads",
      "ref": "services/api-nest/src/opportunities/opportunities.module.ts"
-    },
-    {
-     "kind": "verifier-reads",
-     "ref": "MISSING:supabase/migrations/20260913220000_opportunities_supply_source.sql"
     },
     {
      "kind": "verifier-reads",
@@ -115198,9 +115651,9 @@
     ".github/workflows/operator-mall-gha-pg.yml|workflow-run|verify:operator-row-protect"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-14T22:09:57+09:00",
-   "lastCommitSha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
-   "sizeBytes": 12965,
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 14884,
    "refSummary": {
     "deletedUiRefs": [
      "apps/admin",
@@ -115223,6 +115676,11 @@
      "services/api-nest/src/price-override/price-override.service.ts",
      "services/api-nest/src/adapters/adapters.admin.service.ts",
      "services/api-nest/src/adapters/adapters.ingest.controller.ts",
+     "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+     "supabase/migrations/20260916033100_operator_mall_product.sql",
+     "services/api-nest/src/opportunities/opportunities.user.service.ts",
+     "services/api-nest/src/opportunities/participate.service.ts",
+     "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
      "services/api-nest/src/opportunities/opportunities.admin.service.ts",
      "tooling/seed/catalog-runtime.cjs",
      "services/api-nest/src/opportunities/opportunities.module.ts"
@@ -115242,230 +115700,254 @@
      },
      {
       "domain": "매칭 정책",
-      "source": "quality/migrations-draft/20260913220000_opportunities_supply_source.sql",
-      "line": 42,
+      "source": "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
+      "line": 47,
       "detail": "missing: "
      },
      {
       "domain": "매칭 정책",
       "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 66,
+      "line": 71,
       "detail": "core must define CATALOG_EXTERNAL_WRITE_GATE"
      },
      {
-      "domain": "자본 구간",
+      "domain": "알림·푸시·인박스",
       "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 69,
+      "line": 79,
+      "detail": "core must implement dual source lock and SOURCE_DISABLED"
+     },
+     {
+      "domain": "알림·푸시·인박스",
+      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
+      "line": 82,
+      "detail": "core must read PRODUCTION_SOURCE_MODE operator_only lock"
+     },
+     {
+      "domain": "입출금·수수료",
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 87,
+      "detail": "user feed/detail must filter supply_source=operator"
+     },
+     {
+      "domain": "입출금·수수료",
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 90,
+      "detail": "participate must reject non-operator rows"
+     },
+     {
+      "domain": "매칭 정책",
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 93,
       "detail": "core SQL must lock FOR UPDATE"
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 72,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 96,
       "detail": "core must distinguish operator protection from the gate"
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 75,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 99,
       "detail": "core must fail-closed when schema is unreadable"
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 78,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 102,
       "detail": "guard missing evaluateLockedAsset or preflightProductWrites"
      },
      {
       "domain": "자본 구간",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 81,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 105,
       "detail": "catalog seed must lock then re-evaluate and consult boot seed"
      },
      {
       "domain": "자본 구간",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 84,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 108,
       "detail": "seed image UPDATE must be conditional on legacy_external"
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 87,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 111,
       "detail": "reprice must evaluate after lock and persist legacy_external only"
      },
      {
       "domain": "매칭 정책",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 90,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 114,
       "detail": "persistComputedPricing must evaluate the opportunity on the same client"
      },
      {
       "domain": "매칭 정책",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 93,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 117,
       "detail": "persistComputedPricing must not make the supply_source filter optional"
      },
      {
       "domain": "매칭 정책",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 96,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 120,
       "detail": "persistOverride must evaluate operator protection on the same client"
      },
      {
       "domain": "매칭 정책",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 99,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 123,
       "detail": "persistOverride must not accept caller writerKind"
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 102,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 126,
       "detail": "core must reserve operator_canonical writer kind"
      },
      {
       "domain": "혜택·미션",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 105,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 129,
       "detail": "core must expose shared locked evaluate for Nest and CLI"
      },
      {
       "domain": "매칭 정책",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 108,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 132,
       "detail": "core must evaluate opportunity id on the same client without writerKind"
      },
      {
       "domain": "매칭 정책",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 111,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 135,
       "detail": "Admin upsert/patch must use CatalogExternalWriteGuard"
      },
      {
       "domain": "자본 구간",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 114,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 138,
       "detail": "Admin image sync must be legacy_external only"
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 117,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 141,
       "detail": "Admin patchPricing must persist legacy_external only"
      },
      {
       "domain": "매칭 정책",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 129,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 153,
       "detail": "registerAssetImage deny return must not include signedPut"
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 138,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 162,
       "detail": "S1 Admin must not call operator_canonical writer"
      },
      {
       "domain": "자본 구간",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 141,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 165,
       "detail": "CLI catalog seed must evaluate through the shared core gate"
      },
      {
       "domain": "자본 구간",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 144,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 168,
       "detail": "ingest must distinguish productWrite blocked/failed from envelope ok"
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 147,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 171,
       "detail": "ingest persist exception must be recorded as productWrite failed"
      },
      {
       "domain": "자본 구간",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 150,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 174,
       "detail": "missing catalogWrite guard must fail-closed"
      },
      {
       "domain": "자본 구간",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 153,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 177,
       "detail": "adapters ingest must still call applyEbayImageProvenance"
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 156,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 180,
       "detail": "FX ingest and ebay heartbeat must remain"
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 161,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 185,
       "detail": "unset token must stay 503"
      },
      {
       "domain": "인증·세션·쿠키",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 164,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 188,
       "detail": "wrong token must stay 401"
      },
      {
       "domain": "인증·세션·쿠키",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 167,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 191,
       "detail": "ingest token fail-open pattern returned"
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 170,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 194,
       "detail": "migration draft must add operator|legacy_external only"
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 177,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 201,
       "detail": "migration draft must not bulk-promote to operator"
      },
      {
       "domain": "알림·푸시·인박스",
-      "source": "services/api-nest/src/opportunities/opportunities.module.ts",
-      "line": 180,
+      "source": "services/api-nest/src/opportunities/participate.service.ts",
+      "line": 204,
       "detail": "migration draft must not delete rows"
      },
      {
-      "domain": "매칭 정책",
-      "source": "supabase/migrations/20260913220000_opportunities_supply_source.sql",
-      "line": 187,
-      "detail": "draft must stay outside supabase/migrations until apply is approved"
+      "domain": "알림·푸시·인박스",
+      "source": "supabase/migrations/20260916033100_operator_mall_product.sql",
+      "line": 215,
+      "detail": "approved supply_source + mall SQL must live in supabase/migrations"
      },
      {
       "domain": "알림·푸시·인박스",
       "source": "workers/ops-proxy",
-      "line": 203,
+      "line": 231,
       "detail": "forbidden path in this slice diff: "
      },
      {
       "domain": "알림·푸시·인박스",
       "source": "workers/ops-proxy",
-      "line": 207,
+      "line": 235,
       "detail": "package.json missing verify:operator-row-protect"
      },
      {
       "domain": "자본 구간",
       "source": "workers/ops-proxy",
-      "line": 210,
+      "line": 238,
       "detail": "CATALOG.md missing operator-row-protect"
      },
      {
       "domain": "매칭 정책",
       "source": "workers/ops-proxy",
-      "line": 213,
+      "line": 241,
       "detail": "OpportunitiesModule must provide CatalogExternalWriteGuard"
      }
     ],
@@ -115485,16 +115967,22 @@
      "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts",
      "services/api-nest/src/opportunities/catalog-external-write.ts-hook.cjs",
      "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts",
+     "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
      "services/api-nest/src/opportunities/opportunities.admin.service.ts",
      "services/api-nest/src/opportunities/opportunities.module.ts",
+     "services/api-nest/src/opportunities/opportunities.user.service.ts",
      "services/api-nest/src/opportunities/opportunity-reprice.service.ts",
+     "services/api-nest/src/opportunities/participate.service.ts",
      "services/api-nest/src/price-override/price-override.service.ts",
+     "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+     "supabase/migrations/20260916033100_operator_mall_product.sql",
      "tooling/seed/catalog-runtime.cjs"
     ],
     "uiPaths": [],
     "backendDomains": [
      "알림·푸시·인박스",
      "매칭 정책",
+     "입출금·수수료",
      "자본 구간",
      "혜택·미션",
      "인증·세션·쿠키"
@@ -116238,7 +116726,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "verifier-reads",
@@ -117080,8 +117568,8 @@
     ".github/workflows/engine-evidence-refresh-check.yml|workflow-run|paths"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-13T04:19:29+09:00",
-   "lastCommitSha": "885ae79af90d6200c6cbd22d86c81938c72c7e37",
+   "lastCommit": "2026-09-15T22:05:30+09:00",
+   "lastCommitSha": "4ee3cc06bf4780eb30c9420e60669f23da3abb84",
    "sizeBytes": 10140,
    "refSummary": {
     "deletedUiRefs": [],
@@ -119005,7 +119493,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (55 files)"
+     "ref": "supabase/migrations (57 files)"
     },
     {
      "kind": "verifier-reads",
@@ -119073,9 +119561,9 @@
     ".github/workflows/backend-ci.yml|workflow-run|verify:rel-504-migration-readiness"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-11T13:22:36+09:00",
-   "lastCommitSha": "720e7d54b9d5f0727266fc8388fb4cbc6e73ed90",
-   "sizeBytes": 8204,
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 8369,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -121187,7 +121675,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations/ (55 files)"
+     "ref": "supabase/migrations/ (57 files)"
     },
     {
      "kind": "gate-tier",
@@ -121702,7 +122190,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/**/*.test.cjs (501 files)"
+     "ref": "services/**/*.test.cjs (502 files)"
     },
     {
      "kind": "gate-tier",
@@ -124717,9 +125205,9 @@
     "workers/ebay-adapter/wrangler.toml|wrangler-main"
    ],
    "blockers": [],
-   "lastCommit": "2026-08-15T00:53:22+09:00",
-   "lastCommitSha": "3de830c43eb9d271d8c59705404eb7c375bf0456",
-   "sizeBytes": 15827,
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 16948,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -124969,9 +125457,9 @@
     ".github/workflows/ebay-fault-injection.yml|workflow-run|paths:workers/ebay-adapter/**"
    ],
    "blockers": [],
-   "lastCommit": "2026-08-09T20:38:28+09:00",
-   "lastCommitSha": "f186e76506c2f12e679c1d7aa7a1a67f2a8e41fb",
-   "sizeBytes": 571,
+   "lastCommit": "2026-09-16T03:47:44+09:00",
+   "lastCommitSha": "0d2b8943b750828134392bd5b0d37504485f7cc2",
+   "sizeBytes": 930,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],

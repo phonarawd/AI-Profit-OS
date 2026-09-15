@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-09-15T12:49:07.920Z",
- "headSha": "40ab321bbaf0d7e15bd27f690e842ca5489686c7",
+ "generatedAt": "2026-09-15T19:03:22.180Z",
+ "headSha": "3d3ab5cbef92e57a230caa2ea24945035ae660ed",
  "edgeKinds": [
   "import",
   "require",
@@ -4387,6 +4387,12 @@
    "decision": "KEEP"
   },
   {
+   "id": "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
    "id": "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
    "type": "file",
    "class": "BACKEND_RUNTIME",
@@ -6002,6 +6008,18 @@
   },
   {
    "id": "supabase/migrations/20260905110000_classic_signup_sessions_and_admin.sql",
+   "type": "file",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
+  },
+  {
+   "id": "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+   "type": "file",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
+  },
+  {
+   "id": "supabase/migrations/20260916033100_operator_mall_product.sql",
    "type": "file",
    "class": "BACKEND_INFRA",
    "decision": "KEEP"
@@ -9219,7 +9237,7 @@
   {
    "id": "dir:services/api-nest/**",
    "type": "glob",
-   "files": 400
+   "files": 401
   },
   {
    "id": "dir:services/engine-rust/**",
@@ -9239,7 +9257,7 @@
   {
    "id": "dir:supabase/migrations/**",
    "type": "glob",
-   "files": 55
+   "files": 57
   },
   {
    "id": "missing:.cursor/tmp",
@@ -9252,7 +9270,7 @@
   {
    "id": "dir:supabase/migrations",
    "type": "directory",
-   "files": 55
+   "files": 57
   },
   {
    "id": "dir:tooling/verify",
@@ -9266,7 +9284,7 @@
   {
    "id": "dir:services/api-nest",
    "type": "directory",
-   "files": 400
+   "files": 401
   },
   {
    "id": "missing:tooling/verify/web-lint.cjs",
@@ -9682,7 +9700,7 @@
   {
    "id": "dir:supabase/migrations**",
    "type": "glob",
-   "files": 55
+   "files": 57
   },
   {
    "id": "deleted:packages/ui",
@@ -9872,7 +9890,7 @@
   {
    "id": "dir:supabase/migrations/",
    "type": "directory",
-   "files": 55
+   "files": 57
   },
   {
    "id": "missing:supabase/auth*",
@@ -9889,7 +9907,7 @@
   {
    "id": "dir:supabase/migrations/*.sql",
    "type": "glob",
-   "files": 55
+   "files": 57
   },
   {
    "id": "missing:services/realtime-service",
@@ -9920,7 +9938,7 @@
   {
    "id": "dir:supabase/migrations/*",
    "type": "glob",
-   "files": 55
+   "files": 57
   },
   {
    "id": "deleted:apps/admin/**",
@@ -9991,7 +10009,7 @@
   {
    "id": "dir:governance/engine-acceptance/**",
    "type": "glob",
-   "files": 43
+   "files": 45
   },
   {
    "id": "dir:.cursor/plans/",
@@ -10001,7 +10019,7 @@
   {
    "id": "dir:services/**",
    "type": "glob",
-   "files": 501
+   "files": 502
   },
   {
    "id": "missing:apps/**",
@@ -10020,7 +10038,7 @@
   {
    "id": "dir:governance/engine-acceptance/",
    "type": "directory",
-   "files": 43
+   "files": 45
   },
   {
    "id": "dir:tooling/engine-acceptance/",
@@ -10079,7 +10097,7 @@
   {
    "id": "dir:services/api-nest/src/opportunities/",
    "type": "directory",
-   "files": 40
+   "files": 41
   },
   {
    "id": "dir:services/api-nest/src/trades/",
@@ -10235,7 +10253,7 @@
   {
    "id": "dir:services/**/api*/**",
    "type": "glob",
-   "files": 400
+   "files": 401
   },
   {
    "id": "dir:.github/workflows/**",
@@ -10288,7 +10306,7 @@
   {
    "id": "dir:services/**/opportunities/**",
    "type": "glob",
-   "files": 40
+   "files": 41
   },
   {
    "id": "dir:services/market-intelligence/**",
@@ -10311,7 +10329,7 @@
   {
    "id": "dir:supabase/**",
    "type": "glob",
-   "files": 62
+   "files": 64
   },
   {
    "id": "missing:.cursor/plans/ai_profit_os_launch_*.plan.md",
@@ -10488,7 +10506,7 @@
   {
    "id": "dir:services/api-nest/src/**",
    "type": "glob",
-   "files": 382
+   "files": 383
   },
   {
    "id": "dir:governance/engine-acceptance/baselines/",
@@ -11503,7 +11521,7 @@
   {
    "id": "dir:governance/*.vN",
    "type": "glob",
-   "files": 174
+   "files": 176
   },
   {
    "id": "dir:governance/platform-redesign/*",
@@ -12913,6 +12931,34 @@
    "type": "missing-path"
   },
   {
+   "id": "missing:tooling/verify/capi-config.cjs",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:tooling/verify/capi-consent.cjs",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:tooling/verify/ads-provider-capability.cjs",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:tooling/verify/ads-standing-authorization.cjs",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:tooling/verify/ads-budget-guardrail.cjs",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:tooling/verify/ads-orchestrator-boundary.cjs",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:tooling/verify/alert-oneshot-dry-run.cjs",
+   "type": "missing-path"
+  },
+  {
    "id": "dir:tooling/*",
    "type": "glob",
    "files": 421
@@ -12920,7 +12966,7 @@
   {
    "id": "dir:services/*",
    "type": "glob",
-   "files": 501
+   "files": 502
   },
   {
    "id": "dir:workers/*",
@@ -12939,7 +12985,7 @@
   {
    "id": "dir:services/api-nest/src",
    "type": "directory",
-   "files": 382
+   "files": 383
   },
   {
    "id": "missing:packages/sdk/src",
@@ -13778,7 +13824,7 @@
   {
    "id": "dir:governance/engine-acceptance",
    "type": "directory",
-   "files": 43
+   "files": 45
   },
   {
    "id": "dir:governance/global-product",
@@ -14995,7 +15041,7 @@
   {
    "id": "dir:governance/**",
    "type": "glob",
-   "files": 174
+   "files": 176
   },
   {
    "id": "missing:services/workers",
@@ -15578,7 +15624,7 @@
   {
    "id": "dir:services/**/ai",
    "type": "glob",
-   "files": 501
+   "files": 502
   },
   {
    "id": "deleted:apps/web/**/peotteok",
@@ -16102,10 +16148,6 @@
    "type": "env-var"
   },
   {
-   "id": "missing:supabase/migrations/20260913220000_opportunities_supply_source.sql",
-   "type": "missing-path"
-  },
-  {
    "id": "env:CATALOG_TEST_DATABASE_URL",
    "type": "env-var"
   },
@@ -16183,7 +16225,7 @@
   {
    "id": "dir:services/**/*.test.cjs",
    "type": "glob",
-   "files": 501
+   "files": 502
   },
   {
    "id": "missing:services/api-nest/dist/ledger/ledger.user-query.selftest.js",
@@ -17587,6 +17629,78 @@
    "command": "node tooling/verify/observability.cjs",
    "class": "BACKEND_TEST",
    "decision": "KEEP"
+  },
+  {
+   "id": "script:verify:attribution-chain",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/verify/attribution-chain.cjs",
+   "class": "OBSOLETE",
+   "decision": "DELETE"
+  },
+  {
+   "id": "script:verify:marketing-compliance",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/verify/marketing-compliance.cjs",
+   "class": "OBSOLETE",
+   "decision": "DELETE"
+  },
+  {
+   "id": "script:verify:capi-config",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/verify/capi-config.cjs",
+   "class": "OBSOLETE",
+   "decision": "DELETE"
+  },
+  {
+   "id": "script:verify:capi-consent",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/verify/capi-consent.cjs",
+   "class": "OBSOLETE",
+   "decision": "DELETE"
+  },
+  {
+   "id": "script:verify:ads-provider-capability",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/verify/ads-provider-capability.cjs",
+   "class": "OBSOLETE",
+   "decision": "DELETE"
+  },
+  {
+   "id": "script:verify:ads-standing-authorization",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/verify/ads-standing-authorization.cjs",
+   "class": "OBSOLETE",
+   "decision": "DELETE"
+  },
+  {
+   "id": "script:verify:ads-budget-guardrail",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/verify/ads-budget-guardrail.cjs",
+   "class": "OBSOLETE",
+   "decision": "DELETE"
+  },
+  {
+   "id": "script:verify:ads-orchestrator-boundary",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/verify/ads-orchestrator-boundary.cjs",
+   "class": "OBSOLETE",
+   "decision": "DELETE"
+  },
+  {
+   "id": "script:verify:alert-oneshot-dry-run",
+   "type": "npm-script",
+   "package": "package.json",
+   "command": "node tooling/verify/alert-oneshot-dry-run.cjs",
+   "class": "OBSOLETE",
+   "decision": "DELETE"
   },
   {
    "id": "script:engine-acceptance:freeze-baseline",
@@ -65958,12 +66072,142 @@
   },
   {
    "from": "governance/recovery/engine-drift-inventory.current.v1.json",
-   "to": "governance/recovery/archive/engine-drift-inventory.pre-rebase-20260902.v1.json",
+   "to": "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
    "kind": "verifier-reads"
   },
   {
    "from": "governance/recovery/engine-drift-inventory.current.v1.json",
-   "to": "governance/recovery/archive/engine-rebase-evidence.pre-rebase-20260902.v1.json",
+   "to": "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-drift-inventory.current.v1.json",
+   "to": "supabase/migrations/20260916033100_operator_mall_product.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-drift-inventory.current.v1.json",
+   "to": "services/api-nest/catalog-external-write.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-drift-inventory.current.v1.json",
+   "to": "services/api-nest/src/opportunities/catalog-external-write.admin-writers.isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-drift-inventory.current.v1.json",
+   "to": "services/api-nest/src/opportunities/catalog-external-write.guard.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-drift-inventory.current.v1.json",
+   "to": "services/api-nest/src/opportunities/catalog-external-write.ingest-isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-drift-inventory.current.v1.json",
+   "to": "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-drift-inventory.current.v1.json",
+   "to": "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-drift-inventory.current.v1.json",
+   "to": "services/api-nest/src/opportunities/operator-mall-product.admin.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-drift-inventory.current.v1.json",
+   "to": "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-drift-inventory.current.v1.json",
+   "to": "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-drift-inventory.current.v1.json",
+   "to": "services/api-nest/src/opportunities/opportunities.user.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-drift-inventory.current.v1.json",
+   "to": "services/api-nest/src/opportunities/participate.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-rebase-evidence.current.v1.json",
+   "to": "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-rebase-evidence.current.v1.json",
+   "to": "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-rebase-evidence.current.v1.json",
+   "to": "supabase/migrations/20260916033100_operator_mall_product.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-rebase-evidence.current.v1.json",
+   "to": "services/api-nest/catalog-external-write.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-rebase-evidence.current.v1.json",
+   "to": "services/api-nest/src/opportunities/catalog-external-write.admin-writers.isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-rebase-evidence.current.v1.json",
+   "to": "services/api-nest/src/opportunities/catalog-external-write.guard.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-rebase-evidence.current.v1.json",
+   "to": "services/api-nest/src/opportunities/catalog-external-write.ingest-isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-rebase-evidence.current.v1.json",
+   "to": "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-rebase-evidence.current.v1.json",
+   "to": "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-rebase-evidence.current.v1.json",
+   "to": "services/api-nest/src/opportunities/operator-mall-product.admin.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-rebase-evidence.current.v1.json",
+   "to": "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-rebase-evidence.current.v1.json",
+   "to": "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-rebase-evidence.current.v1.json",
+   "to": "services/api-nest/src/opportunities/opportunities.user.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/recovery/engine-rebase-evidence.current.v1.json",
+   "to": "services/api-nest/src/opportunities/participate.service.ts",
    "kind": "verifier-reads"
   },
   {
@@ -67442,18 +67686,6 @@
    "from": "governance/release-master/PROD_READINESS.md",
    "to": "tooling/release/deploy-from-artifact.cjs",
    "kind": "doc-link"
-  },
-  {
-   "from": "governance/release-master/R7_BACKEND_ALIGNMENT.md",
-   "to": "dir:services/api-nest",
-   "kind": "doc-link",
-   "spec": "services/api-nest"
-  },
-  {
-   "from": "governance/release-master/R7_BACKEND_ALIGNMENT.md",
-   "to": "dir:supabase/migrations",
-   "kind": "doc-link",
-   "spec": "supabase/migrations"
   },
   {
    "from": "governance/release-master/R8_INFRA_CORE.md",
@@ -69145,6 +69377,60 @@
    "from": "package.json",
    "to": "tooling/verify/observability.cjs",
    "kind": "pkg-script"
+  },
+  {
+   "from": "package.json",
+   "to": "missing:tooling/verify/attribution-chain.cjs",
+   "kind": "pkg-script",
+   "spec": "tooling/verify/attribution-chain.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "missing:tooling/verify/marketing-compliance.cjs",
+   "kind": "pkg-script",
+   "spec": "tooling/verify/marketing-compliance.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "missing:tooling/verify/capi-config.cjs",
+   "kind": "pkg-script",
+   "spec": "tooling/verify/capi-config.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "missing:tooling/verify/capi-consent.cjs",
+   "kind": "pkg-script",
+   "spec": "tooling/verify/capi-consent.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "missing:tooling/verify/ads-provider-capability.cjs",
+   "kind": "pkg-script",
+   "spec": "tooling/verify/ads-provider-capability.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "missing:tooling/verify/ads-standing-authorization.cjs",
+   "kind": "pkg-script",
+   "spec": "tooling/verify/ads-standing-authorization.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "missing:tooling/verify/ads-budget-guardrail.cjs",
+   "kind": "pkg-script",
+   "spec": "tooling/verify/ads-budget-guardrail.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "missing:tooling/verify/ads-orchestrator-boundary.cjs",
+   "kind": "pkg-script",
+   "spec": "tooling/verify/ads-orchestrator-boundary.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "missing:tooling/verify/alert-oneshot-dry-run.cjs",
+   "kind": "pkg-script",
+   "spec": "tooling/verify/alert-oneshot-dry-run.cjs"
   },
   {
    "from": "package.json",
@@ -75991,9 +76277,25 @@
    "kind": "doc-link"
   },
   {
+   "from": "quality/contracts/operator-control/PUTDUK_OPS-handoff-mall-admin-v5.md",
+   "to": "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+   "kind": "doc-link"
+  },
+  {
+   "from": "quality/contracts/operator-control/PUTDUK_OPS-handoff-mall-admin-v5.md",
+   "to": "supabase/migrations/20260916033100_operator_mall_product.sql",
+   "kind": "doc-link"
+  },
+  {
    "from": "quality/contracts/operator-control/PUTDUK_OPS-handoff-mall-ledger-v6.md",
    "to": "quality/contracts/operator-control/manifest.json",
    "kind": "doc-link"
+  },
+  {
+   "from": "quality/contracts/operator-control/PUTDUK_OPS-handoff-mall-ledger-v6.md",
+   "to": "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+   "kind": "doc-link",
+   "spec": "supabase/migrations/20260916033000_*"
   },
   {
    "from": "quality/contracts/operator-control/PUTDUK_OPS-handoff-mall-ledger-v6.md",
@@ -76011,6 +76313,12 @@
    "to": "dir:quality/contracts/operator-control/preserved-b3/",
    "kind": "doc-link",
    "spec": "quality/contracts/operator-control/preserved-b3/"
+  },
+  {
+   "from": "quality/contracts/operator-control/README.md",
+   "to": "dir:supabase/migrations",
+   "kind": "doc-link",
+   "spec": "supabase/migrations"
   },
   {
    "from": "quality/contracts/operator-control/admin-session-login.v1.json",
@@ -76310,6 +76618,26 @@
   },
   {
    "from": "quality/contracts/operator-control/engine-drift-classification-proposal.v1.json",
+   "to": "services/api-nest/src/opportunities/opportunities.user.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "quality/contracts/operator-control/engine-drift-classification-proposal.v1.json",
+   "to": "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "quality/contracts/operator-control/engine-drift-classification-proposal.v1.json",
+   "to": "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "quality/contracts/operator-control/engine-drift-classification-proposal.v1.json",
+   "to": "supabase/migrations/20260916033100_operator_mall_product.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "quality/contracts/operator-control/engine-drift-classification-proposal.v1.json",
    "to": "services/api-nest/isolated-qa-pg.cjs",
    "kind": "verifier-reads"
   },
@@ -76432,6 +76760,12 @@
    "from": "quality/contracts/operator-control/engine-drift-classification-proposal.v1.json",
    "to": "services/api-nest/src/price-override/price-override.service.ts",
    "kind": "verifier-reads"
+  },
+  {
+   "from": "quality/contracts/operator-control/persist-status.v1.json",
+   "to": "dir:supabase/migrations",
+   "kind": "verifier-reads",
+   "spec": "supabase/migrations"
   },
   {
    "from": "quality/contracts/operator-control/presentation-journey-v19.v1.json",
@@ -83672,6 +84006,12 @@
   },
   {
    "from": "services/api-nest/src/opportunities/catalog-external-write.admin-writers.isolation.cjs",
+   "to": "services/api-nest/catalog-external-write.core.cjs",
+   "kind": "require",
+   "spec": "../../catalog-external-write.core.cjs"
+  },
+  {
+   "from": "services/api-nest/src/opportunities/catalog-external-write.admin-writers.isolation.cjs",
    "to": "missing:assets/watch/",
    "kind": "verifier-reads",
    "spec": "assets/watch/"
@@ -83795,6 +84135,12 @@
    "spec": "./catalog-runtime-seed.service.ts"
   },
   {
+   "from": "services/api-nest/src/opportunities/catalog-external-write.ingest-isolation.cjs",
+   "to": "services/api-nest/catalog-external-write.core.cjs",
+   "kind": "require",
+   "spec": "../../catalog-external-write.core.cjs"
+  },
+  {
    "from": "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs",
    "to": "pkg:reflect-metadata",
    "kind": "require",
@@ -83829,6 +84175,12 @@
    "to": "services/api-nest/src/events/in-process.bus.ts",
    "kind": "require",
    "spec": "../events/in-process.bus.ts"
+  },
+  {
+   "from": "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs",
+   "to": "services/api-nest/catalog-external-write.core.cjs",
+   "kind": "require",
+   "spec": "../../catalog-external-write.core.cjs"
   },
   {
    "from": "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts",
@@ -84183,6 +84535,16 @@
    "kind": "verifier-reads"
   },
   {
+   "from": "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
+   "to": "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
+   "to": "supabase/migrations/20260916033100_operator_mall_product.sql",
+   "kind": "verifier-reads"
+  },
+  {
    "from": "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
    "to": "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
    "kind": "require",
@@ -84202,9 +84564,9 @@
   },
   {
    "from": "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
-   "to": "dir:supabase/migrations",
+   "to": "dir:supabase/migrations/",
    "kind": "verifier-reads",
-   "spec": "supabase/migrations"
+   "spec": "supabase/migrations/"
   },
   {
    "from": "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
@@ -94330,6 +94692,16 @@
   },
   {
    "from": "tooling/recovery/lib/classify-engine-drift.cjs",
+   "to": "services/api-nest/src/opportunities/opportunities.user.service.ts",
+   "kind": "deploy-cmd"
+  },
+  {
+   "from": "tooling/recovery/lib/classify-engine-drift.cjs",
+   "to": "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
+   "kind": "deploy-cmd"
+  },
+  {
+   "from": "tooling/recovery/lib/classify-engine-drift.cjs",
    "to": "services/api-nest/isolated-qa-pg.cjs",
    "kind": "deploy-cmd"
   },
@@ -102208,6 +102580,31 @@
   },
   {
    "from": "tooling/verify/operator-row-protect.cjs",
+   "to": "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/operator-row-protect.cjs",
+   "to": "supabase/migrations/20260916033100_operator_mall_product.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/operator-row-protect.cjs",
+   "to": "services/api-nest/src/opportunities/opportunities.user.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/operator-row-protect.cjs",
+   "to": "services/api-nest/src/opportunities/participate.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/operator-row-protect.cjs",
+   "to": "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/operator-row-protect.cjs",
    "to": "services/api-nest/src/opportunities/opportunities.admin.service.ts",
    "kind": "verifier-reads"
   },
@@ -102225,12 +102622,6 @@
    "from": "tooling/verify/operator-row-protect.cjs",
    "to": "services/api-nest/src/opportunities/opportunities.module.ts",
    "kind": "verifier-reads"
-  },
-  {
-   "from": "tooling/verify/operator-row-protect.cjs",
-   "to": "missing:supabase/migrations/20260913220000_opportunities_supply_source.sql",
-   "kind": "verifier-reads",
-   "spec": "supabase/migrations/20260913220000_opportunities_supply_source.sql"
   },
   {
    "from": "tooling/verify/operator-row-protect.cjs",
@@ -108366,6 +108757,114 @@
    "to": "tooling/verify/observability.cjs",
    "kind": "pkg-script",
    "spec": "node tooling/verify/observability.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:verify:attribution-chain",
+   "kind": "pkg-script",
+   "spec": "verify:attribution-chain"
+  },
+  {
+   "from": "script:verify:attribution-chain",
+   "to": "missing:tooling/verify/attribution-chain.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/verify/attribution-chain.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:verify:marketing-compliance",
+   "kind": "pkg-script",
+   "spec": "verify:marketing-compliance"
+  },
+  {
+   "from": "script:verify:marketing-compliance",
+   "to": "missing:tooling/verify/marketing-compliance.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/verify/marketing-compliance.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:verify:capi-config",
+   "kind": "pkg-script",
+   "spec": "verify:capi-config"
+  },
+  {
+   "from": "script:verify:capi-config",
+   "to": "missing:tooling/verify/capi-config.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/verify/capi-config.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:verify:capi-consent",
+   "kind": "pkg-script",
+   "spec": "verify:capi-consent"
+  },
+  {
+   "from": "script:verify:capi-consent",
+   "to": "missing:tooling/verify/capi-consent.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/verify/capi-consent.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:verify:ads-provider-capability",
+   "kind": "pkg-script",
+   "spec": "verify:ads-provider-capability"
+  },
+  {
+   "from": "script:verify:ads-provider-capability",
+   "to": "missing:tooling/verify/ads-provider-capability.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/verify/ads-provider-capability.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:verify:ads-standing-authorization",
+   "kind": "pkg-script",
+   "spec": "verify:ads-standing-authorization"
+  },
+  {
+   "from": "script:verify:ads-standing-authorization",
+   "to": "missing:tooling/verify/ads-standing-authorization.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/verify/ads-standing-authorization.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:verify:ads-budget-guardrail",
+   "kind": "pkg-script",
+   "spec": "verify:ads-budget-guardrail"
+  },
+  {
+   "from": "script:verify:ads-budget-guardrail",
+   "to": "missing:tooling/verify/ads-budget-guardrail.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/verify/ads-budget-guardrail.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:verify:ads-orchestrator-boundary",
+   "kind": "pkg-script",
+   "spec": "verify:ads-orchestrator-boundary"
+  },
+  {
+   "from": "script:verify:ads-orchestrator-boundary",
+   "to": "missing:tooling/verify/ads-orchestrator-boundary.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/verify/ads-orchestrator-boundary.cjs"
+  },
+  {
+   "from": "package.json",
+   "to": "script:verify:alert-oneshot-dry-run",
+   "kind": "pkg-script",
+   "spec": "verify:alert-oneshot-dry-run"
+  },
+  {
+   "from": "script:verify:alert-oneshot-dry-run",
+   "to": "missing:tooling/verify/alert-oneshot-dry-run.cjs",
+   "kind": "pkg-script",
+   "spec": "node tooling/verify/alert-oneshot-dry-run.cjs"
   },
   {
    "from": "package.json",

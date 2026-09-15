@@ -52,6 +52,8 @@ const OPERATOR_MALL_PATHS = new Set([
   "services/api-nest/src/opportunities/operator-mall-product.isolation.cjs",
   "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
   "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
+  "services/api-nest/src/opportunities/opportunities.user.service.ts",
+  "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
 ]);
 
 const EXTRA_MODULE_WIRING_PATHS = new Set([

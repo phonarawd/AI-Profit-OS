@@ -48,13 +48,13 @@ missing snapshot/amount → null. KRW 0 위조 0. client `Number()*rate` 0.
 | auth_permission | Nest `JwtAuthGuard` | `supabase.auth` 0 in api-nest | ALIGNED | REL-405 |
 | rls | REL-408 80/80 ON | `SECURITY_BASELINE.md` | ALIGNED | REL-408 |
 | indexes | applied migration `CREATE INDEX` | file-only indexes 0 | ALIGNED (REL-701-DB 2026-09-04 · unapplied 0) | REL-408 / REL-701-DB |
-| migration_head | local `20260905110000` | remote applied `20260905110000` | ALIGNED (REL-701-DB executed 2026-09-04 02:34 UTC · `--include-all` · unapplied 0 · `20260905110000` already on remote 2026-09-13 read-only · this slice apply 0) | REL-701-DB |
+| migration_head | local `20260916033100` | remote applied `20260905110000` | DIVERGED (`20260916033000` · `20260916033100` committedUnapplied · this slice apply 0 · REL-701-DB 실행 이력 유지) | REL-701-DB |
 | p0_p3_engine | REL-502 `FINAL_ACCEPTANCE` | DEFECTS_P0/P1 = 0 | ALIGNED (current epoch ISSUED) | REL-502 |
 | p0_p3_admin | REL-409 R6 cert | KNOWN_P0~P3 = 0 | ALIGNED | REL-409 |
 | ui_truth_home_money | home-money-read contract | Engine todayPossible 0 · fake zero 0 | ALIGNED | money / UI |
 | route_contract_100 | R0 matrix (historical missing_fact) | 100% close | DEFERRED not aligned | REL-506 |
 | execution_sse | SDK Phase1 SSE comment | Phase0 `POST execute-tick` live | DEFERRED Phase1 | engine Phase1 |
-| protected_scope | live hash | baseline | ALIGNED · current epoch aggregate MATCH | REL-502 |
+| protected_scope | live hash | baseline | DRIFT 14 · live `77e54a036c46db905040d6254fe8838bac1690e71d2cd3e5eeb8eca5e22a72a3` · ISSUED STALE watch | REL-502 |
 
 ## 3. VERIFY
 
