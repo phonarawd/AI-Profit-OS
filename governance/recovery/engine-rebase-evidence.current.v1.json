@@ -1,38 +1,23 @@
 {
   "schema": "governance.recovery.engine-rebase-evidence.v1",
-  "computed_at": "2026-09-15T19:03:12.302Z",
+  "computed_at": "2026-09-15T20:10:46.760Z",
   "predecessor_head_sha": "f295d67f1c3c5b0cbc824c06e568074fd382e85a",
-  "baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
+  "baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
   "live_aggregate": "77e54a036c46db905040d6254fe8838bac1690e71d2cd3e5eeb8eca5e22a72a3",
-  "baseline_aggregate": "c2a6ea416128aa648eb9ddb0ceb6249a0633f12e0eb6fbabc4d986c80fc3c3bf",
+  "baseline_aggregate": "77e54a036c46db905040d6254fe8838bac1690e71d2cd3e5eeb8eca5e22a72a3",
   "path_count_live": 559,
-  "path_count_baseline": 556,
-  "changed_paths": 14,
-  "added_paths": [
-    "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
-    "supabase/migrations/20260916033000_opportunities_supply_source.sql",
-    "supabase/migrations/20260916033100_operator_mall_product.sql"
-  ],
-  "mutated_paths": [
-    "services/api-nest/catalog-external-write.core.cjs",
-    "services/api-nest/src/opportunities/catalog-external-write.admin-writers.isolation.cjs",
-    "services/api-nest/src/opportunities/catalog-external-write.guard.ts",
-    "services/api-nest/src/opportunities/catalog-external-write.ingest-isolation.cjs",
-    "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs",
-    "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts",
-    "services/api-nest/src/opportunities/operator-mall-product.admin.service.ts",
-    "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
-    "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
-    "services/api-nest/src/opportunities/opportunities.user.service.ts",
-    "services/api-nest/src/opportunities/participate.service.ts"
-  ],
+  "path_count_baseline": 559,
+  "changed_paths": 0,
+  "added_paths": [],
+  "mutated_paths": [],
   "missing_paths": [],
-  "drift": true,
+  "drift": false,
   "cert_mirrors": {
     "STATUS": true,
-    "CERT_ISSUED_1": true,
-    "REBASE_REQUIRED_0": true,
-    "ACK_RECEIVED_1": true
+    "CERT_ISSUED_1": false,
+    "REBASE_REQUIRED_0": false,
+    "ACK_RECEIVED_1": false,
+    "REBASE_APPLIED_1": true
   },
   "ack_eligibility": {
     "all_drift_explained": true,
@@ -49,7 +34,6 @@
     "FINAL_ACCEPTANCE": "NOT_ISSUED"
   },
   "required_reruns": [
-    "QA0",
     "QA1",
     "QA2",
     "QA3",
@@ -72,14 +56,14 @@
     "QA9"
   ],
   "baseline_washing_check": "PASS_NO_IN_PLACE_HASH_REWRITE",
-  "note": "14-path inventory classified. ACK is not issued. Baseline hashes were not rewritten. Formal rebase still required before QA rerun.",
+  "note": "Historical pre-rebase drift is preserved in archive. Current epoch was formally rebased under ENGINE_ACCEPTANCE_REBASE_V1. Protected scope matches the new baseline (drift 0). FINAL_ACCEPTANCE is NOT_ISSUED because current-epoch QA1-QA9 have not been rerun. Predecessor evidence remains historical. No in-place predecessor hash washing occurred.",
   "inventory_ref": "governance/recovery/engine-drift-inventory.current.v1.json",
   "historical_inventory_ref": "governance/recovery/archive/engine-drift-inventory.pre-rebase-20260902.v1.json",
   "historical_evidence_ref": "governance/recovery/archive/engine-rebase-evidence.pre-rebase-20260902.v1.json",
-  "predecessor_baseline_id": "ea-baseline-137241804ff2-83935adcdf57",
-  "current_baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
-  "rebase_id": "ea-rebase-f295d67f1c3c-c2a6ea416128",
+  "predecessor_baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
+  "current_baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
+  "rebase_id": "ea-rebase-35ec80eeb89d-77e54a036c46",
   "CURRENT_AUTHORITATIVE": true,
   "HISTORICAL_PRE_REBASE_EVIDENCE": false,
-  "scope_head_sha": "9d51acabe034fd4ceffa18bc01c530a378638c38"
+  "scope_head_sha": "4d2755b2b098ce9fd12b6c0dcd54dd9a9130fce9"
 }
