@@ -157,9 +157,7 @@ export class OpportunitiesUserService {
     const principalUsdt = await this.readPrincipalUsdt(userId);
     const { policy } = await this.executionPolicy.get();
     const allRows = await this.loadFeedCandidateRows(userId);
-    const rows = allRows.filter(
-      (r) => r.supply_source === "operator" || this.isRowFresh(r.stale_at),
-    );
+    const rows = allRows.filter((r) => this.isRowFresh(r.stale_at));
     const overridesByOpportunityId = await this.loadOverridesMap(userId);
 
     const feed = buildBalanceAwareFeedWithOverrides({
@@ -201,13 +199,12 @@ export class OpportunitiesUserService {
       throw new NotFoundException("opportunity not found");
     }
 
-    const principalUsdt = await this.readPrincipalUsdt(userId);
-    const { policy } = await this.executionPolicy.get();
     const row = await this.loadRowById(opportunityId, userId);
-    if (!row) throw new NotFoundException("opportunity not found");
-    if (row.supply_source !== "operator") {
+    if (!row || !this.isRowFresh(row.stale_at)) {
       throw new NotFoundException("opportunity not found");
     }
+    const principalUsdt = await this.readPrincipalUsdt(userId);
+    const { policy } = await this.executionPolicy.get();
 
     const overridesByOpportunityId = await this.loadOverridesMap(userId, [
       opportunityId,
