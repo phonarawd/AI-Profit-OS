@@ -28,7 +28,40 @@ const OPERATOR_MEMBERSHIP_PATHS = new Set([
   "services/api-nest/src/membership/membership.runtime.service.ts",
   "services/api-nest/src/membership/membership.types.ts",
   "services/api-nest/src/membership/membership.user.controller.ts",
+  "services/api-nest/src/membership/membership.events.ts",
+  "services/api-nest/src/membership/admin-member-directory.admin-http.cjs",
+  "services/api-nest/src/membership/admin-member-directory.core.cjs",
+  "services/api-nest/src/membership/admin-member-directory.isolation.cjs",
+  "services/api-nest/src/membership/admin-member-directory.persist.cjs",
   "services/api-nest/src/opportunities/participate.service.ts",
+]);
+
+const ADMIN_STAFF_LOGIN_PATHS = new Set([
+  "services/api-nest/admin-staff-login.core.cjs",
+  "services/api-nest/admin-staff-login.isolation.cjs",
+  "services/api-nest/admin-staff-login.persist.cjs",
+  "services/api-nest/admin-staff-login.persist.isolation.cjs",
+]);
+
+const OPERATOR_MALL_PATHS = new Set([
+  "services/api-nest/src/opportunities/operator-mall-ledger-posting.cjs",
+  "services/api-nest/src/opportunities/operator-mall-ledger-posting.isolation.cjs",
+  "services/api-nest/src/opportunities/operator-mall-product.admin-http.cjs",
+  "services/api-nest/src/opportunities/operator-mall-product.admin.service.ts",
+  "services/api-nest/src/opportunities/operator-mall-product.core.cjs",
+  "services/api-nest/src/opportunities/operator-mall-product.isolation.cjs",
+  "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
+  "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
+]);
+
+const EXTRA_MODULE_WIRING_PATHS = new Set([
+  "services/api-nest/isolated-qa-pg.cjs",
+  "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
+  "services/api-nest/src/opportunities/opportunities.routes.ts",
+]);
+
+const TRADE_EXECUTION_LEDGER_PATHS = new Set([
+  "services/api-nest/src/trades/trades.execution.service.ts",
 ]);
 
 const CATALOG_EXTERNAL_WRITE_PATHS = new Set([
@@ -107,7 +140,8 @@ function classify(rel) {
     p.includes("admin-csrf") ||
     p.includes("admin-capabilities") ||
     p.includes("bearer-header") ||
-    p.includes("admin-audit")
+    p.includes("admin-audit") ||
+    ADMIN_STAFF_LOGIN_PATHS.has(p)
   ) {
     return {
       category: "ADMIN_SESSION",
@@ -138,7 +172,12 @@ function classify(rel) {
       required_rerun: ["QA3", "QA4", "QA5", "QA8"],
     };
   }
-  if (p.includes("idempotency") || p.includes("/ledger/") || p.includes("ledger-adjustment")) {
+  if (
+    TRADE_EXECUTION_LEDGER_PATHS.has(p) ||
+    p.includes("idempotency") ||
+    p.includes("/ledger/") ||
+    p.includes("ledger-adjustment")
+  ) {
     return {
       category: "LEDGER",
       reason: "Idempotency/ledger fingerprint drift. Money truth must be re-proven.",
@@ -208,7 +247,8 @@ function classify(rel) {
     p.includes("wallet.events") ||
     p.includes("nest-provenance") ||
     p.includes("tsconfig.json") ||
-    p.includes("admin-audit.core.cjs")
+    p.includes("admin-audit.core.cjs") ||
+    EXTRA_MODULE_WIRING_PATHS.has(p)
   ) {
     return {
       category: "MODULE_WIRING",
@@ -241,6 +281,17 @@ function classify(rel) {
       required_rerun: ["QA0", "QA5", "QA8"],
     };
   }
+  if (OPERATOR_MALL_PATHS.has(p)) {
+    return {
+      category: "OPERATOR_MALL",
+      reason:
+        "운영자 쇼핑몰 상품·원장 posting 연결. 분류만이며 지급 완료·QA 완료·운영 적용이 아니다.",
+      security_impact: "HIGH",
+      schema_impact: false,
+      prompt_impact: false,
+      required_rerun: ["QA0", "QA3", "QA8"],
+    };
+  }
   return {
     category: "UNCLASSIFIED",
     reason: "Path did not match a known Engine drift class.",
@@ -255,5 +306,9 @@ module.exports = {
   classify,
   OPERATOR_MEMBERSHIP_PATHS,
   CATALOG_EXTERNAL_WRITE_PATHS,
+  ADMIN_STAFF_LOGIN_PATHS,
+  OPERATOR_MALL_PATHS,
+  EXTRA_MODULE_WIRING_PATHS,
+  TRADE_EXECUTION_LEDGER_PATHS,
   CLASSIFY_IS_NOT,
 };

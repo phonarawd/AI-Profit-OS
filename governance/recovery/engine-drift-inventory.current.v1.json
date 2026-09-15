@@ -1,17 +1,20 @@
 {
   "schema": "governance.recovery.engine-drift-inventory.v1",
-  "computed_at": "2026-09-14T13:31:10.093Z",
+  "computed_at": "2026-09-15T09:49:04.339Z",
   "predecessor_head_sha": "137241804ff24e5de48556e1385f97fd1c8b8cee",
-  "inventory_head_sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
-  "changed_paths": 41,
-  "expected_changed_paths": 41,
+  "inventory_head_sha": "b98f5664919d5af7d271e675f5ec5130c0afe868",
+  "changed_paths": 71,
+  "expected_changed_paths": 71,
   "count_match": true,
   "by_category": {
+    "ADMIN_SESSION": 8,
     "CATALOG_EXTERNAL_WRITE": 15,
-    "OPERATOR_MEMBERSHIP": 23,
+    "MODULE_WIRING": 3,
+    "LEDGER": 4,
+    "OPERATOR_MEMBERSHIP": 28,
     "AUTH_SECURITY": 1,
-    "LEDGER": 1,
-    "ADMIN_SESSION": 1
+    "OPERATOR_MALL": 8,
+    "REFERRAL": 4
   },
   "unexplained_count": 0,
   "ACK_RECEIVED": 0,
@@ -21,6 +24,11 @@
   "required_rerun_matrix": {
     "QA0": [
       "services/api-nest/catalog-external-write.core.cjs",
+      "services/api-nest/isolated-qa-pg.cjs",
+      "services/api-nest/src/membership/admin-member-directory.admin-http.cjs",
+      "services/api-nest/src/membership/admin-member-directory.core.cjs",
+      "services/api-nest/src/membership/admin-member-directory.isolation.cjs",
+      "services/api-nest/src/membership/admin-member-directory.persist.cjs",
       "services/api-nest/src/membership/auto-downgrade.core.cjs",
       "services/api-nest/src/membership/bonus-match-grant.core.cjs",
       "services/api-nest/src/membership/bulk-operator-job.core.cjs",
@@ -44,22 +52,42 @@
       "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs",
       "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts",
       "services/api-nest/src/opportunities/catalog-external-write.ts-hook.cjs",
+      "services/api-nest/src/opportunities/operator-mall-ledger-posting.cjs",
+      "services/api-nest/src/opportunities/operator-mall-ledger-posting.isolation.cjs",
+      "services/api-nest/src/opportunities/operator-mall-product.admin-http.cjs",
+      "services/api-nest/src/opportunities/operator-mall-product.admin.service.ts",
+      "services/api-nest/src/opportunities/operator-mall-product.core.cjs",
+      "services/api-nest/src/opportunities/operator-mall-product.isolation.cjs",
+      "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
+      "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
       "services/api-nest/src/adapters/adapters.admin.service.ts",
       "services/api-nest/src/membership/membership.admin.controller.ts",
       "services/api-nest/src/membership/membership.admin.service.ts",
+      "services/api-nest/src/membership/membership.events.ts",
       "services/api-nest/src/membership/membership.mi.ts",
       "services/api-nest/src/membership/membership.routes.ts",
       "services/api-nest/src/membership/membership.runtime.service.ts",
       "services/api-nest/src/membership/membership.types.ts",
       "services/api-nest/src/membership/membership.user.controller.ts",
       "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts",
+      "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
       "services/api-nest/src/opportunities/opportunities.admin.service.ts",
       "services/api-nest/src/opportunities/opportunities.module.ts",
+      "services/api-nest/src/opportunities/opportunities.routes.ts",
       "services/api-nest/src/opportunities/opportunity-reprice.service.ts",
       "services/api-nest/src/opportunities/participate.service.ts",
       "services/api-nest/src/price-override/price-override.service.ts"
     ],
     "QA1": [
+      "services/api-nest/admin-staff-login.core.cjs",
+      "services/api-nest/admin-staff-login.isolation.cjs",
+      "services/api-nest/admin-staff-login.persist.cjs",
+      "services/api-nest/admin-staff-login.persist.isolation.cjs",
+      "services/api-nest/src/common/admin-session-login.admin-http.cjs",
+      "services/api-nest/src/membership/admin-member-directory.admin-http.cjs",
+      "services/api-nest/src/membership/admin-member-directory.core.cjs",
+      "services/api-nest/src/membership/admin-member-directory.isolation.cjs",
+      "services/api-nest/src/membership/admin-member-directory.persist.cjs",
       "services/api-nest/src/membership/auto-downgrade.core.cjs",
       "services/api-nest/src/membership/bonus-match-grant.core.cjs",
       "services/api-nest/src/membership/bulk-operator-job.core.cjs",
@@ -77,8 +105,11 @@
       "services/api-nest/src/membership/presentation-profile.core.cjs",
       "services/api-nest/src/membership/support-conversation.contract.cjs",
       "services/api-nest/src/common/admin-capabilities.ts",
+      "services/api-nest/src/common/admin-session.controller.ts",
+      "services/api-nest/src/common/admin-session.runtime.test.ts",
       "services/api-nest/src/membership/membership.admin.controller.ts",
       "services/api-nest/src/membership/membership.admin.service.ts",
+      "services/api-nest/src/membership/membership.events.ts",
       "services/api-nest/src/membership/membership.mi.ts",
       "services/api-nest/src/membership/membership.routes.ts",
       "services/api-nest/src/membership/membership.runtime.service.ts",
@@ -87,6 +118,16 @@
       "services/api-nest/src/opportunities/participate.service.ts"
     ],
     "QA2": [
+      "services/api-nest/admin-staff-login.core.cjs",
+      "services/api-nest/admin-staff-login.isolation.cjs",
+      "services/api-nest/admin-staff-login.persist.cjs",
+      "services/api-nest/admin-staff-login.persist.isolation.cjs",
+      "services/api-nest/isolated-qa-pg.cjs",
+      "services/api-nest/src/common/admin-session-login.admin-http.cjs",
+      "services/api-nest/src/membership/admin-member-directory.admin-http.cjs",
+      "services/api-nest/src/membership/admin-member-directory.core.cjs",
+      "services/api-nest/src/membership/admin-member-directory.isolation.cjs",
+      "services/api-nest/src/membership/admin-member-directory.persist.cjs",
       "services/api-nest/src/membership/auto-downgrade.core.cjs",
       "services/api-nest/src/membership/bonus-match-grant.core.cjs",
       "services/api-nest/src/membership/bulk-operator-job.core.cjs",
@@ -103,21 +144,44 @@
       "services/api-nest/src/membership/operator-quota-grade.isolation.cjs",
       "services/api-nest/src/membership/presentation-profile.core.cjs",
       "services/api-nest/src/membership/support-conversation.contract.cjs",
+      "services/api-nest/src/referral/reseller-id.core.cjs",
+      "services/api-nest/src/referral/reseller-id.isolation.cjs",
+      "services/api-nest/src/referral/reseller-id.persist.cjs",
+      "services/api-nest/src/referral/reseller-id.persist.isolation.cjs",
       "services/api-nest/src/common/admin-capabilities.ts",
+      "services/api-nest/src/common/admin-session.controller.ts",
+      "services/api-nest/src/common/admin-session.runtime.test.ts",
       "services/api-nest/src/membership/membership.admin.controller.ts",
       "services/api-nest/src/membership/membership.admin.service.ts",
+      "services/api-nest/src/membership/membership.events.ts",
       "services/api-nest/src/membership/membership.mi.ts",
       "services/api-nest/src/membership/membership.routes.ts",
       "services/api-nest/src/membership/membership.runtime.service.ts",
       "services/api-nest/src/membership/membership.types.ts",
       "services/api-nest/src/membership/membership.user.controller.ts",
+      "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
+      "services/api-nest/src/opportunities/opportunities.routes.ts",
       "services/api-nest/src/opportunities/participate.service.ts"
     ],
     "QA3": [
-      "services/api-nest/src/membership/ledger-adjustment.contract.cjs"
+      "services/api-nest/src/ledger/money-authority.core.cjs",
+      "services/api-nest/src/ledger/money-authority.isolation.cjs",
+      "services/api-nest/src/membership/ledger-adjustment.contract.cjs",
+      "services/api-nest/src/opportunities/operator-mall-ledger-posting.cjs",
+      "services/api-nest/src/opportunities/operator-mall-ledger-posting.isolation.cjs",
+      "services/api-nest/src/opportunities/operator-mall-product.admin-http.cjs",
+      "services/api-nest/src/opportunities/operator-mall-product.admin.service.ts",
+      "services/api-nest/src/opportunities/operator-mall-product.core.cjs",
+      "services/api-nest/src/opportunities/operator-mall-product.isolation.cjs",
+      "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
+      "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
+      "services/api-nest/src/trades/trades.execution.service.ts"
     ],
     "QA4": [
-      "services/api-nest/src/membership/ledger-adjustment.contract.cjs"
+      "services/api-nest/src/ledger/money-authority.core.cjs",
+      "services/api-nest/src/ledger/money-authority.isolation.cjs",
+      "services/api-nest/src/membership/ledger-adjustment.contract.cjs",
+      "services/api-nest/src/trades/trades.execution.service.ts"
     ],
     "QA5": [
       "services/api-nest/catalog-external-write.core.cjs",
@@ -139,7 +203,18 @@
     "QA6": [],
     "QA7": [],
     "QA8": [
+      "services/api-nest/admin-staff-login.core.cjs",
+      "services/api-nest/admin-staff-login.isolation.cjs",
+      "services/api-nest/admin-staff-login.persist.cjs",
+      "services/api-nest/admin-staff-login.persist.isolation.cjs",
       "services/api-nest/catalog-external-write.core.cjs",
+      "services/api-nest/src/common/admin-session-login.admin-http.cjs",
+      "services/api-nest/src/ledger/money-authority.core.cjs",
+      "services/api-nest/src/ledger/money-authority.isolation.cjs",
+      "services/api-nest/src/membership/admin-member-directory.admin-http.cjs",
+      "services/api-nest/src/membership/admin-member-directory.core.cjs",
+      "services/api-nest/src/membership/admin-member-directory.isolation.cjs",
+      "services/api-nest/src/membership/admin-member-directory.persist.cjs",
       "services/api-nest/src/membership/auto-downgrade.core.cjs",
       "services/api-nest/src/membership/bonus-match-grant.core.cjs",
       "services/api-nest/src/membership/bulk-operator-job.core.cjs",
@@ -165,10 +240,25 @@
       "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs",
       "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts",
       "services/api-nest/src/opportunities/catalog-external-write.ts-hook.cjs",
+      "services/api-nest/src/opportunities/operator-mall-ledger-posting.cjs",
+      "services/api-nest/src/opportunities/operator-mall-ledger-posting.isolation.cjs",
+      "services/api-nest/src/opportunities/operator-mall-product.admin-http.cjs",
+      "services/api-nest/src/opportunities/operator-mall-product.admin.service.ts",
+      "services/api-nest/src/opportunities/operator-mall-product.core.cjs",
+      "services/api-nest/src/opportunities/operator-mall-product.isolation.cjs",
+      "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
+      "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
+      "services/api-nest/src/referral/reseller-id.core.cjs",
+      "services/api-nest/src/referral/reseller-id.isolation.cjs",
+      "services/api-nest/src/referral/reseller-id.persist.cjs",
+      "services/api-nest/src/referral/reseller-id.persist.isolation.cjs",
       "services/api-nest/src/adapters/adapters.admin.service.ts",
       "services/api-nest/src/common/admin-capabilities.ts",
+      "services/api-nest/src/common/admin-session.controller.ts",
+      "services/api-nest/src/common/admin-session.runtime.test.ts",
       "services/api-nest/src/membership/membership.admin.controller.ts",
       "services/api-nest/src/membership/membership.admin.service.ts",
+      "services/api-nest/src/membership/membership.events.ts",
       "services/api-nest/src/membership/membership.mi.ts",
       "services/api-nest/src/membership/membership.routes.ts",
       "services/api-nest/src/membership/membership.runtime.service.ts",
@@ -179,11 +269,120 @@
       "services/api-nest/src/opportunities/opportunities.module.ts",
       "services/api-nest/src/opportunities/opportunity-reprice.service.ts",
       "services/api-nest/src/opportunities/participate.service.ts",
-      "services/api-nest/src/price-override/price-override.service.ts"
+      "services/api-nest/src/price-override/price-override.service.ts",
+      "services/api-nest/src/trades/trades.execution.service.ts"
     ],
     "QA9": []
   },
   "paths": [
+    {
+      "path": "services/api-nest/admin-staff-login.core.cjs",
+      "kind": "added",
+      "owning_commit": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+      "owning_subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다.",
+      "commit_count": 3,
+      "commits": [
+        {
+          "sha": "e40daf37b345ed9226176ee23aab7450ce35ed4c",
+          "subject": "GHA 실PG에서 로그인 POST 201을 성공으로 보고, 명시 unready 직원 저장소와 지급 UNIQUE 재실행을 덮어쓰지 않게 한다."
+        },
+        {
+          "sha": "cbbda52892273ba5cd6326af222bb7b2644437ff",
+          "subject": "운영자 상품 Admin 목록/단건과 expectedRevision 409, 등록 멱등키, 직원/회원 목록을 격리 persist에 연결하고 GHA 일회용 PG HTTP+SQL 실검증을 붙인다."
+        },
+        {
+          "sha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+          "subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다."
+        }
+      ],
+      "category": "ADMIN_SESSION",
+      "reason": "Admin cookie/CSRF/capability surface. Double-submit cookie remains JS-readable by design.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/admin-staff-login.isolation.cjs",
+      "kind": "added",
+      "owning_commit": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+      "owning_subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다.",
+      "commit_count": 2,
+      "commits": [
+        {
+          "sha": "cbbda52892273ba5cd6326af222bb7b2644437ff",
+          "subject": "운영자 상품 Admin 목록/단건과 expectedRevision 409, 등록 멱등키, 직원/회원 목록을 격리 persist에 연결하고 GHA 일회용 PG HTTP+SQL 실검증을 붙인다."
+        },
+        {
+          "sha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+          "subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다."
+        }
+      ],
+      "category": "ADMIN_SESSION",
+      "reason": "Admin cookie/CSRF/capability surface. Double-submit cookie remains JS-readable by design.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/admin-staff-login.persist.cjs",
+      "kind": "added",
+      "owning_commit": "9d48e58e6fa0871611fe27292e8c876ee568a18c",
+      "owning_subject": "격리 QA URL이 있을 때만 Nest 상품 persist를 주입하고, 미설정과 운영 DATABASE_URL은 STORE_UNREADY로 남긴다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "9d48e58e6fa0871611fe27292e8c876ee568a18c",
+          "subject": "격리 QA URL이 있을 때만 Nest 상품 persist를 주입하고, 미설정과 운영 DATABASE_URL은 STORE_UNREADY로 남긴다."
+        }
+      ],
+      "category": "ADMIN_SESSION",
+      "reason": "Admin cookie/CSRF/capability surface. Double-submit cookie remains JS-readable by design.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/admin-staff-login.persist.isolation.cjs",
+      "kind": "added",
+      "owning_commit": "9d48e58e6fa0871611fe27292e8c876ee568a18c",
+      "owning_subject": "격리 QA URL이 있을 때만 Nest 상품 persist를 주입하고, 미설정과 운영 DATABASE_URL은 STORE_UNREADY로 남긴다.",
+      "commit_count": 2,
+      "commits": [
+        {
+          "sha": "e40daf37b345ed9226176ee23aab7450ce35ed4c",
+          "subject": "GHA 실PG에서 로그인 POST 201을 성공으로 보고, 명시 unready 직원 저장소와 지급 UNIQUE 재실행을 덮어쓰지 않게 한다."
+        },
+        {
+          "sha": "9d48e58e6fa0871611fe27292e8c876ee568a18c",
+          "subject": "격리 QA URL이 있을 때만 Nest 상품 persist를 주입하고, 미설정과 운영 DATABASE_URL은 STORE_UNREADY로 남긴다."
+        }
+      ],
+      "category": "ADMIN_SESSION",
+      "reason": "Admin cookie/CSRF/capability surface. Double-submit cookie remains JS-readable by design.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
     {
       "path": "services/api-nest/catalog-external-write.core.cjs",
       "kind": "added",
@@ -204,6 +403,209 @@
       "required_rerun": [
         "QA0",
         "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/isolated-qa-pg.cjs",
+      "kind": "added",
+      "owning_commit": "9d48e58e6fa0871611fe27292e8c876ee568a18c",
+      "owning_subject": "격리 QA URL이 있을 때만 Nest 상품 persist를 주입하고, 미설정과 운영 DATABASE_URL은 STORE_UNREADY로 남긴다.",
+      "commit_count": 2,
+      "commits": [
+        {
+          "sha": "caa49c87ad5e6b0ae2bfbf3e14f0c389171b5053",
+          "subject": "쇼핑몰 지급을 QA 정산 표가 아니라 기존 ledger_journals posting으로 연결한다. 공식 migration만 GHA 일회용 PG에 적용하고, 저널 없는 settled를 완료로 보지 않는다."
+        },
+        {
+          "sha": "9d48e58e6fa0871611fe27292e8c876ee568a18c",
+          "subject": "격리 QA URL이 있을 때만 Nest 상품 persist를 주입하고, 미설정과 운영 DATABASE_URL은 STORE_UNREADY로 남긴다."
+        }
+      ],
+      "category": "MODULE_WIRING",
+      "reason": "Module/export/tsconfig wiring for the above surfaces. No independent money writer.",
+      "security_impact": "LOW",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA2"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/common/admin-session-login.admin-http.cjs",
+      "kind": "added",
+      "owning_commit": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+      "owning_subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다.",
+      "commit_count": 2,
+      "commits": [
+        {
+          "sha": "cbbda52892273ba5cd6326af222bb7b2644437ff",
+          "subject": "운영자 상품 Admin 목록/단건과 expectedRevision 409, 등록 멱등키, 직원/회원 목록을 격리 persist에 연결하고 GHA 일회용 PG HTTP+SQL 실검증을 붙인다."
+        },
+        {
+          "sha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+          "subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다."
+        }
+      ],
+      "category": "ADMIN_SESSION",
+      "reason": "Admin cookie/CSRF/capability surface. Double-submit cookie remains JS-readable by design.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/ledger/money-authority.core.cjs",
+      "kind": "added",
+      "owning_commit": "ec436d4d32937f2778b4b764e89918de2ca70280",
+      "owning_subject": "공용 상품 슬롯을 회원별로 세고 예상액과 원장 실지급을 나눠, 웹이 예상액을 정산으로 쓰지 못하게 한다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "ec436d4d32937f2778b4b764e89918de2ca70280",
+          "subject": "공용 상품 슬롯을 회원별로 세고 예상액과 원장 실지급을 나눠, 웹이 예상액을 정산으로 쓰지 못하게 한다."
+        }
+      ],
+      "category": "LEDGER",
+      "reason": "Idempotency/ledger fingerprint drift. Money truth must be re-proven.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA3",
+        "QA4",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/ledger/money-authority.isolation.cjs",
+      "kind": "added",
+      "owning_commit": "ec436d4d32937f2778b4b764e89918de2ca70280",
+      "owning_subject": "공용 상품 슬롯을 회원별로 세고 예상액과 원장 실지급을 나눠, 웹이 예상액을 정산으로 쓰지 못하게 한다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "ec436d4d32937f2778b4b764e89918de2ca70280",
+          "subject": "공용 상품 슬롯을 회원별로 세고 예상액과 원장 실지급을 나눠, 웹이 예상액을 정산으로 쓰지 못하게 한다."
+        }
+      ],
+      "category": "LEDGER",
+      "reason": "Idempotency/ledger fingerprint drift. Money truth must be re-proven.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA3",
+        "QA4",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/admin-member-directory.admin-http.cjs",
+      "kind": "added",
+      "owning_commit": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+      "owning_subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다.",
+      "commit_count": 2,
+      "commits": [
+        {
+          "sha": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
+          "subject": "상품 공개·가격확인 메모 persist와 리셀러 ID 조회·참여 지급 스냅샷을 로컬에 연결해, 스키마 미적용을 성공으로 위장하지 않는다."
+        },
+        {
+          "sha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+          "subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/admin-member-directory.core.cjs",
+      "kind": "added",
+      "owning_commit": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+      "owning_subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+          "subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/admin-member-directory.isolation.cjs",
+      "kind": "added",
+      "owning_commit": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+      "owning_subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다.",
+      "commit_count": 2,
+      "commits": [
+        {
+          "sha": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
+          "subject": "상품 공개·가격확인 메모 persist와 리셀러 ID 조회·참여 지급 스냅샷을 로컬에 연결해, 스키마 미적용을 성공으로 위장하지 않는다."
+        },
+        {
+          "sha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+          "subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/admin-member-directory.persist.cjs",
+      "kind": "added",
+      "owning_commit": "cbbda52892273ba5cd6326af222bb7b2644437ff",
+      "owning_subject": "운영자 상품 Admin 목록/단건과 expectedRevision 409, 등록 멱등키, 직원/회원 목록을 격리 persist에 연결하고 GHA 일회용 PG HTTP+SQL 실검증을 붙인다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "cbbda52892273ba5cd6326af222bb7b2644437ff",
+          "subject": "운영자 상품 Admin 목록/단건과 expectedRevision 409, 등록 멱등키, 직원/회원 목록을 격리 persist에 연결하고 GHA 일회용 PG HTTP+SQL 실검증을 붙인다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
         "QA8"
       ]
     },
@@ -798,6 +1200,354 @@
       ]
     },
     {
+      "path": "services/api-nest/src/opportunities/operator-mall-ledger-posting.cjs",
+      "kind": "added",
+      "owning_commit": "caa49c87ad5e6b0ae2bfbf3e14f0c389171b5053",
+      "owning_subject": "쇼핑몰 지급을 QA 정산 표가 아니라 기존 ledger_journals posting으로 연결한다. 공식 migration만 GHA 일회용 PG에 적용하고, 저널 없는 settled를 완료로 보지 않는다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "caa49c87ad5e6b0ae2bfbf3e14f0c389171b5053",
+          "subject": "쇼핑몰 지급을 QA 정산 표가 아니라 기존 ledger_journals posting으로 연결한다. 공식 migration만 GHA 일회용 PG에 적용하고, 저널 없는 settled를 완료로 보지 않는다."
+        }
+      ],
+      "category": "OPERATOR_MALL",
+      "reason": "운영자 쇼핑몰 상품·원장 posting 연결. 분류만이며 지급 완료·QA 완료·운영 적용이 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA3",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/operator-mall-ledger-posting.isolation.cjs",
+      "kind": "added",
+      "owning_commit": "caa49c87ad5e6b0ae2bfbf3e14f0c389171b5053",
+      "owning_subject": "쇼핑몰 지급을 QA 정산 표가 아니라 기존 ledger_journals posting으로 연결한다. 공식 migration만 GHA 일회용 PG에 적용하고, 저널 없는 settled를 완료로 보지 않는다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "caa49c87ad5e6b0ae2bfbf3e14f0c389171b5053",
+          "subject": "쇼핑몰 지급을 QA 정산 표가 아니라 기존 ledger_journals posting으로 연결한다. 공식 migration만 GHA 일회용 PG에 적용하고, 저널 없는 settled를 완료로 보지 않는다."
+        }
+      ],
+      "category": "OPERATOR_MALL",
+      "reason": "운영자 쇼핑몰 상품·원장 posting 연결. 분류만이며 지급 완료·QA 완료·운영 적용이 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA3",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/operator-mall-product.admin-http.cjs",
+      "kind": "added",
+      "owning_commit": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+      "owning_subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다.",
+      "commit_count": 3,
+      "commits": [
+        {
+          "sha": "cbbda52892273ba5cd6326af222bb7b2644437ff",
+          "subject": "운영자 상품 Admin 목록/단건과 expectedRevision 409, 등록 멱등키, 직원/회원 목록을 격리 persist에 연결하고 GHA 일회용 PG HTTP+SQL 실검증을 붙인다."
+        },
+        {
+          "sha": "9d48e58e6fa0871611fe27292e8c876ee568a18c",
+          "subject": "격리 QA URL이 있을 때만 Nest 상품 persist를 주입하고, 미설정과 운영 DATABASE_URL은 STORE_UNREADY로 남긴다."
+        },
+        {
+          "sha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+          "subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다."
+        }
+      ],
+      "category": "OPERATOR_MALL",
+      "reason": "운영자 쇼핑몰 상품·원장 posting 연결. 분류만이며 지급 완료·QA 완료·운영 적용이 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA3",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/operator-mall-product.admin.service.ts",
+      "kind": "added",
+      "owning_commit": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+      "owning_subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다.",
+      "commit_count": 4,
+      "commits": [
+        {
+          "sha": "cbbda52892273ba5cd6326af222bb7b2644437ff",
+          "subject": "운영자 상품 Admin 목록/단건과 expectedRevision 409, 등록 멱등키, 직원/회원 목록을 격리 persist에 연결하고 GHA 일회용 PG HTTP+SQL 실검증을 붙인다."
+        },
+        {
+          "sha": "9d48e58e6fa0871611fe27292e8c876ee568a18c",
+          "subject": "격리 QA URL이 있을 때만 Nest 상품 persist를 주입하고, 미설정과 운영 DATABASE_URL은 STORE_UNREADY로 남긴다."
+        },
+        {
+          "sha": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
+          "subject": "상품 공개·가격확인 메모 persist와 리셀러 ID 조회·참여 지급 스냅샷을 로컬에 연결해, 스키마 미적용을 성공으로 위장하지 않는다."
+        },
+        {
+          "sha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+          "subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다."
+        }
+      ],
+      "category": "OPERATOR_MALL",
+      "reason": "운영자 쇼핑몰 상품·원장 posting 연결. 분류만이며 지급 완료·QA 완료·운영 적용이 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA3",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/operator-mall-product.core.cjs",
+      "kind": "added",
+      "owning_commit": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+      "owning_subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다.",
+      "commit_count": 6,
+      "commits": [
+        {
+          "sha": "caa49c87ad5e6b0ae2bfbf3e14f0c389171b5053",
+          "subject": "쇼핑몰 지급을 QA 정산 표가 아니라 기존 ledger_journals posting으로 연결한다. 공식 migration만 GHA 일회용 PG에 적용하고, 저널 없는 settled를 완료로 보지 않는다."
+        },
+        {
+          "sha": "e40daf37b345ed9226176ee23aab7450ce35ed4c",
+          "subject": "GHA 실PG에서 로그인 POST 201을 성공으로 보고, 명시 unready 직원 저장소와 지급 UNIQUE 재실행을 덮어쓰지 않게 한다."
+        },
+        {
+          "sha": "cbbda52892273ba5cd6326af222bb7b2644437ff",
+          "subject": "운영자 상품 Admin 목록/단건과 expectedRevision 409, 등록 멱등키, 직원/회원 목록을 격리 persist에 연결하고 GHA 일회용 PG HTTP+SQL 실검증을 붙인다."
+        },
+        {
+          "sha": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
+          "subject": "상품 공개·가격확인 메모 persist와 리셀러 ID 조회·참여 지급 스냅샷을 로컬에 연결해, 스키마 미적용을 성공으로 위장하지 않는다."
+        },
+        {
+          "sha": "ec436d4d32937f2778b4b764e89918de2ca70280",
+          "subject": "공용 상품 슬롯을 회원별로 세고 예상액과 원장 실지급을 나눠, 웹이 예상액을 정산으로 쓰지 못하게 한다."
+        },
+        {
+          "sha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+          "subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다."
+        }
+      ],
+      "category": "OPERATOR_MALL",
+      "reason": "운영자 쇼핑몰 상품·원장 posting 연결. 분류만이며 지급 완료·QA 완료·운영 적용이 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA3",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/operator-mall-product.isolation.cjs",
+      "kind": "added",
+      "owning_commit": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+      "owning_subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다.",
+      "commit_count": 4,
+      "commits": [
+        {
+          "sha": "cbbda52892273ba5cd6326af222bb7b2644437ff",
+          "subject": "운영자 상품 Admin 목록/단건과 expectedRevision 409, 등록 멱등키, 직원/회원 목록을 격리 persist에 연결하고 GHA 일회용 PG HTTP+SQL 실검증을 붙인다."
+        },
+        {
+          "sha": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
+          "subject": "상품 공개·가격확인 메모 persist와 리셀러 ID 조회·참여 지급 스냅샷을 로컬에 연결해, 스키마 미적용을 성공으로 위장하지 않는다."
+        },
+        {
+          "sha": "ec436d4d32937f2778b4b764e89918de2ca70280",
+          "subject": "공용 상품 슬롯을 회원별로 세고 예상액과 원장 실지급을 나눠, 웹이 예상액을 정산으로 쓰지 못하게 한다."
+        },
+        {
+          "sha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+          "subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다."
+        }
+      ],
+      "category": "OPERATOR_MALL",
+      "reason": "운영자 쇼핑몰 상품·원장 posting 연결. 분류만이며 지급 완료·QA 완료·운영 적용이 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA3",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
+      "kind": "added",
+      "owning_commit": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
+      "owning_subject": "상품 공개·가격확인 메모 persist와 리셀러 ID 조회·참여 지급 스냅샷을 로컬에 연결해, 스키마 미적용을 성공으로 위장하지 않는다.",
+      "commit_count": 4,
+      "commits": [
+        {
+          "sha": "caa49c87ad5e6b0ae2bfbf3e14f0c389171b5053",
+          "subject": "쇼핑몰 지급을 QA 정산 표가 아니라 기존 ledger_journals posting으로 연결한다. 공식 migration만 GHA 일회용 PG에 적용하고, 저널 없는 settled를 완료로 보지 않는다."
+        },
+        {
+          "sha": "cbbda52892273ba5cd6326af222bb7b2644437ff",
+          "subject": "운영자 상품 Admin 목록/단건과 expectedRevision 409, 등록 멱등키, 직원/회원 목록을 격리 persist에 연결하고 GHA 일회용 PG HTTP+SQL 실검증을 붙인다."
+        },
+        {
+          "sha": "9d48e58e6fa0871611fe27292e8c876ee568a18c",
+          "subject": "격리 QA URL이 있을 때만 Nest 상품 persist를 주입하고, 미설정과 운영 DATABASE_URL은 STORE_UNREADY로 남긴다."
+        },
+        {
+          "sha": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
+          "subject": "상품 공개·가격확인 메모 persist와 리셀러 ID 조회·참여 지급 스냅샷을 로컬에 연결해, 스키마 미적용을 성공으로 위장하지 않는다."
+        }
+      ],
+      "category": "OPERATOR_MALL",
+      "reason": "운영자 쇼핑몰 상품·원장 posting 연결. 분류만이며 지급 완료·QA 완료·운영 적용이 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA3",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
+      "kind": "added",
+      "owning_commit": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
+      "owning_subject": "상품 공개·가격확인 메모 persist와 리셀러 ID 조회·참여 지급 스냅샷을 로컬에 연결해, 스키마 미적용을 성공으로 위장하지 않는다.",
+      "commit_count": 4,
+      "commits": [
+        {
+          "sha": "caa49c87ad5e6b0ae2bfbf3e14f0c389171b5053",
+          "subject": "쇼핑몰 지급을 QA 정산 표가 아니라 기존 ledger_journals posting으로 연결한다. 공식 migration만 GHA 일회용 PG에 적용하고, 저널 없는 settled를 완료로 보지 않는다."
+        },
+        {
+          "sha": "cbbda52892273ba5cd6326af222bb7b2644437ff",
+          "subject": "운영자 상품 Admin 목록/단건과 expectedRevision 409, 등록 멱등키, 직원/회원 목록을 격리 persist에 연결하고 GHA 일회용 PG HTTP+SQL 실검증을 붙인다."
+        },
+        {
+          "sha": "9d48e58e6fa0871611fe27292e8c876ee568a18c",
+          "subject": "격리 QA URL이 있을 때만 Nest 상품 persist를 주입하고, 미설정과 운영 DATABASE_URL은 STORE_UNREADY로 남긴다."
+        },
+        {
+          "sha": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
+          "subject": "상품 공개·가격확인 메모 persist와 리셀러 ID 조회·참여 지급 스냅샷을 로컬에 연결해, 스키마 미적용을 성공으로 위장하지 않는다."
+        }
+      ],
+      "category": "OPERATOR_MALL",
+      "reason": "운영자 쇼핑몰 상품·원장 posting 연결. 분류만이며 지급 완료·QA 완료·운영 적용이 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA3",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/referral/reseller-id.core.cjs",
+      "kind": "added",
+      "owning_commit": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+      "owning_subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+          "subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다."
+        }
+      ],
+      "category": "REFERRAL",
+      "reason": "Referral code issuance/own-code path. Not a ledger writer.",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/referral/reseller-id.isolation.cjs",
+      "kind": "added",
+      "owning_commit": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+      "owning_subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+          "subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다."
+        }
+      ],
+      "category": "REFERRAL",
+      "reason": "Referral code issuance/own-code path. Not a ledger writer.",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/referral/reseller-id.persist.cjs",
+      "kind": "added",
+      "owning_commit": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
+      "owning_subject": "상품 공개·가격확인 메모 persist와 리셀러 ID 조회·참여 지급 스냅샷을 로컬에 연결해, 스키마 미적용을 성공으로 위장하지 않는다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
+          "subject": "상품 공개·가격확인 메모 persist와 리셀러 ID 조회·참여 지급 스냅샷을 로컬에 연결해, 스키마 미적용을 성공으로 위장하지 않는다."
+        }
+      ],
+      "category": "REFERRAL",
+      "reason": "Referral code issuance/own-code path. Not a ledger writer.",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/referral/reseller-id.persist.isolation.cjs",
+      "kind": "added",
+      "owning_commit": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
+      "owning_subject": "상품 공개·가격확인 메모 persist와 리셀러 ID 조회·참여 지급 스냅샷을 로컬에 연결해, 스키마 미적용을 성공으로 위장하지 않는다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
+          "subject": "상품 공개·가격확인 메모 persist와 리셀러 ID 조회·참여 지급 스냅샷을 로컬에 연결해, 스키마 미적용을 성공으로 위장하지 않는다."
+        }
+      ],
+      "category": "REFERRAL",
+      "reason": "Referral code issuance/own-code path. Not a ledger writer.",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
       "path": "services/api-nest/src/adapters/adapters.admin.service.ts",
       "kind": "mutated",
       "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
@@ -825,11 +1575,65 @@
       "kind": "mutated",
       "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
       "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
-      "commit_count": 1,
+      "commit_count": 3,
       "commits": [
+        {
+          "sha": "cbbda52892273ba5cd6326af222bb7b2644437ff",
+          "subject": "운영자 상품 Admin 목록/단건과 expectedRevision 409, 등록 멱등키, 직원/회원 목록을 격리 persist에 연결하고 GHA 일회용 PG HTTP+SQL 실검증을 붙인다."
+        },
+        {
+          "sha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+          "subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다."
+        },
         {
           "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
           "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "ADMIN_SESSION",
+      "reason": "Admin cookie/CSRF/capability surface. Double-submit cookie remains JS-readable by design.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/common/admin-session.controller.ts",
+      "kind": "mutated",
+      "owning_commit": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+      "owning_subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+          "subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다."
+        }
+      ],
+      "category": "ADMIN_SESSION",
+      "reason": "Admin cookie/CSRF/capability surface. Double-submit cookie remains JS-readable by design.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/common/admin-session.runtime.test.ts",
+      "kind": "mutated",
+      "owning_commit": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+      "owning_subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+          "subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다."
         }
       ],
       "category": "ADMIN_SESSION",
@@ -848,8 +1652,12 @@
       "kind": "mutated",
       "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
       "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
-      "commit_count": 1,
+      "commit_count": 2,
       "commits": [
+        {
+          "sha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+          "subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다."
+        },
         {
           "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
           "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
@@ -872,11 +1680,47 @@
       "kind": "mutated",
       "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
       "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
-      "commit_count": 1,
+      "commit_count": 4,
       "commits": [
+        {
+          "sha": "cbbda52892273ba5cd6326af222bb7b2644437ff",
+          "subject": "운영자 상품 Admin 목록/단건과 expectedRevision 409, 등록 멱등키, 직원/회원 목록을 격리 persist에 연결하고 GHA 일회용 PG HTTP+SQL 실검증을 붙인다."
+        },
+        {
+          "sha": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
+          "subject": "상품 공개·가격확인 메모 persist와 리셀러 ID 조회·참여 지급 스냅샷을 로컬에 연결해, 스키마 미적용을 성공으로 위장하지 않는다."
+        },
+        {
+          "sha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+          "subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다."
+        },
         {
           "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
           "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
+        }
+      ],
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다. 분류만이며 변경 안전성 승인·QA 완료가 아니다.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/membership/membership.events.ts",
+      "kind": "mutated",
+      "owning_commit": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+      "owning_subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다.",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+          "subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다."
         }
       ],
       "category": "OPERATOR_MEMBERSHIP",
@@ -920,8 +1764,12 @@
       "kind": "mutated",
       "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
       "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
-      "commit_count": 1,
+      "commit_count": 2,
       "commits": [
+        {
+          "sha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+          "subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다."
+        },
         {
           "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
           "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
@@ -992,8 +1840,12 @@
       "kind": "mutated",
       "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
       "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
-      "commit_count": 1,
+      "commit_count": 2,
       "commits": [
+        {
+          "sha": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
+          "subject": "상품 공개·가격확인 메모 persist와 리셀러 ID 조회·참여 지급 스냅샷을 로컬에 연결해, 스키마 미적용을 성공으로 위장하지 않는다."
+        },
         {
           "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
           "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
@@ -1035,6 +1887,32 @@
       ]
     },
     {
+      "path": "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
+      "kind": "mutated",
+      "owning_commit": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+      "owning_subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다.",
+      "commit_count": 2,
+      "commits": [
+        {
+          "sha": "cbbda52892273ba5cd6326af222bb7b2644437ff",
+          "subject": "운영자 상품 Admin 목록/단건과 expectedRevision 409, 등록 멱등키, 직원/회원 목록을 격리 persist에 연결하고 GHA 일회용 PG HTTP+SQL 실검증을 붙인다."
+        },
+        {
+          "sha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+          "subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다."
+        }
+      ],
+      "category": "MODULE_WIRING",
+      "reason": "Module/export/tsconfig wiring for the above surfaces. No independent money writer.",
+      "security_impact": "LOW",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA2"
+      ]
+    },
+    {
       "path": "services/api-nest/src/opportunities/opportunities.admin.service.ts",
       "kind": "mutated",
       "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
@@ -1062,8 +1940,12 @@
       "kind": "mutated",
       "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
       "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
-      "commit_count": 1,
+      "commit_count": 2,
       "commits": [
+        {
+          "sha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+          "subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다."
+        },
         {
           "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
           "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
@@ -1078,6 +1960,32 @@
         "QA0",
         "QA5",
         "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/opportunities/opportunities.routes.ts",
+      "kind": "mutated",
+      "owning_commit": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+      "owning_subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다.",
+      "commit_count": 2,
+      "commits": [
+        {
+          "sha": "cbbda52892273ba5cd6326af222bb7b2644437ff",
+          "subject": "운영자 상품 Admin 목록/단건과 expectedRevision 409, 등록 멱등키, 직원/회원 목록을 격리 persist에 연결하고 GHA 일회용 PG HTTP+SQL 실검증을 붙인다."
+        },
+        {
+          "sha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+          "subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다."
+        }
+      ],
+      "category": "MODULE_WIRING",
+      "reason": "Module/export/tsconfig wiring for the above surfaces. No independent money writer.",
+      "security_impact": "LOW",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA2"
       ]
     },
     {
@@ -1108,8 +2016,20 @@
       "kind": "mutated",
       "owning_commit": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
       "owning_subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다.",
-      "commit_count": 1,
+      "commit_count": 4,
       "commits": [
+        {
+          "sha": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
+          "subject": "상품 공개·가격확인 메모 persist와 리셀러 ID 조회·참여 지급 스냅샷을 로컬에 연결해, 스키마 미적용을 성공으로 위장하지 않는다."
+        },
+        {
+          "sha": "ec436d4d32937f2778b4b764e89918de2ca70280",
+          "subject": "공용 상품 슬롯을 회원별로 세고 예상액과 원장 실지급을 나눠, 웹이 예상액을 정산으로 쓰지 못하게 한다."
+        },
+        {
+          "sha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
+          "subject": "운영자 공용 상품과 회원별 참여를 로컬 코어로 고정해, 실DB persist 없이 공개 범위와 지급 스냅샷을 서버에서 강제한다."
+        },
         {
           "sha": "2a271c23fde9a911a5d4ade34bb5f61dd1257489",
           "subject": "운영자 횟수·등급과 S1 카탈로그 행 보호를 로컬에 고정해, 보호범위 드리프트를 커밋된 상태로 측정할 수 있게 한다. 공식 분류 규칙은 바꾸지 않았다."
@@ -1147,6 +2067,33 @@
       "required_rerun": [
         "QA0",
         "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/trades/trades.execution.service.ts",
+      "kind": "mutated",
+      "owning_commit": "ec436d4d32937f2778b4b764e89918de2ca70280",
+      "owning_subject": "공용 상품 슬롯을 회원별로 세고 예상액과 원장 실지급을 나눠, 웹이 예상액을 정산으로 쓰지 못하게 한다.",
+      "commit_count": 2,
+      "commits": [
+        {
+          "sha": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
+          "subject": "상품 공개·가격확인 메모 persist와 리셀러 ID 조회·참여 지급 스냅샷을 로컬에 연결해, 스키마 미적용을 성공으로 위장하지 않는다."
+        },
+        {
+          "sha": "ec436d4d32937f2778b4b764e89918de2ca70280",
+          "subject": "공용 상품 슬롯을 회원별로 세고 예상액과 원장 실지급을 나눠, 웹이 예상액을 정산으로 쓰지 못하게 한다."
+        }
+      ],
+      "category": "LEDGER",
+      "reason": "Idempotency/ledger fingerprint drift. Money truth must be re-proven.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA3",
+        "QA4",
         "QA8"
       ]
     }

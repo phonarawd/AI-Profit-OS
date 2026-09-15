@@ -189,7 +189,7 @@ for (const p of proposed.keys()) {
   }
 }
 
-expectEq(officialCounts.ADMIN_SESSION, 1, "live ADMIN_SESSION");
+expectEq(officialCounts.ADMIN_SESSION, 8, "live ADMIN_SESSION");
 const adminCap = "services/api-nest/src/common/admin-capabilities.ts";
 if (!livePaths.includes(adminCap)) {
   fails.push("admin-capabilities missing from live drift");
