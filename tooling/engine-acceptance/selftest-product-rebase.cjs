@@ -32,6 +32,11 @@ const {
   currentPolicy,
   isPendingRerun,
 } = require("./lib/product-rebase.cjs");
+const {
+  rejectQa9Laundry,
+  isQa9StaleAggregation,
+  liveQa9EpochBindingOk,
+} = require("./lib/qa9-current-epoch-policy.cjs");
 
 function readGov(name) {
   return JSON.parse(
@@ -460,27 +465,32 @@ function run() {
       Boolean(liveTip && liveTip.new_baseline_id === liveBaseline.id),
       `baseline=${liveBaseline.id} tip=${liveTip && liveTip.new_baseline_id}`,
     );
-    // QA9 may legitimately be either historical predecessor evidence while a
-    // freshly rebased epoch is still pending discovery reruns, or authoritative
-    // current-epoch evidence after QA1-QA8 + QA9 complete. Never hardcode one
-    // historical baseline id: bind the verdict to the epoch instead.
-    const qa9IsCurrentEpoch = qa9.baseline_id === liveBaseline.id;
-    const qa9IsPredecessorEpoch =
-      qa9.baseline_id === liveBaseline.epoch?.predecessor_baseline_id;
+    // POLICY_V2: 재기반 연쇄 뒤 디스크 qa9-result 는 직전 predecessor 가 아니라
+    // 원장에 있는 조상 epoch 일 수 있다. 보존이지 현재 인증이 아니다.
+    const liveLaundry = rejectQa9Laundry({
+      evidence: liveEvidence,
+      qa9Result: qa9,
+      baseline: liveBaseline,
+    });
+    const liveStale = isQa9StaleAggregation(liveEvidence);
     check(
       "live_qa9_epoch_binding",
-      qa9IsCurrentEpoch || qa9IsPredecessorEpoch,
-      `qa9=${qa9.baseline_id} current=${liveBaseline.id} predecessor=${liveBaseline.epoch?.predecessor_baseline_id}`,
+      liveQa9EpochBindingOk({
+        evidence: liveEvidence,
+        qa9Result: qa9,
+        baseline: liveBaseline,
+        rebaseLedger: liveLedger,
+      }),
+      `qa9=${qa9.baseline_id} current=${liveBaseline.id} predecessor=${liveBaseline.epoch && liveBaseline.epoch.predecessor_baseline_id} stale=${liveStale}`,
     );
     check(
       "live_qa9_verdict_binding",
-      qa9IsCurrentEpoch
-        ? qa9.completion_status === "COMPLETE" &&
+      liveStale
+        ? liveLaundry.fails.length === 0 && liveEvidence.verdict !== "ENGINE_ACCEPTED_FOR_UI"
+        : qa9.completion_status === "COMPLETE" &&
           ((qa9.verdict === "ENGINE_ACCEPTED_FOR_UI") ===
-            (qa9.engine_accepted_for_ui === "ISSUED"))
-        : qa9IsPredecessorEpoch &&
-          liveEvidence.verdict !== "ENGINE_ACCEPTED_FOR_UI",
-      `qa9.verdict=${qa9.verdict} qa9.issued=${qa9.engine_accepted_for_ui} evidence=${liveEvidence.verdict}`,
+            (qa9.engine_accepted_for_ui === "ISSUED")),
+      `qa9.verdict=${qa9.verdict} qa9.issued=${qa9.engine_accepted_for_ui} evidence=${liveEvidence.verdict} laundry=${liveLaundry.fails.join(";")}`,
     );
     // evidence-manifest.verdict is rewritten ephemerally by run-qa3/4/5/6/8.cjs in every
     // CI qa-matrix job that reruns one of those suites without immediately re-running QA9
@@ -837,6 +847,77 @@ function run() {
       "v1_tip_cannot_bind_new_baseline",
       f.some((x) => /old policy cannot authorize/i.test(x) || /invalidation ledger/i.test(x)),
       f.join("; "),
+    );
+  }
+
+  {
+    const current = "ea-baseline-new";
+    const pred = "ea-baseline-mid";
+    const ancestor = "ea-baseline-old";
+    const ledger = {
+      rebases: [
+        { predecessor_baseline_id: ancestor, new_baseline_id: pred },
+        { predecessor_baseline_id: pred, new_baseline_id: current },
+      ],
+    };
+    const baseline = { id: current, epoch: { predecessor_baseline_id: pred } };
+    const staleEv = {
+      verdict: "ENGINE_QA_INCOMPLETE",
+      suites: [
+        {
+          suite_id: "QA9",
+          completion_status: "STALE",
+          current_epoch_authoritative: false,
+          baseline_id: current,
+        },
+      ],
+    };
+    check(
+      "stale_not_current_complete",
+      rejectQa9Laundry({
+        evidence: {
+          ...staleEv,
+          suites: [{ ...staleEv.suites[0], completion_status: "COMPLETE" }],
+        },
+        qa9Result: { baseline_id: ancestor, engine_accepted_for_ui: "NOT_ISSUED", verdict: "ENGINE_QA_INCOMPLETE" },
+        baseline,
+      }).fails.some((x) => /current-epoch COMPLETE/i.test(x)),
+    );
+    check(
+      "old_issued_not_current_cert",
+      rejectQa9Laundry({
+        evidence: { ...staleEv, verdict: "ENGINE_ACCEPTED_FOR_UI" },
+        qa9Result: { baseline_id: ancestor, engine_accepted_for_ui: "ISSUED", verdict: "ENGINE_ACCEPTED_FOR_UI" },
+        baseline,
+      }).fails.some((x) => /ISSUED|ENGINE_ACCEPTED_FOR_UI/i.test(x)),
+    );
+    check(
+      "epoch_only_wash_fail",
+      rejectQa9Laundry({
+        evidence: staleEv,
+        qa9Result: { baseline_id: current, engine_accepted_for_ui: "NOT_ISSUED", verdict: "ENGINE_QA_INCOMPLETE" },
+        baseline,
+      }).fails.some((x) => /washing/i.test(x)),
+    );
+    check(
+      "accept_without_current_evidence_fail",
+      rejectQa9Laundry({
+        evidence: {
+          verdict: "ENGINE_ACCEPTED_FOR_UI",
+          suites: [{ suite_id: "QA9", completion_status: "COMPLETE", current_epoch_authoritative: true }],
+        },
+        qa9Result: null,
+        baseline,
+      }).fails.some((x) => /without current/i.test(x)),
+    );
+    check(
+      "ancestor_stale_binding_ok",
+      liveQa9EpochBindingOk({
+        evidence: staleEv,
+        qa9Result: { baseline_id: ancestor },
+        baseline,
+        rebaseLedger: ledger,
+      }) === true,
     );
   }
 

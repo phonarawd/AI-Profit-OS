@@ -1,0 +1,37 @@
+{
+  "contractVersion": "2026-09-15.mall-admin-v5",
+  "supersedes": "2026-09-15.mall-persist-v4",
+  "parentHead": "9d48e58e6fa0871611fe27292e8c876ee568a18c",
+  "verifiedHead": "87f033995ee0ee2e42d72eae8a809b2037f229a4",
+  "headNote": "verifiedHead is the SHA GHA run 34885649558 tested. This recording commit is after that SHA.",
+  "workflowName": "operator-mall-gha-pg",
+  "workflowRunId": "34885649558",
+  "workflowRunUrl": "https://github.com/phonarawd/AI-Profit-OS/actions/runs/34885649558",
+  "officialQa0to9": false,
+  "opsDb": false,
+  "schemaApplied": false,
+  "implementation": "code",
+  "realPg": "gha_ephemeral_pass",
+  "routes": {
+    "list": "GET /api/v1/admin/opportunities/operator-products",
+    "get": "GET /api/v1/admin/opportunities/operator-products/:id",
+    "register": "POST /api/v1/admin/opportunities/operator-products",
+    "update": "PATCH /api/v1/admin/opportunities/:id/operator-product",
+    "visibility": "PATCH /api/v1/admin/opportunities/:id/visibility"
+  },
+  "notGenericOpportunitiesApi": true,
+  "listIncludes": ["pagination", "visibility", "revision"],
+  "expectedRevision": {
+    "required": true,
+    "conflict": 409,
+    "overwriteOnConflict": false
+  },
+  "registerIdempotency": {
+    "header": "Idempotency-Key",
+    "body": "idempotencyKey",
+    "unique": "operator_mall_products_register_idem_uq"
+  },
+  "moneyAuthority": "payoutAuthoritative only with journal plus amount match",
+  "qaJournalTable": "operator_mall_settlement_journals",
+  "notLiveLedgerJournals": true
+}

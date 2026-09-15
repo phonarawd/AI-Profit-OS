@@ -1,0 +1,81 @@
+{
+  "contractVersion": "2026-09-15.persist-status-v6",
+  "measuredAgainstHead": "d626126c0083f82be993d028750088babd256ec2",
+  "parentHead": "9d48e58e6fa0871611fe27292e8c876ee568a18c",
+  "headNote": "9d48e58e 이후 실측. verified SHA=d626126c. run 34906126441 그린 뒤에만 이 run ID를 기입. 이 기록 커밋은 그 SHA 이후.",
+  "workflowName": "operator-mall-gha-pg",
+  "workflowRunId": "34906126441",
+  "workflowRunUrl": "https://github.com/phonarawd/AI-Profit-OS/actions/runs/34906126441",
+  "measuredAt": "2026-09-14T22:53:13Z",
+  "note": "실PG 통합 PASS ≠ 정식 QA0–QA9 ≠ 운영 DB 적용 ≠ 출시. mock PASS 와 실PG PASS 를 섞지 말 것. QA 정산 표 PASS를 실원장 PASS로 승격하지 말 것.",
+  "schemaApplied": false,
+  "opsDb": false,
+  "officialQa0to9": false,
+  "isolatedQaUrl": "gha_ephemeral_only_when_workflow_runs",
+  "items": {
+    "productListGet": {
+      "route": "GET /api/v1/admin/opportunities/operator-products",
+      "persistStore": true,
+      "notGenericOpportunitiesList": true,
+      "pagination": true,
+      "includesVisibilityRevision": true,
+      "implementation": "code",
+      "realPg": "gha_ephemeral_pass",
+      "officialQa": false
+    },
+    "productExactGet": {
+      "route": "GET /api/v1/admin/opportunities/operator-products/:id",
+      "persistStore": true,
+      "notGenericOpportunitiesGet": true,
+      "implementation": "code",
+      "realPg": "gha_ephemeral_pass",
+      "officialQa": false
+    },
+    "expectedRevision": {
+      "updateAndVisibility": true,
+      "conflictHttp": 409,
+      "doesNotOverwriteOnConflict": true,
+      "implementation": "code",
+      "realPg": "gha_ephemeral_pass"
+    },
+    "registerIdempotency": {
+      "headerOrBody": true,
+      "uniqueIndex": "operator_mall_products_register_idem_uq",
+      "implementation": "code",
+      "realPg": "gha_ephemeral_pass"
+    },
+    "adminStaff": {
+      "persistCode": true,
+      "nestControllerStillCreateUnready": true,
+      "loginStaffResolvesIsolatedPersist": true,
+      "demoStaff": false,
+      "implementation": "code",
+      "realPg": "gha_ephemeral_pass"
+    },
+    "memberDirectoryPage": {
+      "route": "GET /api/v1/admin/users empty q",
+      "guard": "AdminGuard users read",
+      "store": "isolated persist public.users",
+      "notMeMembership": true,
+      "implementation": "code",
+      "realPg": "gha_ephemeral_pass"
+    },
+    "participationPayout": {
+      "snapshotField": "configuredPayoutUsdt",
+      "authoritativeJournal": "ledger_journals",
+      "qaJournalTable": "operator_mall_settlement_journals",
+      "qaJournalAuthority": false,
+      "postingKind": "official_ledger_posting",
+      "idempotency": "settlement:{participationId}",
+      "bucket": "profit",
+      "implementation": "code",
+      "realPg": "gha_ephemeral_pass",
+      "opsLedger": false
+    },
+    "selectedVisibility": {
+      "ghaABParticipateC404": true,
+      "implementation": "code",
+      "realPg": "gha_ephemeral_pass"
+    }
+  }
+}

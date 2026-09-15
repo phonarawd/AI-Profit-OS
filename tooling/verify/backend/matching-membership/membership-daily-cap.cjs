@@ -28,15 +28,24 @@ const ms = require(path.join(
 ));
 const rule = require(path.join(root, "services/engine-rust/settlement_rule.cjs"));
 
-const wantDaily = { sprout: 8, entry: 6, core: 5, high: 3, vip: 2 };
-for (const [id, cap] of Object.entries(wantDaily)) {
+const observedLadder = { sprout: 8, entry: 6, core: 5, high: 3, vip: 2 };
+const wantDefaults = { sprout: 5, entry: 6, core: 5, high: 3, vip: 2 };
+for (const [id, cap] of Object.entries(observedLadder)) {
   if (mem.MEMBERSHIP_LADDER[id].dailyUserMatchCap !== cap) {
-    fails.push(`${id} daily cap want ${cap}`);
+    fails.push(`${id} observed ladder daily cap want ${cap}`);
   }
+}
+for (const [id, cap] of Object.entries(wantDefaults)) {
   const d = mem.membershipDefaults(id);
   if (d.dailyUserMatchCap !== cap) {
     fails.push(`defaults ${id} daily cap want ${cap}`);
   }
+}
+if (mem.NEW_SIGNUP_DAILY_MATCH_CAP !== 5) {
+  fails.push("NEW_SIGNUP_DAILY_MATCH_CAP want 5");
+}
+if (mem.QUOTA_DAY_TIMEZONE !== "Asia/Seoul") {
+  fails.push("quota day timezone must stay Asia/Seoul");
 }
 
 // Cap is not a success guarantee — documented via checkParticipate only
@@ -101,7 +110,7 @@ if (withOverlay.minProfitUsdt !== "2") {
   fails.push("vip overlay minProfit must be 2");
 }
 if (withOverlay.dailyUserMatchCap !== 2) {
-  fails.push("vip overlay must keep ladder dailyUserMatchCap=2 (not lenient preset 8)");
+  fails.push("vip overlay must keep grade dailyUserMatchCap=2 (not lenient preset 8)");
 }
 
 const withUser = mem.mergeEffectivePolicy({
@@ -133,6 +142,61 @@ if (custom.matchStrictness !== "custom" || custom.minProfitUsdt !== "7") {
 }
 if (custom.dailyUserMatchCap !== 4) {
   fails.push("custom dailyUserMatchCap want 4");
+}
+
+// B1 — 0 is explicit block, not falsy fallback
+const zeroCap = mem.checkParticipateMembershipGuards({
+  opportunityCapitalBand: "micro",
+  maxCapitalBand: "micro",
+  dailyMatchesUsed: 0,
+  dailyUserMatchCap: 0,
+  slotsLeft: 1,
+});
+if (zeroCap?.code !== "DAILY_MATCH_CAP") {
+  fails.push("cap 0 used 0 must DAILY_MATCH_CAP");
+}
+if (typeof mem.readExplicitNonNegativeInt !== "function") {
+  fails.push("readExplicitNonNegativeInt export missing");
+}
+if (mem.readExplicitNonNegativeInt(0) !== 0) {
+  fails.push("readExplicitNonNegativeInt(0) must be 0");
+}
+const resolvedZero = mem.resolveMemberDailyMatchCap({
+  overrideDailyUserMatchCap: 0,
+  membershipRowCap: 8,
+  ladderCap: 8,
+});
+if (resolvedZero.cap !== 0 || resolvedZero.source !== "user_override") {
+  fails.push("resolveMemberDailyMatchCap must keep override 0");
+}
+const quotaZero = mem.projectDailyMatchQuota({
+  userId: "u1",
+  used: 0,
+  overrideDailyUserMatchCap: 0,
+  membershipRowCap: 8,
+});
+if (
+  quotaZero.remaining !== 0 ||
+  quotaZero.blocked !== true ||
+  quotaZero.cap !== 0
+) {
+  fails.push("projectDailyMatchQuota cap 0 must block with remaining 0");
+}
+const presetCapOnly = mem.mergeEffectivePolicy({
+  basePolicy: base,
+  membership: "core",
+  capitalBand: "mid",
+  membershipBandOverlayEnabled: false,
+  userOverride: {
+    matchStrictnessOverride: "standard",
+    dailyUserMatchCap: 0,
+  },
+});
+if (presetCapOnly.dailyUserMatchCap !== 0) {
+  fails.push("preset override dailyUserMatchCap 0 must stick");
+}
+if (presetCapOnly.minProfitUsdt !== base.minProfitUsdt) {
+  fails.push("cap-only must not change minProfitUsdt");
 }
 
 // Overlay disabled → keep base
@@ -180,6 +244,27 @@ if (!participate.includes("effectiveDailyMatchesUsed")) {
 }
 if (!participate.includes("ensureRow")) {
   fails.push("participate must ensure user_membership before daily cap");
+}
+if (!participate.includes("resolveMemberDailyMatchCap")) {
+  fails.push("participate must resolveMemberDailyMatchCap (keep 0)");
+}
+if (participate.includes("operator-control.store.cjs")) {
+  fails.push("participate must not read memory operator-control.store");
+}
+if (!participate.includes("operator-control.provider.cjs")) {
+  fails.push("participate must use operator-control.provider (runtime persist)");
+}
+if (/Number\(effective\.dailyUserMatchCap\)\s*\|\|/.test(participate)) {
+  fails.push("participate must not Number(effective.dailyUserMatchCap)|| fallback");
+}
+if (!routes.includes("daily-match-cap")) {
+  fails.push("routes must expose daily-match-cap");
+}
+if (!routes.includes("grade-daily-caps")) {
+  fails.push("routes must expose grade-daily-caps");
+}
+if (!routes.includes("bonus-grants")) {
+  fails.push("routes must expose bonus-grants");
 }
 const runtime = read("services/api-nest/src/membership/membership.runtime.service.ts");
 if (!runtime.includes("Asia/Seoul")) {

@@ -54,6 +54,11 @@ const {
   findBridgingAmendment,
 } = require("../engine-acceptance/lib/product-rebase.cjs");
 const { run: selftestProductRebase } = require("../engine-acceptance/selftest-product-rebase.cjs");
+const { run: selftestQa9Verifier } = require("../engine-acceptance/selftest-qa9-verifier.cjs");
+const {
+  isQa9StaleAggregation,
+  rejectQa9Laundry,
+} = require("../engine-acceptance/lib/qa9-current-epoch-policy.cjs");
 const { loadEvalDataset } = require("../engine-acceptance/lib/qa7-dataset.cjs");
 
 const fails = [];
@@ -170,7 +175,9 @@ const REQUIRED_FILES = [
   "tooling/engine-acceptance/lib/workflow-amendment.cjs",
   "tooling/engine-acceptance/rebase-acceptance-baseline.cjs",
   "tooling/engine-acceptance/selftest-product-rebase.cjs",
+  "tooling/engine-acceptance/selftest-qa9-verifier.cjs",
   "tooling/engine-acceptance/lib/product-rebase.cjs",
+  "tooling/engine-acceptance/lib/qa9-current-epoch-policy.cjs",
   "tooling/engine-acceptance/run-qa1.cjs",
   "tooling/engine-acceptance/run-qa2.cjs",
   "tooling/engine-acceptance/run-qa3.cjs",
@@ -1746,7 +1753,12 @@ try {
 } catch {
   fail("qa9-result.v1.json invalid JSON");
 }
-if (qa9Result && !pendingRerun) {
+if (qa9Result) {
+  const laundry = rejectQa9Laundry({ evidence, qa9Result, baseline });
+  for (const msg of laundry.fails) fail(msg);
+}
+const qa9StaleAgg = isQa9StaleAggregation(evidence);
+if (qa9Result && !pendingRerun && !qa9StaleAgg) {
   if (qa9Result.schema !== "governance.engine-acceptance.qa9-result.v1") {
     fail("qa9-result.schema mismatch");
   }
@@ -2316,6 +2328,11 @@ try {
   selftestProductRebase();
 } catch (e) {
   fail(`product-rebase selftest threw: ${e && e.message ? e.message : e}`);
+}
+try {
+  selftestQa9Verifier();
+} catch (e) {
+  fail(`qa9 verifier selftest threw: ${e && e.message ? e.message : e}`);
 }
 try {
   const { run: selftestQa7 } = require("../engine-acceptance/selftest-qa7.cjs");

@@ -1,0 +1,73 @@
+{
+  "contractVersion": "2026-09-15.p4.member-directory-v2",
+  "kind": "operator_member_directory",
+  "implementation": "exact_uuid_reuse_plus_isolated_persist_page",
+  "activation": {
+    "exactUuidLookup": "implemented_reuses_getMembership",
+    "paginatedList": "isolated_persist_when_ready",
+    "paginatedListReason": "GET /admin/users empty q uses resolveRuntimeMemberDirectoryStore. unset URL → 503. not /me/membership."
+  },
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/api/v1/admin/users",
+      "query": {
+        "q": "uuid for exact; omit for page list",
+        "cursor": "optional"
+      },
+      "guard": "AdminGuard",
+      "capability": {
+        "name": "users",
+        "level": "read"
+      },
+      "csrf": "not_required_for_GET"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/admin/users/:id/membership",
+      "note": "existing detail · not replaced by /me/membership"
+    }
+  ],
+  "errors": [
+    {
+      "http": 400,
+      "code": "INVALID_USER",
+      "layer": "directory_core_isolation"
+    },
+    {
+      "http": 404,
+      "code": "user not found"
+    },
+    {
+      "http": 503,
+      "code": "STORE_UNREADY",
+      "applied": false,
+      "when": "empty q and isolated persist unready"
+    }
+  ],
+  "verification": {
+    "coreIsolation": "memory store exact/404/mask/page",
+    "nestHttp": "AdminGuard capability CSRF-GET; empty q 503 when isolated unset",
+    "realDb": "gha_ephemeral_pass",
+    "workflowRunId": "34906126441",
+    "verifiedHead": "d626126c0083f82be993d028750088babd256ec2",
+    "previousVerifiedHead": "87f033995ee0ee2e42d72eae8a809b2037f229a4",
+    "previousWorkflowRunId": "34885649558",
+    "officialQa": false
+  },
+  "pii": "directory core masks email/phone; HTTP exact path returns membership id + resellerId",
+  "audit": "in-process emit admin.user.directory.lookup",
+  "forbidden": [
+    "GET /me/membership as admin list",
+    "demo user substitution",
+    "open PII dump",
+    "ops backfill"
+  ],
+  "resellerId": {
+    "source": "users.referral_code",
+    "field": "resellerId",
+    "notAuthToken": true,
+    "issuedOnSignupMint": true,
+    "opsBackfillApplied": false
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "contractVersion": "2026-09-14.b3.display-v19",
+  "bundleId": "presentation-journey-v19",
+  "productDefaultSource": "web report supplied by operator. No JourneyStage 7-step copy inside this repo. putduk-web was not opened.",
+  "inRepoContrast": {
+    "executionPolicyDay1": "5 steps product_check... 8-15s. engine presentation only.",
+    "b3Draft": "preserved-b3 5-step 14s. Do not wire as product default.",
+    "handoffMd": "quality/putduk-web-ui-assertions-handoff.md has no atSec timetable."
+  },
+  "implementation": "local_dirty_not_deployed",
+  "schemaApplied": false,
+  "storeReady": false,
+  "publishedToUiRepo": false,
+  "lockedStepsInOrder": ["product", "compare", "cargo", "flight", "buyer", "settle", "complete"],
+  "compiledDefault": {
+    "phases": [
+      { "id": "product", "atSec": 0 },
+      { "id": "compare", "atSec": 8 },
+      { "id": "cargo", "atSec": 18 },
+      { "id": "flight", "atSec": 28 },
+      { "id": "buyer", "atSec": 48 },
+      { "id": "settle", "atSec": 58 },
+      { "id": "complete", "atSec": 66 }
+    ],
+    "totalDurationSec": 70,
+    "timeField": "atSec",
+    "rejectedTimeField": "at"
+  },
+  "validation": {
+    "atSec": "integer 0..600, first 0, strictly increasing, each < totalDurationSec",
+    "totalDurationSec": "integer 1..600",
+    "rejectAt": true,
+    "rejectFiveStepDraft": true
+  },
+  "operatorWire": {
+    "adminGet": "GET /api/v1/admin/membership/presentation-profile",
+    "adminPut": "PUT /api/v1/admin/membership/presentation-profile",
+    "persist": "applyPresentationProfile",
+    "revision": "expectedRevision",
+    "audit": "admin.membership.presentation_profile.updated",
+    "userRead": "GET /api/v1/me/membership presentationProfile.phases[].atSec"
+  },
+  "schemaUnready": {
+    "get": "compiled 7x70, schemaApplied=false",
+    "put": "503 STORE_UNREADY"
+  },
+  "invariants": {
+    "doesNotChangeResult": true,
+    "doesNotChangeMoney": true,
+    "doesNotChangeCap": true,
+    "doesNotChangeGrade": true,
+    "doesNotChangeEngineDeadline": true
+  }
+}

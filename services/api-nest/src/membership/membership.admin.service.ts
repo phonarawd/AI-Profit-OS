@@ -5,9 +5,12 @@
 
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
+  ServiceUnavailableException,
 } from "@nestjs/common";
+import { createRequire } from "node:module";
 import { PostgresService } from "../db/postgres";
 import { InProcessEventBus } from "../events/in-process.bus";
 import { MEMBERSHIP_EVENTS } from "./membership.events";
@@ -21,7 +24,103 @@ import {
   membershipLabelKo,
   mergeEffectivePolicy,
   resolveMembership,
+  rowCapAfterGradeChange,
+  GRADE_DAILY_MATCH_DEFAULTS,
+  MEMBERSHIP_LADDER,
 } from "./membership.mi";
+
+const reqCjs = createRequire(__filename);
+const capCore = reqCjs("./member-daily-cap.core.cjs") as {
+  assertMemberDailyMatchCap: (raw: unknown) => number;
+  nextCapOnlyOverride: (
+    before: object | null,
+    cap: number,
+    meta: { reason: string; updatedByAdminId: string },
+  ) => { insertMode: string; qualityUntouched: boolean };
+  nextClearCapOnly: (before: object | null) => { action: string };
+};
+const gradeCore = reqCjs("./grade-daily-policy.core.cjs") as {
+  previewGradeDailyCapChange: (store: object, input: object) => object;
+  createGradeDailyPolicyStore: (seed?: object) => object;
+};
+const persistCore = reqCjs("./operator-control.persist.cjs") as {
+  preflightOperatorControlSchema: (db: object) => Promise<{
+    ready: boolean;
+    gradeReady: boolean;
+    bonusReady: boolean;
+    presentationReady: boolean;
+    code: string;
+  }>;
+  listGradeDailyPolicy: (db: object) => Promise<{
+    revision: number;
+    caps: Record<string, number>;
+    [key: string]: unknown;
+  }>;
+  applyGradeDailyCapChange: (
+    db: object,
+    input: object,
+  ) => Promise<Record<string, unknown>>;
+  grantBonusMatches: (
+    db: object,
+    input: object,
+  ) => Promise<Record<string, unknown>>;
+  listBonusGrants: (
+    db: object,
+    userId: string,
+  ) => Promise<Record<string, unknown>>;
+  reclaimUnusedBonus: (
+    db: object,
+    input: object,
+  ) => Promise<Record<string, unknown>>;
+  listPresentationProfile: (db: object) => Promise<Record<string, unknown>>;
+  applyPresentationProfile: (
+    db: object,
+    input: object,
+  ) => Promise<Record<string, unknown>>;
+};
+const directoryCore = reqCjs("./admin-member-directory.core.cjs") as {
+  searchMembers: (
+    input: object,
+    store: object,
+  ) => Promise<{
+    ok: boolean;
+    applied: boolean;
+    code?: string;
+    httpStatus: number;
+    items?: Array<{
+      userId: string;
+      membership?: string | null;
+      resellerId?: string | null;
+    }>;
+    nextCursor?: string | null;
+    exact?: boolean;
+  }>;
+};
+const directoryPersist = reqCjs("./admin-member-directory.persist.cjs") as {
+  resolveRuntimeMemberDirectoryStore: (
+    env: NodeJS.ProcessEnv,
+  ) => Promise<{ ready: boolean }>;
+};
+const resellerPersist = reqCjs("../referral/reseller-id.persist.cjs") as {
+  lookupResellerId: (
+    db: object,
+    userId: string,
+  ) => Promise<{ ok: boolean; resellerId: string | null; code?: string }>;
+};
+const providerCore = reqCjs("./operator-control.provider.cjs") as {
+  PROVIDER_KIND: { RUNTIME_PERSIST: string };
+  projectRuntimeParticipateQuota: (input: object) => Promise<DailyMatchQuotaV1>;
+};
+const downCore = reqCjs("./auto-downgrade.core.cjs") as {
+  evaluateAutoDowngrade: (input: object) => { wouldApply: false; skippedReason: string };
+  previewGradeChangeEffects: (input: object) => object;
+};
+const presentCore = reqCjs("./presentation-profile.core.cjs") as {
+  V19_DEFAULTS: object;
+  validatePresentationProfile: (input: object) => object;
+  restoreV19Presentation: () => object;
+  projectUserFacingProfile: (listed: object) => object;
+};
 import {
   MembershipRuntimeService,
   type MembershipRow,
@@ -29,7 +128,12 @@ import {
 import type {
   ForceMembershipRequest,
   MembershipId,
+  DailyMatchQuotaV1,
   PutMatchPolicyOverrideRequest,
+  PutMemberDailyMatchCapRequest,
+  PutGradeDailyCapRequest,
+  GrantBonusMatchesRequest,
+  ReclaimBonusMatchesRequest,
   UserMatchPolicyOverrideV1,
   UserMembershipV1,
 } from "./membership.types";
@@ -67,12 +171,86 @@ export class MembershipAdminService {
     private readonly runtime: MembershipRuntimeService,
   ) {}
 
+  async searchUsers(input: {
+    q?: string;
+    cursor?: string;
+    operatorId: string;
+  }): Promise<{
+    items: Array<{
+      userId: string;
+      membership: MembershipId | null;
+      resellerId: string | null;
+    }>;
+    nextCursor: string | null;
+    exact: boolean;
+    substituted: false;
+  }> {
+    const q = String(input.q || "").trim();
+    if (!q) {
+      // this.db = 앱 DATABASE_URL. 디렉터리 목록은 격리 QA persist 만.
+      const store = await directoryPersist.resolveRuntimeMemberDirectoryStore(
+        process.env,
+      );
+      const out = await directoryCore.searchMembers(
+        { cursor: input.cursor, limit: 20 },
+        store,
+      );
+      if (!out.ok || out.code === "STORE_UNREADY") {
+        throw new ServiceUnavailableException({
+          code: out.code || "STORE_UNREADY",
+          toastCode: "STORE_UNREADY",
+          message: "member directory list requires isolated QA persist; not DATABASE_URL",
+          applied: false,
+          storeStatus: "unready",
+          statusCode: 503,
+        });
+      }
+      this.bus.emit(MEMBERSHIP_EVENTS.memberLookup, {
+        operatorId: input.operatorId,
+        list: true,
+      });
+      return {
+        items: (out.items || []).map((row) => ({
+          userId: row.userId,
+          membership: (row.membership as MembershipId) || null,
+          resellerId: row.resellerId || null,
+        })),
+        nextCursor: out.nextCursor ?? null,
+        exact: false,
+        substituted: false,
+      };
+    }
+    this.assertUuid(q, "q");
+    await this.assertUserExists(q);
+    const found = await this.getMembership(q);
+    this.bus.emit(MEMBERSHIP_EVENTS.memberLookup, {
+      userId: q,
+      operatorId: input.operatorId,
+    });
+    return {
+      items: [
+        {
+          userId: q,
+          membership: found.membership.membership,
+          resellerId: found.resellerId,
+        },
+      ],
+      nextCursor: null,
+      exact: true,
+      substituted: false,
+    };
+  }
+
   async getMembership(userId: string): Promise<{
     membership: UserMembershipV1;
     labelKo: string;
     ladder: ReturnType<typeof membershipDefaults>;
+    quota: DailyMatchQuotaV1;
+    gradeControl: "MANUAL_PIN" | "AUTO";
+    autoDowngrade: false;
     fulfillRateReadOnly: true;
     ledgerMutated: false;
+    resellerId: string | null;
   }> {
     this.assertUuid(userId, "userId");
     await this.assertUserExists(userId);
@@ -83,12 +261,18 @@ export class MembershipAdminService {
       fulfill_rate_7d:
         rate != null ? String(rate) : row.fulfill_rate_7d,
     });
+    const reseller = await this.lookupResellerId(userId);
     return {
       membership: item,
       labelKo: membershipLabelKo(item.membership),
       ladder: membershipDefaults(item.membership),
+      quota: await this.buildQuota(userId),
+      // 기존 admin_force 별칭. 자동 하향 엔진은 enabled=false.
+      gradeControl: row.admin_force === true ? "MANUAL_PIN" : "AUTO",
+      autoDowngrade: false,
       fulfillRateReadOnly: true,
       ledgerMutated: false,
+      resellerId: reseller,
     };
   }
 
@@ -127,6 +311,12 @@ export class MembershipAdminService {
     }
 
     const defaults = membershipDefaults(nextMembership);
+    const beforeOverride = await this.loadOverride(userId);
+    const nextRowCap = rowCapAfterGradeChange({
+      hasIndividualCapOverride: beforeOverride?.dailyUserMatchCap != null,
+      currentRowCap: before.daily_user_match_cap,
+      nextGradeCap: defaults.dailyUserMatchCap,
+    }).rowCap;
     const { rows } = await this.db.query<MembershipRow>(
       `UPDATE public.user_membership SET
          membership = $2,
@@ -145,7 +335,7 @@ export class MembershipAdminService {
         userId,
         nextMembership,
         defaults.maxCapitalBand,
-        defaults.dailyUserMatchCap,
+        nextRowCap,
         defaults.matchStrictness,
         adminForce,
         JSON.stringify(defaults.aiPerkFlags),
@@ -230,6 +420,20 @@ export class MembershipAdminService {
     }
 
     const before = await this.loadOverride(userId);
+
+    if (
+      body.capOnly === true ||
+      (body.dailyUserMatchCap != null &&
+        body.matchStrictnessOverride == null &&
+        body.clear !== true)
+    ) {
+      return this.putMemberDailyMatchCap(userId, {
+        dailyUserMatchCap: body.dailyUserMatchCap,
+        reason: body.reason,
+        updatedByAdminId: body.updatedByAdminId,
+        clear: false,
+      });
+    }
 
     if (body.clear === true) {
       await this.db.query(
@@ -344,12 +548,114 @@ export class MembershipAdminService {
     };
   }
 
+  /**
+   * 회원별 횟수만 변경. minProfit/stale/strictness/자본/혜택은 그대로.
+   * 0 = 신규 참여 차단. 기존 accepted/원장은 소급 취소하지 않음.
+   */
+  async putMemberDailyMatchCap(
+    userId: string,
+    body: PutMemberDailyMatchCapRequest,
+  ): Promise<{
+    override: UserMatchPolicyOverrideV1 | null;
+    quota: DailyMatchQuotaV1;
+    effectivePreview: object;
+    auditAction: string;
+    qualityUntouched: true;
+    ledgerMutated: false;
+  }> {
+    this.assertUuid(userId, "userId");
+    this.assertUuid(body.updatedByAdminId, "updatedByAdminId");
+    this.assertReason(body.reason);
+    await this.assertUserExists(userId);
+
+    const before = await this.loadOverride(userId);
+
+    if (body.clear === true) {
+      const plan = capCore.nextClearCapOnly(before);
+      if (plan.action === "delete") {
+        await this.db.query(
+          `DELETE FROM public.user_match_policy_overrides WHERE user_id = $1::uuid`,
+          [userId],
+        );
+      } else if (plan.action === "null_cap") {
+        await this.db.query(
+          `UPDATE public.user_match_policy_overrides
+              SET daily_user_match_cap = NULL,
+                  reason = $2,
+                  updated_by_admin_id = $3::uuid,
+                  updated_at = now()
+            WHERE user_id = $1::uuid`,
+          [userId, body.reason, body.updatedByAdminId],
+        );
+      }
+    } else {
+      let cap: number;
+      try {
+        cap = capCore.assertMemberDailyMatchCap(body.dailyUserMatchCap);
+      } catch {
+        throw new BadRequestException(
+          "dailyUserMatchCap must be a non-negative integer",
+        );
+      }
+      capCore.nextCapOnlyOverride(before, cap, {
+        reason: body.reason,
+        updatedByAdminId: body.updatedByAdminId,
+      });
+      if (!before) {
+        await this.db.query(
+          `INSERT INTO public.user_match_policy_overrides (
+             user_id, match_strictness, min_profit_usdt, stale_allowance_sec,
+             max_rematch_count, daily_user_match_cap, reason,
+             updated_by_admin_id, updated_at
+           ) VALUES (
+             $1::uuid, 'custom', NULL, NULL, NULL, $2, $3, $4::uuid, now()
+           )`,
+          [userId, cap, body.reason, body.updatedByAdminId],
+        );
+      } else {
+        await this.db.query(
+          `UPDATE public.user_match_policy_overrides
+              SET daily_user_match_cap = $2,
+                  reason = $3,
+                  updated_by_admin_id = $4::uuid,
+                  updated_at = now()
+            WHERE user_id = $1::uuid`,
+          [userId, cap, body.reason, body.updatedByAdminId],
+        );
+      }
+    }
+
+    const after = await this.loadOverride(userId);
+    await this.writeMatchPolicyAudit(
+      userId,
+      before,
+      after,
+      body.reason,
+      body.updatedByAdminId,
+    );
+    const effectivePreview = await this.buildEffectivePreview(userId, after);
+    this.bus.emit(MEMBERSHIP_EVENTS.matchPolicyUpdated, {
+      userId,
+      capOnly: true,
+      adminId: body.updatedByAdminId,
+    });
+    return {
+      override: after,
+      quota: await this.buildQuota(userId),
+      effectivePreview,
+      auditAction: MEMBERSHIP_AUDIT.matchPolicy,
+      qualityUntouched: true,
+      ledgerMutated: false,
+    };
+  }
+
   async effectivePreview(
     userId: string,
     capitalBand = "micro",
   ): Promise<{
     effectivePolicy: object;
     rulePolicy: object;
+    quota: DailyMatchQuotaV1;
     fulfillRateExcluded: true;
   }> {
     this.assertUuid(userId, "userId");
@@ -359,8 +665,12 @@ export class MembershipAdminService {
       override,
       capitalBand,
     );
+    const quota = await this.buildQuota(userId);
     return {
-      effectivePolicy,
+      effectivePolicy: {
+        ...(effectivePolicy as object),
+        dailyUserMatchCap: quota.cap,
+      },
       rulePolicy: {
         minProfitUsdt: String(
           (effectivePolicy as { minProfitUsdt: string }).minProfitUsdt,
@@ -375,7 +685,127 @@ export class MembershipAdminService {
           (effectivePolicy as { retryWaitSec: number }).retryWaitSec,
         ),
       },
+      quota,
       fulfillRateExcluded: true,
+    };
+  }
+
+  async listGradeDailyCaps() {
+    const listed = await persistCore.listGradeDailyPolicy(this.db);
+    return {
+      ...listed,
+      compiledDefaults: GRADE_DAILY_MATCH_DEFAULTS,
+      existingMemberBackfill: false,
+    };
+  }
+
+  async previewGradeDailyCap(body: PutGradeDailyCapRequest) {
+    this.assertReason(body.reason);
+    const listed = await persistCore.listGradeDailyPolicy(this.db);
+    const store = gradeCore.createGradeDailyPolicyStore({
+      revision: listed.revision,
+      caps: listed.caps,
+    });
+    return gradeCore.previewGradeDailyCapChange(store, body);
+  }
+
+  async putGradeDailyCap(body: PutGradeDailyCapRequest) {
+    this.assertUuid(body.updatedByAdminId, "updatedByAdminId");
+    this.assertReason(body.reason);
+    try {
+      return {
+        ...(await persistCore.applyGradeDailyCapChange(this.db, body)),
+        auditAction: MEMBERSHIP_AUDIT.gradeDaily,
+      };
+    } catch (e) {
+      throw this.mapOperatorWriteError(e);
+    }
+  }
+
+  async grantBonus(userId: string, body: GrantBonusMatchesRequest) {
+    this.assertUuid(userId, "userId");
+    this.assertUuid(body.updatedByAdminId, "updatedByAdminId");
+    this.assertReason(body.reason);
+    await this.assertUserExists(userId);
+    try {
+      return {
+        ...(await persistCore.grantBonusMatches(this.db, {
+          ...body,
+          userId,
+        })),
+        auditAction: MEMBERSHIP_AUDIT.bonusGrant,
+      };
+    } catch (e) {
+      throw this.mapOperatorWriteError(e);
+    }
+  }
+
+  async listBonus(userId: string) {
+    this.assertUuid(userId, "userId");
+    await this.assertUserExists(userId);
+    return persistCore.listBonusGrants(this.db, userId);
+  }
+
+  async reclaimBonus(userId: string, body: ReclaimBonusMatchesRequest) {
+    this.assertUuid(userId, "userId");
+    this.assertReason(body.reason);
+    await this.assertUserExists(userId);
+    try {
+      return {
+        ...(await persistCore.reclaimUnusedBonus(this.db, {
+          ...body,
+          userId,
+        })),
+        auditAction: MEMBERSHIP_AUDIT.bonusReclaim,
+      };
+    } catch (e) {
+      throw this.mapOperatorWriteError(e);
+    }
+  }
+
+  async listPresentationProfile() {
+    return persistCore.listPresentationProfile(this.db);
+  }
+
+  async listUserPresentationProfile() {
+    return presentCore.projectUserFacingProfile(
+      await persistCore.listPresentationProfile(this.db),
+    );
+  }
+
+  async putPresentationProfile(body: {
+    profile: object;
+    reason: string;
+    updatedByAdminId: string;
+    expectedRevision?: number;
+  }) {
+    this.assertUuid(body.updatedByAdminId, "updatedByAdminId");
+    this.assertReason(body.reason);
+    try {
+      presentCore.validatePresentationProfile(body.profile);
+      return {
+        ...(await persistCore.applyPresentationProfile(this.db, body)),
+        auditAction: MEMBERSHIP_AUDIT.presentation,
+      };
+    } catch (e) {
+      throw this.mapOperatorWriteError(e);
+    }
+  }
+
+  async quotaProjection(userId: string) {
+    this.assertUuid(userId, "userId");
+    await this.assertUserExists(userId);
+    return {
+      quota: await this.buildQuota(userId),
+      gradeControl: (await this.runtime.ensureRow(userId)).admin_force === true
+        ? "MANUAL_PIN"
+        : "AUTO",
+      autoDowngrade: downCore.evaluateAutoDowngrade({
+        adminForce: (await this.runtime.ensureRow(userId)).admin_force === true,
+        appliedMembership: (await this.runtime.ensureRow(userId)).membership,
+        autoMembership: (await this.runtime.ensureRow(userId)).membership,
+      }),
+      ledgerMutated: false,
     };
   }
 
@@ -418,6 +848,44 @@ export class MembershipAdminService {
       [userId, rate],
     );
     return rate;
+  }
+
+  private async buildQuota(userId: string): Promise<DailyMatchQuotaV1> {
+    const row = await this.runtime.ensureRow(userId);
+    const used = await this.runtime.effectiveDailyMatchesUsed(userId);
+    const override = await this.loadOverride(userId);
+    return providerCore.projectRuntimeParticipateQuota({
+      db: this.db,
+      userId,
+      used,
+      membership: row.membership,
+      overrideDailyUserMatchCap: override?.dailyUserMatchCap,
+      membershipRowCap: row.daily_user_match_cap,
+      ladderCap: MEMBERSHIP_LADDER[row.membership].dailyUserMatchCap,
+      providerKind: providerCore.PROVIDER_KIND.RUNTIME_PERSIST,
+    });
+  }
+
+  private mapOperatorWriteError(e: unknown): never {
+    const code = (e as { code?: string }).code;
+    if (code === "STORE_UNREADY") {
+      throw new ServiceUnavailableException({
+        code: "STORE_UNREADY",
+        toastCode: "STORE_UNREADY",
+        message: "operator control store is not ready",
+        applied: false,
+        storeStatus: "unready",
+        statusCode: 503,
+      });
+    }
+    if (code === "REVISION_CONFLICT") {
+      throw new ConflictException({
+        code: "REVISION_CONFLICT",
+        applied: false,
+        statusCode: 409,
+      });
+    }
+    throw new BadRequestException(code || (e as Error).message);
   }
 
   private async loadOverride(
@@ -562,6 +1030,20 @@ export class MembershipAdminService {
       out.dailyUserMatchCap = Number(row.daily_user_match_cap);
     }
     return out;
+  }
+
+  private async lookupResellerId(userId: string): Promise<string | null> {
+    try {
+      const out = await resellerPersist.lookupResellerId(this.db, userId);
+      return out.ok === true ? out.resellerId : null;
+    } catch (e) {
+      const code =
+        e && typeof e === "object" && "code" in e
+          ? String((e as { code?: string }).code)
+          : "";
+      if (code === "42703") return null;
+      throw e;
+    }
   }
 
   private async assertUserExists(userId: string): Promise<void> {

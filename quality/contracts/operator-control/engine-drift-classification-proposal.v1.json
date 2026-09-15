@@ -1,0 +1,182 @@
+{
+  "schema": "quality.operator-control.engine-drift-classification-proposal.v1",
+  "status": "CLASSIFY_RULES_APPLIED",
+  "official_generator": "tooling/recovery/build-engine-drift-inventory.cjs",
+  "official_classify": "tooling/recovery/lib/classify-engine-drift.cjs",
+  "official_generator_changed": true,
+  "human_po_ack_issued": false,
+  "FINAL_ACCEPTANCE": "NOT_ISSUED",
+  "applied_meaning": "Official classify() maps the approved paths. Classification possible ≠ change-safety approved ≠ QA complete ≠ platform-ops ready. This file is not a Human/PO ACK.",
+  "measured_at_note": "Classify rules applied from the approved minimum proposal. Do not treat this file as an ACK, rebase, or QA issuance.",
+  "official_rule_result": {
+    "ADMIN_SESSION": [
+      "services/api-nest/admin-staff-login.core.cjs",
+      "services/api-nest/admin-staff-login.isolation.cjs",
+      "services/api-nest/admin-staff-login.persist.cjs",
+      "services/api-nest/admin-staff-login.persist.isolation.cjs",
+      "services/api-nest/src/common/admin-capabilities.ts",
+      "services/api-nest/src/common/admin-session-login.admin-http.cjs",
+      "services/api-nest/src/common/admin-session.controller.ts",
+      "services/api-nest/src/common/admin-session.runtime.test.ts"
+    ],
+    "UNCLASSIFIED_reason": "Path did not match a known Engine drift class."
+  },
+  "why_new_labels_are_needed": [
+    "Existing matchers do not cover membership operator-control/quota-grade cores or catalog-external-write paths.",
+    "Stretching ADMIN_SESSION or ADAPTER_INGEST across all 40 paths would hide distinct money-adjacent vs catalog-write risk.",
+    "Official classify() is left unchanged until this proposal is approved."
+  ],
+  "existing_class_extensions": [
+    {
+      "category": "AUTH_SECURITY",
+      "add_matcher": "jwt-revocation",
+      "paths": [
+        "services/api-nest/src/membership/jwt-revocation.core.cjs"
+      ],
+      "reason": "세션 revoke 입학 판정. 기존 AUTH_SECURITY(jwt-auth.guard/auth.*)에 가장 가깝다.",
+      "required_rerun": ["QA1", "QA2", "QA8"],
+      "security_impact": "HIGH"
+    },
+    {
+      "category": "LEDGER",
+      "add_matcher": "ledger-adjustment",
+      "paths": [
+        "services/api-nest/src/ledger/money-authority.core.cjs",
+        "services/api-nest/src/ledger/money-authority.isolation.cjs",
+        "services/api-nest/src/membership/ledger-adjustment.contract.cjs",
+        "services/api-nest/src/trades/trades.execution.service.ts"
+      ],
+      "reason": "기존 LEDGER는 /ledger/ 또는 idempotency. ledger-adjustment만 좁게 추가하면 과매칭을 피한다. 실 쓰기 0·dry-run 계약.",
+      "required_rerun": ["QA3", "QA4", "QA8"],
+      "security_impact": "HIGH"
+    }
+  ],
+  "new_categories": [
+    {
+      "category": "OPERATOR_MEMBERSHIP",
+      "reason": "등급·하루 cap·보너스 매칭·operator-control persist/provider. 지갑 writer가 아니고 admin cookie 면도 아니다.",
+      "required_rerun": ["QA0", "QA1", "QA2", "QA8"],
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "regression": [
+        "tooling/verify/backend/matching-membership/membership-daily-cap.cjs",
+        "tooling/verify/backend/matching-membership/operator-quota-grade.cjs",
+        "tooling/verify/backend/matching-membership/membership-ladder.cjs"
+      ],
+      "paths": [
+        "services/api-nest/src/membership/auto-downgrade.core.cjs",
+        "services/api-nest/src/membership/bonus-match-grant.core.cjs",
+        "services/api-nest/src/membership/bulk-operator-job.core.cjs",
+        "services/api-nest/src/membership/grade-daily-policy.core.cjs",
+        "services/api-nest/src/membership/member-360.core.cjs",
+        "services/api-nest/src/membership/member-daily-cap.core.cjs",
+        "services/api-nest/src/membership/member-daily-cap.http.cjs",
+        "services/api-nest/src/membership/member-daily-cap.isolation.cjs",
+        "services/api-nest/src/membership/operator-control.persist.cjs",
+        "services/api-nest/src/membership/operator-control.provider.cjs",
+        "services/api-nest/src/membership/operator-control.store.cjs",
+        "services/api-nest/src/membership/operator-quota-grade.admin-http.cjs",
+        "services/api-nest/src/membership/operator-quota-grade.isolation.cjs",
+        "services/api-nest/src/membership/presentation-profile.core.cjs",
+        "services/api-nest/src/membership/support-conversation.contract.cjs",
+        "services/api-nest/src/membership/membership.admin.controller.ts",
+        "services/api-nest/src/membership/membership.admin.service.ts",
+        "services/api-nest/src/membership/membership.mi.ts",
+        "services/api-nest/src/membership/membership.routes.ts",
+        "services/api-nest/src/membership/membership.runtime.service.ts",
+        "services/api-nest/src/membership/membership.types.ts",
+        "services/api-nest/src/membership/membership.user.controller.ts",
+        "services/api-nest/src/membership/membership.events.ts",
+        "services/api-nest/src/membership/admin-member-directory.admin-http.cjs",
+        "services/api-nest/src/membership/admin-member-directory.core.cjs",
+        "services/api-nest/src/membership/admin-member-directory.isolation.cjs",
+        "services/api-nest/src/membership/admin-member-directory.persist.cjs",
+        "services/api-nest/src/opportunities/participate.service.ts"
+      ]
+    },
+    {
+      "category": "OPERATOR_MALL",
+      "reason": "운영자 쇼핑몰 상품·원장 posting 연결. 분류만이며 지급 완료·QA 완료·운영 적용이 아니다.",
+      "required_rerun": ["QA0", "QA3", "QA8"],
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "regression": [
+        "tooling/verify/operator-mall-gha-pg.cjs"
+      ],
+      "paths": [
+        "services/api-nest/src/opportunities/operator-mall-ledger-posting.cjs",
+        "services/api-nest/src/opportunities/operator-mall-ledger-posting.isolation.cjs",
+        "services/api-nest/src/opportunities/operator-mall-product.admin-http.cjs",
+        "services/api-nest/src/opportunities/operator-mall-product.admin.service.ts",
+        "services/api-nest/src/opportunities/operator-mall-product.core.cjs",
+        "services/api-nest/src/opportunities/operator-mall-product.isolation.cjs",
+        "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
+        "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs"
+      ]
+    },
+    {
+      "category": "MODULE_WIRING",
+      "reason": "격리 QA PG resolver와 mall Admin 라우트 배선. 독립 money writer 아님.",
+      "required_rerun": ["QA0", "QA2"],
+      "security_impact": "LOW",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "paths": [
+        "services/api-nest/isolated-qa-pg.cjs",
+        "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
+        "services/api-nest/src/opportunities/opportunities.routes.ts"
+      ]
+    },
+    {
+      "category": "REFERRAL",
+      "reason": "reseller_id persist/isolation. 기존 referral matcher. 원장 writer 아님.",
+      "required_rerun": ["QA2", "QA8"],
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "paths": [
+        "services/api-nest/src/referral/reseller-id.core.cjs",
+        "services/api-nest/src/referral/reseller-id.isolation.cjs",
+        "services/api-nest/src/referral/reseller-id.persist.cjs",
+        "services/api-nest/src/referral/reseller-id.persist.isolation.cjs"
+      ]
+    },
+    {
+      "category": "CATALOG_EXTERNAL_WRITE",
+      "reason": "S1 운영자 행 보호·외부 카탈로그 쓰기 게이트. adapters.ingest 한 경로보다 writer 집합이 넓다.",
+      "required_rerun": ["QA0", "QA5", "QA8"],
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "regression": [
+        "tooling/verify/operator-row-protect.cjs",
+        "tooling/verify/catalog-external-write-ingest-http.cjs",
+        "tooling/verify/catalog-runtime-seed.cjs"
+      ],
+      "paths": [
+        "services/api-nest/catalog-external-write.core.cjs",
+        "services/api-nest/src/adapters/adapters.admin.service.ts",
+        "services/api-nest/src/opportunities/catalog-external-write.admin-writers.isolation.cjs",
+        "services/api-nest/src/opportunities/catalog-external-write.guard.ts",
+        "services/api-nest/src/opportunities/catalog-external-write.ingest-http.cjs",
+        "services/api-nest/src/opportunities/catalog-external-write.ingest-http.selftest.ts",
+        "services/api-nest/src/opportunities/catalog-external-write.ingest-isolation.cjs",
+        "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs",
+        "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts",
+        "services/api-nest/src/opportunities/catalog-external-write.ts-hook.cjs",
+        "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts",
+        "services/api-nest/src/opportunities/opportunities.admin.service.ts",
+        "services/api-nest/src/opportunities/opportunities.module.ts",
+        "services/api-nest/src/opportunities/opportunity-reprice.service.ts",
+        "services/api-nest/src/price-override/price-override.service.ts"
+      ]
+    }
+  ],
+  "not_proposed": [
+    "보호 경로 제외",
+    "공식 classify() 임의 확장",
+    "UNCLASSIFIED를 없애기 위한 허위 라벨"
+  ]
+}

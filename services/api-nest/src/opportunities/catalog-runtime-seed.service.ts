@@ -4,7 +4,9 @@
  * Day-1 CHECK(ebay|admin) · amazon/yahoo INSERT attempts = 0.
  */
 import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
+import type { PoolClient } from "pg";
 import { PostgresService } from "../db/postgres";
+import { CatalogExternalWriteGuard } from "./catalog-external-write.guard";
 import { OpportunitiesAdminService } from "./opportunities.admin.service";
 import { OpportunityRepriceService } from "./opportunity-reprice.service";
 import { FxSnapshotService } from "./fx-snapshot.service";
@@ -40,6 +42,7 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
     private readonly opportunities: OpportunitiesAdminService,
     private readonly fxSnapshots: FxSnapshotService,
     private readonly reprice: OpportunityRepriceService,
+    private readonly catalogWrite: CatalogExternalWriteGuard,
   ) {}
 
   async onModuleInit(): Promise<void> {
@@ -64,6 +67,24 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
         ok: true,
         skipped: true,
         reason: "DATABASE_URL unset",
+        fxSnapshotId: DAY1_FX_SNAPSHOT_ID,
+        assetsUpserted: 0,
+        listingsUpserted: 0,
+        opportunitiesUpserted: 0,
+        availableCount: 0,
+        compareReadyTrue: 0,
+        compareReadyFalse: 0,
+        forbiddenInsertAttempts: 0,
+      };
+    }
+
+    const boot = await this.catalogWrite.evaluateBootSeed();
+    if (!boot.allow) {
+      this.logger.warn(`catalog runtime seed blocked: ${boot.reason}`);
+      return {
+        ok: true,
+        skipped: true,
+        reason: boot.reason,
         fxSnapshotId: DAY1_FX_SNAPSHOT_ID,
         assetsUpserted: 0,
         listingsUpserted: 0,
@@ -160,6 +181,7 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
   /**
    * §0.10 — exact match 후 Asset Master / opportunity에 ebay image provenance 반영.
    * host must be i.ebayimg.com · imageSource=ebay.
+   * 잠금 후 재평가. operator 또는 게이트 ON이면 assets/opportunities 이미지 UPDATE 0.
    */
   async applyEbayImageProvenance(input: {
     assetId: string;
@@ -181,23 +203,41 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
       return { ok: false, reason: "image host must be i.ebayimg.com" };
     }
 
-    await this.db.query(
-      `UPDATE public.assets SET
+    const preflight = this.catalogWrite.preflightProductWrites();
+    if (preflight.skipAll) {
+      return { ok: false, reason: preflight.reason };
+    }
+
+    return this.db.withTransaction(async (client) => {
+      const decision = await this.catalogWrite.evaluateLockedAsset(
+        client,
+        assetId,
+      );
+      if (!decision.allow) {
+        return { ok: false, reason: decision.reason };
+      }
+      if (!decision.assetLocked) {
+        return { ok: false, reason: "asset missing" };
+      }
+      await client.query(
+        `UPDATE public.assets SET
          image_url = $2,
          image_source = 'ebay',
          updated_at = now()
        WHERE asset_id = $1`,
-      [assetId, imageUrl],
-    );
-    await this.db.query(
-      `UPDATE public.opportunities SET
+        [assetId, imageUrl],
+      );
+      await client.query(
+        `UPDATE public.opportunities SET
          asset_image_url = $2,
          asset_image_source = 'ebay',
          updated_at = now()
-       WHERE asset_id = $1`,
-      [assetId, imageUrl],
-    );
-    return { ok: true };
+       WHERE asset_id = $1
+         AND supply_source = 'legacy_external'`,
+        [assetId, imageUrl],
+      );
+      return { ok: true };
+    });
   }
 
   /**
@@ -210,11 +250,19 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
    * normalization fails is skipped (never inserted with a fabricated/raw
    * value) and counted separately so the failure stays observable — one bad
    * row must not discard the rest of the batch.
+   *
+   * 상품 쓰기는 asset 잠금(assets → opportunities.id ASC) 후 게이트·공급원을
+   * 같은 TX에서 재평가한다. 검사만 하고 나중에 쓰지 않는다.
    */
   async persistIngestListings(
     rawListings: unknown[],
     adapterId: string,
-  ): Promise<{ upserted: number; skipped: number; fxNormalizationFailed: number }> {
+  ): Promise<{
+    upserted: number;
+    skipped: number;
+    fxNormalizationFailed: number;
+    blockReason?: string;
+  }> {
     if (!this.db.configured()) {
       return { upserted: 0, skipped: 0, fxNormalizationFailed: 0 };
     }
@@ -233,21 +281,26 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
     let upserted = 0;
     let skipped = normalizeSkipped.length;
     let fxNormalizationFailed = 0;
+    let blockReason: string | undefined;
     const touchedAssetIds: string[] = [];
     const fxSnapshot =
       rows.some((r) => r.nativeCurrency !== "USDT") &&
       (await this.fxSnapshots.getLatestUsableSnapshot());
 
-    for (const row of rows) {
-      const assetOk = await this.db.query<{ ok: number }>(
-        `SELECT 1 AS ok FROM public.assets WHERE asset_id = $1 LIMIT 1`,
-        [row.assetId],
+    const preflight = this.catalogWrite.preflightProductWrites();
+    if (preflight.skipAll) {
+      this.logger.warn(
+        `persistIngestListings blocked (${preflight.reason}): adapter=${adapterId} rows=${rows.length}`,
       );
-      if (!assetOk.rows[0]) {
-        skipped += 1;
-        continue;
-      }
+      return {
+        upserted: 0,
+        skipped: skipped + rows.length,
+        fxNormalizationFailed: 0,
+        blockReason: preflight.reason,
+      };
+    }
 
+    for (const row of rows) {
       let priceUsdt: string;
       let fxSnapshotId: string | null;
       let denominationStatus: "normalized" = "normalized";
@@ -275,19 +328,87 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
         }
       }
 
-      const existing = await this.db.query<{ id: string }>(
-        `SELECT id::text FROM public.listings
+      const wrote = await this.db.withTransaction(async (client) =>
+        this.persistOneListingLocked(client, row, {
+          priceUsdt,
+          fxSnapshotId,
+          denominationStatus,
+        }),
+      );
+      if (!wrote.ok) {
+        skipped += 1;
+        if (wrote.reason) blockReason = wrote.reason;
+        continue;
+      }
+      upserted += 1;
+      touchedAssetIds.push(row.assetId);
+    }
+    if (touchedAssetIds.length > 0) {
+      try {
+        await this.reprice.repriceFromCurrentListings(touchedAssetIds);
+      } catch (e) {
+        this.logger.warn(
+          `canonical reprice after listing persist failed: ${
+            e instanceof Error ? e.message : String(e)
+          }`,
+        );
+      }
+    }
+    return { upserted, skipped, fxNormalizationFailed, blockReason };
+  }
+
+  private async persistOneListingLocked(
+    client: PoolClient,
+    row: {
+      assetId: string;
+      marketId: string;
+      adapterId: string;
+      marketplaceId: string | null;
+      externalItemId: string | null;
+      title: string | null;
+      nativeAmount: string;
+      nativeCurrency: string;
+      url: string | null;
+      imageUrl: string | null;
+      observedAt: string;
+      staleAt: string;
+      raw: unknown;
+    },
+    priced: {
+      priceUsdt: string;
+      fxSnapshotId: string | null;
+      denominationStatus: "normalized";
+    },
+  ): Promise<{ ok: boolean; reason?: string }> {
+    const decision = await this.catalogWrite.evaluateLockedAsset(
+      client,
+      row.assetId,
+    );
+    if (!decision.allow || !decision.assetLocked) {
+      if (!decision.allow) {
+        this.logger.warn(
+          `listing persist blocked asset=${row.assetId} reason=${decision.reason}`,
+        );
+      }
+      return {
+        ok: false,
+        reason: decision.allow ? "asset missing" : decision.reason,
+      };
+    }
+
+    const existing = await client.query<{ id: string }>(
+      `SELECT id::text FROM public.listings
           WHERE asset_id = $1 AND market_id = $2
             AND external_item_id IS NOT DISTINCT FROM $3
           LIMIT 1`,
-        [row.assetId, row.marketId, row.externalItemId],
-      );
+      [row.assetId, row.marketId, row.externalItemId],
+    );
 
-      if (existing.rows[0]) {
-        await this.db.query(
-          // currency always tracks price_usdt's true denomination (USDT) —
-          // native_currency is the separate, honest native-reading pairing.
-          `UPDATE public.listings SET
+    if (existing.rows[0]) {
+      await client.query(
+        // currency always tracks price_usdt's true denomination (USDT) —
+        // native_currency is the separate, honest native-reading pairing.
+        `UPDATE public.listings SET
              price_usdt = $2::numeric,
              currency = 'USDT',
              native_amount = $3::numeric,
@@ -304,26 +425,26 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
              raw = $14::jsonb,
              updated_at = now()
            WHERE id = $1::uuid`,
-          [
-            existing.rows[0].id,
-            priceUsdt,
-            row.nativeAmount,
-            row.nativeCurrency,
-            fxSnapshotId,
-            denominationStatus,
-            row.title,
-            row.url,
-            row.imageUrl,
-            row.observedAt,
-            row.staleAt,
-            row.marketplaceId,
-            row.adapterId,
-            JSON.stringify(row.raw),
-          ],
-        );
-      } else {
-        await this.db.query(
-          `INSERT INTO public.listings (
+        [
+          existing.rows[0].id,
+          priced.priceUsdt,
+          row.nativeAmount,
+          row.nativeCurrency,
+          priced.fxSnapshotId,
+          priced.denominationStatus,
+          row.title,
+          row.url,
+          row.imageUrl,
+          row.observedAt,
+          row.staleAt,
+          row.marketplaceId,
+          row.adapterId,
+          JSON.stringify(row.raw),
+        ],
+      );
+    } else {
+      await client.query(
+        `INSERT INTO public.listings (
              asset_id, market_id, adapter_id, marketplace_id, external_item_id,
              title, price_usdt, currency, native_amount, native_currency,
              fx_snapshot_id, price_denomination_status, url, image_url,
@@ -333,41 +454,27 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
              $10,$11,$12,$13,
              $14::timestamptz,$15::timestamptz,$16::jsonb
            )`,
-          [
-            row.assetId,
-            row.marketId,
-            row.adapterId,
-            row.marketplaceId,
-            row.externalItemId,
-            row.title,
-            priceUsdt,
-            row.nativeAmount,
-            row.nativeCurrency,
-            fxSnapshotId,
-            denominationStatus,
-            row.url,
-            row.imageUrl,
-            row.observedAt,
-            row.staleAt,
-            JSON.stringify(row.raw),
-          ],
-        );
-      }
-      upserted += 1;
-      touchedAssetIds.push(row.assetId);
+        [
+          row.assetId,
+          row.marketId,
+          row.adapterId,
+          row.marketplaceId,
+          row.externalItemId,
+          row.title,
+          priced.priceUsdt,
+          row.nativeAmount,
+          row.nativeCurrency,
+          priced.fxSnapshotId,
+          priced.denominationStatus,
+          row.url,
+          row.imageUrl,
+          row.observedAt,
+          row.staleAt,
+          JSON.stringify(row.raw),
+        ],
+      );
     }
-    if (touchedAssetIds.length > 0) {
-      try {
-        await this.reprice.repriceFromCurrentListings(touchedAssetIds);
-      } catch (e) {
-        this.logger.warn(
-          `canonical reprice after listing persist failed: ${
-            e instanceof Error ? e.message : String(e)
-          }`,
-        );
-      }
-    }
-    return { upserted, skipped, fxNormalizationFailed };
+    return { ok: true, reason: decision.reason };
   }
 
   private async ensureFxSnapshot(): Promise<void> {
@@ -399,66 +506,72 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
     opp: Record<string, unknown>,
   ): Promise<boolean> {
     const assetId = String(opp.assetId);
-    const existing = await this.db.query<{ id: string }>(
-      `SELECT id::text FROM public.opportunities WHERE asset_id = $1 LIMIT 1`,
-      [assetId],
-    );
-    if (existing.rows[0]) return false;
-
     const pricing = opp.pricing as Record<string, unknown>;
-    await this.db.query(
-      `INSERT INTO public.opportunities (
-         asset_id, pricing_version, priced_at, expected_profit_usdt,
-         expected_profit_krw_approx, fx_snapshot_id, estimated_duration_sec,
-         ai_confidence_score, difficulty, tags, required_capital_usdt,
-         execution_mode, execution_platforms, category, asset_label,
-         asset_image_url, asset_image_source, asset_image_alt_ko,
-         arbitrage_type, arbitrage_type_ko, pricing, stale_at, status,
-         sell_success_rate, sell_success_window_days, sell_success_as_of,
-         risk_score, grade_mismatch, image_missing, capital_band
-       ) VALUES (
-         $1,$2,$3::timestamptz,$4::numeric,$5::numeric,$6,$7,
-         $8::numeric,$9,$10::text[],$11::numeric,
-         $12,$13::text[],$14,$15,
-         $16,$17,$18,
-         $19,$20,$21::jsonb,$22::timestamptz,$23,
-         $24::numeric,$25,$26::timestamptz,
-         $27,$28,$29,$30
-       )`,
-      [
+    return this.db.withTransaction(async (client) => {
+      const decision = await this.catalogWrite.evaluateLockedAsset(
+        client,
         assetId,
-        opp.pricingVersion,
-        opp.pricedAt,
-        opp.expectedProfitUsdt,
-        opp.expectedProfitKrwApprox,
-        opp.fxSnapshotId,
-        opp.estimatedDurationSec,
-        opp.aiConfidenceScore,
-        opp.difficulty,
-        opp.tags,
-        opp.requiredCapitalUsdt,
-        opp.executionMode,
-        opp.executionPlatforms,
-        opp.category,
-        opp.assetLabel,
-        opp.assetImageUrl,
-        opp.assetImageSource,
-        opp.assetImageAltKo,
-        opp.arbitrageType,
-        opp.arbitrageTypeKo,
-        JSON.stringify(pricing),
-        opp.staleAt,
-        opp.status,
-        opp.sellSuccessRate,
-        opp.sellSuccessWindowDays,
-        opp.sellSuccessAsOf,
-        opp.riskScore,
-        opp.gradeMismatch,
-        opp.imageMissing,
-        opp.capitalBand,
-      ],
-    );
-    return true;
+      );
+      if (!decision.allow) return false;
+      const existing = await client.query<{ id: string }>(
+        `SELECT id::text FROM public.opportunities WHERE asset_id = $1 LIMIT 1`,
+        [assetId],
+      );
+      if (existing.rows[0]) return false;
+      await client.query(
+        `INSERT INTO public.opportunities (
+           asset_id, pricing_version, priced_at, expected_profit_usdt,
+           expected_profit_krw_approx, fx_snapshot_id, estimated_duration_sec,
+           ai_confidence_score, difficulty, tags, required_capital_usdt,
+           execution_mode, execution_platforms, category, asset_label,
+           asset_image_url, asset_image_source, asset_image_alt_ko,
+           arbitrage_type, arbitrage_type_ko, pricing, stale_at, status,
+           sell_success_rate, sell_success_window_days, sell_success_as_of,
+           risk_score, grade_mismatch, image_missing, capital_band
+         ) VALUES (
+           $1,$2,$3::timestamptz,$4::numeric,$5::numeric,$6,$7,
+           $8::numeric,$9,$10::text[],$11::numeric,
+           $12,$13::text[],$14,$15,
+           $16,$17,$18,
+           $19,$20,$21::jsonb,$22::timestamptz,$23,
+           $24::numeric,$25,$26::timestamptz,
+           $27,$28,$29,$30
+         )`,
+        [
+          assetId,
+          opp.pricingVersion,
+          opp.pricedAt,
+          opp.expectedProfitUsdt,
+          opp.expectedProfitKrwApprox,
+          opp.fxSnapshotId,
+          opp.estimatedDurationSec,
+          opp.aiConfidenceScore,
+          opp.difficulty,
+          opp.tags,
+          opp.requiredCapitalUsdt,
+          opp.executionMode,
+          opp.executionPlatforms,
+          opp.category,
+          opp.assetLabel,
+          opp.assetImageUrl,
+          opp.assetImageSource,
+          opp.assetImageAltKo,
+          opp.arbitrageType,
+          opp.arbitrageTypeKo,
+          JSON.stringify(pricing),
+          opp.staleAt,
+          opp.status,
+          opp.sellSuccessRate,
+          opp.sellSuccessWindowDays,
+          opp.sellSuccessAsOf,
+          opp.riskScore,
+          opp.gradeMismatch,
+          opp.imageMissing,
+          opp.capitalBand,
+        ],
+      );
+      return true;
+    });
   }
 
   private async countCatalog(): Promise<{

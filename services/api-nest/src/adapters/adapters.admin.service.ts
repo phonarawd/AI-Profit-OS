@@ -25,6 +25,7 @@ import {
   worstTint,
 } from "./adapters.mi";
 import { InProcessEventBus } from "../events/in-process.bus";
+import { CatalogExternalWriteGuard } from "../opportunities/catalog-external-write.guard";
 import { CatalogRuntimeSeedService } from "../opportunities/catalog-runtime-seed.service";
 import { FxSnapshotService } from "../opportunities/fx-snapshot.service";
 import { ADAPTER_EVENTS } from "./adapters.events";
@@ -107,6 +108,9 @@ export class AdaptersAdminService {
     @Optional()
     @Inject(forwardRef(() => FxSnapshotService))
     private readonly fxSnapshots?: FxSnapshotService,
+    @Optional()
+    @Inject(forwardRef(() => CatalogExternalWriteGuard))
+    private readonly catalogWrite?: CatalogExternalWriteGuard,
   ) {
     for (const a of this.deployAdapters) {
       this.state.set(a.adapterId, {
@@ -277,7 +281,7 @@ export class AdaptersAdminService {
   }
 
   async ingest(body: AdapterIngestBody): Promise<{
-    ok: true;
+    ok: boolean;
     adapterId: string;
     accepted: number;
     matchAttemptsAccepted: number;
@@ -286,6 +290,11 @@ export class AdaptersAdminService {
     identityUnmatchedQueued?: number;
     fxSnapshotId?: string | null;
     fxNormalizationFailed?: number;
+    productWrite?: {
+      status: "wrote" | "blocked" | "failed" | "skipped";
+      reason?: string;
+      error?: string;
+    };
   }> {
     const adapterId = String(body.adapterId ?? "");
     assertNotForbidden({ adapterId, source: adapterId });
@@ -393,31 +402,62 @@ export class AdaptersAdminService {
 
     let listingsPersisted = 0;
     let fxNormalizationFailed = 0;
-    if (
+    let productWrite: {
+      status: "wrote" | "blocked" | "failed" | "skipped";
+      reason?: string;
+      error?: string;
+    } = { status: "skipped" };
+    const productWritePreflight = this.catalogWrite
+      ? this.catalogWrite.preflightProductWrites()
+      : { skipAll: true, reason: "GATE_UNRESOLVED" };
+    const shouldPersistProduct =
       this.catalogSeed &&
       listingsForPersist.length > 0 &&
       (adapterId === "ebay" || adapterId === "admin") &&
-      !body.dryRun
-    ) {
-      const persisted = await this.catalogSeed.persistIngestListings(
-        listingsForPersist,
-        adapterId,
-      );
-      listingsPersisted = persisted.upserted;
-      fxNormalizationFailed = persisted.fxNormalizationFailed;
-
-      if (adapterId === "ebay") {
-        for (const raw of listingsForPersist) {
-          if (!raw || typeof raw !== "object") continue;
-          const L = raw as Record<string, unknown>;
-          const assetId = typeof L.assetId === "string" ? L.assetId : "";
-          const imageUrl = typeof L.imageUrl === "string" ? L.imageUrl : "";
-          if (!assetId || assetId.startsWith("query:") || !imageUrl) continue;
-          await this.catalogSeed.applyEbayImageProvenance({
-            assetId,
-            imageUrl,
-          });
+      !body.dryRun;
+    if (productWritePreflight.skipAll && shouldPersistProduct) {
+      productWrite = {
+        status: "blocked",
+        reason: productWritePreflight.reason,
+      };
+    } else if (shouldPersistProduct && this.catalogSeed) {
+      try {
+        const persisted = await this.catalogSeed.persistIngestListings(
+          listingsForPersist,
+          adapterId,
+        );
+        listingsPersisted = persisted.upserted;
+        fxNormalizationFailed = persisted.fxNormalizationFailed;
+        if (listingsPersisted > 0) {
+          productWrite = { status: "wrote", reason: "ALLOW_LEGACY" };
+        } else {
+          productWrite = {
+            status: "blocked",
+            reason: persisted.blockReason || "PRODUCT_WRITE_BLOCKED",
+          };
         }
+
+        if (adapterId === "ebay") {
+          for (const raw of listingsForPersist) {
+            if (!raw || typeof raw !== "object") continue;
+            const L = raw as Record<string, unknown>;
+            const assetId = typeof L.assetId === "string" ? L.assetId : "";
+            const imageUrl = typeof L.imageUrl === "string" ? L.imageUrl : "";
+            if (!assetId || assetId.startsWith("query:") || !imageUrl) continue;
+            await this.catalogSeed.applyEbayImageProvenance({
+              assetId,
+              imageUrl,
+            });
+          }
+        }
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        productWrite = {
+          status: "failed",
+          reason: "PERSIST_EXCEPTION",
+          error: message,
+        };
+        listingsPersisted = 0;
       }
     }
 
@@ -451,7 +491,7 @@ export class AdaptersAdminService {
     });
 
     return {
-      ok: true,
+      ok: productWrite.status !== "failed",
       adapterId,
       accepted,
       matchAttemptsAccepted,
@@ -460,6 +500,7 @@ export class AdaptersAdminService {
       identityUnmatchedQueued,
       fxSnapshotId,
       fxNormalizationFailed,
+      productWrite,
     };
   }
 

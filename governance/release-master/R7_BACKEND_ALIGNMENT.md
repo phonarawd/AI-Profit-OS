@@ -4,11 +4,11 @@
 REL = REL-505
 TITLE = BACKEND_DATA_ALIGNMENT_CERTIFICATION
 STATUS = COMPLETED
-CERT_ISSUED = 0
+CERT_ISSUED = 1
 PLAN_LOCKED = TRUE
 PROTECTED_SCOPE_MUTATION = FALSE
 OPEN_CONFLICT = 0
-STALE_PENDING_REBASE = 1
+STALE_PENDING_REBASE = 0
 REBASE_OWNER = REL-502
 CONCEALMENT = 0
 ALL_ALIGNED = 0
@@ -24,7 +24,7 @@ PROJECT_REF = mgsytcetsiecllmhcyox
 
 REL-508 이 `POST /api/v1/me/current-fx/approx` Nest 배선을 열었다. SDK/Nest 충돌은 닫혔다.
 `services/api-nest` + `supabase/migrations` protected-scope 변경은 REL-502 formal rebase(`ea-baseline-137241804ff2-83935adcdf57`)에 포함되었고 drift는 0이다.
-REL-502 current-epoch QA1~QA9는 아직 재실행 전이라 CERT_ISSUED=0 · STALE_PENDING_REBASE=1이다. predecessor 인증을 current로 세탁하지 않았다.
+REL-502 current-epoch QA1~QA9가 공식 경로로 COMPLETE이고 `FINAL_ACCEPTANCE`는 ISSUED다. CERT_ISSUED=1 · STALE_PENDING_REBASE=0. predecessor 인증을 current로 세탁하지 않았다.
 
 ## 1. CLOSED CONFLICT
 
@@ -49,7 +49,7 @@ missing snapshot/amount → null. KRW 0 위조 0. client `Number()*rate` 0.
 | rls | REL-408 80/80 ON | `SECURITY_BASELINE.md` | ALIGNED | REL-408 |
 | indexes | applied migration `CREATE INDEX` | file-only indexes 0 | ALIGNED (REL-701-DB 2026-09-04 · unapplied 0) | REL-408 / REL-701-DB |
 | migration_head | local `20260905110000` | remote applied `20260905110000` | ALIGNED (REL-701-DB executed 2026-09-04 02:34 UTC · `--include-all` · unapplied 0 · `20260905110000` already on remote 2026-09-13 read-only · this slice apply 0) | REL-701-DB |
-| p0_p3_engine | REL-502 `FINAL_ACCEPTANCE` | DEFECTS_P0/P1 = 0 | STALE_PENDING_RERUN | REL-502 |
+| p0_p3_engine | REL-502 `FINAL_ACCEPTANCE` | DEFECTS_P0/P1 = 0 | ALIGNED (current epoch ISSUED) | REL-502 |
 | p0_p3_admin | REL-409 R6 cert | KNOWN_P0~P3 = 0 | ALIGNED | REL-409 |
 | ui_truth_home_money | home-money-read contract | Engine todayPossible 0 · fake zero 0 | ALIGNED | money / UI |
 | route_contract_100 | R0 matrix (historical missing_fact) | 100% close | DEFERRED not aligned | REL-506 |

@@ -121,6 +121,16 @@ export class MembershipRuntimeService {
     }
 
     const defaults = membershipDefaults(next);
+    const ov = await this.db.query<{ daily_user_match_cap: number | null }>(
+      `SELECT daily_user_match_cap
+         FROM public.user_match_policy_overrides
+        WHERE user_id = $1::uuid`,
+      [userId],
+    );
+    const nextRowCap =
+      ov.rows[0]?.daily_user_match_cap != null
+        ? Number(row.daily_user_match_cap)
+        : defaults.dailyUserMatchCap;
     await this.db.query(
       `UPDATE public.user_membership SET
          membership = $2,
@@ -134,7 +144,7 @@ export class MembershipRuntimeService {
         userId,
         defaults.membership as MembershipId,
         defaults.maxCapitalBand,
-        defaults.dailyUserMatchCap,
+        nextRowCap,
         defaults.matchStrictness,
       ],
     );

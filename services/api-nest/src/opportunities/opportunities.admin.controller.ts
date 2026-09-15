@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   Param,
   Patch,
   Post,
@@ -15,6 +16,7 @@ import { AdminOperator } from "../common/admin-operator.decorator";
 import type { RequestWithAdmin } from "../common/admin.guard";
 import { PriceOverrideService } from "../price-override/price-override.service";
 import { CatalogRuntimeSeedService } from "./catalog-runtime-seed.service";
+import { OperatorMallProductAdminService } from "./operator-mall-product.admin.service";
 import { OpportunitiesAdminService } from "./opportunities.admin.service";
 import { isCapitalBand } from "./opportunities.mi";
 import { OPPORTUNITY_ADMIN_ROUTES } from "./opportunities.routes";
@@ -36,6 +38,7 @@ export class OpportunitiesAdminController {
     private readonly opportunities: OpportunitiesAdminService,
     private readonly catalogSeed: CatalogRuntimeSeedService,
     private readonly priceOverride: PriceOverrideService,
+    private readonly mallProducts: OperatorMallProductAdminService,
   ) {}
 
   @Get(OPPORTUNITY_ADMIN_ROUTES.assets)
@@ -94,6 +97,32 @@ export class OpportunitiesAdminController {
         imageMissingRaw === "true" || imageMissingRaw === "1";
     }
     return this.opportunities.list(q);
+  }
+
+  /** 정적 경로. opportunities/:id 보다 먼저 등록해야 한다. */
+  @Get(OPPORTUNITY_ADMIN_ROUTES.operatorProducts)
+  listOperatorProducts(
+    @Query("cursor") cursor: string | undefined,
+    @Query("limit") limitRaw: string | undefined,
+    @Query("visibility") visibility: string | undefined,
+    @AdminOperator() operatorId: string,
+  ) {
+    return this.mallProducts.list(
+      {
+        cursor,
+        limit: limitRaw != null ? Number(limitRaw) : undefined,
+        visibility,
+      },
+      operatorId,
+    );
+  }
+
+  @Get(OPPORTUNITY_ADMIN_ROUTES.operatorProductExact)
+  getOperatorProduct(
+    @Param("id") id: string,
+    @AdminOperator() operatorId: string,
+  ) {
+    return this.mallProducts.get(id, operatorId);
   }
 
   @Get(OPPORTUNITY_ADMIN_ROUTES.get)
@@ -178,5 +207,47 @@ export class OpportunitiesAdminController {
     @Body() body: Record<string, unknown>,
   ) {
     return this.opportunities.registerAssetImage(assetId, body);
+  }
+
+  @Post(OPPORTUNITY_ADMIN_ROUTES.operatorProducts)
+  registerOperatorProduct(
+    @Body() body: Record<string, unknown>,
+    @Headers("idempotency-key") idempotencyKey: string | undefined,
+    @AdminOperator() operatorId: string,
+  ) {
+    return this.mallProducts.register(
+      {
+        ...body,
+        idempotencyKey: body.idempotencyKey || idempotencyKey,
+      },
+      operatorId,
+    );
+  }
+
+  @Patch(OPPORTUNITY_ADMIN_ROUTES.operatorProductById)
+  updateOperatorProduct(
+    @Param("id") id: string,
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
+    return this.mallProducts.update(id, body, operatorId);
+  }
+
+  @Patch(OPPORTUNITY_ADMIN_ROUTES.operatorVisibility)
+  updateOperatorVisibility(
+    @Param("id") id: string,
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
+    return this.mallProducts.update(id, body, operatorId);
+  }
+
+  @Get(OPPORTUNITY_ADMIN_ROUTES.operatorParticipations)
+  listOperatorParticipations(
+    @Param("id") id: string,
+    @Query("userId") userId: string | undefined,
+    @AdminOperator() operatorId: string,
+  ) {
+    return this.mallProducts.listParticipations(id, operatorId, userId);
   }
 }

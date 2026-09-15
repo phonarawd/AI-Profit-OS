@@ -1,0 +1,30 @@
+{
+  "updatedAt": "2026-09-15T03:20:00+09:00",
+  "head": "9d48e58e6fa0871611fe27292e8c876ee568a18c",
+  "commitPushDeploy": 0,
+  "contractPath": "quality/contracts/operator-control/",
+  "contractVersion": "2026-09-15.mall-admin-v5",
+  "protectedDirtyThisSlice": [
+    "services/api-nest/src/common/admin-capabilities.ts",
+    "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
+    "services/api-nest/src/opportunities/opportunities.routes.ts",
+    "services/api-nest/src/membership/membership.admin.service.ts"
+  ],
+  "protectedDirtyNote": "목록/단건/권한 분류/회원 페이지 목록에 보호 파일 최소 수정. ACK 문구만 준비. ISSUED 위조 없음.",
+  "ackPrepared": {
+    "paths": [
+      "services/api-nest/src/common/admin-capabilities.ts",
+      "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
+      "services/api-nest/src/opportunities/opportunities.routes.ts",
+      "services/api-nest/src/membership/membership.admin.service.ts"
+    ],
+    "phrase": "운영자 상품 목록/단건 GET, expectedRevision 409, 직원/회원 디렉터리 격리 persist. 새 baseline ISSUED 아님.",
+    "sha": "fill_after_commit"
+  },
+  "verifyThisSlice": {
+    "mallIsolation": "local pending",
+    "realPgConcurrency": "pending_gha",
+    "opsDbApply": "BLOCKED",
+    "officialQa0to9": false
+  }
+}

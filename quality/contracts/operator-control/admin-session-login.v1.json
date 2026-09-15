@@ -1,0 +1,55 @@
+{
+  "contractVersion": "2026-09-15.p4.admin-login-v2",
+  "kind": "operator_login",
+  "implementation": "core_resolves_isolated_persist_controller_still_unready_arg",
+  "activation": "isolated_qa_only",
+  "activationReason": "AdminSessionController still passes createUnreadyStaffStore. loginStaff then resolves isolated QA persist. unset URL or missing schema → 503. ops DATABASE_URL never used. demo staff forbidden.",
+  "route": {
+    "method": "POST",
+    "path": "/api/v1/admin-session/login",
+    "outsideAdminGuard": true,
+    "csrfOnFirstLogin": false,
+    "sessionCookies": ["aipo_admin_session", "admin CSRF cookie"]
+  },
+  "dtoIn": {
+    "email": "string",
+    "password": "string",
+    "userAccessToken": "forbidden_if_present"
+  },
+  "dtoOutSuccess": {
+    "connected": true,
+    "adminId": "uuid",
+    "role": "rbac role",
+    "token": "MUST_NOT_appear_in_json"
+  },
+  "errors": [
+    { "http": 503, "code": "STORE_UNREADY", "applied": false },
+    { "http": 503, "code": "ADMIN_AUTH_NOT_CONFIGURED" },
+    { "http": 401, "code": "ADMIN_AUTH_INVALID" },
+    { "http": 401, "code": "ADMIN_AUTH_REQUIRED" }
+  ],
+  "forbidden": [
+    "Supabase Auth",
+    "demo login",
+    "fixed operational password",
+    "user JWT / aipo_session as Admin"
+  ],
+  "store": {
+    "readyWhen": "isolated QA URL + admin_staff schema + fixture row",
+    "kind": "persist_or_unready",
+    "persistCode": true,
+    "nestInject": "createUnreadyStaffStore then resolveRuntimeStaffStore",
+    "migrationDraft": "quality/migrations-draft/20260915080000_admin_staff_credentials.sql"
+  },
+  "verification": {
+    "coreIsolation": "memory store password/user-session/disabled",
+    "persistIsolation": "fake persist lookup · runtime unset · no demo seed",
+    "nestHttp": "unready env still 503; GHA ephemeral PG is the real HTTP+SQL target",
+    "realDb": "gha_ephemeral_pass",
+    "workflowRunId": "34906126441",
+    "verifiedHead": "d626126c0083f82be993d028750088babd256ec2",
+    "previousVerifiedHead": "87f033995ee0ee2e42d72eae8a809b2037f229a4",
+    "previousWorkflowRunId": "34885649558",
+    "officialQa": false
+  }
+}

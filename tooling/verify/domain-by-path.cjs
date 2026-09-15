@@ -66,8 +66,14 @@ const RULES = [
         f,
       ) ||
       /^tooling\/recovery\/build-engine-drift-inventory\.cjs$/.test(f) ||
-      /^tooling\/verify\/engine-drift-inventory\.cjs$/.test(f),
-    scripts: ["engine-drift-inventory.cjs"],
+      /^tooling\/recovery\/classify-engine-drift-proposal\.selftest\.cjs$/.test(f) ||
+      /^tooling\/recovery\/lib\/classify-engine-drift\.cjs$/.test(f) ||
+      /^tooling\/verify\/engine-drift-inventory\.cjs$/.test(f) ||
+      /^tooling\/verify\/classify-engine-drift\.cjs$/.test(f) ||
+      /^quality\/contracts\/operator-control\/engine-drift-classification-proposal\.v1\.json$/.test(
+        f,
+      ),
+    scripts: ["engine-drift-inventory.cjs", "classify-engine-drift.cjs"],
   },
   {
     test: (f) =>
@@ -340,11 +346,23 @@ const RULES = [
   {
     test: (f) =>
       /^services\/api-nest\/src\/membership\//.test(f) ||
+      /^services\/api-nest\/admin-staff-login\.(core|isolation|persist)(\.isolation)?\.cjs$/.test(f) ||
+      /^services\/api-nest\/isolated-qa-pg\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/common\/admin-session-login\.admin-http\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/operator-mall-product\./.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/operator-mall-ledger-posting\./.test(f) ||
+      /^tooling\/verify\/operator-mall-gha-pg\.cjs$/.test(f) ||
+      /^tooling\/verify\/operator-mall-official-ledger-sql/.test(f) ||
+      /^quality\/migrations-draft\/20260915070000_operator_mall_product\.sql$/.test(f) ||
+      /^\.github\/workflows\/operator-mall-gha-pg\.yml$/.test(f) ||
+      /^services\/api-nest\/src\/referral\/reseller-id\./.test(f) ||
+      /^services\/api-nest\/src\/ledger\/money-authority\./.test(f) ||
       /^tooling\/verify\/backend\/matching-membership\/membership-/.test(f) ||
       /^services\/market-intelligence\/src\/membership\.cjs$/.test(f),
     scripts: [
       "backend/matching-membership/membership-ladder.cjs",
       "backend/matching-membership/membership-daily-cap.cjs",
+      "backend/matching-membership/operator-quota-grade.cjs",
     ],
   },
   {
@@ -1160,8 +1178,32 @@ const RULES = [
       "backend/opportunity-engine/asset-image-surface.cjs",
       "listing-legs-day1.cjs",
       "catalog-runtime-seed.cjs",
+      "operator-row-protect.cjs",
       "ebay-resilience.cjs",
       "price-denomination-contract.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /catalog-external-write/.test(f) ||
+      /operator-row-protect/.test(f) ||
+      /opportunities_supply_source/.test(f) ||
+      /^quality\/migrations-draft\//.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/opportunity-reprice\.service\.ts$/.test(
+        f,
+      ) ||
+      /^services\/api-nest\/src\/opportunities\/opportunities\.admin\.service\.ts$/.test(
+        f,
+      ) ||
+      /^services\/api-nest\/src\/price-override\/price-override\.service\.ts$/.test(
+        f,
+      ) ||
+      /^tooling\/seed\/catalog-runtime\.cjs$/.test(f),
+    scripts: [
+      "operator-row-protect.cjs",
+      "catalog-runtime-seed.cjs",
+      "ebay-identity-ingest.cjs",
+      "adapter-ingest-fail-closed.cjs",
     ],
   },
   {

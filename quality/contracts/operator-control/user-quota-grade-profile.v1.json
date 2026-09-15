@@ -1,0 +1,38 @@
+{
+  "contractVersion": "2026-09-14.b3.display-v19",
+  "bundleId": "user-quota-grade-profile",
+  "generatedAt": "2026-09-14T18:50:00+09:00",
+  "repo": "phonarawd/AI-Profit-OS",
+  "head": "27b5b9f71f4350ca69f3e657be9b26957e91d8d1",
+  "implementation": "local_dirty_not_deployed",
+  "schemaApplied": false,
+  "storeReady": false,
+  "publishedToUiRepo": false,
+  "supersedes": ["2026-09-14.b3", "2026-09-14.b3.handoff", "2026-09-14.b3.v19-7"],
+  "preservedB3": "C:\\Users\\PC\\Desktop\\AI_PROFIT_OS\\quality\\contracts\\operator-control\\preserved-b3\\user-quota-grade-profile.v1.json",
+  "b2Original": "absent_do_not_claim_exact_delta",
+  "userApi": {
+    "method": "GET",
+    "path": "/api/v1/me/membership",
+    "implementedOnController": true
+  },
+  "presentation": {
+    "kind": "user_display_journey",
+    "steps": ["product", "compare", "cargo", "flight", "buyer", "settle", "complete"],
+    "atSec": [0, 8, 18, 28, 48, 58, 66],
+    "totalDurationSec": 70,
+    "timeField": "atSec",
+    "notExecutionPolicyDay1": true,
+    "fiveStep14sDraftNotProductDefault": true
+  },
+  "schemaFlags": {
+    "schemaApplied": "preflight only",
+    "storeReady": "preflight storeStatus",
+    "compiledDefaultDoesNotSetReady": true
+  },
+  "invariants": {
+    "newSignupDailyMatchCap": 5,
+    "observedLadderSprout": 8,
+    "memoryDraftDoesNotAuthorizeParticipate": true
+  }
+}

@@ -6,6 +6,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import type { PoolClient } from "pg";
 import { PostgresService } from "../db/postgres";
 import { InProcessEventBus } from "../events/in-process.bus";
+import { CatalogExternalWriteGuard } from "./catalog-external-write.guard";
 import {
   approxKrwFromSnapshot,
   computeOpportunityPricing,
@@ -58,16 +59,46 @@ export class OpportunityRepriceService {
   constructor(
     private readonly db: PostgresService,
     private readonly bus: InProcessEventBus,
+    private readonly catalogWrite: CatalogExternalWriteGuard,
   ) {}
 
   /**
    * compute 성공 시에만 priced_at = stale_at = 동일 as-of bind.
    * freshness 단독 patch 금지. Admin patchPricing과 listing reprice가 공유.
+   * 같은 client에서 기회 잠금·평가 후 legacy_external만 UPDATE.
+   * 2인자·옵션 생략·requireLegacySupply=false·임의 writerKind는 보호를 끄지 못한다.
    */
   async persistComputedPricing(
     client: PoolClient,
     input: PersistComputedPricingInput,
-  ): Promise<OpportunityPersistRow> {
+  ): Promise<OpportunityPersistRow>;
+  async persistComputedPricing(
+    client: PoolClient,
+    input: PersistComputedPricingInput,
+    opts: { requireLegacySupply?: boolean },
+  ): Promise<OpportunityPersistRow | null>;
+  async persistComputedPricing(
+    client: PoolClient,
+    input: PersistComputedPricingInput,
+    opts?: { requireLegacySupply?: boolean },
+  ): Promise<OpportunityPersistRow | null> {
+    void opts;
+    const decided = await this.catalogWrite.evaluateLockedOpportunity(
+      client,
+      input.id,
+    );
+    if (decided.opportunityMissing) {
+      throw new Error("opportunity persist missing RETURNING row");
+    }
+    if (!decided.allow) {
+      const err = new Error(decided.reason) as Error & {
+        code: string;
+        wrote: false;
+      };
+      err.code = decided.reason;
+      err.wrote = false;
+      throw err;
+    }
     const { rows } = await client.query<OpportunityPersistRow>(
       `UPDATE public.opportunities SET
           pricing = $2::jsonb,
@@ -79,6 +110,7 @@ export class OpportunityRepriceService {
           capital_band = $7,
           updated_at = now()
         WHERE id = $1
+          AND supply_source = 'legacy_external'
         RETURNING ${OPP_RETURNING}`,
       [
         input.id,
@@ -91,7 +123,15 @@ export class OpportunityRepriceService {
       ],
     );
     const updated = rows[0];
-    if (!updated) throw new Error("opportunity persist missing RETURNING row");
+    if (!updated) {
+      const err = new Error("OPERATOR_PROTECTED") as Error & {
+        code: string;
+        wrote: false;
+      };
+      err.code = "OPERATOR_PROTECTED";
+      err.wrote = false;
+      throw err;
+    }
     return updated;
   }
 
@@ -109,6 +149,11 @@ export class OpportunityRepriceService {
         assetIds.map((id) => String(id || "").trim()).filter((id) => id.length > 0),
       ),
     ];
+    const preflight = this.catalogWrite.preflightProductWrites();
+    if (preflight.skipAll) {
+      this.logger.warn(`reprice blocked (${preflight.reason}): assets=${unique.length}`);
+      return { attempted: unique.length, updated: 0, skipped: unique.length };
+    }
     let updated = 0;
     let skipped = 0;
     for (const assetId of unique) {
@@ -134,10 +179,17 @@ export class OpportunityRepriceService {
     if (!this.db.configured()) return "skipped";
 
     const persisted = await this.db.withTransaction(async (client) => {
+      const decision = await this.catalogWrite.evaluateLockedAsset(
+        client,
+        assetId,
+      );
+      if (!decision.allow) return null;
+
       const { rows } = await client.query<OpportunityPersistRow>(
         `SELECT ${OPP_RETURNING}
            FROM public.opportunities
           WHERE asset_id = $1
+          ORDER BY id ASC
           FOR UPDATE`,
         [assetId],
       );
@@ -200,15 +252,19 @@ export class OpportunityRepriceService {
         useAdminOverride: false,
       };
       const asOf = new Date().toISOString();
-      return this.persistComputedPricing(client, {
-        id: row.id,
-        pricing,
-        expectedProfitUsdt: computed.expectedProfitUsdt,
-        expectedProfitKrw,
-        capitalBand: resolveCapitalBand(row.required_capital_usdt),
-        nextVersion: row.pricing_version + 1,
-        asOf,
-      });
+      return this.persistComputedPricing(
+        client,
+        {
+          id: row.id,
+          pricing,
+          expectedProfitUsdt: computed.expectedProfitUsdt,
+          expectedProfitKrw,
+          capitalBand: resolveCapitalBand(row.required_capital_usdt),
+          nextVersion: row.pricing_version + 1,
+          asOf,
+        },
+        { requireLegacySupply: true },
+      );
     });
 
     if (!persisted) return "skipped";

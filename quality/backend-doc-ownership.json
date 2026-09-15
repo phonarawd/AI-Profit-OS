@@ -1,13 +1,13 @@
 {
- "generatedAt": "2026-09-12T06:20:57.327Z",
- "headSha": "3b5feeb09fda81f3fa0609a57cd3c70305eb2df3",
+ "generatedAt": "2026-09-15T09:40:00.000Z",
+ "headSha": "b98f5664919d5af7d271e675f5ec5130c0afe868",
  "generator": "tooling/backend/_p5-write-ownership.cjs",
  "note": "All remaining .md/.mdc paths. decision KEEP. UNKNOWN 0. boundary markdown rule reads keep[].path.",
  "totals": {
-  "docs": 134,
+  "docs": 150,
   "unknown": 0,
   "byClass": {
-   "BACKEND_DOC": 129
+   "BACKEND_DOC": 145
   }
  },
  "keep": [
@@ -756,10 +756,106 @@
    "reason": "backend quality or putduk-web handoff KEEP"
   },
   {
+   "path": "quality/contracts/operator-control/PUTDUK_OPS-handoff-mall-admin-v5.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "mall-admin-v5 운영 인계. 백엔드 writer 계약. 고객 웹 어서션 아님."
+  },
+  {
+   "path": "quality/contracts/operator-control/PUTDUK_OPS-handoff-mall-ledger-v6.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "mall-ledger-v6 원장 인계. ledger_journals 권위 기록. 정식 QA0-QA9 아님."
+  },
+  {
+   "path": "quality/contracts/operator-control/README.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "운영 제어 계약 인덱스. product-admin-http.v6 및 persist-status 포인터."
+  },
+  {
+   "path": "quality/contracts/operator-control/preserved-b3/README.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "B3 표시 계약 원본 보존 설명. 실행 정책 DAY1과 분리."
+  },
+  {
    "path": "quality/live-ruleset-backend-required-evidence.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
    "reason": "backend quality or putduk-web handoff KEEP"
+  },
+  {
+   "path": "quality/migrations-draft/admin-staff-credentials.v1.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "직원 로그인 draft SQL 설명. supabase/migrations 밖. 운영 apply 아님."
+  },
+  {
+   "path": "quality/migrations-draft/operator-mall-product.v1.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "쇼핑몰 상품 draft SQL 설명. supabase/migrations 밖. 운영 apply 아님."
+  },
+  {
+   "path": "quality/migrations-draft/operator-reseller-id-backfill.v1.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "reseller_id backfill draft 설명. supabase/migrations 밖. 운영 apply 아님."
+  },
+  {
+   "path": "quality/operator-backend-continuation.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "운영 백엔드 B3 연속 체크포인트. 구현 상태가 아니라 인계 메모."
+  },
+  {
+   "path": "quality/operator-quota-grade-b1-20260914.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "quota-grade B1 조사 메모. 백엔드 등급/횟수 계약."
+  },
+  {
+   "path": "quality/operator-quota-grade-b2-20260914.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "quota-grade B2 조사 메모. 백엔드 등급/횟수 계약."
+  },
+  {
+   "path": "quality/operator-quota-grade-b3-20260914.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "quota-grade B3 조사 메모. 백엔드 등급/횟수 계약."
+  },
+  {
+   "path": "quality/operator-quota-grade-b3-display-v19-20260914.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "B3 display-v19 표시 계약과 실행 정책 분리 메모."
+  },
+  {
+   "path": "quality/operator-registered-catalog-investigation-2026-09-13.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "등록 카탈로그 S1 조사. 운영자 행 보호 선행 기록."
+  },
+  {
+   "path": "quality/operator-registered-catalog-revision-plan-2026-09-13.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "등록 카탈로그 개정 계획. 백엔드 게이트 범위."
+  },
+  {
+   "path": "quality/operator-registered-catalog-s1-remediation-20260914.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "S1 카탈로그 행 보호 조치 기록. 운영 migration 아님."
+  },
+  {
+   "path": "quality/operator-registered-catalog-s1-supplement-2026-09-14.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "S1 보충 기록. 외부 쓰기 게이트와 operator 행 구분."
   },
   {
    "path": "quality/pr222-pr223-integration-evidence.md",

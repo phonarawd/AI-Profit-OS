@@ -1,0 +1,32 @@
+{
+  "schema": "governance.engine-acceptance.human-po-ack.v1",
+  "decision_id": "ENGINE_ACCEPTANCE_QA78_BUNDLE_V1",
+  "store": "workflow-amendments-equivalent-operator-ack",
+  "not_a_rebase": true,
+  "not_a_workflow_amendment": true,
+  "hashes_mutated": false,
+  "baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
+  "predecessor_epoch": "ea-baseline-f295d67f1c3c-c2a6ea416128",
+  "human_po_ack": {
+    "by": "Human/PO",
+    "at": "2026-09-15T12:19:00.000Z",
+    "user_said": "다음 진행",
+    "statement": "ACK APPROVED ENGINE_ACCEPTANCE_QA78_BUNDLE_V1\nuser: 다음 진행\nofficial QA7 re-run + current-epoch QA8 apply + QA1/QA2 persist\npredecessor epoch ea-baseline-f295d67f1c3c-c2a6ea416128\ndo not reuse old QA9/ACK/ISSUED; not a rebase ACK"
+  },
+  "allows": [
+    "official QA7 workflow_dispatch re-run on this QA branch",
+    "current-epoch QA8 apply after QA7 current-epoch evidence",
+    "current-epoch QA1/QA2 persist from official GHA artifacts",
+    "QA8 apply that bumps qa_phase / pending-rerun only after QA7 current-epoch evidence is in the same official persist sequence"
+  ],
+  "forbids": [
+    "reuse old QA9 / old ACK / old ISSUED / laundry ancestor files into current COMPLETE",
+    "merge to main",
+    "force-push",
+    "ops deploy / ops DDL / ops DATABASE_URL as QA",
+    "invent rebase when changed_protected=0",
+    "weaken gates",
+    "fake 71→0 engine-drift-inventory",
+    "invent ISSUED"
+  ]
+}

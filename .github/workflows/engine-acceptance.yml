@@ -97,6 +97,18 @@ jobs:
           AIPO_QA_HOSTNAME: localhost
           AIPO_QA_SYNTHETIC_NS: qa-synth-ci
         run: node tooling/engine-acceptance/run-qa1.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+      - name: Upload QA1 current-epoch evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: engine-acceptance-QA1
+          path: |
+            governance/engine-acceptance/qa1-result.v1.json
+            governance/engine-acceptance/evidence-manifest.v1.json
+            governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md
+            governance/engine-acceptance/defects.v1.json
+          retention-days: 90
+          if-no-files-found: error
 
   qa2-synthetic-personas:
     runs-on: ubuntu-latest
@@ -126,6 +138,18 @@ jobs:
           AIPO_QA_HOSTNAME: localhost
           AIPO_QA_SYNTHETIC_NS: qa-synth-ci
         run: node tooling/engine-acceptance/run-qa2.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+      - name: Upload QA2 current-epoch evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: engine-acceptance-QA2
+          path: |
+            governance/engine-acceptance/qa2-result.v1.json
+            governance/engine-acceptance/evidence-manifest.v1.json
+            governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md
+            governance/engine-acceptance/defects.v1.json
+          retention-days: 90
+          if-no-files-found: error
 
   # QA3+ matrix — fail-fast:false (전수 조사 · 조기 취소 금지)
   qa-matrix:

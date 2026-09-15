@@ -3,4 +3,5 @@
 export const MEMBERSHIP_EVENTS = {
   force: "admin.user.membership.force",
   matchPolicyUpdated: "admin.user.match_policy.updated",
+  memberLookup: "admin.user.directory.lookup",
 } as const;

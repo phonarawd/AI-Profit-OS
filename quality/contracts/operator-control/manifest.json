@@ -1,0 +1,86 @@
+{
+  "contractVersion": "2026-09-15.mall-ledger-v6",
+  "generatedAt": "2026-09-15T07:53:13+09:00",
+  "repo": "phonarawd/AI-Profit-OS",
+  "branch": "qa/operator-mall-pg-20260915",
+  "head": "d626126c0083f82be993d028750088babd256ec2",
+  "parentHead": "9d48e58e6fa0871611fe27292e8c876ee568a18c",
+  "headNote": "head=GHA run 34906126441가 검증한 SHA. 이 기록 커밋은 그 이후. 부모 구현 HEAD는 9d48e58e. 중간 실패 34905783882는 최종 아님.",
+  "implementation": "gha_ephemeral_pg_pass",
+  "schemaApplied": false,
+  "storeReady": false,
+  "officialQa0to9": false,
+  "publishedToUiRepo": false,
+  "opsDb": false,
+  "fingerprintAlgo": "sha256",
+  "workflowName": "operator-mall-gha-pg",
+  "workflowRunId": "34906126441",
+  "workflowRunUrl": "https://github.com/phonarawd/AI-Profit-OS/actions/runs/34906126441",
+  "measuredAt": "2026-09-14T22:53:13Z",
+  "files": [
+    {
+      "file": "PUTDUK_OPS-handoff-mall-admin-v5.md",
+      "fingerprint": "490198ef0a8c2949d159f4901187d872d03e6358c4abb117216a4d6043abb850"
+    },
+    {
+      "file": "PUTDUK_OPS-handoff-mall-ledger-v6.md",
+      "fingerprint": "a643cd992fa0927f0b9331580a2795382827339e4fc18c5f99215e8abb88a9a9"
+    },
+    {
+      "file": "README.md",
+      "fingerprint": "d005a69ef04a1a4f74eeaa5927830349fdd2448a256a535220f175b7f7270748"
+    },
+    {
+      "file": "admin-member-directory.v1.json",
+      "fingerprint": "c501c0732b635d5278cec4758692fc1486d71f6117529f3e1c7d46f436775032"
+    },
+    {
+      "file": "admin-session-login.v1.json",
+      "fingerprint": "893b5c4a19bf9d403f46e6e55ac76604c817e79a275378eb00646e10eaf4f6d6"
+    },
+    {
+      "file": "b2-vs-b3-user-dto.v1.json",
+      "fingerprint": "a1939a55124d17e96d3dec8c3f386606dbf624c044b855d2552db63931be980a"
+    },
+    {
+      "file": "display-vs-execution.v1.json",
+      "fingerprint": "9bfa6f968fe03059dc05b1d733eaee74baf85b7199a1fd74c649c8c009e054a8"
+    },
+    {
+      "file": "engine-drift-classification-proposal.v1.json",
+      "fingerprint": "9d179d202192f3c182fa6eb31659d55b6f37ebcfaa81d7e65652c4713ff875e4"
+    },
+    {
+      "file": "features-130.json",
+      "fingerprint": "0655b6a7dfa2c6c6dd30c2cada2f0370f2580ba3c627582ca32996899def247c"
+    },
+    {
+      "file": "persist-status.v1.json",
+      "fingerprint": "6706c7b3a7183ba5908a30d232b3fc9727c8add04af25e8472e58d6c2d0cdd68"
+    },
+    {
+      "file": "presentation-journey-v19.v1.json",
+      "fingerprint": "24954d962dfe2daf89643184600e13b5c8a3aa67fb0553d21e55dfb4d35dee29"
+    },
+    {
+      "file": "product-admin-http.v5.json",
+      "fingerprint": "fd809ce3a063147e9aff1ab3aa70aff47a26d491600452116931afe81039fd96"
+    },
+    {
+      "file": "product-admin-http.v6.json",
+      "fingerprint": "d95e77108747a136641420017b1bd418fd9a2983ef34a65b90d955e7f7e3ce6c"
+    },
+    {
+      "file": "product-visibility-concurrent-participate.v1.json",
+      "fingerprint": "c78e6754c371bcde09f37f0e735d5a08d7f5ed39cfc4ec08f89c345ead749696"
+    },
+    {
+      "file": "user-me-membership.example.v1.json",
+      "fingerprint": "06a8e9f9f86354996bac298bf34bda1834042b6f2bcab8cfb45fd1f039c19bc7"
+    },
+    {
+      "file": "user-quota-grade-profile.v1.json",
+      "fingerprint": "16c9b46268c0a89af2f02e0fd11e55fdefe3edb3740e152499daa76f683f7b52"
+    }
+  ]
+}

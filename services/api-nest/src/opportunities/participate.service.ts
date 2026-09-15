@@ -40,7 +40,8 @@ import { RiskService } from "../risk/risk.service";
 import {
   checkParticipateMembershipGuards,
   membershipDefaults,
-  mergeEffectivePolicy,
+  readExplicitNonNegativeInt,
+  resolveMemberDailyMatchCap,
 } from "../membership/membership.mi";
 import { MembershipRuntimeService } from "../membership/membership.runtime.service";
 import { OPPORTUNITY_EVENTS } from "./opportunities.events";
@@ -59,6 +60,48 @@ const settlementRule = req(
   }) => "OK" | "MATCH_BLOCKED" | "COMPARE_NOT_READY" | "PRICE_STALE_DATA";
   usdtGe: (a: string, b: string) => boolean;
   DEFAULT_PRICE_STALE_MAX_SEC: number;
+};
+const providerCore = req(
+  join(__dirname, "..", "membership", "operator-control.provider.cjs"),
+) as {
+  PROVIDER_KIND: { RUNTIME_PERSIST: string; TEST_MEMORY: string };
+  projectRuntimeParticipateQuota: (input: object) => Promise<{
+    blocked: boolean;
+    participateRemaining: number;
+    baseRemaining: number;
+    bonusRemaining: number;
+    explicitParticipateBlock?: boolean;
+    safetyDeny?: boolean;
+    cap: number;
+    storeUnready?: boolean;
+    providerKind?: string;
+  }>;
+  assertNotRuntimeMemoryAuthority: (kind: string) => void;
+};
+const moneyAuthorityCore = req(
+  join(__dirname, "..", "ledger", "money-authority.core.cjs"),
+) as {
+  projectMoneyAuthority: (input: {
+    expectedProfitUsdt?: string | null;
+    configuredPayoutUsdt?: string | null;
+    ledgerPaidUsdt?: string | null;
+    ledgerJournalId?: string | null;
+  }) => {
+    expectedProfitUsdt: string | null;
+    configuredPayoutUsdt: string | null;
+    ledgerPaidUsdt: string | null;
+    ledgerJournalId: string | null;
+    payoutAuthoritative: boolean;
+    clientComputedNotAuthority: true;
+  };
+};
+const persistCore = req(
+  join(__dirname, "..", "membership", "operator-control.persist.cjs"),
+) as {
+  consumeBonusInTx: (
+    client: object,
+    input: { userId: string; amount: number },
+  ) => Promise<{ consumed: number }>;
 };
 
 export type ParticipateBody = {
@@ -96,6 +139,15 @@ export type ParticipateResult = {
   priceSoftAccept: boolean;
   /** §51.16 proof-at-participate · stored on trade asset */
   proof?: ParticipateProof;
+  /** 예상액 ≠ 원장 완료. 참여 직후 payoutAuthoritative=false */
+  moneyAuthority: {
+    expectedProfitUsdt: string | null;
+    configuredPayoutUsdt: string | null;
+    ledgerPaidUsdt: string | null;
+    ledgerJournalId: string | null;
+    payoutAuthoritative: boolean;
+    clientComputedNotAuthority: true;
+  };
 };
 
 type OppRow = {
@@ -131,7 +183,16 @@ type ExistingTrade = {
   status: string;
   expected_profit_usdt: string;
   pricing_version: number;
+  asset?: Record<string, unknown> | null;
 };
+
+function tradeAssetConfiguredPayout(trade: {
+  asset?: Record<string, unknown> | null;
+}): string | null {
+  const raw = trade.asset && trade.asset.configuredPayoutUsdt;
+  if (typeof raw !== "string" || raw === "") return null;
+  return formatAmount(parseAmount(raw));
+}
 
 @Injectable()
 export class ParticipateService {
@@ -184,6 +245,11 @@ export class ParticipateService {
     const hidden = await this.isHiddenForUser(userId, pathOpportunityId);
     if (hidden) throw new NotFoundException("opportunity not found");
 
+    const mall = await this.loadMallAccess(pathOpportunityId);
+    if (mall.schemaReady && !this.canSeeMall(userId, mall)) {
+      throw new NotFoundException("opportunity not found");
+    }
+
     const expectedProfitUsdt = await this.resolveExpectedProfit(
       userId,
       pathOpportunityId,
@@ -195,36 +261,48 @@ export class ParticipateService {
 
     // P1 + P5 — compareReady · priceHardStale (no external API)
     const pricing = opp.pricing || {};
-    const compareReady = Boolean(pricing.compareReady);
-    const nowMs = this.clock.nowMs();
-    const staleAtMs = new Date(opp.stale_at).getTime();
-    const guard = settlementRule.guardParticipate({
-      matchBlocked,
-      compareReady,
-      nowMs,
-      staleAtMs,
-      priceStaleMaxSec: settlementRule.DEFAULT_PRICE_STALE_MAX_SEC,
-    });
-    if (guard === "MATCH_BLOCKED") {
-      throw new ForbiddenException({
-        code: "MATCH_BLOCKED",
-        toastCode: "MATCH_BLOCKED",
-        statusCode: 403,
+    const operatorMall =
+      mall.schemaReady && mall.supplySource === "operator";
+    if (operatorMall) {
+      if (matchBlocked) {
+        throw new ForbiddenException({
+          code: "MATCH_BLOCKED",
+          toastCode: "MATCH_BLOCKED",
+          statusCode: 403,
+        });
+      }
+    } else {
+      const compareReady = Boolean(pricing.compareReady);
+      const nowMs = this.clock.nowMs();
+      const staleAtMs = new Date(opp.stale_at).getTime();
+      const guard = settlementRule.guardParticipate({
+        matchBlocked,
+        compareReady,
+        nowMs,
+        staleAtMs,
+        priceStaleMaxSec: settlementRule.DEFAULT_PRICE_STALE_MAX_SEC,
       });
-    }
-    if (guard === "COMPARE_NOT_READY") {
-      throw new ConflictException({
-        code: "COMPARE_NOT_READY",
-        toastCode: "COMPARE_NOT_READY",
-        statusCode: 409,
-      });
-    }
-    if (guard === "PRICE_STALE_DATA") {
-      throw new ConflictException({
-        code: "PRICE_STALE_DATA",
-        toastCode: "PRICE_STALE_DATA",
-        statusCode: 409,
-      });
+      if (guard === "MATCH_BLOCKED") {
+        throw new ForbiddenException({
+          code: "MATCH_BLOCKED",
+          toastCode: "MATCH_BLOCKED",
+          statusCode: 403,
+        });
+      }
+      if (guard === "COMPARE_NOT_READY") {
+        throw new ConflictException({
+          code: "COMPARE_NOT_READY",
+          toastCode: "COMPARE_NOT_READY",
+          statusCode: 409,
+        });
+      }
+      if (guard === "PRICE_STALE_DATA") {
+        throw new ConflictException({
+          code: "PRICE_STALE_DATA",
+          toastCode: "PRICE_STALE_DATA",
+          statusCode: 409,
+        });
+      }
     }
 
     // P2 — practice / circuit / frozen · principal
@@ -298,7 +376,12 @@ export class ParticipateService {
     const { policy } = await this.executionPolicy.get();
 
     // Membership daily/band guards (§0.0.7) — slots = real per-opportunity count (P2-1)
-    await this.assertMembershipGuards(userId, opp.id, opp.capital_band, policy);
+    const membershipGuard = await this.assertMembershipGuards(
+      userId,
+      opp.id,
+      opp.capital_band,
+      policy,
+    );
 
     // P4 — priceSoftAccept (§43 · ≠ Soft60)
     const versionOk = validated.pricingVersion === opp.pricing_version;
@@ -353,12 +436,17 @@ export class ParticipateService {
         idempotencyKey: validated.idempotencyKey,
         requestFingerprint,
         priceSoftAccept: softAccept,
+        consumeBonus: membershipGuard.consumeBonus,
         asset: {
           assetId: opp.asset_id,
           label: opp.asset_label,
           category: opp.category,
           fxSnapshotId: opp.fx_snapshot_id,
+          ...(mall.configuredPayoutUsdt
+            ? { configuredPayoutUsdt: mall.configuredPayoutUsdt }
+            : {}),
         },
+        configuredPayoutUsdt: mall.configuredPayoutUsdt,
       });
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : String(e);
@@ -460,6 +548,69 @@ export class ParticipateService {
     return rows[0] ?? null;
   }
 
+  private canSeeMall(
+    userId: string,
+    mall: {
+      visibility: string | null;
+      selectedMemberIds: string[];
+    },
+  ): boolean {
+    const vis = mall.visibility || "all_public";
+    if (vis === "private") return false;
+    if (vis === "selected_members") {
+      return mall.selectedMemberIds.includes(userId);
+    }
+    return true;
+  }
+
+  private async loadMallAccess(opportunityId: string): Promise<{
+    schemaReady: boolean;
+    visibility: string | null;
+    selectedMemberIds: string[];
+    supplySource: string | null;
+    configuredPayoutUsdt: string | null;
+  }> {
+    try {
+      const r = await this.db.query<{
+        visibility: string | null;
+        selected_member_ids: string[] | null;
+        supply_source: string | null;
+        configured_payout_usdt: string | null;
+      }>(
+        `SELECT visibility, selected_member_ids, supply_source,
+                configured_payout_usdt::text
+           FROM public.opportunities
+          WHERE id = $1::uuid`,
+        [opportunityId],
+      );
+      const row = r.rows[0];
+      return {
+        schemaReady: true,
+        visibility: row?.visibility ?? null,
+        selectedMemberIds: Array.isArray(row?.selected_member_ids)
+          ? row.selected_member_ids
+          : [],
+        supplySource: row?.supply_source ?? null,
+        configuredPayoutUsdt:
+          row?.configured_payout_usdt != null && row.configured_payout_usdt !== ""
+            ? formatAmount(parseAmount(row.configured_payout_usdt))
+            : null,
+      };
+    } catch (e) {
+      const code = e && typeof e === "object" && "code" in e ? String((e as { code?: string }).code) : "";
+      if (code === "42703") {
+        return {
+          schemaReady: false,
+          visibility: null,
+          selectedMemberIds: [],
+          supplySource: null,
+          configuredPayoutUsdt: null,
+        };
+      }
+      throw e;
+    }
+  }
+
   private async isHiddenForUser(
     userId: string,
     opportunityId: string,
@@ -514,18 +665,21 @@ export class ParticipateService {
   }
 
   /**
-   * P2-1 fix — real remaining capacity, not the global policy constant.
-   * Counts concurrently running/requeue trades on THIS opportunity only.
+   * P2-1 실측 슬롯 + 공용 상품 최소 수정.
+   * dailyOppSlotsDefault 는 회원별 오케스트레이션 용량이지 상품 독점·판매 재고가 아니다.
+   * A running 이 B slotsLeft 를 깎지 않게 user_id 로 제한. 원장 FOR UPDATE 는 유지.
    */
   private async countActiveTradesForOpportunity(
     opportunityId: string,
+    userId: string,
   ): Promise<number> {
     const r = await this.db.query<{ n: string }>(
       `SELECT count(*)::text AS n
          FROM public.trade_executions
         WHERE opportunity_id = $1::uuid
+          AND user_id = $2::uuid
           AND status IN ('running', 'requeue')`,
-      [opportunityId],
+      [opportunityId, userId],
     );
     return Number(r.rows[0]?.n ?? 0);
   }
@@ -545,12 +699,12 @@ export class ParticipateService {
       retryWaitSec: number;
       slippageBoundBps: number;
     },
-  ): Promise<void> {
+  ): Promise<{ consumeBonus: number }> {
     const row = await this.membershipRuntime.ensureRow(userId);
     const dailyMatchesUsed =
       await this.membershipRuntime.effectiveDailyMatchesUsed(userId);
-    const defaults = membershipDefaults("sprout");
-    const membership = row.membership ?? defaults.membership;
+    const membership = row.membership ?? "sprout";
+    const defaults = membershipDefaults(membership);
     const maxCapitalBand = row.max_capital_band ?? defaults.maxCapitalBand;
 
     const ov = await this.db.query<{
@@ -567,44 +721,54 @@ export class ParticipateService {
       [userId],
     );
     const override = ov.rows[0];
-    const effective = mergeEffectivePolicy({
-      basePolicy: {
-        matchStrictness: policy.matchStrictness,
-        minProfitUsdt: policy.minProfitUsdt,
-        staleAllowanceSec: policy.staleAllowanceSec,
-        maxRematchCount: policy.maxRematchCount,
-        retryWaitSec: policy.retryWaitSec,
-        slippageBoundBps: policy.slippageBoundBps,
-        dailyUserMatchCap: policy.dailyUserMatchCap,
-        dailyOppSlotsDefault: policy.dailyOppSlotsDefault,
-      },
-      membership,
-      capitalBand: opportunityCapitalBand ?? "micro",
-      membershipBandOverlayEnabled: policy.membershipBandOverlayEnabled === true,
-      userOverride: override
-        ? {
-            matchStrictnessOverride: override.match_strictness,
-            minProfitUsdt: override.min_profit_usdt ?? undefined,
-            staleAllowanceSec: override.stale_allowance_sec ?? undefined,
-            maxRematchCount: override.max_rematch_count ?? undefined,
-            dailyUserMatchCap: override.daily_user_match_cap ?? undefined,
-          }
-        : undefined,
-    }) as { dailyUserMatchCap?: number };
 
-    const dailyOppSlotsDefault = Number(policy.dailyOppSlotsDefault) || 1;
+    const slotsRaw = readExplicitNonNegativeInt(policy.dailyOppSlotsDefault);
+    const dailyOppSlotsDefault = slotsRaw === null ? 1 : slotsRaw;
     const activeTrades = await this.countActiveTradesForOpportunity(
       opportunityId,
+      userId,
     );
     const slotsLeft = Math.max(0, dailyOppSlotsDefault - activeTrades);
+
+    // 회원별 cap. 0은 명시 차단. Number(x)||default 금지.
+    // 메모리 draft 는 실참여 추가 허용 근거가 아니다.
+    providerCore.assertNotRuntimeMemoryAuthority(
+      providerCore.PROVIDER_KIND.RUNTIME_PERSIST,
+    );
+    const capResolved = resolveMemberDailyMatchCap({
+      userId,
+      overrideDailyUserMatchCap: override?.daily_user_match_cap,
+      membershipRowCap: row?.daily_user_match_cap,
+      ladderCap: defaults.dailyUserMatchCap,
+      policyCap: policy.dailyUserMatchCap,
+    });
+    const effective = await providerCore.projectRuntimeParticipateQuota({
+      db: this.db,
+      userId,
+      used: dailyMatchesUsed,
+      membership,
+      overrideDailyUserMatchCap: override?.daily_user_match_cap,
+      membershipRowCap: row?.daily_user_match_cap,
+      ladderCap: defaults.dailyUserMatchCap,
+      policyCap: policy.dailyUserMatchCap,
+      memoryRemaining: undefined,
+      memoryCap: undefined,
+    });
+    void capResolved;
+    if (effective.blocked) {
+      throw new ForbiddenException({
+        code: effective.safetyDeny ? "SAFETY_DENY" : "DAILY_MATCH_CAP",
+        toastCode: effective.safetyDeny ? "SAFETY_DENY" : "DAILY_MATCH_CAP",
+        message: "dailyUserMatchCap reached",
+        statusCode: 403,
+      });
+    }
 
     const hit = checkParticipateMembershipGuards({
       opportunityCapitalBand: opportunityCapitalBand ?? "micro",
       maxCapitalBand,
       dailyMatchesUsed,
-      dailyUserMatchCap:
-        Number(effective.dailyUserMatchCap) ||
-        Number(row?.daily_user_match_cap ?? defaults.dailyUserMatchCap),
+      dailyUserMatchCap: dailyMatchesUsed + 1,
       slotsLeft,
     });
     if (hit) {
@@ -615,6 +779,9 @@ export class ParticipateService {
         statusCode: 403,
       });
     }
+    const consumeBonus =
+      effective.baseRemaining > 0 ? 0 : effective.bonusRemaining > 0 ? 1 : 0;
+    return { consumeBonus };
   }
 
   private async findByIdempotency(
@@ -646,7 +813,7 @@ export class ParticipateService {
     assertFingerprintMatch({ stored, incoming: incomingFingerprint });
 
     const tr = await this.db.query<ExistingTrade>(
-      `SELECT id::text, status, expected_profit_usdt::text, pricing_version
+      `SELECT id::text, status, expected_profit_usdt::text, pricing_version, asset
          FROM public.trade_executions
         WHERE id = $1::uuid`,
       [row.trade_id],
@@ -668,6 +835,10 @@ export class ParticipateService {
       tradeStatus: "running",
       reused: true,
       priceSoftAccept: false,
+      moneyAuthority: moneyAuthorityCore.projectMoneyAuthority({
+        expectedProfitUsdt: formatAmount(parseAmount(trade.expected_profit_usdt)),
+        configuredPayoutUsdt: tradeAssetConfiguredPayout(trade),
+      }),
     };
   }
 
@@ -705,12 +876,15 @@ export class ParticipateService {
     idempotencyKey: string;
     requestFingerprint: string;
     priceSoftAccept: boolean;
+    consumeBonus?: number;
     asset: {
       assetId: string;
       label: string;
       category: string;
       fxSnapshotId: string;
+      configuredPayoutUsdt?: string;
     };
+    configuredPayoutUsdt?: string | null;
   }): Promise<ParticipateResult> {
     // Lock capital principal → locked (§49) before trade rows
     const lockJournal = await this.posting.postJournal({
@@ -758,6 +932,9 @@ export class ParticipateService {
             category: input.asset.category,
             priceSoftAccept: input.priceSoftAccept,
             lockJournalId: lockJournal.id,
+            ...(input.configuredPayoutUsdt
+              ? { configuredPayoutUsdt: input.configuredPayoutUsdt }
+              : {}),
           }),
         ],
       );
@@ -817,6 +994,33 @@ export class ParticipateService {
             WHERE user_id = $1::uuid`,
           [input.userId],
         );
+        if ((input.consumeBonus ?? 0) > 0) {
+          try {
+            await persistCore.consumeBonusInTx(client, {
+              userId: input.userId,
+              amount: input.consumeBonus ?? 0,
+            });
+          } catch (err) {
+            const code = (err as { code?: string }).code;
+            if (code === "STORE_UNREADY") {
+              throw new ServiceUnavailableException({
+                code: "STORE_UNREADY",
+                toastCode: "STORE_UNREADY",
+                applied: false,
+                storeStatus: "unready",
+                statusCode: 503,
+              });
+            }
+            if (code === "DAILY_MATCH_CAP") {
+              throw new ForbiddenException({
+                code: "DAILY_MATCH_CAP",
+                toastCode: "DAILY_MATCH_CAP",
+                statusCode: 403,
+              });
+            }
+            throw err;
+          }
+        }
       }
 
       return { tradeId, participateRequestId, proof };
@@ -848,6 +1052,10 @@ export class ParticipateService {
       reused: Boolean(lockJournal.reused),
       priceSoftAccept: input.priceSoftAccept,
       proof: created.proof,
+      moneyAuthority: moneyAuthorityCore.projectMoneyAuthority({
+        expectedProfitUsdt: input.expectedProfitUsdt,
+        configuredPayoutUsdt: input.configuredPayoutUsdt || null,
+      }),
     };
   }
 }

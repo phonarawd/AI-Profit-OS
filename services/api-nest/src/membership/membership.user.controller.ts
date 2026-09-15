@@ -39,12 +39,27 @@ export class MembershipUserController {
       ? [...m.aiPerkFlags]
       : [...full.ladder.aiPerkFlags];
 
+    const quota = full.quota;
+    const presentation = await this.membership.listUserPresentationProfile();
     return {
+      contractVersion: "2026-09-14.b3.display-v19",
+      resellerId: full.resellerId ?? null,
       membership: m.membership,
       labelKo: full.labelKo,
       maxCapitalBand: m.maxCapitalBand,
-      dailyUserMatchCap: m.dailyUserMatchCap,
-      dailyMatchesUsed: m.dailyMatchesUsed,
+      dailyUserMatchCap: quota.cap,
+      dailyMatchesUsed: quota.used,
+      remaining: quota.participateRemaining ?? quota.remaining,
+      baseRemaining: quota.baseRemaining ?? quota.remaining,
+      bonusRemaining: quota.bonusRemaining ?? 0,
+      participateRemaining: quota.participateRemaining ?? quota.remaining,
+      blocked: quota.blocked,
+      quotaSource: quota.source,
+      bonusSource: quota.bonusSource ?? "store_unready",
+      storeStatus: quota.storeStatus ?? "unready",
+      schemaReady: quota.schemaReady === true,
+      /** 0 = 명시 차단. null/unknown 이 아님. */
+      zeroIsExplicitBlock: quota.cap === 0,
       matchStrictness: m.matchStrictness,
       aiPerkFlags,
       fulfillRate7d: m.fulfillRate7d ?? null,
@@ -55,6 +70,7 @@ export class MembershipUserController {
       current: full.ladder,
       /** Full ladder for membership-home UI (copy Owns=UI) */
       ladder: MEMBERSHIP_ENUM.map((id) => membershipDefaults(id)),
+      presentationProfile: presentation,
     };
   }
 

@@ -793,6 +793,13 @@
    "decision": "KEEP",
    "stage": "-",
    "reason": "Backend observation registry (money/engine gaps). platform-redesign JSON files it reads are KEEP BACKEND_DOC."
+  },
+  {
+   "path": "tooling/verify/operator-row-protect.cjs",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP",
+   "stage": "5단계 mixed 분리",
+   "reason": "S1 운영자 행 보호 백엔드 검증기. UI 어서션 0. apps/admin·packages/ui 문자열은 이번 슬라이스 금지 경로 차단용. tooling/e2e/lib/qa-env-isolation-guard.cjs는 기존 KEEP 운영 DB fail-closed 가드만 참조하며 live FOR UPDATE는 CATALOG_TEST_DATABASE_URL 없을 때 BLOCKED."
   }
  ]
 }

@@ -1,0 +1,58 @@
+{
+  "contractVersion": "2026-09-14.b3.display-v19",
+  "kind": "product_compat",
+  "doNotWireFiveStepDraftToWeb": true,
+  "noFiveToSevenMapping": true,
+  "noFourteenToSeventyScale": true,
+  "timeSettingsCompleteFromDocsOrIsolationOnly": false,
+  "b2Original": "absent",
+  "displayJourney": {
+    "kind": "user_display_journey",
+    "audience": "putduk-web",
+    "phases": ["product", "compare", "cargo", "flight", "buyer", "settle", "complete"],
+    "atSec": [0, 8, 18, 28, 48, 58, 66],
+    "totalDurationSec": 70,
+    "timeField": "atSec",
+    "userGet": "GET /api/v1/me/membership presentationProfile",
+    "adminPut": "PUT /api/v1/admin/membership/presentation-profile",
+    "persist": "operator-control.persist applyPresentationProfile",
+    "journeyConsumerInThisRepo": false,
+    "journeyConsumer": "putduk-web JourneyStage — DTO handoff only"
+  },
+  "executionPolicyDay1": {
+    "kind": "execution_policy_day1",
+    "audience": "admin_execution_policy",
+    "source": "services/market-intelligence/src/match-strictness.cjs DAY1_PRESENTATION",
+    "schema": "schemas/execution-policy.v1.json presentation",
+    "adminApi": "GET/PUT /api/v1/admin/execution-policy",
+    "steps": ["product_check", "price_compare", "matching", "settle_prep", "credit"],
+    "durationSecMin": 8,
+    "durationSecMax": 15,
+    "storedOn": "execution_policy row presentation jsonb",
+    "notUserJourneyDefault": true,
+    "notEngineDeadline": true,
+    "softHard": "Soft60/Hard90 live on softHardReadOnly — presentation !== SLA"
+  },
+  "b3FiveStepDraft": {
+    "preserved": "quality/contracts/operator-control/preserved-b3/",
+    "notProductDefault": true
+  },
+  "validationDisplay": {
+    "atSec": "integer 0..600, first 0, strictly increasing, each < totalDurationSec",
+    "totalDurationSec": "integer 1..600",
+    "rejectAt": true,
+    "rejectFiveStepDraft": true
+  },
+  "schemaFlags": {
+    "schemaApplied": "preflight presentation table only",
+    "schemaReady": "same preflight",
+    "storeReady": "storeStatus ready|unready from preflight",
+    "compiledDefaultDoesNotSetReady": true
+  },
+  "wireStatus": {
+    "operatorValidate": "implemented",
+    "operatorPersistWhenSchemaReady": "implemented_code_schema_unready",
+    "userDisplayDto": "implemented",
+    "putdukWebJourneyApply": "unconnected_other_repo"
+  }
+}
