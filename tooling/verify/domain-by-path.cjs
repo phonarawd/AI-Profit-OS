@@ -242,7 +242,8 @@ const RULES = [
       /^tooling\/deploy\/cf-workers\.cjs$/.test(f) ||
       /^tooling\/deploy\/cf-ebay-secrets\.cjs$/.test(f) ||
       /^tooling\/verify\/ebay-worker-deploy-path\.cjs$/.test(f) ||
-      /^tooling\/verify\/p0-ebay-secret-provisioning\.cjs$/.test(f),
+      /^tooling\/verify\/p0-ebay-secret-provisioning\.cjs$/.test(f) ||
+      /^workers\/ebay-adapter\/wrangler\.toml$/.test(f),
     scripts: ["ebay-worker-deploy-path.cjs", "p0-ebay-secret-provisioning.cjs"],
   },
   {
@@ -1189,6 +1190,12 @@ const RULES = [
       /operator-row-protect/.test(f) ||
       /opportunities_supply_source/.test(f) ||
       /^quality\/migrations-draft\//.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/opportunities\.user\.service\.ts$/.test(
+        f,
+      ) ||
+      /^services\/api-nest\/src\/opportunities\/participate\.service\.ts$/.test(
+        f,
+      ) ||
       /^services\/api-nest\/src\/opportunities\/opportunity-reprice\.service\.ts$/.test(
         f,
       ) ||

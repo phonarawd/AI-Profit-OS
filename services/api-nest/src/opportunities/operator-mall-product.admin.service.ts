@@ -1,8 +1,8 @@
 /**
  * 운영자 공용 상품 Admin 면.
- * 앱 PostgresService(DATABASE_URL)로 persist 하지 않는다. 운영 쓰기 0.
- * 격리 QA URL + 스키마 preflight 가 맞으면 persist 주입.
- * 없으면 STORE_UNREADY. fake persist 를 runtime 으로 넣지 않는다.
+ * 운영 PostgresService(mgsytcetsiecllmhcyox) + mall 스키마가 있으면 persist.
+ * 격리 QA URL 은 시험용만. 격리 DB를 운영 persist로 쓰지 않는다.
+ * 스키마 없으면 STORE_UNREADY. fake persist 를 runtime 으로 넣지 않는다.
  * S1 legacy writer 보호를 해제하지 않는다.
  */
 import {
@@ -75,6 +75,7 @@ const mall = requireCjs(join(__dirname, "operator-mall-product.core.cjs")) as {
 const persist = requireCjs(join(__dirname, "operator-mall-product.persist.cjs")) as {
   resolveRuntimeMallPersistStore: (
     env: NodeJS.ProcessEnv,
+    opts?: { opsDb?: PostgresService },
   ) => Promise<{ ready: boolean; kind?: string }>;
 };
 
@@ -85,10 +86,12 @@ export class OperatorMallProductAdminService {
   private storePromise: Promise<{ ready: boolean; kind?: string }> | null = null;
 
   private async store() {
-    // this.db = 앱 DATABASE_URL. mall persist 대상이 아니다.
-    void this.db;
     if (!this.storePromise) {
-      this.storePromise = persist.resolveRuntimeMallPersistStore(process.env);
+      const opsDb =
+        this.db && this.db.configured && this.db.configured() ? this.db : undefined;
+      this.storePromise = persist.resolveRuntimeMallPersistStore(process.env, {
+        opsDb,
+      });
     }
     return this.storePromise;
   }

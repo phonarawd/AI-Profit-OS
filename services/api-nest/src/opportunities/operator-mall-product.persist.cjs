@@ -1,6 +1,7 @@
 /**
  * 운영자 상품·공개 범위·가격 확인 메모 persist.
- * 운영 DATABASE_URL / 운영 DDL apply 금지. 스키마 없으면 STORE_UNREADY.
+ * 격리 QA URL 또는 운영 PostgresService(mgsytcetsiecllmhcyox)만.
+ * 스키마 없으면 STORE_UNREADY. 격리 DB를 운영 persist로 세탁하지 않는다.
  */
 "use strict";
 
@@ -151,6 +152,51 @@ UPDATE public.opportunities
        product_revision = $6,
        configured_payout_usdt = $7::numeric,
        updated_at = now()
+ WHERE id = $1::uuid
+   AND supply_source = 'operator'`.trim(),
+  ensureOperatorAsset: `
+INSERT INTO public.assets (
+  asset_id, category, asset_label, image_url, image_source, image_alt_ko
+) VALUES (
+  $1, 'trading_card', $2, $3, 'admin_r2', $2
+)
+ON CONFLICT (asset_id) DO UPDATE SET
+  asset_label = EXCLUDED.asset_label,
+  image_url = EXCLUDED.image_url,
+  image_alt_ko = EXCLUDED.image_alt_ko,
+  updated_at = now()`.trim(),
+  latestFxSnapshot: `
+SELECT id FROM public.fx_snapshots
+ ORDER BY captured_at DESC
+ LIMIT 1`.trim(),
+  ensureOperatorFx: `
+INSERT INTO public.fx_snapshots (id, usd_krw, source, captured_at)
+VALUES ('operator_mall_fx', 1, 'operator_mall', now())
+ON CONFLICT (id) DO NOTHING`.trim(),
+  insertOperatorOpportunity: `
+INSERT INTO public.opportunities (
+  id, asset_id, pricing_version, priced_at, expected_profit_usdt,
+  expected_profit_krw_approx, fx_snapshot_id, estimated_duration_sec,
+  ai_confidence_score, difficulty, tags, required_capital_usdt,
+  execution_mode, execution_platforms, category, asset_label,
+  asset_image_url, asset_image_source, asset_image_alt_ko,
+  arbitrage_type, arbitrage_type_ko, pricing, stale_at, status,
+  supply_source, visibility, selected_member_ids, price_confirmation_memo,
+  composition_qty, product_revision, configured_payout_usdt
+) VALUES (
+  $1::uuid, $2, $3, now(), $4::numeric,
+  NULL, $5, 3600,
+  0, 'normal', '{}', 0,
+  'orchestrate', '{}', 'trading_card', $6,
+  $7, 'admin_r2', $6,
+  'benefit', '혜택', $8::jsonb, now() + interval '10 years', 'available',
+  'operator', $9, $10::uuid[], $11,
+  $12, $13, $4::numeric
+)
+ON CONFLICT (id) DO NOTHING`.trim(),
+  peekOpportunitySupply: `
+SELECT supply_source
+  FROM public.opportunities
  WHERE id = $1::uuid`.trim(),
   upsertParticipation: `
 INSERT INTO public.operator_mall_participations (
@@ -238,6 +284,10 @@ function isOpsDbTarget(env) {
 
 function allowsMallPersistWrite(env) {
   return isolated.allowsIsolatedQaPg(env || {});
+}
+
+function allowsOpsMallPersist(env) {
+  return isOpsDbTarget(env || {});
 }
 
 function resolveIsolatedMallPersistUrl(env) {
@@ -340,6 +390,58 @@ function settlementKey(participationId) {
   return `settlement:${participationId}`;
 }
 
+async function ensureOperatorUserSurface(q, p) {
+  const assetId = "operator_mall:" + String(p.id);
+  const imageUrl =
+    Array.isArray(p.photos) && p.photos[0]
+      ? String(p.photos[0])
+      : "https://invalid.local/operator-mall-placeholder";
+  const label = String(p.name || "operator");
+  try {
+    await q.query(SQL.ensureOperatorAsset, [assetId, label, imageUrl]);
+  } catch {
+    /* asset 표가 없으면 유저면 행만 생략 */
+    return;
+  }
+  let fxId = "operator_mall_fx";
+  try {
+    const latest = await q.query(SQL.latestFxSnapshot, []);
+    if (latest.rows[0] && latest.rows[0].id) fxId = String(latest.rows[0].id);
+    else await q.query(SQL.ensureOperatorFx, []);
+  } catch {
+    return;
+  }
+  try {
+    const peek = await q.query(SQL.peekOpportunitySupply, [p.id]);
+    const existing = peek.rows[0] && peek.rows[0].supply_source;
+    if (existing && String(existing) !== "operator") {
+      return;
+    }
+    if (!existing) {
+      await q.query(SQL.insertOperatorOpportunity, [
+        p.id,
+        assetId,
+        p.revision || 1,
+        p.payoutAmount,
+        fxId,
+        label,
+        imageUrl,
+        JSON.stringify({
+          compareReady: true,
+          operatorMall: true,
+        }),
+        p.visibility,
+        p.selectedMemberIds || [],
+        p.priceConfirmationMemo || null,
+        p.compositionQty,
+        p.revision || 1,
+      ]);
+    }
+  } catch {
+    /* 기회 INSERT 실패는 상품 persist 를 뒤집지 않는다 */
+  }
+}
+
 function createUnreadyPersistStore(detail) {
   return {
     ready: false,
@@ -434,6 +536,7 @@ async function createPersistMallStore(db, opts) {
           } catch {
             /* 기회 행이 없으면 스탬프만 생략. 상품 persist 는 유지 */
           }
+          await ensureOperatorUserSurface(q, p);
         }
         return p;
       };
@@ -476,6 +579,7 @@ async function createPersistMallStore(db, opts) {
         } catch {
           /* 스탬프 생략 */
         }
+        await ensureOperatorUserSurface(db, { ...next, id });
       }
       return true;
     },
@@ -933,11 +1037,36 @@ function draftSqlPath() {
   return "quality/migrations-draft/20260915070000_operator_mall_product.sql";
 }
 
+function officialSqlPaths() {
+  return [
+    "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+    "supabase/migrations/20260916033100_operator_mall_product.sql",
+  ];
+}
+
 async function resolveRuntimeMallPersistStore(env, opts) {
   if (opts && opts.useFake === true) {
     const err = new Error("fake mall persist cannot be runtime store");
     err.code = "FAKE_PERSIST_FORBIDDEN_IN_RUNTIME";
     throw err;
+  }
+  const opsDb = opts && opts.opsDb;
+  if (
+    opsDb &&
+    typeof opsDb.query === "function" &&
+    allowsOpsMallPersist(env || {})
+  ) {
+    const store = await createPersistMallStore(opsDb, {
+      members: (opts && opts.members) || [],
+      testOnly: false,
+    });
+    if (store.ready !== true) {
+      return createUnreadyPersistStore("schema_unready");
+    }
+    store.opsPersist = true;
+    store.qaInjection = false;
+    store.notProductionPostgresService = false;
+    return store;
   }
   const resolved = resolveIsolatedMallPersistUrl(env || {});
   if (resolved.allowed !== true) {
@@ -981,6 +1110,7 @@ module.exports = {
   PRODUCTION_SUPABASE_REF,
   isOpsDbTarget,
   allowsMallPersistWrite,
+  allowsOpsMallPersist,
   resolveIsolatedMallPersistUrl,
   resolveRuntimeMallPersistStore,
   evaluateSchemaPreflight,
@@ -990,4 +1120,6 @@ module.exports = {
   createFakePersistMallDb,
   settlementKey,
   draftSqlPath,
+  officialSqlPaths,
+  ensureOperatorUserSurface,
 };

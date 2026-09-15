@@ -246,7 +246,10 @@ export class ParticipateService {
     if (hidden) throw new NotFoundException("opportunity not found");
 
     const mall = await this.loadMallAccess(pathOpportunityId);
-    if (mall.schemaReady && !this.canSeeMall(userId, mall)) {
+    if (!mall.schemaReady || mall.supplySource !== "operator") {
+      throw new NotFoundException("opportunity not found");
+    }
+    if (!this.canSeeMall(userId, mall)) {
       throw new NotFoundException("opportunity not found");
     }
 

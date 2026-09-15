@@ -221,11 +221,11 @@ if (deploy.resolveWranglerWorkerName(ebayToml, "preview") !== "ebay-adapter-prev
 
 const prodCrons = deploy.resolveWranglerCrons(ebayToml, "production");
 const previewCrons = deploy.resolveWranglerCrons(ebayToml, "preview");
-if (prodCrons.join(",") !== "*/15 * * * *") {
-  fail("production cron must inherit */15 * * * *");
+if (prodCrons.join(",") !== "") {
+  fail("production cron must be empty while external ingest is locked");
 }
-if (previewCrons.join(",") !== "*/15 * * * *") {
-  fail("preview cron must inherit */15 * * * *");
+if (previewCrons.join(",") !== "") {
+  fail("preview cron must be empty while external ingest is locked");
 }
 if (/\[env\.production\.triggers\]/.test(ebayToml) || /\[env\.preview\.triggers\]/.test(ebayToml)) {
   fail("ebay wrangler.toml must not duplicate env triggers without proven defect");

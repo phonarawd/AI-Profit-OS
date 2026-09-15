@@ -79,6 +79,8 @@ type OppUserRow = {
   sell_success_window_days: number | null;
   sell_success_as_of: Date | null;
   risk_score: number | null;
+  supply_source?: string | null;
+  visibility?: string | null;
 };
 
 type OverrideRow = {
@@ -154,7 +156,7 @@ export class OpportunitiesUserService {
     }
     const principalUsdt = await this.readPrincipalUsdt(userId);
     const { policy } = await this.executionPolicy.get();
-    const allRows = await this.loadFeedCandidateRows();
+    const allRows = await this.loadFeedCandidateRows(userId);
     const rows = allRows.filter((r) => this.isRowFresh(r.stale_at));
     const overridesByOpportunityId = await this.loadOverridesMap(userId);
 
@@ -197,16 +199,12 @@ export class OpportunitiesUserService {
       throw new NotFoundException("opportunity not found");
     }
 
-    const principalUsdt = await this.readPrincipalUsdt(userId);
-    const { policy } = await this.executionPolicy.get();
-    const row = await this.loadRowById(opportunityId);
-    if (!row) throw new NotFoundException("opportunity not found");
-    // PTF-00C P0-E/C-01 — getById follows the same freshness authority as
-    // the feed (§12): an already-stale row is treated as not-found, exactly
-    // like a hidden override, rather than silently showing stale money data.
-    if (!this.isRowFresh(row.stale_at)) {
+    const row = await this.loadRowById(opportunityId, userId);
+    if (!row || !this.isRowFresh(row.stale_at)) {
       throw new NotFoundException("opportunity not found");
     }
+    const principalUsdt = await this.readPrincipalUsdt(userId);
+    const { policy } = await this.executionPolicy.get();
 
     const overridesByOpportunityId = await this.loadOverridesMap(userId, [
       opportunityId,
@@ -258,7 +256,8 @@ export class OpportunitiesUserService {
     }
   }
 
-  private async loadFeedCandidateRows(): Promise<OppUserRow[]> {
+  private async loadFeedCandidateRows(userId: string): Promise<OppUserRow[]> {
+    try {
     const { rows } = await this.db.query<OppUserRow>(
       `SELECT id::text, asset_id, pricing_version, priced_at,
               expected_profit_usdt::text, expected_profit_krw_approx::text,
@@ -269,22 +268,43 @@ export class OpportunitiesUserService {
               asset_image_alt_ko, arbitrage_type, arbitrage_type_ko,
               pricing, stale_at, status, capital_band,
               sell_success_rate::text, sell_success_window_days,
-              sell_success_as_of, risk_score
+              sell_success_as_of, risk_score, supply_source, visibility
          FROM public.opportunities
         WHERE status = 'available'
           AND execution_mode = 'orchestrate'
+          AND supply_source = 'operator'
+          AND COALESCE(visibility, 'all_public') <> 'private'
+          AND (
+            COALESCE(visibility, 'all_public') = 'all_public'
+            OR (
+              visibility = 'selected_members'
+              AND $2::uuid = ANY(selected_member_ids)
+            )
+          )
           AND COALESCE((pricing->>'compareReady')::boolean, false) = true
           AND arbitrage_type = ANY($1::text[])
           AND NULLIF(BTRIM(arbitrage_type_ko), '') IS NOT NULL
           AND NULLIF(BTRIM(asset_image_url), '') IS NOT NULL
         ORDER BY updated_at DESC
         LIMIT 200`,
-      [[...V1_FEED_ARBITRAGE_TYPES]],
+      [[...V1_FEED_ARBITRAGE_TYPES], userId],
     );
     return rows.filter((r) => isV1FeedArbitrageType(r.arbitrage_type));
+    } catch (e) {
+      const code =
+        e && typeof e === "object" && "code" in e
+          ? String((e as { code?: string }).code)
+          : "";
+      if (code === "42703") return [];
+      throw e;
+    }
   }
 
-  private async loadRowById(id: string): Promise<OppUserRow | null> {
+  private async loadRowById(
+    id: string,
+    userId: string,
+  ): Promise<OppUserRow | null> {
+    try {
     const { rows } = await this.db.query<OppUserRow>(
       `SELECT id::text, asset_id, pricing_version, priced_at,
               expected_profit_usdt::text, expected_profit_krw_approx::text,
@@ -295,12 +315,29 @@ export class OpportunitiesUserService {
               asset_image_alt_ko, arbitrage_type, arbitrage_type_ko,
               pricing, stale_at, status, capital_band,
               sell_success_rate::text, sell_success_window_days,
-              sell_success_as_of, risk_score
+              sell_success_as_of, risk_score, supply_source, visibility
          FROM public.opportunities
-        WHERE id = $1::uuid`,
-      [id],
+        WHERE id = $1::uuid
+          AND supply_source = 'operator'
+          AND COALESCE(visibility, 'all_public') <> 'private'
+          AND (
+            COALESCE(visibility, 'all_public') = 'all_public'
+            OR (
+              visibility = 'selected_members'
+              AND $2::uuid = ANY(selected_member_ids)
+            )
+          )`,
+      [id, userId],
     );
     return rows[0] ?? null;
+    } catch (e) {
+      const code =
+        e && typeof e === "object" && "code" in e
+          ? String((e as { code?: string }).code)
+          : "";
+      if (code === "42703") return null;
+      throw e;
+    }
   }
 
   private async loadOverridesMap(

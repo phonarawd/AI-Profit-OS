@@ -1,10 +1,10 @@
 # ENGINE ACCEPTANCE REPORT
 
 > **QA phase:** QA-9 `qa9-acceptance-report` (FINAL aggregation / verdict issuance — not a new discovery suite)
-> **Measured:** 2026-09-15T12:29:13.542Z
-> **baseline_id:** `ea-baseline-f295d67f1c3c-c2a6ea416128`
+> **Measured:** 2026-09-15T20:26:19.222Z
+> **baseline_id:** `ea-baseline-35ec80eeb89d-77e54a036c46`
 > **qa9_run_id:** `qa9-acceptance-report-20260915`
-> **qa9_result_checksum:** `7944e9f9dd3487b5dfa544629147a6f07a3713e967c0976c3c051d375e15b846`
+> **qa9_result_checksum:** `13f7afceee9cde216663e400fa43f6982226f82a228cd42aea2b9ee27996bb59`
 > **aggregation_only:** `true` — consumes QA0-QA8 evidence exactly as recorded, invents no scenarios
 
 ## Status banner

@@ -214,19 +214,30 @@ if (!r7Head) {
 }
 // head가 같아도 remote head보다 오래된 unapplied 파일이 있으면 plain `db push`가 건너뛴다 →
 // R7 표에 `--include-all`(또는 rename) apply 계획이 명시돼 있어야 한다. 숨기지 않는다.
-// REL-701-DB 실행 후(fixture rel701db.status APPLIED)에는 unapplied 0 + heads equal 이 진실이며,
-// R7 표 migration_head 행이 ALIGNED + REL-701-DB 실행을 명시해야 한다.
+// REL-701-DB leftover(원격 head 이하 unapplied)는 0. 그 이후 공식 SQL은
+// committedUnapplied 로 남길 수 있다(rel-504 와 동일). 선반영·은닉 금지.
 const preHeadUnapplied = (appliedFx.committedUnapplied || []).filter((v) => v < remoteHead);
 const rel701dbApplied = Boolean(appliedFx.rel701db && appliedFx.rel701db.status === "APPLIED");
 if (rel701dbApplied) {
-  if ((appliedFx.committedUnapplied || []).length !== 0) {
-    fails.push("REL-701-DB recorded APPLIED but committedUnapplied is not empty");
+  const leftover = (appliedFx.committedUnapplied || []).filter((v) => v <= remoteHead);
+  if (leftover.length !== 0) {
+    fails.push("REL-701-DB leftover unapplied must stay empty: " + leftover.join(","));
   }
-  if (localHead !== remoteHead) {
-    fails.push("REL-701-DB recorded APPLIED but local/remote heads differ");
-  }
-  if (!r7Head || !/migration_head[^\n]*ALIGNED[^\n]*REL-701-DB/.test(cert)) {
-    fails.push("R7 table migration_head row must read ALIGNED with REL-701-DB execution after apply");
+  const postHead = (appliedFx.committedUnapplied || []).filter((v) => v > remoteHead);
+  if (postHead.length === 0) {
+    if (localHead !== remoteHead) {
+      fails.push("REL-701-DB recorded APPLIED but local/remote heads differ");
+    }
+    if (!r7Head || !/migration_head[^\n]*ALIGNED[^\n]*REL-701-DB/.test(cert)) {
+      fails.push("R7 table migration_head row must read ALIGNED with REL-701-DB execution after apply");
+    }
+  } else {
+    if (localHead <= remoteHead) {
+      fails.push("post-head committedUnapplied require local migration head after remote applied head");
+    }
+    if (/migration_head[^\n]*ALIGNED/.test(cert)) {
+      fails.push("R7 must not claim ALIGNED while post-head committedUnapplied remains");
+    }
   }
 } else if (localHead === remoteHead) {
   if (preHeadUnapplied.length === 0) {

@@ -37,6 +37,11 @@ const required = [
   "services/api-nest/src/adapters/adapters.admin.service.ts",
   "services/api-nest/src/adapters/adapters.ingest.controller.ts",
   "quality/migrations-draft/20260913220000_opportunities_supply_source.sql",
+  "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+  "supabase/migrations/20260916033100_operator_mall_product.sql",
+  "services/api-nest/src/opportunities/opportunities.user.service.ts",
+  "services/api-nest/src/opportunities/participate.service.ts",
+  "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
 ];
 for (const f of required) {
   if (!fs.existsSync(path.join(root, f))) fails.push("missing: " + f);
@@ -64,6 +69,25 @@ const mod = read("services/api-nest/src/opportunities/opportunities.module.ts");
 
 if (!core.includes("CATALOG_EXTERNAL_WRITE_GATE")) {
   fails.push("core must define CATALOG_EXTERNAL_WRITE_GATE");
+}
+if (
+  !core.includes("PRODUCTION_SOURCE_MODE") ||
+  !core.includes("ALLOW_EXTERNAL_PRODUCT_INGEST") ||
+  !core.includes("ALLOW_LEGACY_EXTERNAL_WRITES") ||
+  !core.includes("SOURCE_DISABLED")
+) {
+  fails.push("core must implement dual source lock and SOURCE_DISABLED");
+}
+if (!core.includes("SOURCE_MODE_OPERATOR_ONLY") || !core.includes("readSourceLockFromEnv")) {
+  fails.push("core must read PRODUCTION_SOURCE_MODE operator_only lock");
+}
+const userSvc = read("services/api-nest/src/opportunities/opportunities.user.service.ts");
+const participateSvc = read("services/api-nest/src/opportunities/participate.service.ts");
+if (!userSvc.includes("supply_source = 'operator'")) {
+  fails.push("user feed/detail must filter supply_source=operator");
+}
+if (!participateSvc.includes('mall.supplySource !== "operator"')) {
+  fails.push("participate must reject non-operator rows");
 }
 if (!core.includes("FOR UPDATE")) {
   fails.push("core SQL must lock FOR UPDATE");
@@ -179,12 +203,16 @@ if (/UPDATE[\s\S]*supply_source\s*=\s*'operator'/i.test(draftSql)) {
 if (/\bDELETE\s+FROM\b/i.test(draftSql)) {
   fails.push("migration draft must not delete rows");
 }
-if (
-  fs.existsSync(
-    path.join(root, "supabase/migrations/20260913220000_opportunities_supply_source.sql"),
-  )
-) {
-  fails.push("draft must stay outside supabase/migrations until apply is approved");
+const officialSupply = path.join(
+  root,
+  "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+);
+const officialMall = path.join(
+  root,
+  "supabase/migrations/20260916033100_operator_mall_product.sql",
+);
+if (!fs.existsSync(officialSupply) || !fs.existsSync(officialMall)) {
+  fails.push("approved supply_source + mall SQL must live in supabase/migrations");
 }
 const changed = execSync("git status --porcelain", {
   cwd: root,
@@ -280,6 +308,23 @@ if (pricingIso.stderr) process.stderr.write(pricingIso.stderr);
 if (pricingIso.status !== 0) {
   console.error("[verify:operator-row-protect] FAIL pricing writers isolation");
   process.exit(pricingIso.status || 1);
+}
+
+const userIso = spawnSync(
+  process.execPath,
+  [
+    path.join(
+      root,
+      "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
+    ),
+  ],
+  { cwd: root, encoding: "utf8", timeout: 30_000 },
+);
+if (userIso.stdout) process.stdout.write(userIso.stdout);
+if (userIso.stderr) process.stderr.write(userIso.stderr);
+if (userIso.status !== 0) {
+  console.error("[verify:operator-row-protect] FAIL user operator-only isolation");
+  process.exit(userIso.status || 1);
 }
 
 const httpRan = require("./catalog-external-write-ingest-http.cjs").compileAndRun();
