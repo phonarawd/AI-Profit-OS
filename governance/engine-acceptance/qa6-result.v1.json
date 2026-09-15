@@ -2,10 +2,10 @@
   "schema": "governance.engine-acceptance.qa6-result.v1",
   "version": "1.0.0",
   "suite_id": "QA6",
-  "run_id": "qa6-performance-world-20260912",
+  "run_id": "qa6-performance-world-20260915",
   "todoId": "qa6-performance-world",
-  "measuredAt": "2026-09-12T16:23:43.727Z",
-  "baseline_id": "ea-baseline-b11140abaafa-af15bf5b43ff",
+  "measuredAt": "2026-09-15T11:36:02.446Z",
+  "baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
   "mode": "full",
   "kill_switch": {
     "verified_before_checks": true,
@@ -24,7 +24,7 @@
       "check_id": "QA6_PERFORMANCE_WORLD",
       "status": "PASS",
       "mode": "full",
-      "measuredAt": "2026-09-12T16:23:43.727Z",
+      "measuredAt": "2026-09-15T11:36:02.446Z",
       "seed": 20260812,
       "perf_oracle": {
         "available": true,
@@ -99,10 +99,10 @@
           },
           "observed": {
             "percentiles": {
-              "p50": 8.6701175,
-              "p95": 12.599977349999998,
-              "p99": 16.515164450000025,
-              "avg": 9.333884713541673
+              "p50": 6.189632,
+              "p95": 8.23087105,
+              "p99": 10.635519069999942,
+              "avg": 6.4752020670103025
             },
             "error_rate": 0
           },
@@ -112,7 +112,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-09-12T16:23:43.607Z",
+            "clock_as_of": "2026-09-15T11:36:02.341Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -135,10 +135,10 @@
               },
               "observed": {
                 "percentiles": {
-                  "p50": 8.6701175,
-                  "p95": 12.599977349999998,
-                  "p99": 16.515164450000025,
-                  "avg": 9.333884713541673
+                  "p50": 6.189632,
+                  "p95": 8.23087105,
+                  "p99": 10.635519069999942,
+                  "avg": 6.4752020670103025
                 },
                 "error_rate": 0
               },
@@ -160,7 +160,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-b11140abaafa-af15bf5b43ff",
+            "baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "09067cecfda7e58408f05bcc559348721770ffd844fbb659e5612e3799a62114",
             "invariant_id": "INV-PERF-01",
@@ -187,10 +187,10 @@
           },
           "observed": {
             "percentiles": {
-              "p50": 5.5241240000000005,
-              "p95": 7.0218855,
-              "p99": 13.412001249999935,
-              "avg": 5.928683575757575
+              "p50": 4.0581084999999995,
+              "p95": 6.254082,
+              "p99": 21.184847649999934,
+              "avg": 4.745078242424242
             },
             "error_rate": 0
           },
@@ -200,7 +200,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-09-12T16:23:43.607Z",
+            "clock_as_of": "2026-09-15T11:36:02.341Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -223,10 +223,10 @@
               },
               "observed": {
                 "percentiles": {
-                  "p50": 5.5241240000000005,
-                  "p95": 7.0218855,
-                  "p99": 13.412001249999935,
-                  "avg": 5.928683575757575
+                  "p50": 4.0581084999999995,
+                  "p95": 6.254082,
+                  "p99": 21.184847649999934,
+                  "avg": 4.745078242424242
                 },
                 "error_rate": 0
               },
@@ -248,7 +248,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-b11140abaafa-af15bf5b43ff",
+            "baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "98101ee617d2c2c12c8a80906d836573a0d78b6ba56225663d13496e42a6f4b0",
             "invariant_id": "INV-PERF-01",
@@ -275,10 +275,10 @@
           },
           "observed": {
             "percentiles": {
-              "p50": 3.042668,
-              "p95": 4.3072959,
-              "p99": 8.014444019999987,
-              "avg": 3.204444898989901
+              "p50": 2.566127,
+              "p95": 3.2660151999999996,
+              "p99": 5.566143259999992,
+              "avg": 2.537901343434343
             },
             "error_rate": 0
           },
@@ -288,7 +288,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-09-12T16:23:43.607Z",
+            "clock_as_of": "2026-09-15T11:36:02.341Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -311,10 +311,10 @@
               },
               "observed": {
                 "percentiles": {
-                  "p50": 3.042668,
-                  "p95": 4.3072959,
-                  "p99": 8.014444019999987,
-                  "avg": 3.204444898989901
+                  "p50": 2.566127,
+                  "p95": 3.2660151999999996,
+                  "p99": 5.566143259999992,
+                  "avg": 2.537901343434343
                 },
                 "error_rate": 0
               },
@@ -336,7 +336,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-b11140abaafa-af15bf5b43ff",
+            "baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "15b6ea799edccaa59e56b2b7c3734ff60ca5b699cc0039f055838213416a677f",
             "invariant_id": "INV-PERF-01",
@@ -363,10 +363,10 @@
           },
           "observed": {
             "percentiles": {
-              "p50": 2.868781,
-              "p95": 3.6149787999999994,
-              "p99": 8.21774851999998,
-              "avg": 3.067964424242424
+              "p50": 2.142772,
+              "p95": 2.8748417999999996,
+              "p99": 5.946405679999986,
+              "avg": 2.33899505050505
             },
             "error_rate": 0
           },
@@ -376,7 +376,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-09-12T16:23:43.607Z",
+            "clock_as_of": "2026-09-15T11:36:02.341Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -399,10 +399,10 @@
               },
               "observed": {
                 "percentiles": {
-                  "p50": 2.868781,
-                  "p95": 3.6149787999999994,
-                  "p99": 8.21774851999998,
-                  "avg": 3.067964424242424
+                  "p50": 2.142772,
+                  "p95": 2.8748417999999996,
+                  "p99": 5.946405679999986,
+                  "avg": 2.33899505050505
                 },
                 "error_rate": 0
               },
@@ -424,7 +424,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-b11140abaafa-af15bf5b43ff",
+            "baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "46f24e679dcca8e62ee864299a617afadd002f652133c3a49bcad3904493feec",
             "invariant_id": "INV-PERF-01",
@@ -533,5 +533,5 @@
     "Does not issue ENGINE_ACCEPTED_FOR_UI.",
     "CI aggregator uses if: always(); artifact retention ≥ 90 days."
   ],
-  "checksum": "50967a1f151dba11af1d1ce0ca19558ee34607941ecdc165ae804c10373a1d65"
+  "checksum": "b6d4779bd4d8ed1a61d22b45ada109342f1d8c75bd8e1eba0e5d2622a60d9f8f"
 }
