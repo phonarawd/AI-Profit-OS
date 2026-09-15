@@ -12,7 +12,7 @@
  * flags for suites they did not run; those must not downgrade live evidence.
  *
  * Usage:
- *   node tooling/engine-acceptance/apply-ci-suite-result.cjs --suite QA3 --from <qa3-result.v1.json>
+ *   node tooling/engine-acceptance/apply-ci-suite-result.cjs --suite QA1 --from <qa1-result.v1.json>
  */
 const fs = require("node:fs");
 const path = require("node:path");
@@ -20,6 +20,8 @@ const path = require("node:path");
 const ROOT = path.resolve(__dirname, "../..");
 const BASELINE_REL = "governance/engine-acceptance/baseline.v1.json";
 const ALLOWED = Object.freeze({
+  QA1: "governance/engine-acceptance/qa1-result.v1.json",
+  QA2: "governance/engine-acceptance/qa2-result.v1.json",
   QA3: "governance/engine-acceptance/qa3-result.v1.json",
   QA4: "governance/engine-acceptance/qa4-result.v1.json",
   QA5: "governance/engine-acceptance/qa5-result.v1.json",

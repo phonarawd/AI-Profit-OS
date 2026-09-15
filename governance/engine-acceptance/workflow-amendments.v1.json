@@ -234,6 +234,51 @@
         "QA6",
         "QA8"
       ]
+    },
+    {
+      "amendment_id": "qa1-qa2-current-epoch-artifact-upload-20260915",
+      "reason": "Human/PO ACK 다음 승인 · ENGINE_ACCEPTANCE_WORKFLOW_AMENDMENT_V1: official QA1 and QA2 jobs upload current-epoch result artifacts the same way other official QA jobs already do. Runner commands, env, permissions, and pass/fail semantics are unchanged. apply-ci-suite-result allowlist is tooling-only and is not part of acceptance_workflow_hash.",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-09-15T11:54:00.000Z",
+        "statement": "ACK APPROVED ENGINE_ACCEPTANCE_WORKFLOW_AMENDMENT_V1 then ENGINE_ACCEPTANCE_REBASE_V1 after amendment commit; predecessor current epoch ea-baseline-f295d67f1c3c-c2a6ea416128; user: 다음 승인; do not reuse ACK for d626126c or old QA9/ISSUED"
+      },
+      "old_acceptance_workflow_hash": "b8e724ba3af9e2d240f4daeefd53d4330972afdb942396698389825167752aa7",
+      "new_acceptance_workflow_hash": "1d5485d0fb73966dc7b78daa3e609e56eda1edea63fe359e816e5e2cf1b7bd10",
+      "workflow_diff_scope": {
+        "files": [
+          ".github/workflows/engine-acceptance.yml"
+        ],
+        "exact_diff_summary": "A) qa1-deterministic: after unchanged run-qa1.cjs, add Upload QA1 current-epoch evidence (actions/upload-artifact@v4, name engine-acceptance-QA1, paths qa1-result.v1.json + evidence-manifest.v1.json + ENGINE_ACCEPTANCE_REPORT.md + defects.v1.json, retention-days 90, if-no-files-found error, if always()). B) qa2-synthetic-personas: after unchanged run-qa2.cjs --mode full, add the same upload pattern for engine-acceptance-QA2 / qa2-result.v1.json. QA1/QA2 kill-switch, install, run commands, env, permissions, timeouts, triggers, matrix, QA7, aggregator, and additive harness jobs are unchanged.",
+        "qa0_qa6_semantics_changed": false,
+        "checks": {
+          "command_changes": false,
+          "artifact_upload_changes": true,
+          "env_permission_changes": false,
+          "pass_fail_semantics_changes": false
+        }
+      },
+      "affected_qa_suites": [
+        "QA1",
+        "QA2"
+      ],
+      "unaffected_completed_suites": [
+        "QA0",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6"
+      ],
+      "baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
+      "commit_sha_or_pending": "pending",
+      "timestamp": "2026-09-15T11:54:00.000Z",
+      "applied_at": "2026-09-15T12:07:02.292Z",
+      "allow_qa0_qa6_impact": true,
+      "parent_decision_id": "ENGINE_ACCEPTANCE_WORKFLOW_AMENDMENT_V1",
+      "required_rerun_suites": [
+        "QA1",
+        "QA2"
+      ]
     }
   ],
   "epoch_bindings": [
