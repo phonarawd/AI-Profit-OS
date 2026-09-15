@@ -4,7 +4,7 @@
  "generator": "tooling/backend/ownership-graph.cjs",
  "overrides": "tooling/backend/ownership-overrides.json",
  "inputs": {
-  "gitLsFiles": 1507,
+  "gitLsFiles": 1508,
   "deletedUiPrefixes": [
    "apps/admin/",
    "apps/web/",
@@ -48,7 +48,7 @@
  "totals": {
   "byClass": {
    "BACKEND_INFRA": 245,
-   "BACKEND_DOC": 289,
+   "BACKEND_DOC": 290,
    "FUTURE_ADMIN_REQUIREMENT": 2,
    "BACKEND_TEST": 354,
    "BACKEND_CONTRACT": 83,
@@ -56,11 +56,11 @@
    "GENERATED": 5
   },
   "byDecision": {
-   "KEEP": 1507
+   "KEEP": 1508
   },
   "byClassDecision": {
    "BACKEND_INFRA/KEEP": 245,
-   "BACKEND_DOC/KEEP": 289,
+   "BACKEND_DOC/KEEP": 290,
    "FUTURE_ADMIN_REQUIREMENT/KEEP": 2,
    "BACKEND_TEST/KEEP": 354,
    "BACKEND_CONTRACT/KEEP": 83,
@@ -23003,6 +23003,60 @@
    "lastCommit": "2026-09-15T21:36:41+09:00",
    "lastCommitSha": "40ab321bbaf0d7e15bd27f690e842ca5489686c7",
    "sizeBytes": 1434,
+   "refSummary": {
+    "deletedUiRefs": [],
+    "uiRefs": [],
+    "backendRefs": [],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
+   }
+  },
+  {
+   "path": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_RC_FORMAL_V1.json",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "gov-backend-dir",
+   "reasons": [
+    "백엔드 release evidence 디렉터리",
+    "보유: .github/workflows/engine-acceptance-heavy.yml(workflow-run:governance/engine-acceptance/), .github/workflows/engine-acceptance.yml(workflow-run:governance/engine-acceptance/**), .github/workflows/engine-current-epoch-finalize-once.yml(workflow-run:governance/engine-acceptance/), tooling/engine-acceptance/publish-qa7-formal.cjs(test-ref:governance/engine-acceptance) ..."
+   ],
+   "evidence": [],
+   "referrers": [
+    ".cursor/plans/ai_profit_os_02_5_engine_acceptance_qa_fd1cd7cc.plan.md|doc-link|governance/engine-acceptance/**",
+    ".cursor/plans/ai_profit_os_02_5_engine_acceptance_qa_fd1cd7cc.plan.md|doc-link|governance/engine-acceptance/",
+    ".cursor/rules/plan-file-serial.mdc|doc-link|governance/engine-acceptance/",
+    ".github/workflows/engine-acceptance-heavy.yml|workflow-run|governance/engine-acceptance/",
+    ".github/workflows/engine-acceptance.yml|workflow-run|governance/engine-acceptance/**",
+    ".github/workflows/engine-current-epoch-finalize-once.yml|workflow-run|governance/engine-acceptance/",
+    "docs/CONSTITUTION_BOOTSTRAP.md|doc-link|governance/engine-acceptance/",
+    "governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md|doc-link|governance/engine-acceptance/**",
+    "governance/engine-acceptance/acceptance-contract.v1.md|doc-link|governance/engine-acceptance/**",
+    "governance/platform-redesign/change-control.v1.md|doc-link|governance/*.vN",
+    "governance/recovery/engine-acceptance.action-pin-k6.proposed.yml|verifier-reads|governance/engine-acceptance/**",
+    "quality/backend-deletion-ledger.md|doc-link|governance/engine-acceptance",
+    "quality/backend-only-inventory.md|doc-link|governance/engine-acceptance/**",
+    "quality/backend-residual-report.md|doc-link|governance/**",
+    "quality/putduk-web-ui-assertions-handoff.md|doc-link|governance/**",
+    "tooling/backend/ownership-graph.cjs|verifier-reads|governance/engine-acceptance/",
+    "tooling/backend/ownership-graph.cjs|verifier-reads|governance/**",
+    "tooling/backend/ownership-overrides.json|verifier-reads|governance/engine-acceptance",
+    "tooling/engine-acceptance/publish-qa7-formal.cjs|test-ref|governance/engine-acceptance",
+    "tooling/engine-acceptance/run-qa1.cjs|test-ref|governance/engine-acceptance",
+    "tooling/engine-acceptance/run-qa2.cjs|test-ref|governance/engine-acceptance",
+    "tooling/engine-acceptance/run-qa9.cjs|test-ref|governance/engine-acceptance",
+    "tooling/engine-acceptance/run-qa9.cjs|test-ref|governance/engine-acceptance/**",
+    "tooling/engine-acceptance/selftest-product-rebase.cjs|test-ref|governance/engine-acceptance",
+    "tooling/verify/CATALOG.md|verifier-reads|governance/engine-acceptance/**",
+    "tooling/verify/engine-acceptance.cjs|verifier-reads|governance/engine-acceptance",
+    ".github/workflows/engine-acceptance.yml|workflow-run|paths:governance/engine-acceptance/**"
+   ],
+   "blockers": [],
+   "lastCommit": "2026-09-15T22:05:30+09:00",
+   "lastCommitSha": "4ee3cc06bf4780eb30c9420e60669f23da3abb84",
+   "sizeBytes": 1368,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
