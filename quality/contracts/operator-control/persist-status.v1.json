@@ -48,6 +48,8 @@
       "persistCode": true,
       "nestControllerStillCreateUnready": true,
       "loginStaffResolvesIsolatedPersist": true,
+      "opsPostgresService": true,
+      "officialMigration": "supabase/migrations/20260916080000_admin_staff_credentials.sql",
       "demoStaff": false,
       "implementation": "code",
       "realPg": "gha_ephemeral_pass"

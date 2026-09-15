@@ -2,7 +2,7 @@
   "schema": "governance.engine-acceptance.evidence-manifest.v1",
   "version": "1.0.0",
   "qa_phase": "QA-9",
-  "baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
+  "baseline_id": "ea-baseline-009750f0bef8-60f2feeec9d3",
   "verdict": "ENGINE_ACCEPTED_FOR_UI",
   "verdict_reason": "QA9 COMPLETE - all acceptance-contract L1 conditions met - ENGINE_ACCEPTED_FOR_UI",
   "evidence_integrity": "VALID",
@@ -23,26 +23,26 @@
   "suites": [
     {
       "suite_id": "QA0",
-      "run_id": "ea-rebase-35ec80eeb89d-77e54a036c46",
-      "baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
-      "checksum": "77e54a036c46db905040d6254fe8838bac1690e71d2cd3e5eeb8eca5e22a72a3",
+      "run_id": "ea-rebase-009750f0bef8-60f2feeec9d3",
+      "baseline_id": "ea-baseline-009750f0bef8-60f2feeec9d3",
+      "checksum": "60f2feeec9d3b2507b6c419ba413400d4ee6e06c567cfa1d3a66ef7c325a73c4",
       "completion_status": "COMPLETE",
       "epoch": "current",
-      "predecessor_baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128"
+      "predecessor_baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46"
     },
     {
       "suite_id": "QA1",
       "run_id": "qa1-deterministic-truth-20260915",
-      "baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
-      "checksum": "94ff8df5abd06752fbb0b8ecef27c55dbfd09edf79a9850a6066ad3d904dd692",
+      "baseline_id": "ea-baseline-009750f0bef8-60f2feeec9d3",
+      "checksum": "20f82a0390e65f84373b2c4613b3282bb4f8187f42830ecd63ca3d66583b9492",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa1-result.v1.json"
     },
     {
       "suite_id": "QA2",
       "run_id": "qa2-synthetic-personas-20260915",
-      "baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
-      "checksum": "ebf153d6f3ef236ced7a915253d9180d5998df7d7d67922d17efab85e68906de",
+      "baseline_id": "ea-baseline-009750f0bef8-60f2feeec9d3",
+      "checksum": "4cc4aaab6993a169add87fdbf6de34e0d70e2b7ed4ff40c7c6f65833af265112",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa2-result.v1.json",
       "mode": "full"
@@ -50,8 +50,8 @@
     {
       "suite_id": "QA3",
       "run_id": "qa3-generative-fuzz-20260915",
-      "baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
-      "checksum": "e0065a230529f63c74c34337e305e80b00d113b86662132599226f1a948e9faf",
+      "baseline_id": "ea-baseline-009750f0bef8-60f2feeec9d3",
+      "checksum": "789fbc5b9aafc0453f980c9f5e781c5731c0fc3bc38e98acf0e50c8941583970",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa3-result.v1.json",
       "mode": "full"
@@ -59,8 +59,8 @@
     {
       "suite_id": "QA4",
       "run_id": "qa4-stateful-time-20260915",
-      "baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
-      "checksum": "d062410252ed64135cf800155e65c8640f813509b0f2859816c16453312b74f0",
+      "baseline_id": "ea-baseline-009750f0bef8-60f2feeec9d3",
+      "checksum": "cfd870d668feec127c507e2d10c195dae1c2770b3388b0d9355e09257c76f3d9",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa4-result.v1.json",
       "mode": "full",
@@ -69,8 +69,8 @@
     {
       "suite_id": "QA5",
       "run_id": "qa5-failure-world-20260915",
-      "baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
-      "checksum": "c420d34a8ea634ff06db6d66f7c3a3762b6d918c8079c88b503e4907477a64b6",
+      "baseline_id": "ea-baseline-009750f0bef8-60f2feeec9d3",
+      "checksum": "4d5c69833e6d103fa405ff840c1cd33a5986dacf2717c3db4a394110bcb97de5",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa5-result.v1.json",
       "mode": "tiny",
@@ -79,8 +79,8 @@
     {
       "suite_id": "QA6",
       "run_id": "qa6-performance-world-20260915",
-      "baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
-      "checksum": "98ae640004eea3a48686a7dbbf073f5a94ce849ced284a6417f5d0617a3fa31a",
+      "baseline_id": "ea-baseline-009750f0bef8-60f2feeec9d3",
+      "checksum": "39ac16c813b72b15df479bd62f0cb5f258a7e08ebf0599fd3526120c1208d699",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa6-result.v1.json",
       "mode": "full",
@@ -89,9 +89,9 @@
     },
     {
       "suite_id": "QA7",
-      "run_id": "35017604799",
-      "baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
-      "checksum": "0590283dc55190177cd99ed3d428ade1d4a68c1f84be06f5c43f21a33a202929",
+      "run_id": "35030068563",
+      "baseline_id": "ea-baseline-009750f0bef8-60f2feeec9d3",
+      "checksum": "bb589127b0ed31ed49fc9d9253a64f87529f5955cdc3db18df8344c8034e1bf9",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa7-result.v1.json",
       "mode": "full",
@@ -101,8 +101,8 @@
     {
       "suite_id": "QA8",
       "run_id": "qa8-security-privacy-20260915",
-      "baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
-      "checksum": "ea2633d554d649d9b99b0f8840c946eac6b2031db7047fe41d1d8c6d277cc610",
+      "baseline_id": "ea-baseline-009750f0bef8-60f2feeec9d3",
+      "checksum": "c4477639fba2b25db5bcc153c5a7e0e4fc24e25651571f7d8ce8dc7812f868f0",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa8-result.v1.json",
       "mode": "full",
@@ -112,8 +112,8 @@
     {
       "suite_id": "QA9",
       "run_id": "qa9-acceptance-report-20260915",
-      "baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
-      "checksum": "13f7afceee9cde216663e400fa43f6982226f82a228cd42aea2b9ee27996bb59",
+      "baseline_id": "ea-baseline-009750f0bef8-60f2feeec9d3",
+      "checksum": "e101ca6164a8458673b68ebb7fb0b43eb9c297f965b87615e454304c22d28b2a",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa9-result.v1.json",
       "aggregation_only": true
@@ -129,8 +129,8 @@
     "verified_before_qa6": true,
     "production_like_aborts": true,
     "predecessor_epoch_had_kill_switch": true,
-    "verified_before_qa8": true,
     "verified_before_qa7": true,
+    "verified_before_qa8": true,
     "verified_before_qa9": true
   },
   "dual_dirty": {
@@ -145,16 +145,16 @@
   },
   "current_epoch": {
     "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
-    "rebase_id": "ea-rebase-35ec80eeb89d-77e54a036c46",
-    "baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
-    "predecessor_baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
+    "rebase_id": "ea-rebase-009750f0bef8-60f2feeec9d3",
+    "baseline_id": "ea-baseline-009750f0bef8-60f2feeec9d3",
+    "predecessor_baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
     "rebase_policy_version": "ENGINE_ACCEPTANCE_REBASE_POLICY_V2",
     "qa1_qa6_status": "COMPLETE",
     "qa8_status": "COMPLETE",
     "qa9_status": "COMPLETE"
   },
   "predecessor_epoch": {
-    "baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
+    "baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
     "historical_status": "COMPLETE_UNDER_PREDECESSOR",
     "current_epoch_status": "STALE"
   }

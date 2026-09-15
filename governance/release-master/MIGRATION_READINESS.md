@@ -12,9 +12,9 @@ APPLY_MIGRATION = 0
 APPLY_LOG = 0
 APPLY_OWNER = REL-701-DB
 PROJECT_REF = mgsytcetsiecllmhcyox
-LOCAL_MIGRATION_FILES = 57
-REMOTE_APPLIED_SNAPSHOT = 57
-REMOTE_RAW_APPLIED = 58
+LOCAL_MIGRATION_FILES = 58
+REMOTE_APPLIED_SNAPSHOT = 58
+REMOTE_RAW_APPLIED = 59
 COMMITTED_UNAPPLIED = 0
 TRACK_A_FILE_RESTORE = 3
 REL_408_BASELINE = 1
@@ -43,19 +43,19 @@ REL_701_DB_EXECUTED = 1
 
 ## REVIEW
 
-- 로컬 `supabase/migrations/*.sql` 57 · filename `YYYYMMDDHHMMSS_*.sql`
-- 원격 applied canonical snapshot `tooling/verify/fixtures/migrations-applied.v1.json` versions = 57 (asOf 2026-09-16: 기존 55 + `20260916033000` · `20260916033100`, ref `mgsytcetsiecllmhcyox`)
-- fixture remote raw snapshot = 58 (57 canonical + historicalDelta 1); 이후 원격 전용 버전은 이 레포 소스 밖이라 이 스냅샷에 넣지 않는다
-- `committedUnapplied` 0. 2026-09-16 운영자 「적용해」 MCP `apply_migration` 이 mall/supply_source SQL을 적용. 원격 스탬프 `20260915191718`/`20260915191740` 은 apply-time alias. REL-701-DB 12건은 versions[] 유지. REL-504 자체 apply = 0.
+- 로컬 `supabase/migrations/*.sql` 58 · filename `YYYYMMDDHHMMSS_*.sql`
+- 원격 applied canonical snapshot `tooling/verify/fixtures/migrations-applied.v1.json` versions = 58 (asOf 2026-09-16: 기존 55 + `20260916033000` · `20260916033100` · `20260916080000`, ref `mgsytcetsiecllmhcyox`)
+- fixture remote raw snapshot = 59 (58 canonical + historicalDelta 1); 이후 원격 전용 버전은 이 레포 소스 밖이라 이 스냅샷에 넣지 않는다
+- `committedUnapplied` 0. 2026-09-16 운영자 「적용해」 MCP `apply_migration` 이 mall/supply_source SQL을 적용. 같은 날 Human/PO 「너가 백엔드에서 해야될거 다해」 MCP `apply_migration` 이 admin_staff SQL을 적용. 원격 스탬프 `20260915191718`/`20260915191740`/`20260915220821` 은 apply-time alias. REL-701-DB 12건은 versions[] 유지. REL-504 자체 apply = 0.
 - Track A (REL-003) file restore 3: `20260819210000` · `20260819220000` · `20260820013000` + `opportunity-reprice.service.ts` 존재
 - REL-408 `SECURITY_BASELINE.md` · `REL-408-SECURITY-BASELINE.md` COMPLETED · APPLY_MIGRATION = 0
-- REL-502 `FINAL_ACCEPTANCE.md` STATUS = ISSUED · REBASE_REQUIRED = 0 · REBASE_APPLIED = 1 · ACK_RECEIVED = 1 · current epoch `ea-baseline-f295d67f1c3c-c2a6ea416128`
+- REL-502 `FINAL_ACCEPTANCE.md` STATUS = ISSUED · REBASE_REQUIRED = 0 · REBASE_APPLIED = 1 · ACK_RECEIVED = 1 · current epoch `ea-baseline-009750f0bef8-60f2feeec9d3`
 
 ## VERIFY
 
 | command | expected |
 |---|---|
-| `pnpm verify:migrations-applied-parity` | PASS (57 local · 57 canonical applied · 58 raw snapshot rows · 0 pending) |
+| `pnpm verify:migrations-applied-parity` | PASS (58 local · 58 canonical applied · 59 raw snapshot rows · 0 pending) |
 | `pnpm verify:rel-408-security-baseline` | PASS |
 | `pnpm verify:rel-504-migration-readiness` | PASS |
 

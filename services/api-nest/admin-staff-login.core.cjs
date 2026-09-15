@@ -34,6 +34,7 @@ function deny(code, httpStatus, reason) {
  * }} input
  * @param {{
  *   store?: { ready?: boolean, findByEmail?: (email: string) => Promise<object|null>|object|null },
+ *   opsDb?: { query: Function, configured?: () => boolean },
  *   verifyPassword: (plain: string, encoded: string) => Promise<boolean>,
  *   adminJwtSecret?: string,
  * }} deps
@@ -51,7 +52,9 @@ async function loginStaff(input, deps) {
   }
   if (placeholder || store.ready !== true || typeof store.findByEmail !== "function") {
     const persist = require("./admin-staff-login.persist.cjs");
-    const resolved = await persist.resolveRuntimeStaffStore(process.env);
+    const resolved = await persist.resolveRuntimeStaffStore(process.env, {
+      opsDb: deps && deps.opsDb,
+    });
     if (resolved && resolved.ready === true && typeof resolved.findByEmail === "function") {
       store = resolved;
     } else {

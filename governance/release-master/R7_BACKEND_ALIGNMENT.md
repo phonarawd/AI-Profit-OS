@@ -23,7 +23,7 @@ PROJECT_REF = mgsytcetsiecllmhcyox
 ```
 
 REL-508 이 `POST /api/v1/me/current-fx/approx` Nest 배선을 열었다. SDK/Nest 충돌은 닫혔다.
-`services/api-nest` + `supabase/migrations` protected-scope 변경은 REL-502 formal rebase(`ea-baseline-35ec80eeb89d-77e54a036c46`)에 포함되었고 drift는 0이다.
+`services/api-nest` + `supabase/migrations` protected-scope 변경은 REL-502 formal rebase(`ea-baseline-009750f0bef8-60f2feeec9d3`)에 포함되었고 drift는 0이다.
 REL-502 current-epoch QA1~QA9가 공식 경로로 COMPLETE이고 `FINAL_ACCEPTANCE`는 ISSUED다. CERT_ISSUED=1 · STALE_PENDING_REBASE=0. predecessor 인증을 current로 세탁하지 않았다.
 
 ## 1. CLOSED CONFLICT
@@ -48,7 +48,7 @@ missing snapshot/amount → null. KRW 0 위조 0. client `Number()*rate` 0.
 | auth_permission | Nest `JwtAuthGuard` | `supabase.auth` 0 in api-nest | ALIGNED | REL-405 |
 | rls | REL-408 80/80 ON | `SECURITY_BASELINE.md` | ALIGNED | REL-408 |
 | indexes | applied migration `CREATE INDEX` | file-only indexes 0 | ALIGNED (REL-701-DB 2026-09-04 · mall MCP apply 2026-09-16 · unapplied 0) | REL-408 / REL-701-DB |
-| migration_head | local `20260916033100` | remote applied `20260916033100` | ALIGNED (MCP apply_migration 2026-09-16 · remote stamps `20260915191718`/`20260915191740` mapped · REL-701-DB 실행 이력 유지) | REL-701-DB |
+| migration_head | local `20260916080000` | remote applied `20260916080000` | ALIGNED (MCP apply_migration 2026-09-16 · remote stamp `20260915220821` mapped · REL-701-DB 실행 이력 유지) | REL-701-DB |
 | p0_p3_engine | REL-502 `FINAL_ACCEPTANCE` | DEFECTS_P0/P1 = 0 | ALIGNED (current epoch ISSUED) | REL-502 |
 | p0_p3_admin | REL-409 R6 cert | KNOWN_P0~P3 = 0 | ALIGNED | REL-409 |
 | ui_truth_home_money | home-money-read contract | Engine todayPossible 0 · fake zero 0 | ALIGNED | money / UI |

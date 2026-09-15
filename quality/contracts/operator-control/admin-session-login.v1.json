@@ -1,9 +1,9 @@
 {
   "contractVersion": "2026-09-15.p4.admin-login-v2",
   "kind": "operator_login",
-  "implementation": "core_resolves_isolated_persist_controller_still_unready_arg",
-  "activation": "isolated_qa_only",
-  "activationReason": "AdminSessionController still passes createUnreadyStaffStore. loginStaff then resolves isolated QA persist. unset URL or missing schema → 503. ops DATABASE_URL never used. demo staff forbidden.",
+  "implementation": "core_resolves_isolated_or_ops_persist_controller_unready_placeholder",
+  "activation": "ops_postgres_or_isolated_qa",
+  "activationReason": "AdminSessionController still passes createUnreadyStaffStore as placeholder. loginStaff then resolves isolated QA persist or ops PostgresService when admin_staff schema exists. missing schema → 503. missing staff row → 401. demo staff forbidden.",
   "route": {
     "method": "POST",
     "path": "/api/v1/admin-session/login",
@@ -35,11 +35,12 @@
     "user JWT / aipo_session as Admin"
   ],
   "store": {
-    "readyWhen": "isolated QA URL + admin_staff schema + fixture row",
+    "readyWhen": "ops PostgresService or isolated QA URL + admin_staff schema",
     "kind": "persist_or_unready",
     "persistCode": true,
-    "nestInject": "createUnreadyStaffStore then resolveRuntimeStaffStore",
-    "migrationDraft": "quality/migrations-draft/20260915080000_admin_staff_credentials.sql"
+    "nestInject": "createUnreadyStaffStore then resolveRuntimeStaffStore with optional opsDb",
+    "migrationDraft": "quality/migrations-draft/20260915080000_admin_staff_credentials.sql",
+    "officialMigration": "supabase/migrations/20260916080000_admin_staff_credentials.sql"
   },
   "verification": {
     "coreIsolation": "memory store password/user-session/disabled",
