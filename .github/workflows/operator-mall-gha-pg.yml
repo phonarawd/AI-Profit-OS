@@ -55,18 +55,13 @@ jobs:
       - id: setup
         uses: ./.github/actions/backend-setup
 
-      - name: Mask QA fixture secrets
+      - name: Mask QA fixture secrets and generate staff password
         if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
         run: |
           set +x
           echo "::add-mask::${AIPO_QA_PGPASSWORD}"
           echo "::add-mask::${JWT_ADMIN_SECRET}"
           echo "::add-mask::${JWT_USER_SECRET}"
-
-      - name: Generate QA staff password
-        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
-        run: |
-          set +x
           PASS="$(openssl rand -hex 16)"
           echo "::add-mask::${PASS}"
           echo "QA_STAFF_PASSWORD=${PASS}" >> "$GITHUB_ENV"
