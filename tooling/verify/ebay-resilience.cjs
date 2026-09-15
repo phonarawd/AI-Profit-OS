@@ -373,6 +373,19 @@ if (pkg.indexOf('"verify:ebay-resilience"') === -1) {
   fails.push("package.json missing verify:ebay-resilience script");
 }
 
+if (fails.length === 0) {
+  const bootSelf = spawnSync(
+    process.execPath,
+    [path.join(root, "tooling/ebay-resilience/nest-boot-early-exit.selftest.cjs")],
+    { cwd: root, encoding: "utf8", timeout: 15_000 },
+  );
+  process.stdout.write(bootSelf.stdout || "");
+  process.stderr.write(bootSelf.stderr || "");
+  if (bootSelf.status !== 0 || !(bootSelf.stdout || "").includes("ALL PASS")) {
+    fails.push("nest-boot-early-exit.selftest failed — Nest early-exit diagnostics are not proven");
+  }
+}
+
 // --- PTF-00C-R1 §7 REAL runtime fault-injection selftests ---
 // Both run the ACTUAL compiled TypeScript control flow (mocked
 // fetch / fake in-memory DB), never a static regex-only claim.

@@ -71,6 +71,77 @@ function harnessFailure(message) {
   return err;
 }
 
+function redactNestLog(text) {
+  return String(text || "")
+    .replace(/Bearer\s+[A-Za-z0-9._-]+/gi, "Bearer [redacted]")
+    .replace(/postgres(?:ql)?:\/\/[^\s/@]+@[^\s/]+/gi, "postgres://[redacted]")
+    .replace(/\b(?:JWT_[A-Z_]*SECRET|ADAPTER_INGEST_TOKEN|LLM_API_KEY|DATABASE_URL)\s*[=:]\s*\S+/gi, "[redacted_env]")
+    .replace(/[A-Za-z0-9._%+-]+:[^@\s/]+@/g, "[redacted]@");
+}
+
+function persistRedactedNestLog(started, extra = {}) {
+  const dir = outDir();
+  const raw = started ? nest.collectLogs({ workDir: started.paths.dir }) : "";
+  const redacted = redactNestLog(raw);
+  fs.writeFileSync(path.join(dir, "api-nest.log"), redacted, "utf8");
+  writeJson(path.join(dir, "harness-failure.v1.json"), {
+    code: extra.code || "AIPO_QA_HARNESS_FAILURE",
+    message: extra.message || "nest boot failed",
+    nest_exited_before_health: extra.earlyExit === true,
+    nest_log_excerpt: redacted.slice(-4000),
+    result: extra.result || null,
+  });
+  return redacted;
+}
+
+/**
+ * eBay 전용 health 대기. 공유 ci-nest-boot는 건드리지 않는다
+ * (공식 engine-acceptance 워크플로 path trigger 방지).
+ * 시도 횟수·간격은 공유 부트와 동일(60×2000ms). 프로세스만 죽으면 즉시 실패.
+ */
+async function waitForNestHealth(opts = {}) {
+  const port = Number(opts.port || process.env.PORT || 4000);
+  const url = opts.url || `http://127.0.0.1:${port}/api/v1/health`;
+  const attempts = opts.attempts || 60;
+  const delayMs = opts.delayMs || 2000;
+  const pid = opts.pid;
+  const started = opts.started || null;
+  let last = "";
+  for (let i = 0; i < attempts; i++) {
+    if (pid && !nest.isPidAlive(pid)) {
+      const err = harnessFailure(
+        `api-nest exited before health: pid=${pid} ${last || "no_http_yet"}`.trim(),
+      );
+      err.earlyExit = true;
+      persistRedactedNestLog(started, {
+        code: err.code,
+        message: err.message,
+        earlyExit: true,
+      });
+      throw err;
+    }
+    const res = await nest.httpGet(url);
+    if (res.status === 200) {
+      let parsed = null;
+      try {
+        parsed = JSON.parse(res.body);
+      } catch {
+        parsed = null;
+      }
+      return { ok: true, attempts: i + 1, status: res.status, body: parsed };
+    }
+    last = `status=${res.status} ${res.error || ""}`.trim();
+    await new Promise((r) => setTimeout(r, delayMs));
+  }
+  const err = harnessFailure(`api-nest health timeout: ${last}`);
+  persistRedactedNestLog(started, {
+    code: err.code,
+    message: err.message,
+    earlyExit: false,
+  });
+  throw err;
+}
+
 async function withPgClient(databaseUrl, fn) {
   const { Client } = nestRequire("pg");
   const client = new Client({ connectionString: databaseUrl, connectionTimeoutMillis: 8_000 });
@@ -216,8 +287,18 @@ async function runEbayFaultInjection(opts = {}) {
     if (!databaseUrl) throw harnessFailure("DATABASE_URL required for the live eBay fault harness");
     pgPrep = await prepareIsolatedPostgres({ databaseUrl, target_env: opts.target_env });
     nest.assertDistPresent();
-    started = nest.startNest({ port, secrets, env: { DATABASE_URL: databaseUrl } });
-    await nest.waitForHealth({ port });
+    started = nest.startNest({
+      port,
+      secrets,
+      workDir: outDir(),
+      env: { DATABASE_URL: databaseUrl },
+    });
+    try {
+      await waitForNestHealth({ port, pid: started.pid, started });
+    } catch (bootErr) {
+      nest.stopNest({ pid: started.pid, workDir: started.paths.dir });
+      throw bootErr;
+    }
   }
 
   const evidence = {};
@@ -418,10 +499,7 @@ async function runEbayFaultInjection(opts = {}) {
     evidence,
     secrets: { committed: false, redacted_user_auth: redactAuthorization(userBearer), redacted_admin_auth: redactAuthorization(adminBearer) },
     nest_log_excerpt: started
-      ? String(nest.collectLogs({ workDir: started.paths.dir }) || "")
-          .slice(-4000)
-          .replace(/Bearer\s+[A-Za-z0-9._-]+/g, "Bearer [redacted]")
-          .replace(/postgres:[^@\s]+@/gi, "postgres:[redacted]@")
+      ? redactNestLog(nest.collectLogs({ workDir: started.paths.dir })).slice(-4000)
       : null,
     notes: [
       "Worker-side nested-retry/tick-deadline/provider-tick-id fault injection is proven separately in workers/ebay-adapter/src/fault-injection.selftest.ts (real mocked-fetch execution).",
@@ -469,11 +547,13 @@ function main() {
     })
     .catch((e) => {
       try {
-        writeJson(path.join(outDir(), "harness-failure.v1.json"), {
-          code: e.code || "FAIL",
-          message: e.message,
-          result: e.result || null,
-        });
+        if (!fs.existsSync(path.join(outDir(), "harness-failure.v1.json"))) {
+          writeJson(path.join(outDir(), "harness-failure.v1.json"), {
+            code: e.code || "FAIL",
+            message: e.message,
+            result: e.result || null,
+          });
+        }
       } catch {
         /* upload path still needs a file when wait fails early */
       }
@@ -486,4 +566,9 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { runEbayFaultInjection };
+module.exports = {
+  runEbayFaultInjection,
+  redactNestLog,
+  persistRedactedNestLog,
+  waitForNestHealth,
+};
