@@ -1,12 +1,12 @@
 {
   "schema": "governance.engine-acceptance.evidence-manifest.v1",
   "version": "1.0.0",
-  "qa_phase": "QA-0",
+  "qa_phase": "QA-9",
   "baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
-  "verdict": "ENGINE_QA_INCOMPLETE",
-  "verdict_reason": "ENGINE_ACCEPTANCE_REBASE_V1 · ENGINE_ACCEPTANCE_REBASE_POLICY_V2 · predecessor discovery historical COMPLETE / current-epoch STALE · required rerun QA1-QA8 then QA9 aggregation · QA9 verdict not fabricated",
+  "verdict": "ENGINE_ACCEPTED_FOR_UI",
+  "verdict_reason": "QA9 COMPLETE - all acceptance-contract L1 conditions met - ENGINE_ACCEPTED_FOR_UI",
   "evidence_integrity": "VALID",
-  "next": "QA1_DETERMINISTIC_TRUTH",
+  "next": "03_ui_entry_unlocked",
   "artifact_policy": {
     "raw_traces": "github_actions_artifact",
     "retention_days_min": 90,
@@ -32,31 +32,20 @@
     },
     {
       "suite_id": "QA1",
-      "run_id": null,
+      "run_id": "qa1-deterministic-truth-20260915",
       "baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
-      "checksum": null,
-      "completion_status": "STALE",
-      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
-      "historical_completion_status": "STALE",
-      "historical_baseline_id": "ea-baseline-137241804ff2-83935adcdf57",
-      "historical_run_id": null,
-      "historical_checksum": null,
-      "result_ref": "governance/engine-acceptance/qa1-result.v1.json",
-      "predecessor_result_preserved": true
+      "checksum": "955931970ee7b9446fa2e7ed2b8adb6927ad2720d44f7933aeaede2cb585f294",
+      "completion_status": "COMPLETE",
+      "result_ref": "governance/engine-acceptance/qa1-result.v1.json"
     },
     {
       "suite_id": "QA2",
-      "run_id": null,
+      "run_id": "qa2-synthetic-personas-20260915",
       "baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
-      "checksum": null,
-      "completion_status": "STALE",
-      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
-      "historical_completion_status": "STALE",
-      "historical_baseline_id": "ea-baseline-137241804ff2-83935adcdf57",
-      "historical_run_id": null,
-      "historical_checksum": null,
+      "checksum": "0376614f6b16ba30231a6d4443eb37fcdb5a3dfba007b14423102f65fecb0f62",
+      "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa2-result.v1.json",
-      "predecessor_result_preserved": true
+      "mode": "full"
     },
     {
       "suite_id": "QA3",
@@ -100,48 +89,34 @@
     },
     {
       "suite_id": "QA7",
-      "run_id": null,
+      "run_id": "34968710565",
       "baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
-      "checksum": null,
-      "completion_status": "NOT_STARTED",
+      "checksum": "e171f4cd8db8c920697ac7b05b8ec7c9f9cbd519031f28b03ff6bda8204684fc",
+      "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa7-result.v1.json",
       "mode": "full",
       "formal_actions_evidence": true,
-      "artifact": "engine-acceptance-QA7-raw-traces",
-      "predecessor_baseline_id": "ea-baseline-137241804ff2-83935adcdf57"
+      "artifact": "engine-acceptance-QA7-raw-traces"
     },
     {
       "suite_id": "QA8",
-      "run_id": null,
+      "run_id": "qa8-security-privacy-20260915",
       "baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
-      "checksum": null,
-      "completion_status": "STALE",
-      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
-      "historical_completion_status": "STALE",
-      "historical_baseline_id": "ea-baseline-137241804ff2-83935adcdf57",
-      "historical_run_id": null,
-      "historical_checksum": null,
+      "checksum": "2bb73b4c86776d5868ee0dae2ec9dc890596dc6ce05de40977a5d318e8886f47",
+      "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa8-result.v1.json",
-      "predecessor_result_preserved": true
+      "mode": "full",
+      "asvs_version": "5.0.0",
+      "blocked_codes": []
     },
     {
       "suite_id": "QA9",
-      "run_id": null,
+      "run_id": "qa9-acceptance-report-20260915",
       "baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
-      "checksum": null,
-      "completion_status": "STALE",
-      "epoch_status": "STALE_AGGREGATION_FOR_CURRENT_EPOCH",
-      "aggregation_only": true,
-      "discovery_suite": false,
-      "current_epoch_authoritative": false,
-      "historical_completion_status": "STALE",
-      "historical_baseline_id": "ea-baseline-137241804ff2-83935adcdf57",
-      "historical_run_id": null,
-      "historical_checksum": null,
-      "historical_verdict": "ENGINE_QA_INCOMPLETE",
+      "checksum": "7944e9f9dd3487b5dfa544629147a6f07a3713e967c0976c3c051d375e15b846",
+      "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa9-result.v1.json",
-      "predecessor_result_preserved": true,
-      "rerun_after_current_epoch_discovery": true
+      "aggregation_only": true
     }
   ],
   "kill_switch": {
@@ -153,7 +128,10 @@
     "verified_before_qa5": true,
     "verified_before_qa6": true,
     "production_like_aborts": true,
-    "predecessor_epoch_had_kill_switch": true
+    "predecessor_epoch_had_kill_switch": true,
+    "verified_before_qa7": true,
+    "verified_before_qa8": true,
+    "verified_before_qa9": true
   },
   "dual_dirty": {
     "working_tree_clean": false,
@@ -171,9 +149,9 @@
     "baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
     "predecessor_baseline_id": "ea-baseline-137241804ff2-83935adcdf57",
     "rebase_policy_version": "ENGINE_ACCEPTANCE_REBASE_POLICY_V2",
-    "qa1_qa6_status": "STALE_PENDING_RERUN",
-    "qa8_status": "STALE_PENDING_RERUN",
-    "qa9_status": "STALE_AGGREGATION_PENDING_DISCOVERY"
+    "qa1_qa6_status": "COMPLETE",
+    "qa8_status": "COMPLETE",
+    "qa9_status": "COMPLETE"
   },
   "predecessor_epoch": {
     "baseline_id": "ea-baseline-137241804ff2-83935adcdf57",

@@ -2,10 +2,10 @@
   "schema": "governance.engine-acceptance.qa8-result.v1",
   "version": "1.0.0",
   "suite_id": "QA8",
-  "run_id": "qa8-security-privacy-20260912",
+  "run_id": "qa8-security-privacy-20260915",
   "todoId": "qa8-security-privacy",
-  "measuredAt": "2026-09-12T16:23:22.679Z",
-  "baseline_id": "ea-baseline-b11140abaafa-af15bf5b43ff",
+  "measuredAt": "2026-09-15T12:12:06.546Z",
+  "baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
   "mode": "full",
   "asvs_version": "5.0.0",
   "exhaustive_certification_claim": false,
@@ -26,7 +26,7 @@
       "check_id": "QA8_SECURITY_PRIVACY_WORLD",
       "status": "PASS",
       "mode": "full",
-      "measuredAt": "2026-09-12T16:23:22.679Z",
+      "measuredAt": "2026-09-15T12:12:06.546Z",
       "seed": 20260813,
       "asvs_version": "5.0.0",
       "exhaustive_certification_claim": false,
@@ -50,7 +50,7 @@
             "script": "tooling/verify/admin-boundary.cjs",
             "ok": true,
             "exitCode": 0,
-            "summary": "PASS - missing admin signing secret -> 401 (admin routes stay closed) (status=401) | [admin-guard.selftest] ALL PASS — real Nest HTTP admin boundary verified (25 checks) | [verify:admin-boundary] PASS (26 admin controllers · 119 routes classified · global APP_GUARD · real Nest HTTP adversarial round-trip)",
+            "summary": "PASS - missing admin signing secret -> 401 (admin routes stay closed) (status=401) | [admin-guard.selftest] ALL PASS — real Nest HTTP admin boundary verified (25 checks) | [verify:admin-boundary] PASS (26 admin controllers · 136 routes classified · global APP_GUARD · real Nest HTTP adversarial round-trip)",
             "cases_covered": [
               "no_token",
               "malformed_token",
@@ -228,17 +228,17 @@
           "harness_probe": {
             "available": true,
             "probed_path": "../../../../../tmp/aipo-harness/qa8-adversarial/qa8-adversarial.v1.json",
-            "age_ms": 120
+            "age_ms": 123
           },
           "evidence": {
             "source": "run-qa8-adversarial.cjs (isolated CI Postgres + booted Nest, real HTTP)",
-            "measuredAt": "2026-09-12T16:23:22.560Z",
+            "measuredAt": "2026-09-15T12:12:06.423Z",
             "case_count": 42,
             "product_security_verdict": "PASS",
             "unknown_product_failures": 0,
             "inventory": {
               "controller_count": 26,
-              "route_count": 119,
+              "route_count": 136,
               "controllers": [
                 "services/api-nest/src/adapters/adapters.admin.controller.ts",
                 "services/api-nest/src/admin-ops/admin-ops.admin.controller.ts",
@@ -341,5 +341,5 @@
     "Real defects recorded in defects.v1.json - discovery only, not repaired this wave.",
     "Does not issue ENGINE_ACCEPTED_FOR_UI. Does not start QA9."
   ],
-  "checksum": "c99447b5c577efde9aa821e71317e4032d0ef2eead7ee9347b009f9af5fca5e5"
+  "checksum": "2bb73b4c86776d5868ee0dae2ec9dc890596dc6ce05de40977a5d318e8886f47"
 }

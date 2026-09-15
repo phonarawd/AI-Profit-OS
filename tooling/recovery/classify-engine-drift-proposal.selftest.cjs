@@ -175,26 +175,35 @@ if (livePaths.length !== live.changedPathCount) {
 }
 
 const officialCounts = {};
-for (const p of livePaths) {
-  const cat = classify(p).category;
-  officialCounts[cat] = (officialCounts[cat] || 0) + 1;
-  if (cat === "UNCLASSIFIED") fails.push("live still UNCLASSIFIED " + p);
-  const want = proposed.get(p);
-  if (!want) fails.push("proposal dropped live path " + p);
-  else if (want !== cat) fails.push(p + " official=" + cat + " proposal=" + want);
-}
-for (const p of proposed.keys()) {
-  if (!livePaths.includes(p)) {
-    fails.push("proposal invented path outside live drift " + p);
+if (live.changedPathCount === 0) {
+  // Current-epoch ISSUED: protected live drift is 0. The proposal remains a
+  // classify-rule catalog, not a live-drift inventory. Do not require the
+  // historical 71-path list to reappear as live drift.
+  if (classify("services/api-nest/src/common/admin-capabilities.ts").category !== "ADMIN_SESSION") {
+    fails.push("admin-capabilities must stay ADMIN_SESSION");
   }
-}
+} else {
+  for (const p of livePaths) {
+    const cat = classify(p).category;
+    officialCounts[cat] = (officialCounts[cat] || 0) + 1;
+    if (cat === "UNCLASSIFIED") fails.push("live still UNCLASSIFIED " + p);
+    const want = proposed.get(p);
+    if (!want) fails.push("proposal dropped live path " + p);
+    else if (want !== cat) fails.push(p + " official=" + cat + " proposal=" + want);
+  }
+  for (const p of proposed.keys()) {
+    if (!livePaths.includes(p)) {
+      fails.push("proposal invented path outside live drift " + p);
+    }
+  }
 
-expectEq(officialCounts.ADMIN_SESSION, 8, "live ADMIN_SESSION");
-const adminCap = "services/api-nest/src/common/admin-capabilities.ts";
-if (!livePaths.includes(adminCap)) {
-  fails.push("admin-capabilities missing from live drift");
-} else if (classify(adminCap).category !== "ADMIN_SESSION") {
-  fails.push("admin-capabilities must stay ADMIN_SESSION");
+  expectEq(officialCounts.ADMIN_SESSION, 8, "live ADMIN_SESSION");
+  const adminCap = "services/api-nest/src/common/admin-capabilities.ts";
+  if (!livePaths.includes(adminCap)) {
+    fails.push("admin-capabilities missing from live drift");
+  } else if (classify(adminCap).category !== "ADMIN_SESSION") {
+    fails.push("admin-capabilities must stay ADMIN_SESSION");
+  }
 }
 
 if (fails.length) {
