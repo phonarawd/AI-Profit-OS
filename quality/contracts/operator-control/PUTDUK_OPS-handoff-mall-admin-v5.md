@@ -22,11 +22,17 @@
 - 외부 ingest 운영 잠금: `PRODUCTION_SOURCE_MODE=operator_only` · `ALLOW_EXTERNAL_PRODUCT_INGEST=false` · `ALLOW_LEGACY_EXTERNAL_WRITES=false` · writer → `SOURCE_DISABLED`. 재활성은 env+새 배포.
 - 공식 DDL: `supabase/migrations/20260916033000_opportunities_supply_source.sql` · `supabase/migrations/20260916033100_operator_mall_product.sql`. 기존 행 DELETE 0.
 
+## 라이브 스키마 (2026-09-16 · mgsytcetsiecllmhcyox)
+- MCP `apply_migration` 적용: `opportunities.supply_source` · visibility/mall 컬럼 · `operator_mall_products` · `operator_mall_participations` · `operator_mall_settlement_journals`.
+- 원격 스탬프 `20260915191718` / `20260915191740` (로컬 파일 `20260916033000` / `20260916033100`).
+- `legacy_external` 행 DELETE 0 (적용 직후 115행).
+- persist 프리플라이트 READY. Nest HTTP STORE_UNREADY 해제는 이 브랜치 SHA가 ops `DATABASE_URL` 로 기동된 뒤.
+- 어드민 등록 POST 스모크는 시크릿 없이 하지 않음.
+
 ## 아직 아님
 - 출시 완료 / putduk-web 라이브 / 이 레포 Cloudflare production 재배포
-- 정식 QA0–QA9
+- 정식 QA0–QA9 · REL-502 formal rebase ACK
 - 라이브 `ledger_journals` 권위를 mall 지급으로 승격하는 새 규칙
-- 라이브 ops DDL apply. SELECT 결과 `supply_source`/mall 표 없음. MCP `apply_migration` 은 Cursor hook 이 차단. STORE_UNREADY 는 테이블이 생긴 뒤에만 해제.
 - 이 Cursor 워크스페이스는 AI-Profit-OS 만. putduk-web / PUTDUK_OPS 파일은 가져오지 않는다. 그쪽은 위 라이브 경로를 호출하면 된다.
 
 ## GHA 일회용 PG (실측)

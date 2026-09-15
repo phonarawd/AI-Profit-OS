@@ -12,7 +12,7 @@ atSec 0,8,18,28,48,58,66 · totalDurationSec 70 · 필드 atSec
 DAY1 5단계 product_check… · durationSecMin 8 / Max 15. Soft60/Hard90 과 다름.
 
 상품 Admin HTTP+실원장(2026-09-15.mall-ledger-v6): `product-admin-http.v6.json`. 이전 `product-admin-http.v5.json` 은 QA 정산 표 권위 스냅샷. `product-visibility-concurrent-participate.v1.json` 은 v4 스냅샷. GHA 일회용 PG run `34906126441` (verified HEAD `d626126c`) PASS. 권위 표=`ledger_journals`. 정식 QA0–QA9·운영 적용·출시 아님.
-금액 권위: expectedProfitUsdt / configuredPayoutUsdt / ledgerPaidUsdt. persist 실태: persist-status.v1.json. persist 코드+공식 `supabase/migrations`+가짜 persist 격리. Nest Admin 상품은 ops `PostgresService`(mgsytcetsiecllmhcyox) + mall 스키마가 있으면 persist. 격리 QA URL 세탁 금지. 스키마 없으면 STORE_UNREADY. 유저 피드/상세/참여는 operator only. 기본은 쇼핑몰형 전체 공개. 선택 회원 공개는 권한이지 독점 예약이 아님. 웹/어드민 레포 파일은 이 워크스페이스에 가져오지 않는다.
+금액 권위: expectedProfitUsdt / configuredPayoutUsdt / ledgerPaidUsdt. persist 실태: persist-status.v1.json. 2026-09-16 라이브 mall/`supply_source` DDL 적용(mgsytcetsiecllmhcyox). persist 코드+공식 `supabase/migrations`+가짜 persist 격리. Nest Admin 상품은 ops `PostgresService` + mall 스키마가 있으면 persist. 격리 QA URL 세탁 금지. 이 SHA 미기동이면 HTTP STORE_UNREADY. 유저 피드/상세/참여는 operator only. 기본은 쇼핑몰형 전체 공개. 선택 회원 공개는 권한이지 독점 예약이 아님. 웹/어드민 레포 파일은 이 워크스페이스에 가져오지 않는다.
 
 사용자 API: GET /api/v1/me/membership
 Admin 표시 연출: GET/PUT /api/v1/admin/membership/presentation-profile

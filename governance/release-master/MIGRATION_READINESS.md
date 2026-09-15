@@ -13,9 +13,9 @@ APPLY_LOG = 0
 APPLY_OWNER = REL-701-DB
 PROJECT_REF = mgsytcetsiecllmhcyox
 LOCAL_MIGRATION_FILES = 57
-REMOTE_APPLIED_SNAPSHOT = 55
-REMOTE_RAW_APPLIED = 56
-COMMITTED_UNAPPLIED = 2
+REMOTE_APPLIED_SNAPSHOT = 57
+REMOTE_RAW_APPLIED = 58
+COMMITTED_UNAPPLIED = 0
 TRACK_A_FILE_RESTORE = 3
 REL_408_BASELINE = 1
 REL_502_ISSUED = 1
@@ -44,9 +44,9 @@ REL_701_DB_EXECUTED = 1
 ## REVIEW
 
 - 로컬 `supabase/migrations/*.sql` 57 · filename `YYYYMMDDHHMMSS_*.sql`
-- 원격 applied canonical snapshot `tooling/verify/fixtures/migrations-applied.v1.json` versions = 55 (asOf 2026-09-13: REL-701-DB 54 + 이미 원격 적용된 `20260905110000`, ref `mgsytcetsiecllmhcyox`)
-- fixture remote raw snapshot = 56 (54 canonical + historicalDelta 1 + `20260905110000`); 이후 원격 전용 버전은 이 레포 소스 밖이라 이 스냅샷에 넣지 않는다
-- file-only `committedUnapplied` 2 — `20260916033000` · `20260916033100` 운영자 mall/supply_source. REL-701-DB 12건은 versions[] 유지. 이 슬라이스 라이브 apply 는 훅 차단.
+- 원격 applied canonical snapshot `tooling/verify/fixtures/migrations-applied.v1.json` versions = 57 (asOf 2026-09-16: 기존 55 + `20260916033000` · `20260916033100`, ref `mgsytcetsiecllmhcyox`)
+- fixture remote raw snapshot = 58 (57 canonical + historicalDelta 1); 이후 원격 전용 버전은 이 레포 소스 밖이라 이 스냅샷에 넣지 않는다
+- `committedUnapplied` 0. 2026-09-16 운영자 「적용해」 MCP `apply_migration` 이 mall/supply_source SQL을 적용. 원격 스탬프 `20260915191718`/`20260915191740` 은 apply-time alias. REL-701-DB 12건은 versions[] 유지. REL-504 자체 apply = 0.
 - Track A (REL-003) file restore 3: `20260819210000` · `20260819220000` · `20260820013000` + `opportunity-reprice.service.ts` 존재
 - REL-408 `SECURITY_BASELINE.md` · `REL-408-SECURITY-BASELINE.md` COMPLETED · APPLY_MIGRATION = 0
 - REL-502 `FINAL_ACCEPTANCE.md` STATUS = ISSUED · REBASE_REQUIRED = 0 · REBASE_APPLIED = 1 · ACK_RECEIVED = 1 · current epoch `ea-baseline-f295d67f1c3c-c2a6ea416128`
@@ -55,7 +55,7 @@ REL_701_DB_EXECUTED = 1
 
 | command | expected |
 |---|---|
-| `pnpm verify:migrations-applied-parity` | PASS (57 local · 55 canonical applied · 56 raw snapshot rows · 2 pending) |
+| `pnpm verify:migrations-applied-parity` | PASS (57 local · 57 canonical applied · 58 raw snapshot rows · 0 pending) |
 | `pnpm verify:rel-408-security-baseline` | PASS |
 | `pnpm verify:rel-504-migration-readiness` | PASS |
 

@@ -1,8 +1,8 @@
 {
   "projectRef": "mgsytcetsiecllmhcyox",
-  "asOf": "2026-09-13",
-  "source": "Supabase MCP execute_sql read-only: 2026-09-04 REL-701-DB snapshot (raw 55 · head 20260902155632) plus 2026-09-13 confirm that 20260905110000_classic_signup_sessions_and_admin is already in schema_migrations (apply 0 this slice). Later remote-only versions remain outside this repo source and are not added to this snapshot.",
-  "remoteRawAppliedCount": 56,
+  "asOf": "2026-09-16",
+  "source": "Supabase MCP execute_sql + list_migrations on mgsytcetsiecllmhcyox: 2026-09-04 REL-701-DB snapshot plus 2026-09-13 20260905110000 already remote, plus 2026-09-16 operator-authorized MCP apply_migration for mall/supply_source (remote stamps 20260915191718/20260915191740 mapped to local 20260916033000/20260916033100). Later remote-only versions remain outside this repo source and are not added to this snapshot.",
+  "remoteRawAppliedCount": 58,
   "remoteHistoricalMappings": [
     {
       "remoteVersion": "20260810212231",
@@ -38,9 +38,23 @@
       "name": "ptf00c_r1_provider_tick_ledger",
       "kind": "apply-time-version-alias",
       "rawCountDelta": 0
+    },
+    {
+      "remoteVersion": "20260915191718",
+      "localVersion": "20260916033000",
+      "name": "opportunities_supply_source",
+      "kind": "apply-time-version-alias",
+      "rawCountDelta": 0
+    },
+    {
+      "remoteVersion": "20260915191740",
+      "localVersion": "20260916033100",
+      "name": "operator_mall_product",
+      "kind": "apply-time-version-alias",
+      "rawCountDelta": 0
     }
   ],
-  "note": "versions[] = canonical local version prefixes corresponding to remote-applied schema truth. committedUnapplied[] = repo-only migrations awaiting their authorized production apply (0 after REL-701-DB). remoteRawAppliedCount is the fixture snapshot for repo-owned files (54 canonical + 1 historical delta + 20260905110000 already on remote = 56), not a live census of later remote-only versions. remoteHistoricalMappings explicitly records every remote version alias/history row that has no same-version local file (5 aliases · never renamed · never reapplied · never repaired). 2026-08-24 reconciliation restored the exact remote-applied SQL for krw_deposit_fx_facts and beginner_onboarding_experience into the repo. 2026-09-04 02:34 UTC REL-701-DB: Founder-authorized `supabase db push --include-all` applied the 12 committedUnapplied migrations to Production in version order (43 → 55 rows · head unchanged · alias rows intact · 93 public tables unchanged · only net schema delta = withdraw_stepup_challenges.token_consumed_at + withdraw_stepup_challenges_token_unspent_idx). 2026-09-13: 20260905110000 moved versions[] because live schema_migrations already has it (this slice apply 0). Evidence = rel701db below.",
+  "note": "versions[] = canonical local version prefixes corresponding to remote-applied schema truth. committedUnapplied[] = repo-only migrations awaiting their authorized production apply. remoteRawAppliedCount is the fixture snapshot for repo-owned files (57 canonical + 1 historical delta = 58), not a live census of later remote-only versions. remoteHistoricalMappings records apply-time aliases (never renamed · never reapplied · never repaired). 2026-09-04 REL-701-DB applied 12 versions via db push. 2026-09-13: 20260905110000 already remote. 2026-09-16: operator 「적용해」 MCP apply_migration applied mall/supply_source SQL; MCP stamped 20260915191718/20260915191740; local file versions stay 20260916033000/20260916033100. Evidence = rel701db + mallSupplySourceApply.",
   "rel701db": {
     "status": "APPLIED",
     "appliedAtUtc": "2026-09-04T02:33:15Z",
@@ -70,6 +84,21 @@
     ],
     "evidence": "governance/recovery/founder-gates-executed-20260904.md",
     "applyLog": "governance/recovery/evidence/rel-701-db-apply-20260904.txt"
+  },
+  "mallSupplySourceApply": {
+    "status": "APPLIED",
+    "appliedAtUtc": "2026-09-15T19:17:18Z",
+    "authorization": "Operator chat 「적용해」 2026-09-16 KST · Night Guard founder-auth scope REL-701-DB (file removed after apply)",
+    "method": "Supabase MCP apply_migration on project_ref mgsytcetsiecllmhcyox only",
+    "localVersions": ["20260916033000", "20260916033100"],
+    "remoteVersions": ["20260915191718", "20260915191740"],
+    "legacyExternalRowsDeleted": 0,
+    "legacyExternalRowCountAfter": 115,
+    "tables": [
+      "operator_mall_products",
+      "operator_mall_participations",
+      "operator_mall_settlement_journals"
+    ]
   },
   "versions": [
     "20260808205842",
@@ -126,10 +155,9 @@
     "20260901224000",
     "20260902032000",
     "20260902155632",
-    "20260905110000"
-  ],
-  "committedUnapplied": [
+    "20260905110000",
     "20260916033000",
     "20260916033100"
-  ]
+  ],
+  "committedUnapplied": []
 }

@@ -63,8 +63,8 @@
 - 이 워크스페이스는 AI-Profit-OS 만. 웹/어드민 레포 파일은 가져오지 않는다.
 
 ## 미구현 · BLOCKED
-- 출시 완료 / putduk-web 라이브 / main 병합 / 이 레포 Cloudflare production 재배포
-- 운영 mall persist 경로(코드)는 열림. ops DDL 파일은 `supabase/migrations/20260916033000_*` · `20260916033100_*`. 웹/어드민 UI 수신은 각 레포에서 위 API를 호출한다.
+- 출시 완료 / putduk-web 라이브 / 이 레포 Cloudflare production 재배포
+- 운영 mall persist 코드는 열림. 2026-09-16 ops DDL 적용됨(`supply_source` + mall 3표). Nest HTTP STORE_UNREADY 해제는 이 SHA 기동 후. 웹/어드민 UI 수신은 각 레포에서 위 API를 호출한다.
 - 정식 QA0–QA9 · ISSUED · 새 Human/PO ACK (아래 문구만 보고, AI가 ACK를 만들지 않음)
 - 풀 재원 보충 규칙(누가 얼마를 넣는가) 미확정 → 추측 지급/충전 금지. 현재 posting은 시스템 계정 음수를 기존과 같이 허용할 뿐 운영 재원 정책이 아님.
 - 진행 중 참여의 비공개 전환 취소 규칙 미확정
@@ -90,9 +90,7 @@
 - 중간 실패(최종 아님): `34896504576`(가드 SQL 주석), `34905783882`(선택 목록 어서션이 공유 PG의 전체 공개 상품과 충돌)
 
 ## 아직 아님
-- 운영 DB apply
-- 정식 QA0–QA9
-- ISSUED
-- 출시
-- 운영 배포
-- 고객/어드민 웹 반영
+- 정식 QA0–QA9 · 새 rebase ACK (AI가 ACK를 만들지 않음)
+- 출시 / 고객·어드민 웹 반영
+- 이 SHA Nest production 기동 전 HTTP persist
+- Cloudflare ebay-adapter-production cron 재배포 (레포 `crons=[]` · 라이브 worker 2026-08-25)
