@@ -2,10 +2,10 @@
   "schema": "governance.release-master.rc-formal.v1",
   "id": "rc-formal",
   "status": "LOCKED",
-  "source_sha_binding": "81b34e53b244ca5820eb44a5f53d226bca43ac11",
+  "source_sha_binding": "1e66a77d28ac1a5da6e6d21d2e2e469f121fed20",
   "engine_final_acceptance": "ISSUED",
-  "engine_baseline": "ea-baseline-f295d67f1c3c-c2a6ea416128",
-  "engine_rebase_id": "ea-rebase-f295d67f1c3c-c2a6ea416128",
+  "engine_baseline": "ea-baseline-35ec80eeb89d-77e54a036c46",
+  "engine_rebase_id": "ea-rebase-35ec80eeb89d-77e54a036c46",
   "engine_qa9": "ENGINE_ACCEPTED_FOR_UI",
   "protected_scope_drift": 0,
   "historical_82_path_evidence": "PRESERVED",
@@ -27,20 +27,20 @@
   "historical_inventory_ref": "governance/recovery/archive/engine-drift-inventory.pre-rebase-20260902.v1.json",
   "historical_evidence_ref": "governance/recovery/archive/engine-rebase-evidence.pre-rebase-20260902.v1.json",
   "predecessor_rc": {
-    "source_sha_binding": "cb71cf91b6982471edab426ab06a14947a7f4de5",
-    "engine_baseline": "ea-baseline-b11140abaafa-af15bf5b43ff",
-    "engine_rebase_id": "ea-rebase-b11140abaafa-af15bf5b43ff",
+    "source_sha_binding": "81b34e53b244ca5820eb44a5f53d226bca43ac11",
+    "engine_baseline": "ea-baseline-f295d67f1c3c-c2a6ea416128",
+    "engine_rebase_id": "ea-rebase-f295d67f1c3c-c2a6ea416128",
     "release_build_run_id": 33827816052,
     "release_acceptance_run_id": 33829217490,
     "artifact_digest": "5e37887b888aa2bcd4bb075ebcd956ea1c358322bdfbb7f10bdbe31df8ec6001",
-    "superseded_reason": "ENGINE_ACCEPTANCE_REBASE_V1 ea-rebase-f295d67f1c3c-c2a6ea416128 · current-epoch QA0-QA9 ISSUED · backend-ci 34971433168 + engine-acceptance 34971433191 on qa/operator-mall-pg-20260915 81b34e53 · qa7 34968710565 on 9d51acab"
+    "superseded_reason": "ENGINE_ACCEPTANCE_REBASE_V1 ea-rebase-35ec80eeb89d-77e54a036c46 · current-epoch QA0-QA9 ISSUED · backend-ci 35020079292 + engine-acceptance 35020079305 on lock/operator-source-20260916 1e66a77d · qa7 35017604799 on 4d2755b2"
   },
   "release_artifact": {
     "name": "release-bundle",
     "digest_alg": "sha256",
     "artifact_digest": "5e37887b888aa2bcd4bb075ebcd956ea1c358322bdfbb7f10bdbe31df8ec6001",
     "release_build_run_id": 33827816052,
-    "engine_acceptance_run_id": 34968710565,
+    "engine_acceptance_run_id": 35017604799,
     "release_acceptance_run_id": 33829217490,
     "release_acceptance_verdict": "PASS",
     "api_artifact_digest": "bfbaab67e0358e2eddf1d0e53ad2ac5c790766be2c26eec6400a8c57553b669d",
@@ -48,5 +48,5 @@
     "render_staging_deploy_id": "dep-dad2cgn10e5c73d1amrg",
     "evidence_dir": "governance/release-master/evidence/release-acceptance-verdict-20260904"
   },
-  "note": "source_sha_binding is qa/operator-mall-pg-20260915 81b34e53 after current-epoch FINAL_ACCEPTANCE ISSUED (ENGINE_ACCEPTED_FOR_UI). Formal QA7 authority is workflow_dispatch 34968710565 on ancestor 9d51acab. PR backend-ci 34971433168 and engine-acceptance 34971433191 succeeded on the binding SHA. Predecessor release-bundle digest stays historical (no new release-acceptance invented). production_db_apply=1 records REL-701-DB; production_deploy stays 0 until Founder REL-701 workflow_dispatch. This is not a main merge and not a rebase ACK."
+  "note": "source_sha_binding is lock/operator-source-20260916 1e66a77d after current-epoch FINAL_ACCEPTANCE ISSUED (ENGINE_ACCEPTED_FOR_UI) on baseline ea-baseline-35ec80eeb89d-77e54a036c46. Formal QA7 authority is workflow_dispatch 35017604799 on ancestor 4d2755b2. PR backend-ci 35020079292 and engine-acceptance 35020079305 succeeded on the binding SHA. Predecessor release-bundle digest stays historical (no new release-acceptance invented). production_db_apply=1 records REL-701-DB; production_deploy stays 0 until Founder REL-701 workflow_dispatch. ACK ENGINE_ACCEPTANCE_PR229_MERGE_AND_RC_FORMAL_REBIND_V1 allows PR 229 merge when required checks are actually green; this record itself does not flip production_deploy and is not a consumer-launch claim."
 }

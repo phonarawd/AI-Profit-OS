@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-09-15T20:10:55.950Z",
- "headSha": "4d2755b2b098ce9fd12b6c0dcd54dd9a9130fce9",
+ "generatedAt": "2026-09-15T20:45:25.197Z",
+ "headSha": "1e66a77d28ac1a5da6e6d21d2e2e469f121fed20",
  "edgeKinds": [
   "import",
   "require",
@@ -908,6 +908,12 @@
   },
   {
    "id": "governance/engine-acceptance/evidence-manifest.v1.json",
+   "type": "file",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP"
+  },
+  {
+   "id": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_PR229_MERGE_AND_RC_FORMAL_REBIND_V1.json",
    "type": "file",
    "class": "BACKEND_DOC",
    "decision": "KEEP"
@@ -10021,7 +10027,7 @@
   {
    "id": "dir:governance/engine-acceptance/**",
    "type": "glob",
-   "files": 47
+   "files": 48
   },
   {
    "id": "dir:.cursor/plans/",
@@ -10050,7 +10056,7 @@
   {
    "id": "dir:governance/engine-acceptance/",
    "type": "directory",
-   "files": 47
+   "files": 48
   },
   {
    "id": "dir:tooling/engine-acceptance/",
@@ -10516,6 +10522,11 @@
    "type": "missing-path"
   },
   {
+   "id": "dir:services/api-nest/src/**",
+   "type": "glob",
+   "files": 383
+  },
+  {
    "id": "dir:governance/engine-acceptance/baselines/",
    "type": "directory",
    "files": 15
@@ -10529,11 +10540,6 @@
    "id": "dir:services/api-nest/src/wallet/*.controller.ts",
    "type": "glob",
    "files": 7
-  },
-  {
-   "id": "dir:services/api-nest/src/**",
-   "type": "glob",
-   "files": 383
   },
   {
    "id": "missing:.cursor/hooks.json.bak-20260914-hook-temp-disable",
@@ -11677,7 +11683,7 @@
   {
    "id": "dir:governance/*.vN",
    "type": "glob",
-   "files": 178
+   "files": 179
   },
   {
    "id": "dir:governance/platform-redesign/*",
@@ -13952,7 +13958,7 @@
   {
    "id": "dir:governance/engine-acceptance",
    "type": "directory",
-   "files": 47
+   "files": 48
   },
   {
    "id": "dir:governance/global-product",
@@ -15169,7 +15175,7 @@
   {
    "id": "dir:governance/**",
    "type": "glob",
-   "files": 178
+   "files": 179
   },
   {
    "id": "missing:services/workers",
@@ -17757,78 +17763,6 @@
    "command": "node tooling/verify/observability.cjs",
    "class": "BACKEND_TEST",
    "decision": "KEEP"
-  },
-  {
-   "id": "script:verify:attribution-chain",
-   "type": "npm-script",
-   "package": "package.json",
-   "command": "node tooling/verify/attribution-chain.cjs",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
-   "id": "script:verify:marketing-compliance",
-   "type": "npm-script",
-   "package": "package.json",
-   "command": "node tooling/verify/marketing-compliance.cjs",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
-   "id": "script:verify:capi-config",
-   "type": "npm-script",
-   "package": "package.json",
-   "command": "node tooling/verify/capi-config.cjs",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
-   "id": "script:verify:capi-consent",
-   "type": "npm-script",
-   "package": "package.json",
-   "command": "node tooling/verify/capi-consent.cjs",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
-   "id": "script:verify:ads-provider-capability",
-   "type": "npm-script",
-   "package": "package.json",
-   "command": "node tooling/verify/ads-provider-capability.cjs",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
-   "id": "script:verify:ads-standing-authorization",
-   "type": "npm-script",
-   "package": "package.json",
-   "command": "node tooling/verify/ads-standing-authorization.cjs",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
-   "id": "script:verify:ads-budget-guardrail",
-   "type": "npm-script",
-   "package": "package.json",
-   "command": "node tooling/verify/ads-budget-guardrail.cjs",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
-   "id": "script:verify:ads-orchestrator-boundary",
-   "type": "npm-script",
-   "package": "package.json",
-   "command": "node tooling/verify/ads-orchestrator-boundary.cjs",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
-  },
-  {
-   "id": "script:verify:alert-oneshot-dry-run",
-   "type": "npm-script",
-   "package": "package.json",
-   "command": "node tooling/verify/alert-oneshot-dry-run.cjs",
-   "class": "OBSOLETE",
-   "decision": "DELETE"
   },
   {
    "id": "script:engine-acceptance:freeze-baseline",
@@ -23538,6 +23472,34 @@
    "from": "governance/db-recon/staging-hardening.v1.json",
    "to": "services/api-nest/src/kill-switch/kill-switch.service.ts",
    "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md",
+   "to": "dir:services/api-nest/src/**",
+   "kind": "doc-link",
+   "spec": "services/api-nest/src/**"
+  },
+  {
+   "from": "governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md",
+   "to": "tooling/engine-acceptance/rebase-acceptance-baseline.cjs",
+   "kind": "doc-link"
+  },
+  {
+   "from": "governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md",
+   "to": "dir:tooling/engine-acceptance/**",
+   "kind": "doc-link",
+   "spec": "tooling/engine-acceptance/**"
+  },
+  {
+   "from": "governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md",
+   "to": "dir:governance/engine-acceptance/**",
+   "kind": "doc-link",
+   "spec": "governance/engine-acceptance/**"
+  },
+  {
+   "from": "governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md",
+   "to": ".github/workflows/engine-acceptance.yml",
+   "kind": "doc-link"
   },
   {
    "from": "governance/engine-acceptance/PROTECTED_SCOPE_STALE_WATCH.md",
@@ -72474,60 +72436,6 @@
   },
   {
    "from": "package.json",
-   "to": "missing:tooling/verify/attribution-chain.cjs",
-   "kind": "pkg-script",
-   "spec": "tooling/verify/attribution-chain.cjs"
-  },
-  {
-   "from": "package.json",
-   "to": "missing:tooling/verify/marketing-compliance.cjs",
-   "kind": "pkg-script",
-   "spec": "tooling/verify/marketing-compliance.cjs"
-  },
-  {
-   "from": "package.json",
-   "to": "missing:tooling/verify/capi-config.cjs",
-   "kind": "pkg-script",
-   "spec": "tooling/verify/capi-config.cjs"
-  },
-  {
-   "from": "package.json",
-   "to": "missing:tooling/verify/capi-consent.cjs",
-   "kind": "pkg-script",
-   "spec": "tooling/verify/capi-consent.cjs"
-  },
-  {
-   "from": "package.json",
-   "to": "missing:tooling/verify/ads-provider-capability.cjs",
-   "kind": "pkg-script",
-   "spec": "tooling/verify/ads-provider-capability.cjs"
-  },
-  {
-   "from": "package.json",
-   "to": "missing:tooling/verify/ads-standing-authorization.cjs",
-   "kind": "pkg-script",
-   "spec": "tooling/verify/ads-standing-authorization.cjs"
-  },
-  {
-   "from": "package.json",
-   "to": "missing:tooling/verify/ads-budget-guardrail.cjs",
-   "kind": "pkg-script",
-   "spec": "tooling/verify/ads-budget-guardrail.cjs"
-  },
-  {
-   "from": "package.json",
-   "to": "missing:tooling/verify/ads-orchestrator-boundary.cjs",
-   "kind": "pkg-script",
-   "spec": "tooling/verify/ads-orchestrator-boundary.cjs"
-  },
-  {
-   "from": "package.json",
-   "to": "missing:tooling/verify/alert-oneshot-dry-run.cjs",
-   "kind": "pkg-script",
-   "spec": "tooling/verify/alert-oneshot-dry-run.cjs"
-  },
-  {
-   "from": "package.json",
    "to": "tooling/engine-acceptance/freeze-baseline.cjs",
    "kind": "pkg-script"
   },
@@ -111839,114 +111747,6 @@
    "to": "tooling/verify/observability.cjs",
    "kind": "pkg-script",
    "spec": "node tooling/verify/observability.cjs"
-  },
-  {
-   "from": "package.json",
-   "to": "script:verify:attribution-chain",
-   "kind": "pkg-script",
-   "spec": "verify:attribution-chain"
-  },
-  {
-   "from": "script:verify:attribution-chain",
-   "to": "missing:tooling/verify/attribution-chain.cjs",
-   "kind": "pkg-script",
-   "spec": "node tooling/verify/attribution-chain.cjs"
-  },
-  {
-   "from": "package.json",
-   "to": "script:verify:marketing-compliance",
-   "kind": "pkg-script",
-   "spec": "verify:marketing-compliance"
-  },
-  {
-   "from": "script:verify:marketing-compliance",
-   "to": "missing:tooling/verify/marketing-compliance.cjs",
-   "kind": "pkg-script",
-   "spec": "node tooling/verify/marketing-compliance.cjs"
-  },
-  {
-   "from": "package.json",
-   "to": "script:verify:capi-config",
-   "kind": "pkg-script",
-   "spec": "verify:capi-config"
-  },
-  {
-   "from": "script:verify:capi-config",
-   "to": "missing:tooling/verify/capi-config.cjs",
-   "kind": "pkg-script",
-   "spec": "node tooling/verify/capi-config.cjs"
-  },
-  {
-   "from": "package.json",
-   "to": "script:verify:capi-consent",
-   "kind": "pkg-script",
-   "spec": "verify:capi-consent"
-  },
-  {
-   "from": "script:verify:capi-consent",
-   "to": "missing:tooling/verify/capi-consent.cjs",
-   "kind": "pkg-script",
-   "spec": "node tooling/verify/capi-consent.cjs"
-  },
-  {
-   "from": "package.json",
-   "to": "script:verify:ads-provider-capability",
-   "kind": "pkg-script",
-   "spec": "verify:ads-provider-capability"
-  },
-  {
-   "from": "script:verify:ads-provider-capability",
-   "to": "missing:tooling/verify/ads-provider-capability.cjs",
-   "kind": "pkg-script",
-   "spec": "node tooling/verify/ads-provider-capability.cjs"
-  },
-  {
-   "from": "package.json",
-   "to": "script:verify:ads-standing-authorization",
-   "kind": "pkg-script",
-   "spec": "verify:ads-standing-authorization"
-  },
-  {
-   "from": "script:verify:ads-standing-authorization",
-   "to": "missing:tooling/verify/ads-standing-authorization.cjs",
-   "kind": "pkg-script",
-   "spec": "node tooling/verify/ads-standing-authorization.cjs"
-  },
-  {
-   "from": "package.json",
-   "to": "script:verify:ads-budget-guardrail",
-   "kind": "pkg-script",
-   "spec": "verify:ads-budget-guardrail"
-  },
-  {
-   "from": "script:verify:ads-budget-guardrail",
-   "to": "missing:tooling/verify/ads-budget-guardrail.cjs",
-   "kind": "pkg-script",
-   "spec": "node tooling/verify/ads-budget-guardrail.cjs"
-  },
-  {
-   "from": "package.json",
-   "to": "script:verify:ads-orchestrator-boundary",
-   "kind": "pkg-script",
-   "spec": "verify:ads-orchestrator-boundary"
-  },
-  {
-   "from": "script:verify:ads-orchestrator-boundary",
-   "to": "missing:tooling/verify/ads-orchestrator-boundary.cjs",
-   "kind": "pkg-script",
-   "spec": "node tooling/verify/ads-orchestrator-boundary.cjs"
-  },
-  {
-   "from": "package.json",
-   "to": "script:verify:alert-oneshot-dry-run",
-   "kind": "pkg-script",
-   "spec": "verify:alert-oneshot-dry-run"
-  },
-  {
-   "from": "script:verify:alert-oneshot-dry-run",
-   "to": "missing:tooling/verify/alert-oneshot-dry-run.cjs",
-   "kind": "pkg-script",
-   "spec": "node tooling/verify/alert-oneshot-dry-run.cjs"
   },
   {
    "from": "package.json",

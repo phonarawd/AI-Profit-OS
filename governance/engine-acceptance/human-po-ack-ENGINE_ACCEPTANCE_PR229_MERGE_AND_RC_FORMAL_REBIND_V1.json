@@ -1,0 +1,41 @@
+{
+  "schema": "governance.engine-acceptance.human-po-ack.v1",
+  "decision_id": "ENGINE_ACCEPTANCE_PR229_MERGE_AND_RC_FORMAL_REBIND_V1",
+  "store": "workflow-amendments-equivalent-operator-ack",
+  "not_a_rebase": true,
+  "not_a_workflow_amendment": true,
+  "hashes_mutated": false,
+  "product_sha": "35ec80eeb89d4727db3544854a1f840109f4bdbb",
+  "issued_head_sha": "1e66a77d28ac1a5da6e6d21d2e2e469f121fed20",
+  "baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
+  "rebase_id": "ea-rebase-35ec80eeb89d-77e54a036c46",
+  "predecessor_epoch": "ea-baseline-f295d67f1c3c-c2a6ea416128",
+  "predecessor_rc_source_sha_binding": "81b34e53b244ca5820eb44a5f53d226bca43ac11",
+  "pr": 229,
+  "head_ref": "lock/operator-source-20260916",
+  "human_po_ack": {
+    "by": "Human/PO",
+    "at": "2026-09-15T20:41:00.000Z",
+    "user_said": "승인다할테니까 진행다해",
+    "statement": "ACK APPROVED ENGINE_ACCEPTANCE_PR229_MERGE_AND_RC_FORMAL_REBIND_V1\nuser: 승인다할테니까 진행다해\nrebind official RC_FORMAL to current ISSUED epoch ea-baseline-35ec80eeb89d-77e54a036c46 (PR 229 HEAD 1e66a77d28ac1a5da6e6d21d2e2e469f121fed20 — re-verify)\nmerge PR 229 to main when required GitHub checks are actually green (no admin-override)\nafter merge: official Nest/API deploy if this repo host is Render; disable leftover CF ebay-adapter-production cron (do not delete parser code)\nnot launch-ready / putduk-web live; not laundry old QA9; not other Desktop repos; not extra ops DDL"
+  },
+  "allows": [
+    "official RC_FORMAL rebind to current ISSUED evidence on lock/operator-source-20260916 SHA 1e66a77d28ac1a5da6e6d21d2e2e469f121fed20 / baseline ea-baseline-35ec80eeb89d-77e54a036c46",
+    "T0 commit + push of the rebind on PR 229",
+    "merge GitHub PR #229 into main using official gh pr merge --merge when refresh-check and backend-required are actually green (no admin-override, no force-push)",
+    "watch required checks / backend-ci on main after merge",
+    "official Nest/API deploy via Render if this repo host is Render and authenticated",
+    "disable leftover Cloudflare ebay-adapter-production cron without deleting parser/worker code"
+  ],
+  "forbids": [
+    "claim launch-ready / putduk-web live / consumer launch",
+    "laundry old QA9 / old ISSUED / invent rebase",
+    "open other Desktop repos / foreign GitHub / foreign Supabase",
+    "ops extra DDL / ops DATABASE_URL as QA",
+    "admin-override merge / force-push main / --no-verify",
+    "flip rc-formal production_deploy to 1 / REL-701 Founder workflow_dispatch invented here",
+    "dispatch deploy-cloudflare production unless a new worker SHA is required for the lock and Auto-review allows",
+    "marketing dirty commits / weaken gates / delete ebay parser code"
+  ],
+  "production_deploy": 0
+}
