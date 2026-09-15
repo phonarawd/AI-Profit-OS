@@ -1,10 +1,10 @@
 {
- "generatedAt": "2026-09-15T09:53:09.439Z",
- "headSha": "b98f5664919d5af7d271e675f5ec5130c0afe868",
+ "generatedAt": "2026-09-15T10:21:50.446Z",
+ "headSha": "c832ab91c0ed2598904562c7e00d3759a3745765",
  "generator": "tooling/backend/ownership-graph.cjs",
  "overrides": "tooling/backend/ownership-overrides.json",
  "inputs": {
-  "gitLsFiles": 1502,
+  "gitLsFiles": 1503,
   "deletedUiPrefixes": [
    "apps/admin/",
    "apps/web/",
@@ -50,19 +50,19 @@
    "BACKEND_INFRA": 245,
    "BACKEND_DOC": 287,
    "FUTURE_ADMIN_REQUIREMENT": 2,
-   "BACKEND_TEST": 351,
+   "BACKEND_TEST": 352,
    "BACKEND_CONTRACT": 83,
    "BACKEND_RUNTIME": 529,
    "GENERATED": 5
   },
   "byDecision": {
-   "KEEP": 1502
+   "KEEP": 1503
   },
   "byClassDecision": {
    "BACKEND_INFRA/KEEP": 245,
    "BACKEND_DOC/KEEP": 287,
    "FUTURE_ADMIN_REQUIREMENT/KEEP": 2,
-   "BACKEND_TEST/KEEP": 351,
+   "BACKEND_TEST/KEEP": 352,
    "BACKEND_CONTRACT/KEEP": 83,
    "BACKEND_RUNTIME/KEEP": 529,
    "GENERATED/KEEP": 5
@@ -510,8 +510,8 @@
    "SPLIT": 0
   },
   "tooling/ebay-resilience": {
-   "total": 1,
-   "KEEP": 1,
+   "total": 2,
+   "KEEP": 2,
    "DELETE": 0,
    "MOVE": 0,
    "SPLIT": 0
@@ -7824,7 +7824,7 @@
     },
     {
      "kind": "workflow-run",
-     "ref": "tooling/ebay-resilience/run-fault-injection.cjs"
+     "ref": "tooling/ebay-resilience/** (2 files)"
     },
     {
      "kind": "workflow-run",
@@ -8374,9 +8374,9 @@
     "tooling/verify/CATALOG.md|verifier-reads|.github/workflows/**"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-15T07:44:47+09:00",
-   "lastCommitSha": "289b822f73ed2ab51af3547d60e09c5d3b5e827a",
-   "sizeBytes": 5601,
+   "lastCommit": "2026-09-15T19:15:21+09:00",
+   "lastCommitSha": "86a0ba2adf503c652b2369aba90ec1a0b3e24aaf",
+   "sizeBytes": 5751,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -27950,9 +27950,9 @@
     ".github/workflows/engine-evidence-refresh-check.yml|workflow-run|paths"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-14T22:39:53+09:00",
-   "lastCommitSha": "efdd6b742285651d0a8060ec3ecbc31d35520a73",
-   "sizeBytes": 108299,
+   "lastCommit": "2026-09-15T19:15:26+09:00",
+   "lastCommitSha": "c832ab91c0ed2598904562c7e00d3759a3745765",
+   "sizeBytes": 110400,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -28226,9 +28226,9 @@
     ".github/workflows/engine-evidence-refresh-check.yml|workflow-run|paths"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-14T22:39:53+09:00",
-   "lastCommitSha": "efdd6b742285651d0a8060ec3ecbc31d35520a73",
-   "sizeBytes": 7325,
+   "lastCommit": "2026-09-15T19:15:26+09:00",
+   "lastCommitSha": "c832ab91c0ed2598904562c7e00d3759a3745765",
+   "sizeBytes": 7468,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -33747,7 +33747,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "tooling/* (418 files)"
+     "ref": "tooling/* (419 files)"
     },
     {
      "kind": "verifier-reads",
@@ -34228,7 +34228,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/* (418 files)"
+     "ref": "tooling/* (419 files)"
     },
     {
      "kind": "doc-link",
@@ -34811,9 +34811,9 @@
     "tooling/backend/ownership-graph.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-13T07:43:54+09:00",
-   "lastCommitSha": "27b5b9f71f4350ca69f3e657be9b26957e91d8d1",
-   "sizeBytes": 3332137,
+   "lastCommit": "2026-09-15T19:15:21+09:00",
+   "lastCommitSha": "86a0ba2adf503c652b2369aba90ec1a0b3e24aaf",
+   "sizeBytes": 3616710,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -34843,8 +34843,8 @@
     "tooling/backend/repository-boundary.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-12T17:04:46+09:00",
-   "lastCommitSha": "2b81a5c54225058b0cc200db418711fdd82e3e38",
+   "lastCommit": "2026-09-15T19:15:21+09:00",
+   "lastCommitSha": "86a0ba2adf503c652b2369aba90ec1a0b3e24aaf",
    "sizeBytes": 27644,
    "refSummary": {
     "deletedUiRefs": [],
@@ -34877,9 +34877,9 @@
     "tooling/verify/workers-typecheck.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-13T07:43:54+09:00",
-   "lastCommitSha": "27b5b9f71f4350ca69f3e657be9b26957e91d8d1",
-   "sizeBytes": 4992119,
+   "lastCommit": "2026-09-15T19:15:21+09:00",
+   "lastCommitSha": "86a0ba2adf503c652b2369aba90ec1a0b3e24aaf",
+   "sizeBytes": 5448553,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -35235,7 +35235,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/* (418 files)"
+     "ref": "tooling/* (419 files)"
     },
     {
      "kind": "doc-link",
@@ -35443,7 +35443,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/* (418 files)"
+     "ref": "tooling/* (419 files)"
     },
     {
      "kind": "doc-link",
@@ -36387,9 +36387,9 @@
     "tooling/recovery/classify-engine-drift-proposal.selftest.cjs|deploy-cmd"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-14T22:39:53+09:00",
-   "lastCommitSha": "efdd6b742285651d0a8060ec3ecbc31d35520a73",
-   "sizeBytes": 9552,
+   "lastCommit": "2026-09-15T19:15:26+09:00",
+   "lastCommitSha": "c832ab91c0ed2598904562c7e00d3759a3745765",
+   "sizeBytes": 9734,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -88148,8 +88148,8 @@
     "tooling/backend/ownership-graph.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-12T05:04:37+09:00",
-   "lastCommitSha": "96bacfb422a11d8e5357d8f2f9a7d6399766df92",
+   "lastCommit": "2026-09-15T19:15:21+09:00",
+   "lastCommitSha": "86a0ba2adf503c652b2369aba90ec1a0b3e24aaf",
    "sizeBytes": 31108,
    "refSummary": {
     "deletedUiRefs": [
@@ -90111,6 +90111,52 @@
    }
   },
   {
+   "path": "tooling/ebay-resilience/nest-boot-early-exit.selftest.cjs",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "ebay-resilience",
+   "reasons": [
+    "eBay fault-injection (ebay-fault-injection.yml)"
+   ],
+   "evidence": [
+    {
+     "kind": "require",
+     "ref": "tooling/ebay-resilience/run-fault-injection.cjs"
+    },
+    {
+     "kind": "env",
+     "ref": "AIPO_QA_HARNESS_OUT"
+    }
+   ],
+   "referrers": [
+    ".github/workflows/ebay-fault-injection.yml|workflow-run|tooling/ebay-resilience/**",
+    "pnpm-workspace.yaml|verifier-reads|tooling/*",
+    "quality/backend-ci.md|doc-link|tooling/*",
+    "quality/backend-deletion-ledger.md|doc-link|tooling/ebay-resilience",
+    "quality/backend-only-inventory.md|doc-link|tooling/*",
+    "quality/backend-only-official-basis.md|doc-link|tooling/*",
+    "quality/backend-residual-report.md|doc-link|tooling/ebay-resilience/**",
+    "tooling/verify/ebay-resilience.cjs|verifier-reads",
+    ".github/workflows/ebay-fault-injection.yml|workflow-run|paths:tooling/ebay-resilience/**"
+   ],
+   "blockers": [],
+   "lastCommit": "2026-09-15T19:15:16+09:00",
+   "lastCommitSha": "cfe18e7c58c4fd05c51e89785e2b8637af441daa",
+   "sizeBytes": 3050,
+   "refSummary": {
+    "deletedUiRefs": [],
+    "uiRefs": [],
+    "backendRefs": [
+     "./run-fault-injection.cjs"
+    ],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
+   }
+  },
+  {
    "path": "tooling/ebay-resilience/run-fault-injection.cjs",
    "class": "BACKEND_TEST",
    "decision": "KEEP",
@@ -90150,11 +90196,11 @@
     },
     {
      "kind": "env",
-     "ref": "AIPO_EBAY_FAULT_SKIP_BOOT"
+     "ref": "PORT"
     },
     {
      "kind": "env",
-     "ref": "PORT"
+     "ref": "AIPO_EBAY_FAULT_SKIP_BOOT"
     },
     {
      "kind": "env",
@@ -90182,6 +90228,7 @@
     }
    ],
    "referrers": [
+    ".github/workflows/ebay-fault-injection.yml|workflow-run|tooling/ebay-resilience/**",
     ".github/workflows/ebay-fault-injection.yml|workflow-run",
     "package.json|pkg-script",
     "pnpm-workspace.yaml|verifier-reads|tooling/*",
@@ -90189,15 +90236,16 @@
     "quality/backend-deletion-ledger.md|doc-link|tooling/ebay-resilience",
     "quality/backend-only-inventory.md|doc-link|tooling/*",
     "quality/backend-only-official-basis.md|doc-link|tooling/*",
-    "quality/backend-residual-report.md|doc-link",
+    "quality/backend-residual-report.md|doc-link|tooling/ebay-resilience/**",
     "quality/operator-registered-catalog-s1-remediation-20260914.md|doc-link",
+    "tooling/ebay-resilience/nest-boot-early-exit.selftest.cjs|require",
     "package.json|pkg-script|ebay-resilience:fault-injection",
-    ".github/workflows/ebay-fault-injection.yml|workflow-run|paths"
+    ".github/workflows/ebay-fault-injection.yml|workflow-run|paths:tooling/ebay-resilience/**"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-01T23:09:33+09:00",
-   "lastCommitSha": "305c4e32a58254ab5987c60d42816dee26239895",
-   "sizeBytes": 21295,
+   "lastCommit": "2026-09-15T19:15:16+09:00",
+   "lastCommitSha": "cfe18e7c58c4fd05c51e89785e2b8637af441daa",
+   "sizeBytes": 22797,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -91499,7 +91547,7 @@
    "blockers": [],
    "lastCommit": "2026-08-14T09:26:28+09:00",
    "lastCommitSha": "0dfca8069b412b5f94695fb0c8838370ebb4d615",
-   "sizeBytes": 7902,
+   "sizeBytes": 7882,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -97683,9 +97731,9 @@
     "tooling/verify/rc-formal.cjs|verifier-reads|tooling/recovery/"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-14T22:39:53+09:00",
-   "lastCommitSha": "efdd6b742285651d0a8060ec3ecbc31d35520a73",
-   "sizeBytes": 7218,
+   "lastCommit": "2026-09-15T19:15:26+09:00",
+   "lastCommitSha": "c832ab91c0ed2598904562c7e00d3759a3745765",
+   "sizeBytes": 7432,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -98290,9 +98338,9 @@
     "tooling/verify/rc-formal.cjs|verifier-reads|tooling/recovery/"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-14T22:39:53+09:00",
-   "lastCommitSha": "efdd6b742285651d0a8060ec3ecbc31d35520a73",
-   "sizeBytes": 11756,
+   "lastCommit": "2026-09-15T19:15:26+09:00",
+   "lastCommitSha": "c832ab91c0ed2598904562c7e00d3759a3745765",
+   "sizeBytes": 12070,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -108479,6 +108527,10 @@
     },
     {
      "kind": "verifier-reads",
+     "ref": "tooling/ebay-resilience/nest-boot-early-exit.selftest.cjs"
+    },
+    {
+     "kind": "verifier-reads",
      "ref": "MISSING:workers/ebay-adapter/dist-selftest"
     },
     {
@@ -108516,9 +108568,9 @@
     ".github/workflows/ebay-fault-injection.yml|workflow-run|paths"
    ],
    "blockers": [],
-   "lastCommit": "2026-08-15T00:53:22+09:00",
-   "lastCommitSha": "3de830c43eb9d271d8c59705404eb7c375bf0456",
-   "sizeBytes": 19648,
+   "lastCommit": "2026-09-15T19:15:16+09:00",
+   "lastCommitSha": "cfe18e7c58c4fd05c51e89785e2b8637af441daa",
+   "sizeBytes": 20166,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -108536,6 +108588,7 @@
      "services/api-nest/src/adapters/adapters.admin.service.ts",
      "supabase/migrations/20260814130100_ptf00c_provider_runtime_health.sql",
      "supabase/migrations/20260814140000_ptf00c_r1_provider_tick_ledger.sql",
+     "tooling/ebay-resilience/nest-boot-early-exit.selftest.cjs",
      "services/api-nest/tsconfig.json"
     ],
     "governanceBackendRefs": [],

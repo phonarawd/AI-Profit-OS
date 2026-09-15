@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-09-15T09:53:09.439Z",
- "headSha": "b98f5664919d5af7d271e675f5ec5130c0afe868",
+ "generatedAt": "2026-09-15T10:21:50.446Z",
+ "headSha": "c832ab91c0ed2598904562c7e00d3759a3745765",
  "edgeKinds": [
   "import",
   "require",
@@ -6253,6 +6253,12 @@
    "decision": "KEEP"
   },
   {
+   "id": "tooling/ebay-resilience/nest-boot-early-exit.selftest.cjs",
+   "type": "file",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
    "id": "tooling/ebay-resilience/run-fault-injection.cjs",
    "type": "file",
    "class": "BACKEND_TEST",
@@ -10312,6 +10318,11 @@
    "files": 4
   },
   {
+   "id": "dir:tooling/ebay-resilience/**",
+   "type": "glob",
+   "files": 2
+  },
+  {
    "id": "missing:services/api-nest/dist/main.js",
    "type": "missing-path"
   },
@@ -12860,7 +12871,7 @@
   {
    "id": "dir:tooling/*",
    "type": "glob",
-   "files": 418
+   "files": 419
   },
   {
    "id": "dir:services/*",
@@ -13833,7 +13844,7 @@
   {
    "id": "dir:tooling/ebay-resilience",
    "type": "directory",
-   "files": 1
+   "files": 2
   },
   {
    "id": "dir:tooling/github",
@@ -21628,7 +21639,7 @@
   },
   {
    "from": ".github/workflows/ebay-fault-injection.yml",
-   "to": "tooling/ebay-resilience/run-fault-injection.cjs",
+   "to": "dir:tooling/ebay-resilience/**",
    "kind": "workflow-run",
    "spec": "tooling/ebay-resilience/**"
   },
@@ -73282,7 +73293,7 @@
   },
   {
    "from": "quality/backend-residual-report.md",
-   "to": "tooling/ebay-resilience/run-fault-injection.cjs",
+   "to": "dir:tooling/ebay-resilience/**",
    "kind": "doc-link",
    "spec": "tooling/ebay-resilience/**"
   },
@@ -87932,6 +87943,17 @@
    "spec": "../lib/money-red-team.cjs"
   },
   {
+   "from": "tooling/ebay-resilience/nest-boot-early-exit.selftest.cjs",
+   "to": "tooling/ebay-resilience/run-fault-injection.cjs",
+   "kind": "require",
+   "spec": "./run-fault-injection.cjs"
+  },
+  {
+   "from": "tooling/ebay-resilience/nest-boot-early-exit.selftest.cjs",
+   "to": "env:AIPO_QA_HARNESS_OUT",
+   "kind": "env"
+  },
+  {
    "from": "tooling/ebay-resilience/run-fault-injection.cjs",
    "to": "tooling/engine-acceptance/kill-switch.cjs",
    "kind": "require",
@@ -87973,12 +87995,12 @@
   },
   {
    "from": "tooling/ebay-resilience/run-fault-injection.cjs",
-   "to": "env:AIPO_EBAY_FAULT_SKIP_BOOT",
+   "to": "env:PORT",
    "kind": "env"
   },
   {
    "from": "tooling/ebay-resilience/run-fault-injection.cjs",
-   "to": "env:PORT",
+   "to": "env:AIPO_EBAY_FAULT_SKIP_BOOT",
    "kind": "env"
   },
   {
@@ -97371,6 +97393,11 @@
    "to": "dir:services/api-nest/src",
    "kind": "verifier-reads",
    "spec": "services/api-nest/src"
+  },
+  {
+   "from": "tooling/verify/ebay-resilience.cjs",
+   "to": "tooling/ebay-resilience/nest-boot-early-exit.selftest.cjs",
+   "kind": "verifier-reads"
   },
   {
    "from": "tooling/verify/ebay-resilience.cjs",
@@ -108389,7 +108416,7 @@
   },
   {
    "from": ".github/workflows/ebay-fault-injection.yml",
-   "to": "tooling/ebay-resilience/run-fault-injection.cjs",
+   "to": "dir:tooling/ebay-resilience/**",
    "kind": "workflow-run",
    "spec": "paths:tooling/ebay-resilience/**"
   },
@@ -108431,7 +108458,7 @@
   },
   {
    "from": ".github/workflows/ebay-fault-injection.yml",
-   "to": "tooling/ebay-resilience/run-fault-injection.cjs",
+   "to": "dir:tooling/ebay-resilience/**",
    "kind": "workflow-run",
    "spec": "paths:tooling/ebay-resilience/**"
   },
