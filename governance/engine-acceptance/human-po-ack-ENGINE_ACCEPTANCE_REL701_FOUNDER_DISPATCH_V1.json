@@ -1,0 +1,30 @@
+{
+  "schema": "governance.engine-acceptance.human-po-ack.v1",
+  "decision_id": "ENGINE_ACCEPTANCE_REL701_FOUNDER_DISPATCH_V1",
+  "store": "workflow-amendments-equivalent-operator-ack",
+  "not_a_rebase": true,
+  "not_a_workflow_amendment": true,
+  "hashes_mutated": false,
+  "baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
+  "predecessor_epoch": "ea-baseline-f295d67f1c3c-c2a6ea416128",
+  "rc_source_sha_binding": "81b34e53b244ca5820eb44a5f53d226bca43ac11",
+  "human_po_ack": {
+    "by": "Human/PO",
+    "at": "2026-09-15T15:45:00.000Z",
+    "user_said": "다음 진행해라",
+    "statement": "ACK APPROVED ENGINE_ACCEPTANCE_REL701_FOUNDER_DISPATCH_V1\nuser: 다음 진행해라\nREL-701 founder workflow_dispatch only\nRC LOCKED 81b34e53 / epoch ea-baseline-f295d67f1c3c-c2a6ea416128\nnot main merge; not production deploy; not rebase ACK"
+  },
+  "allows": [
+    "execute only the repo-defined REL-701 Founder workflow_dispatch / founder gate on the already-LOCKED RC",
+    "record founder dispatch ids / conclusions the repo already stores",
+    "stop without a Founder GitHub environment click when the official path would deploy production or merge main"
+  ],
+  "forbids": [
+    "merge PR #228 to main",
+    "Production deploy / Cloudflare prod / ops DDL / ops DATABASE_URL / Supabase mgsytcetsiecllmhcyox as QA",
+    "REL-701 production_deploy=1",
+    "invent rebase",
+    "laundry old QA9 / ISSUED",
+    "weaken gates"
+  ]
+}

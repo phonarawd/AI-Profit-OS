@@ -913,6 +913,12 @@
    "decision": "KEEP"
   },
   {
+   "id": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REL701_FOUNDER_DISPATCH_V1.json",
+   "type": "file",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP"
+  },
+  {
    "id": "governance/engine-acceptance/invariants.v1.md",
    "type": "file",
    "class": "BACKEND_DOC",
