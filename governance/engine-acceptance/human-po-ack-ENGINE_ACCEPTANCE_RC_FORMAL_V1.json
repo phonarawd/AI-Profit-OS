@@ -1,0 +1,30 @@
+{
+  "schema": "governance.engine-acceptance.human-po-ack.v1",
+  "decision_id": "ENGINE_ACCEPTANCE_RC_FORMAL_V1",
+  "store": "workflow-amendments-equivalent-operator-ack",
+  "not_a_rebase": true,
+  "not_a_workflow_amendment": true,
+  "hashes_mutated": false,
+  "baseline_id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
+  "predecessor_epoch": "ea-baseline-f295d67f1c3c-c2a6ea416128",
+  "human_po_ack": {
+    "by": "Human/PO",
+    "at": "2026-09-15T12:57:00.000Z",
+    "user_said": "다음 진행",
+    "statement": "ACK APPROVED ENGINE_ACCEPTANCE_RC_FORMAL_V1\nuser: 다음 진행\nopen RC_FORMAL on qa/operator-mall-pg-20260915\npredecessor epoch ea-baseline-f295d67f1c3c-c2a6ea416128 ISSUED ENGINE_ACCEPTED_FOR_UI\nnot main merge; not ops deploy; not rebase ACK"
+  },
+  "allows": [
+    "officially open / execute RC_FORMAL on qa/operator-mall-pg-20260915 using existing official process only",
+    "rebind RC to current issued evidence if official binder/refresh defines that path",
+    "diagnose and fix engine-evidence-refresh-check current-epoch drift without laundry"
+  ],
+  "forbids": [
+    "merge PR #228 to main",
+    "launch-ready / ops deploy / Cloudflare prod / ops DDL / ops DATABASE_URL as QA",
+    "invent rebase when changed_protected=0",
+    "reuse old QA9 / old ACK / laundry",
+    "re-fake ISSUED",
+    "weaken gates",
+    "fake inventory counts"
+  ]
+}

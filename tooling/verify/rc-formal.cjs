@@ -27,9 +27,9 @@ const REMOVED = [
   ".github/workflows/engine-rebase-approved-once.yml",
   ".github/workflows/engine-current-epoch-publish-once.yml",
 ];
-// RC re-seal 2026-09-13: current epoch (ENGINE_ACCEPTANCE_REBASE_V1 · ea-rebase-b11140abaafa-af15bf5b43ff · QA0-QA9 ISSUED).
+// RC re-seal 2026-09-15: current epoch (ENGINE_ACCEPTANCE_REBASE_V1 · ea-rebase-f295d67f1c3c-c2a6ea416128 · QA0-QA9 ISSUED).
 // 하드코딩 = 잠금. 새 epoch 로의 re-seal 은 이 상수와 FINAL_ACCEPTANCE.md 를 함께 갱신해야 한다.
-const CURRENT_BASELINE = "ea-baseline-b11140abaafa-af15bf5b43ff";
+const CURRENT_BASELINE = "ea-baseline-f295d67f1c3c-c2a6ea416128";
 const APPLIED_FX = "tooling/verify/fixtures/migrations-applied.v1.json";
 
 const artRaw = read(ART);
