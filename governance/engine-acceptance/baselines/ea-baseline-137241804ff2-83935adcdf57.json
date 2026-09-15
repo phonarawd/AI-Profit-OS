@@ -1,11 +1,11 @@
 {
   "schema": "governance.engine-acceptance.baseline.v1",
   "version": "1.0.0",
-  "id": "ea-baseline-f295d67f1c3c-c2a6ea416128",
+  "id": "ea-baseline-137241804ff2-83935adcdf57",
   "todoId": "engine-acceptance-rebase-v1",
-  "measuredAt": "2026-09-15T10:57:12.671Z",
-  "commit_sha": "f295d67f1c3c5b0cbc824c06e568074fd382e85a",
-  "tree_sha": "337d363ea85699b87ef325d56f23513c348c0f54",
+  "measuredAt": "2026-09-12T22:36:56.669Z",
+  "commit_sha": "137241804ff24e5de48556e1385f97fd1c8b8cee",
+  "tree_sha": "581c78be11f541e4559bdded5517e8e90f85b32c",
   "working_tree_clean": false,
   "protected_scope_clean": true,
   "dirty_paths_all": [
@@ -21,23 +21,16 @@
     ".husky/pre-commit",
     ".husky/pre-push",
     ".vscode/extensions.json",
-    ".vscode/settings.json",
     "COMPANY_REGISTRATION_SUMMARY.md",
     "services/market-intelligence/src/asset-image.cjs",
     "services/market-intelligence/src/asset-master.cjs",
     "services/market-intelligence/src/card-grade.cjs",
     "services/market-intelligence/src/index.d.ts",
     "tooling/deploy/cf-preflight.cjs",
-    "tooling/engine-acceptance/checks/failure-world.cjs",
-    "tooling/engine-acceptance/checks/stateful-time-lifecycle.cjs",
-    "tooling/engine-acceptance/run-qa4.cjs",
-    "tooling/engine-acceptance/run-qa5.cjs",
-    "tooling/engine-acceptance/selftest-product-rebase.cjs",
     "tooling/github/apply-main-gate.ps1",
     "tooling/schemas/_write-trade-license-html.cjs",
     "tooling/verify/ai-feature-platform.cjs",
     "tooling/verify/brand-consumer.cjs",
-    "tooling/verify/engine-acceptance.cjs",
     "tooling/verify/kyc-r2-only.cjs",
     "tooling/verify/market-partner-trust.cjs",
     "tooling/verify/root-domain-env.cjs",
@@ -49,22 +42,8 @@
     "workers/chain-sweeper/wrangler.toml",
     "workers/push-dispatcher/wrangler.toml",
     "workers/yahoo-jp-adapter/src/index.ts",
-    ".cursor/hooks.json.bak-20260914-hook-temp-disable",
-    "PUTDUK_BACKEND_CURSOR_FINAL_PROMPT_QUOTA_GRADE_20260914.md",
-    "PUTDUK_BACKEND_PARALLEL_CROSSCHECK_20260913.md",
     "PUTDUK_CURSOR_AUTONOMOUS_FULL_PRODUCTION_MASTER_PROMPT_2026-09-06.md",
-    "PUTDUK_GLOBAL_OPERATOR_CONTROL_RESEARCH_20260914.md",
-    "PUTDUK_LEGACY_ADMIN_REMAINS_AUDIT_20260913.md",
-    "PUTDUK_ONBOARDING_DEEP_RESEARCH_2026-09-06.md",
-    "_tmp_qa_harness/",
-    "governance/engine-acceptance/baselines/ea-baseline-137241804ff2-83935adcdf57.json",
-    "tooling/engine-acceptance/harness/local-domain-executor.cjs",
-    "tooling/engine-acceptance/lib/qa9-current-epoch-policy.cjs",
-    "tooling/engine-acceptance/selftest-local-domain-executor.cjs",
-    "tooling/engine-acceptance/selftest-qa9-verifier.cjs",
-    "tooling/verify/heavy-qa-lock.cjs",
-    "tooling/verify/heavy-qa-lock.isolation.cjs",
-    "tooling/verify/heavy-qa-lock.ps1"
+    "PUTDUK_ONBOARDING_DEEP_RESEARCH_2026-09-06.md"
   ],
   "dirty_paths_protected": [],
   "lockfile_hash": "5e842f9da69d407c8cb1b3e0d67ec7e220cd715a26ba1c4400466c57d7e147a3",
@@ -78,8 +57,8 @@
   "protected_scope_manifest": {
     "pathSeparator": "/",
     "hashAlgorithm": "sha256",
-    "aggregate": "c2a6ea416128aa648eb9ddb0ceb6249a0633f12e0eb6fbabc4d986c80fc3c3bf",
-    "pathCount": 556,
+    "aggregate": "83935adcdf579eb26c75867f06bba383acc0ec418809ccd34c04e9bdabc1c438",
+    "pathCount": 506,
     "entries": [
       {
         "path": "eval/coach_redteam.jsonl",
@@ -454,36 +433,12 @@
         "sha256": "3fc142eb12aeb7262736c2156765f5165a56af9629d095def733be73856ad8b0"
       },
       {
-        "path": "services/api-nest/admin-staff-login.core.cjs",
-        "sha256": "c3bbe51dc051c284585e9a9d5bbeca076be9407899b5e80936698648633cb578"
-      },
-      {
-        "path": "services/api-nest/admin-staff-login.isolation.cjs",
-        "sha256": "2a74f351af234bd2662ea5393ddfe279e443490fffcf0e17d02a0daed35d966e"
-      },
-      {
-        "path": "services/api-nest/admin-staff-login.persist.cjs",
-        "sha256": "13dd2b16d12fac3cc0ef0d976d482cddfde1129f3dbf1a745858acde2cb60e91"
-      },
-      {
-        "path": "services/api-nest/admin-staff-login.persist.isolation.cjs",
-        "sha256": "fd68f3d94642a8374bf3f5d9be55dcd302713d618e34ac3b5df86038c8e3c541"
-      },
-      {
         "path": "services/api-nest/auth-rate-limit.cjs",
         "sha256": "5777ed8184de01f0e419c8d480afbcf3ce19dc68a65005fb5e25799fff411de9"
       },
       {
-        "path": "services/api-nest/catalog-external-write.core.cjs",
-        "sha256": "5887eca2ad32f77fedddd718ac437b65408a665b8a409eb7acd53daa757c87fe"
-      },
-      {
         "path": "services/api-nest/clock.core.cjs",
         "sha256": "1198e3a78c2809dae93ad100d94503b179946414d61dbca1eac9f02e57bc161f"
-      },
-      {
-        "path": "services/api-nest/isolated-qa-pg.cjs",
-        "sha256": "502673734045ed583ef4734a8c9fc8e4734b61d617a8270426e983f836d6139e"
       },
       {
         "path": "services/api-nest/jwt.core.cjs",
@@ -495,7 +450,7 @@
       },
       {
         "path": "services/api-nest/package.json",
-        "sha256": "0a0b80cbee0a4c8ddb9041e5705b6b0c5de4784745d71a2c125d9dce8ec3744f"
+        "sha256": "004c4e7a84264da6c2ebcf6f4dee07f5119d049b420f55b7913b51bf7eddb20a"
       },
       {
         "path": "services/api-nest/price-override.core.cjs",
@@ -507,7 +462,7 @@
       },
       {
         "path": "services/api-nest/src/adapters/adapters.admin.service.ts",
-        "sha256": "0aa7cc454aafb9f7a568660ab2c6d9ace104fa149e6b06c0610a132995283b00"
+        "sha256": "1f5af3284616791e7ae47c9f5bd8d44cf469e87f20d29383db68de201745158d"
       },
       {
         "path": "services/api-nest/src/adapters/adapters.events.ts",
@@ -799,7 +754,7 @@
       },
       {
         "path": "services/api-nest/src/common/admin-capabilities.ts",
-        "sha256": "dae17bdcb5c381d07ca49e63bf960361d3236cc0f61442aba3d26b3082299fac"
+        "sha256": "92ac9e8c436157c69d7b855faa361b633e83ebe860c1dda712996c8d368af2ce"
       },
       {
         "path": "services/api-nest/src/common/admin-guard.selftest.ts",
@@ -814,12 +769,8 @@
         "sha256": "b57bf418e1fce3f69d9ae47ab4b96944f654494eb012cde2360678e854d89ab1"
       },
       {
-        "path": "services/api-nest/src/common/admin-session-login.admin-http.cjs",
-        "sha256": "b07ddcf428492242376b6a62554012e0b28af21364a456fc6812af90706f41b9"
-      },
-      {
         "path": "services/api-nest/src/common/admin-session.controller.ts",
-        "sha256": "c5c7e1f7d46ce6f4b86da1761c7fce2850183073da9f79af942c7fc7a71f660e"
+        "sha256": "7293f5ff6a79213dc65e5f9a9a0e3dd410165e60b20b04088fd7420a641eb32f"
       },
       {
         "path": "services/api-nest/src/common/admin-session.cookies.ts",
@@ -835,7 +786,7 @@
       },
       {
         "path": "services/api-nest/src/common/admin-session.runtime.test.ts",
-        "sha256": "109a450c72a021f583adedc5e51231d6bd7ecf4e2458f223a8f594395290986b"
+        "sha256": "18ec5349e580f17211a00f2a3cd6b946bb5046d6c00ff35990633deef557ce1a"
       },
       {
         "path": "services/api-nest/src/common/admin-token.ts",
@@ -1150,14 +1101,6 @@
         "sha256": "62fe37c888cd6a583b0e96aef6af5c2b2b5a58d1356a5b2fce5eacd114de1206"
       },
       {
-        "path": "services/api-nest/src/ledger/money-authority.core.cjs",
-        "sha256": "8e29ce3199fedd29b9fe75e9d0d37df2d64ca04908c20565f53831ea4589d663"
-      },
-      {
-        "path": "services/api-nest/src/ledger/money-authority.isolation.cjs",
-        "sha256": "cea7c6f7c77ec9121af5d109bb5bef169bd02e5008fc2580ef9cdc25c044e2b7"
-      },
-      {
         "path": "services/api-nest/src/ledger/practice-grant.service.ts",
         "sha256": "c57f4fbc13a7ad686d761745e6d6af99a778c8931f880abd9d49bacfd4151c00"
       },
@@ -1206,76 +1149,20 @@
         "sha256": "38ac7a44012fbc3e469b1c801c23eaf74e96e8770bfbe8aab4b95fa0519a9d9e"
       },
       {
-        "path": "services/api-nest/src/membership/admin-member-directory.admin-http.cjs",
-        "sha256": "26dadeea2702587e157ed4afcf70338f604cad5cdd2cea41d194359f20766461"
-      },
-      {
-        "path": "services/api-nest/src/membership/admin-member-directory.core.cjs",
-        "sha256": "9dd6d9c79e22f167a4f4aba0a538de92c4b72f32f1a89e1f98a44bbba9d5f05e"
-      },
-      {
-        "path": "services/api-nest/src/membership/admin-member-directory.isolation.cjs",
-        "sha256": "289d1f68d20f7b44b84eae7033eaeca292f9bcd442583930df4f4537abf03531"
-      },
-      {
-        "path": "services/api-nest/src/membership/admin-member-directory.persist.cjs",
-        "sha256": "aae16ad92a7ef493863e1a57993227aa72fde83af8b524df6b722ba52d93de88"
-      },
-      {
-        "path": "services/api-nest/src/membership/auto-downgrade.core.cjs",
-        "sha256": "d068658976e78fe359e289a9b26d9e2c29ff15bfd67c655dfa03829c67de09ce"
-      },
-      {
-        "path": "services/api-nest/src/membership/bonus-match-grant.core.cjs",
-        "sha256": "982a175a2331be3789103c4d0d28b0a2b3b4f9ea9628b767e90ab74a73704315"
-      },
-      {
-        "path": "services/api-nest/src/membership/bulk-operator-job.core.cjs",
-        "sha256": "e0273d0a9c4c26e65c81fb5ffb12b13950d6daffa9fc9ab5a39aa18ece67fe22"
-      },
-      {
-        "path": "services/api-nest/src/membership/grade-daily-policy.core.cjs",
-        "sha256": "512c5590fcd5d028e9c7025b477403076e304c37c9553c451f173803cfd51bce"
-      },
-      {
         "path": "services/api-nest/src/membership/index.ts",
         "sha256": "3d7e40be2acff05a6ecfb698bb6bcbdae595677a00acfa1e8219d70c6e9279ed"
       },
       {
-        "path": "services/api-nest/src/membership/jwt-revocation.core.cjs",
-        "sha256": "2bbc3f66cfbca00e73ae38e155eb159e4a67342bddc913a234434243743f41e0"
-      },
-      {
-        "path": "services/api-nest/src/membership/ledger-adjustment.contract.cjs",
-        "sha256": "bc963c68eb0a568e6fee3741dae7869d6e55926c85398eb0243630a35aeb3c33"
-      },
-      {
-        "path": "services/api-nest/src/membership/member-360.core.cjs",
-        "sha256": "439d9dc1778ca1fea2a570e046f6aba0e044b7c118b352a3ce8a010164df4215"
-      },
-      {
-        "path": "services/api-nest/src/membership/member-daily-cap.core.cjs",
-        "sha256": "1a2d0747000a6638f68e9c828c16f54be365a3f879709400522405cc470e960f"
-      },
-      {
-        "path": "services/api-nest/src/membership/member-daily-cap.http.cjs",
-        "sha256": "8803f88f63cdd3ea4efd8007aa4866c959c2e8aa04ab0bced7e6206d6431dd6f"
-      },
-      {
-        "path": "services/api-nest/src/membership/member-daily-cap.isolation.cjs",
-        "sha256": "3586b18bf98eea8f45985870be714f1a6d5055162a41135cae63ca9a08c6ae91"
-      },
-      {
         "path": "services/api-nest/src/membership/membership.admin.controller.ts",
-        "sha256": "d9859a4fe50bad4df5958d3ad86f50c0f765c8db6687bb7b159bbc14a238ad73"
+        "sha256": "70daf7d6259d2786986bf34f64d3e3f163956f60f0e72734e6bae14cbf76ee99"
       },
       {
         "path": "services/api-nest/src/membership/membership.admin.service.ts",
-        "sha256": "1820b7e97e4cd0d14b09d1d4b0ca887359573a24d686176d6a203050da44b1e9"
+        "sha256": "a7c2d90950b3ceba508786c19a577c1fcf407270bc79109ad07341d42c4f4f61"
       },
       {
         "path": "services/api-nest/src/membership/membership.events.ts",
-        "sha256": "3a8646f7f519a8c34e7b213c0a9bfa63c53c30481678ccb2539ab7d419b8138a"
+        "sha256": "681d9a9e15317b70dd2824c2506ed1edbcbe00385a36edc0e7cf9f6df4c94b1b"
       },
       {
         "path": "services/api-nest/src/membership/membership.hooks.ts",
@@ -1283,7 +1170,7 @@
       },
       {
         "path": "services/api-nest/src/membership/membership.mi.ts",
-        "sha256": "c26c3e0ba0e53fd6edeeaef9106f6389cbd99aa34c58cf3154a9767fd3a983fd"
+        "sha256": "ca5b858f0aa0bf311697d4e5399110e601edc8ef189b044a9c27d6165ae3b4b0"
       },
       {
         "path": "services/api-nest/src/membership/membership.module.ts",
@@ -1291,51 +1178,23 @@
       },
       {
         "path": "services/api-nest/src/membership/membership.routes.ts",
-        "sha256": "d466a05a36634cd9fc6c5e3c1dc87ce50fc7e5f7604998edd29df7341e8b6dca"
+        "sha256": "974a7da78427fbf3b4c3c4e63a841e4d815f333f303f2ab5440b4d651b300ba1"
       },
       {
         "path": "services/api-nest/src/membership/membership.runtime.service.ts",
-        "sha256": "18f452154b228228e90226bf0f8d4e17fdbc710ac7fb6406e090b3347c65f146"
+        "sha256": "3918c7fa74b40a3781428f62f63a3b5101b916cee76c41fc0fffbc8a51a3d748"
       },
       {
         "path": "services/api-nest/src/membership/membership.types.ts",
-        "sha256": "16da37265747a75fee83b5a74ac5fb432114240f8734c58b2a2d375ca81341f5"
+        "sha256": "b8191f649ec77409fb54cd03823ab4f28c38876225f6accf63212fc20b91397f"
       },
       {
         "path": "services/api-nest/src/membership/membership.user.controller.ts",
-        "sha256": "03cfb54d746e7c04875b21a64de8f65f1df4a66be8e9f953cffc34350eeeb3df"
+        "sha256": "2d603a7be024a42672c69127cdcdefe3d9f8e175920175e005f71cadc580579b"
       },
       {
         "path": "services/api-nest/src/membership/membership.user.routes.ts",
         "sha256": "cd7718f9b7cc44ec066b19759fbdc434b381dde9799f642974c2d61b38241495"
-      },
-      {
-        "path": "services/api-nest/src/membership/operator-control.persist.cjs",
-        "sha256": "914a7c8605d3149a9e39115a7d949e10adfe2204310dead067f57e4f2bbb9d49"
-      },
-      {
-        "path": "services/api-nest/src/membership/operator-control.provider.cjs",
-        "sha256": "b353d5a7c14fdf414bd9997ed5158eb9140d935d599b7938ed80b52c3ab90811"
-      },
-      {
-        "path": "services/api-nest/src/membership/operator-control.store.cjs",
-        "sha256": "3415999f4090df5fc28b200ebaf097c8b08916b16ad2e2084ee63a600ce84637"
-      },
-      {
-        "path": "services/api-nest/src/membership/operator-quota-grade.admin-http.cjs",
-        "sha256": "17f1b21c6890eac696aa2bee1b28f5031533c02f2603fbece61e29af6021afb3"
-      },
-      {
-        "path": "services/api-nest/src/membership/operator-quota-grade.isolation.cjs",
-        "sha256": "1c7e4e597bbd15515481e9165e7a3a2e19363f413b200447ef52a99606df1168"
-      },
-      {
-        "path": "services/api-nest/src/membership/presentation-profile.core.cjs",
-        "sha256": "813b2418e183b498300de09894e710e68bedc6046f3aafed27802cd2b4074457"
-      },
-      {
-        "path": "services/api-nest/src/membership/support-conversation.contract.cjs",
-        "sha256": "364696f3baf05c6d4a019074b659d27954445d6dee8e58529ad9398ef79fecf1"
       },
       {
         "path": "services/api-nest/src/missions/benefits.user.controller.ts",
@@ -1394,40 +1253,8 @@
         "sha256": "39a669abda2dea479ef9edf747afd33a994f9f0a522e41b40bfb8a8b055a856a"
       },
       {
-        "path": "services/api-nest/src/opportunities/catalog-external-write.admin-writers.isolation.cjs",
-        "sha256": "ef91693b9d7dcb14dca7b4471d2e5e20056ff7f27004075d223f017f3c642a9b"
-      },
-      {
-        "path": "services/api-nest/src/opportunities/catalog-external-write.guard.ts",
-        "sha256": "0e1e3f136a9a66b28cb95c12f75580a18287703e2ad1236c2bd0c0bb35ce664e"
-      },
-      {
-        "path": "services/api-nest/src/opportunities/catalog-external-write.ingest-http.cjs",
-        "sha256": "9b4b7fed6a5c524fde8fc6a6defb0204b0ef25184ab9973d7a4d49d6915d12b7"
-      },
-      {
-        "path": "services/api-nest/src/opportunities/catalog-external-write.ingest-http.selftest.ts",
-        "sha256": "85253a53d0df5481fa694f00a040956e65a723d76733993b4ce32ba0eff6b21e"
-      },
-      {
-        "path": "services/api-nest/src/opportunities/catalog-external-write.ingest-isolation.cjs",
-        "sha256": "92acb4e0bdc9497d42100c95633c9267f649bc92307d5549f0a38f78cb7631dd"
-      },
-      {
-        "path": "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs",
-        "sha256": "6ddae4176c5e29892c76a4beae093fd5bffd460fa4fb31225559efc2b74e4cdd"
-      },
-      {
-        "path": "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts",
-        "sha256": "d2e00620b8e9fa5a8873a4e867b4ade4ab647b49b9ac804b5755a3795a356807"
-      },
-      {
-        "path": "services/api-nest/src/opportunities/catalog-external-write.ts-hook.cjs",
-        "sha256": "d403bde5d8522a7585cf966bee75b5ef968398d5e5f6d5ee42c46d634a9a4705"
-      },
-      {
         "path": "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts",
-        "sha256": "39495f50a9cc8660edc31130a1ba8d3140bb728c78865d3252af277951e328bb"
+        "sha256": "4b6f5689d9a38bcfd6254de5985c0ce1745e07a6f68cab247510f77db604c365"
       },
       {
         "path": "services/api-nest/src/opportunities/current-fx-approx.map.ts",
@@ -1454,44 +1281,12 @@
         "sha256": "3d192d7846dd445828df8fd9af16a31fd823a821e0fd05d1769465bb2396724e"
       },
       {
-        "path": "services/api-nest/src/opportunities/operator-mall-ledger-posting.cjs",
-        "sha256": "0560dca304bf9c48c6293affca38d157104c12196a77b4629054dac29c065502"
-      },
-      {
-        "path": "services/api-nest/src/opportunities/operator-mall-ledger-posting.isolation.cjs",
-        "sha256": "ae30a85036ff081e46a2153483ccad2b271dd1d343f0e61f5441a9fb9717e96e"
-      },
-      {
-        "path": "services/api-nest/src/opportunities/operator-mall-product.admin-http.cjs",
-        "sha256": "33dd90e170b99861de5f8ab01fb855b256506e0b1c72c25b21bf4c459ad96001"
-      },
-      {
-        "path": "services/api-nest/src/opportunities/operator-mall-product.admin.service.ts",
-        "sha256": "197d51c4aa3d6451ee36dd9785d581a1bc9fcdd2cf3123f2f3fc17a87b0ec0b6"
-      },
-      {
-        "path": "services/api-nest/src/opportunities/operator-mall-product.core.cjs",
-        "sha256": "777ec174a0edd6600b06126342fc75ae163c545c37b18afb391d439fef407715"
-      },
-      {
-        "path": "services/api-nest/src/opportunities/operator-mall-product.isolation.cjs",
-        "sha256": "15073fdc50a0d967bf2dfe72a3574076513b75f205dc221fcf6ab1be1aab17a1"
-      },
-      {
-        "path": "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
-        "sha256": "aeb4b2470d848ba116585685eb83aa8133d1011bcfb58ebae95a3c5433d69afa"
-      },
-      {
-        "path": "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
-        "sha256": "692f2c52b8552bcc4507d886de6be57e5e5f8ccaa31c5e0c94876b37e3d365dc"
-      },
-      {
         "path": "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
-        "sha256": "9b7fdea8ca25e48f5505a79b765568e04f19acd0a5b5d0ee087914c7f30df561"
+        "sha256": "424bd0b6aa79cb583eaf22ce5753bd3fec8e7c30a9172ab8bbf02a01926955da"
       },
       {
         "path": "services/api-nest/src/opportunities/opportunities.admin.service.ts",
-        "sha256": "597843b5b7a2c845c819a89e406c8997a7449d7102135caa17f9d7610ac671df"
+        "sha256": "cf2d3dcdd48e83839a9d3139dc53dfcd3fec3d90354d7300fc173e6a174ff33f"
       },
       {
         "path": "services/api-nest/src/opportunities/opportunities.events.ts",
@@ -1503,11 +1298,11 @@
       },
       {
         "path": "services/api-nest/src/opportunities/opportunities.module.ts",
-        "sha256": "c742c380ff6fdfd575bf23511c39613993f53db6e9f6956adc00c38de498bdcd"
+        "sha256": "47d945301bb03d451d4f4df1416312ff67cd0f923f90d2768d788052fe32b7e1"
       },
       {
         "path": "services/api-nest/src/opportunities/opportunities.routes.ts",
-        "sha256": "bf5b9e3f3951ad217d9c4b85ab6404f9b0611f9968b863f8da74c6993dae4953"
+        "sha256": "3f4b228328955c4cc0ab2523a98b238c094e7bae68e219a8d341d322efefd3f4"
       },
       {
         "path": "services/api-nest/src/opportunities/opportunities.types.ts",
@@ -1527,11 +1322,11 @@
       },
       {
         "path": "services/api-nest/src/opportunities/opportunity-reprice.service.ts",
-        "sha256": "6aee9875b16936e45e8e25bb1b82bb5e37cc94b75bf7c84c7c9fbbb4e103c094"
+        "sha256": "0c5174c6b288baa950531a7b228e7824050db3fca35882530bc5203aa0262c88"
       },
       {
         "path": "services/api-nest/src/opportunities/participate.service.ts",
-        "sha256": "5102433b4893581f266b2d2372e2fa1ecec96beaa78aa6813e50b0506b4839cc"
+        "sha256": "91f6915c19306ec2f0338448d1e7e7b41a8de65138010006135b87c84cef642b"
       },
       {
         "path": "services/api-nest/src/opportunities/user-opportunity-override.admin.controller.ts",
@@ -1551,7 +1346,7 @@
       },
       {
         "path": "services/api-nest/src/price-override/price-override.service.ts",
-        "sha256": "14850969f2a0888f35ec18d16386026eacb3d024542d4226b315b8abb2d606d2"
+        "sha256": "d700c290727034b4b72bf404d0c8a4b782426ac36d5da5fb492bffb961797990"
       },
       {
         "path": "services/api-nest/src/push/push-dispatch.client.ts",
@@ -1660,22 +1455,6 @@
       {
         "path": "services/api-nest/src/referral/referral.types.ts",
         "sha256": "efaa5394dab0b8e7119f1eed662b70cdecc2bc7bb6a19d85ca833b31830d6b1e"
-      },
-      {
-        "path": "services/api-nest/src/referral/reseller-id.core.cjs",
-        "sha256": "bd0d942a43c020361873035f115c8c0f1a7d729b0d27e4caf63f3e47b7a1f3fb"
-      },
-      {
-        "path": "services/api-nest/src/referral/reseller-id.isolation.cjs",
-        "sha256": "b705d2bd3544363717a8e030af099d649cc0ecf3461a5e3b900c2597e8de4249"
-      },
-      {
-        "path": "services/api-nest/src/referral/reseller-id.persist.cjs",
-        "sha256": "bdd484f12cd99a567d76244579b2fabe073d221ca296707060153801baf64e07"
-      },
-      {
-        "path": "services/api-nest/src/referral/reseller-id.persist.isolation.cjs",
-        "sha256": "729cf2d52ccdc4cbfad58beca36b9b0f50922387bd1db69b46cadb0bb1940949"
       },
       {
         "path": "services/api-nest/src/risk/index.ts",
@@ -1795,7 +1574,7 @@
       },
       {
         "path": "services/api-nest/src/trades/trades.execution.service.ts",
-        "sha256": "4080a03f33c3d54dea636fceeef315c3a1e8d5e6d0d78415634180b22eaca9c1"
+        "sha256": "956d8e56c29f016a552ca2c60919da790286bb25805cd27932ccbbe9d491dfc3"
       },
       {
         "path": "services/api-nest/src/trades/trades.module.ts",
@@ -2313,8 +2092,8 @@
   "next": "QA1_DETERMINISTIC_TRUTH",
   "epoch": {
     "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
-    "rebase_id": "ea-rebase-f295d67f1c3c-c2a6ea416128",
-    "predecessor_baseline_id": "ea-baseline-137241804ff2-83935adcdf57",
+    "rebase_id": "ea-rebase-eb7ca64a8d6b-83935adcdf57",
+    "predecessor_baseline_id": "ea-baseline-b11140abaafa-af15bf5b43ff",
     "kind": "product_rebase"
   }
 }

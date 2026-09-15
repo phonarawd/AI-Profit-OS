@@ -1,10 +1,10 @@
 # ENGINE ACCEPTANCE REPORT
 
 > **QA phase:** QA-0 `ENGINE_ACCEPTANCE_REBASE_V1`  
-> **Measured:** 2026-09-12T22:36:56.669Z  
-> **baseline_id:** `ea-baseline-137241804ff2-83935adcdf57`  
-> **predecessor_baseline_id:** `ea-baseline-b11140abaafa-af15bf5b43ff`  
-> **rebase_id:** `ea-rebase-eb7ca64a8d6b-83935adcdf57`  
+> **Measured:** 2026-09-15T10:57:12.671Z  
+> **baseline_id:** `ea-baseline-f295d67f1c3c-c2a6ea416128`  
+> **predecessor_baseline_id:** `ea-baseline-137241804ff2-83935adcdf57`  
+> **rebase_id:** `ea-rebase-f295d67f1c3c-c2a6ea416128`  
 > **rebase_policy_version:** `ENGINE_ACCEPTANCE_REBASE_POLICY_V2`
 
 ## Status banner
@@ -13,7 +13,7 @@
 ACCEPTANCE CONTRACT = LOCKED
 DECISION = ENGINE_ACCEPTANCE_REBASE_V1
 BASELINE = NEW_EPOCH
-PREDECESSOR = ea-baseline-b11140abaafa-af15bf5b43ff
+PREDECESSOR = ea-baseline-137241804ff2-83935adcdf57
 QA0 = COMPLETE (new epoch freeze)
 QA1 = STALE_FOR_CURRENT_EPOCH
 QA2 = STALE_FOR_CURRENT_EPOCH
