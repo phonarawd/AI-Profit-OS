@@ -168,13 +168,15 @@ test("planned revoke_and_clear invalidates that token", () => {
   assert.equal(isAdminAccessTokenRevoked(token), true);
 });
 
-test("admin-session login reuses staff core and stays store-unready", () => {
+test("admin-session login reuses staff core and injects ops persist", () => {
   const src = fs.readFileSync(
     path.join(import.meta.dirname, "admin-session.controller.ts"),
     "utf8",
   );
   assert.match(src, /@Post\("login"\)/);
   assert.match(src, /createUnreadyStaffStore/);
+  assert.match(src, /opsDb/);
+  assert.match(src, /PostgresService/);
   assert.match(src, /verifyPassword/);
   assert.doesNotMatch(src, /DEMO_PASSWORD|demo-login/);
   assert.match(src, /USER_SESSION_COOKIE_NAME/);

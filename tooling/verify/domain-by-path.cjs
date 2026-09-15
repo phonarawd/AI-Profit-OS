@@ -350,6 +350,8 @@ const RULES = [
       /^services\/api-nest\/admin-staff-login\.(core|isolation|persist)(\.isolation)?\.cjs$/.test(f) ||
       /^services\/api-nest\/isolated-qa-pg\.cjs$/.test(f) ||
       /^services\/api-nest\/src\/common\/admin-session-login\.admin-http\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/common\/admin-session\.controller\.ts$/.test(f) ||
+      /^supabase\/migrations\/.*admin_staff_credentials\.sql$/.test(f) ||
       /^services\/api-nest\/src\/opportunities\/operator-mall-product\./.test(f) ||
       /^services\/api-nest\/src\/opportunities\/operator-mall-ledger-posting\./.test(f) ||
       /^tooling\/verify\/operator-mall-gha-pg\.cjs$/.test(f) ||

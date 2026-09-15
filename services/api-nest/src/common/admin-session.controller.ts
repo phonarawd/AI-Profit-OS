@@ -8,6 +8,7 @@ import {
   Body,
   Controller,
   Get,
+  Optional,
   Post,
   Req,
   Res,
@@ -16,6 +17,7 @@ import {
 } from "@nestjs/common";
 import { loadPhase0Env } from "../config/phase0.env";
 import { verifyPassword } from "../auth/password-hash";
+import { PostgresService } from "../db/postgres";
 import {
   AdminTokenError,
   verifyAdminAccessToken,
@@ -70,6 +72,8 @@ type CookieResponse = {
 
 @Controller("admin-session")
 export class AdminSessionController {
+  constructor(@Optional() private readonly db?: PostgresService) {}
+
   @Post("login")
   async login(
     @Body() body: Record<string, unknown>,
@@ -80,6 +84,8 @@ export class AdminSessionController {
       throw new UnauthorizedException("ADMIN_AUTH_INVALID");
     }
     const userCookie = String(req.cookies?.[USER_SESSION_COOKIE_NAME] ?? "").trim();
+    const opsDb =
+      this.db && this.db.configured && this.db.configured() ? this.db : undefined;
     const out = await staffLogin.loginStaff(
       {
         email: body?.email,
@@ -88,6 +94,7 @@ export class AdminSessionController {
       },
       {
         store: staffLogin.createUnreadyStaffStore(),
+        opsDb,
         verifyPassword,
         adminJwtSecret: loadPhase0Env().jwtAdminSecret || "",
       },

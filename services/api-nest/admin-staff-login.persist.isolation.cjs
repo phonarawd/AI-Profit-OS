@@ -103,12 +103,49 @@ async function main() {
     assert.equal(memThrown, true);
   }, fails);
 
-  await check("draft_not_in_supabase_migrations", async () => {
+  await check("official_sql_in_supabase_migrations", async () => {
     assert.equal(persist.draftSqlPath().includes("quality/migrations-draft"), true);
-    assert.equal(persist.draftSqlPath().includes("supabase/migrations"), false);
+    assert.equal(persist.officialSqlPath().startsWith("supabase/migrations/"), true);
+    assert.equal(persist.officialSqlPath().includes("admin_staff_credentials"), true);
   }, fails);
 
-  console.log("[admin-staff-login.persist.isolation] scope=fake_persist nest_inject=unready real_pg=BLOCKED");
+  await check("ops_persist_allowed_isolated_still_denied", async () => {
+    assert.equal(
+      persist.allowsOpsStaffPersist({
+        supabaseProjectRef: persist.PRODUCTION_SUPABASE_REF,
+      }),
+      true,
+    );
+    const unready = await persist.resolveRuntimeStaffStore({
+      supabaseProjectRef: persist.PRODUCTION_SUPABASE_REF,
+    });
+    assert.equal(unready.ready, false);
+    const fakeDb = persist.createFakeStaffPersistDb({ schemaReady: true });
+    const opsStore = await persist.resolveRuntimeStaffStore(
+      { supabaseProjectRef: persist.PRODUCTION_SUPABASE_REF },
+      { opsDb: fakeDb },
+    );
+    assert.equal(opsStore.ready, true);
+    assert.equal(opsStore.opsPersist, true);
+    const configuredOps = await persist.resolveRuntimeStaffStore(
+      {},
+      {
+        opsDb: {
+          configured: () => true,
+          query: fakeDb.query.bind(fakeDb),
+        },
+      },
+    );
+    assert.equal(configuredOps.ready, true);
+    assert.equal(configuredOps.opsPersist, true);
+    const missingSchema = await persist.resolveRuntimeStaffStore(
+      { supabaseProjectRef: persist.PRODUCTION_SUPABASE_REF },
+      { opsDb: persist.createFakeStaffPersistDb({ schemaReady: false }) },
+    );
+    assert.equal(missingSchema.ready, false);
+  }, fails);
+
+  console.log("[admin-staff-login.persist.isolation] scope=fake_persist ops_ready_when_schema real_pg=BLOCKED");
   if (fails.length) {
     console.error("[admin-staff-login.persist.isolation] FAIL\n- " + fails.join("\n- "));
     process.exit(1);

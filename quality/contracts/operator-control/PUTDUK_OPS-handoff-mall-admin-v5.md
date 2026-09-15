@@ -20,7 +20,7 @@
 - 운영 persist: Nest `PostgresService`(project `mgsytcetsiecllmhcyox`) + mall 스키마가 있으면 STORE_UNREADY 를 해제한다. 격리 QA URL 세탁 금지.
 - 유저 `GET /api/v1/opportunities` · `GET /api/v1/opportunities/:id` · `POST /api/v1/opportunities/:id/participate` · 홈 피드(`listFeed`)는 `supply_source=operator` + visibility 만. `legacy_external` 숨김. 컬럼 없으면 42703 → 빈 목록/404.
 - 외부 ingest 운영 잠금: `PRODUCTION_SOURCE_MODE=operator_only` · `ALLOW_EXTERNAL_PRODUCT_INGEST=false` · `ALLOW_LEGACY_EXTERNAL_WRITES=false` · writer → `SOURCE_DISABLED`. 재활성은 env+새 배포.
-- 공식 DDL: `supabase/migrations/20260916033000_opportunities_supply_source.sql` · `supabase/migrations/20260916033100_operator_mall_product.sql`. 기존 행 DELETE 0.
+- 공식 DDL: `supabase/migrations/20260916033000_opportunities_supply_source.sql` · `supabase/migrations/20260916033100_operator_mall_product.sql` · `supabase/migrations/20260916080000_admin_staff_credentials.sql`. 기존 행 DELETE 0. 직원 시드 없음.
 
 ## 라이브 스키마 (2026-09-16 · mgsytcetsiecllmhcyox)
 - MCP `apply_migration` 적용: `opportunities.supply_source` · visibility/mall 컬럼 · `operator_mall_products` · `operator_mall_participations` · `operator_mall_settlement_journals`.

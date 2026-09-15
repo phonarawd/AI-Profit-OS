@@ -1,11 +1,13 @@
 /**
- * 직원 자격 persist. 운영 DATABASE_URL 주입 금지.
+ * 직원 자격 persist. 격리 QA URL 또는 운영 PostgresService(mgsytcetsiecllmhcyox).
  * demo 직원·고정 비밀번호·사용자를 Admin 으로 재사용 금지.
  * 스키마 없으면 STORE_UNREADY. 행이 없으면 저장소 ready 여도 401.
  */
 "use strict";
 
 const isolated = require("./isolated-qa-pg.cjs");
+
+const PRODUCTION_SUPABASE_REF = isolated.PRODUCTION_SUPABASE_REF;
 
 const STAFF_COLS = ["admin_id", "email", "password_hash", "role", "status"];
 
@@ -33,7 +35,8 @@ function evaluateStaffPreflight(row) {
     ready,
     code: ready ? "READY" : "STORE_UNREADY",
     applied: false,
-    persistence: ready ? "isolated_qa_persist" : "schema_unready",
+    opsDb: false,
+    persistence: ready ? "runtime_persist" : "schema_unready",
   };
 }
 
@@ -128,6 +131,22 @@ function createFakeStaffPersistDb(opts) {
   };
 }
 
+function allowsOpsStaffPersist(env) {
+  return isolated.isOpsDbTarget(env || {});
+}
+
+function canUseOpsStaffDb(env, opsDb) {
+  if (!opsDb || typeof opsDb.query !== "function") return false;
+  if (allowsOpsStaffPersist(env || {})) return true;
+  const configured =
+    typeof opsDb.configured === "function" && opsDb.configured() === true;
+  return configured && isolated.allowsIsolatedQaPg(env || {}) !== true;
+}
+
+function officialSqlPath() {
+  return "supabase/migrations/20260916080000_admin_staff_credentials.sql";
+}
+
 async function resolveRuntimeStaffStore(env, opts) {
   if (opts && opts.useFake === true) {
     const err = new Error("fake staff persist cannot be runtime store");
@@ -138,6 +157,18 @@ async function resolveRuntimeStaffStore(env, opts) {
     const err = new Error("test_memory staff store cannot be runtime store");
     err.code = "TEST_PROVIDER_FORBIDDEN_IN_RUNTIME";
     throw err;
+  }
+  const opsDb = opts && opts.opsDb;
+  if (canUseOpsStaffDb(env || {}, opsDb)) {
+    const store = await createPersistStaffStore(opsDb, opts);
+    if (store.ready !== true) {
+      return createUnreadyPersistStaffStore("schema_unready");
+    }
+    store.opsPersist = true;
+    store.qaInjection = false;
+    store.testOnly = false;
+    store.notProductionPostgresService = false;
+    return store;
   }
   const resolved = isolated.resolveIsolatedQaPgUrl(env || {});
   if (resolved.allowed !== true) {
@@ -173,11 +204,15 @@ function draftSqlPath() {
 module.exports = {
   SQL,
   STAFF_COLS,
+  PRODUCTION_SUPABASE_REF,
   evaluateStaffPreflight,
   preflightStaffSchema,
   createPersistStaffStore,
   createUnreadyPersistStaffStore,
   createFakeStaffPersistDb,
   resolveRuntimeStaffStore,
+  allowsOpsStaffPersist,
+  canUseOpsStaffDb,
   draftSqlPath,
+  officialSqlPath,
 };
