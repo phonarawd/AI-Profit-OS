@@ -89,6 +89,7 @@ function staleEvidence(over) {
 {
   const r = rejectQa9Laundry({
     evidence: {
+      qa_phase: "QA-9",
       verdict: "ENGINE_ACCEPTED_FOR_UI",
       suites: [{ suite_id: "QA9", completion_status: "COMPLETE", current_epoch_authoritative: true, run_id: "r", checksum: "c" }],
     },
@@ -98,6 +99,23 @@ function staleEvidence(over) {
   check(
     "verdict_mismatch_rejected",
     r.fails.some((x) => /verdict/i.test(x)),
+    r.fails.join("; "),
+  );
+}
+
+{
+  const r = rejectQa9Laundry({
+    evidence: {
+      qa_phase: "QA-6",
+      verdict: "ENGINE_QA_INCOMPLETE",
+      suites: [{ suite_id: "QA9", completion_status: "NOT_STARTED", current_epoch_authoritative: true }],
+    },
+    qa9Result: { baseline_id: current, verdict: "ENGINE_ACCEPTED_FOR_UI", engine_accepted_for_ui: "ISSUED" },
+    baseline: { id: current },
+  });
+  check(
+    "ephemeral_qa6_rewrite_allows_verdict_drift",
+    r.fails.length === 0,
     r.fails.join("; "),
   );
 }

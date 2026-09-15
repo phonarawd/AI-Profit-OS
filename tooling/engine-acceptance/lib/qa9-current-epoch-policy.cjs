@@ -74,7 +74,17 @@ function rejectQa9Laundry(input) {
       fails.push("predecessor ISSUED must not be current certification");
     }
   } else {
-    if (qa9Result && evidence && evidence.verdict && qa9Result.verdict && evidence.verdict !== qa9Result.verdict) {
+    // run-qa6/run-qa8 rewrite evidence-manifest in the CI matrix workspace
+    // (qa_phase QA-6 / QA-8) without re-aggregating QA9. Match is required
+    // only after the manifest was last written by QA9 itself.
+    if (
+      qa9Result &&
+      evidence &&
+      evidence.qa_phase === "QA-9" &&
+      evidence.verdict &&
+      qa9Result.verdict &&
+      evidence.verdict !== qa9Result.verdict
+    ) {
       fails.push("evidence-manifest.verdict must match qa9-result.verdict");
     }
     if (evidence && evidence.verdict === "ENGINE_ACCEPTED_FOR_UI") {
