@@ -573,7 +573,7 @@ jobs:
           key: ${{ runner.os }}-cargo-1.85.0-${{ hashFiles('services/engine-rust/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-1.85.0-
-      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: "22"
       - name: verify:rust-engine (fmt --check · clippy -D warnings · check --locked · test --locked)
@@ -731,7 +731,7 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: "22"
       - name: Aggregate needs.*.result (fail unless every job is success)
