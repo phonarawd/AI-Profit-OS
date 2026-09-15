@@ -54,11 +54,28 @@ const { CatalogExternalWriteGuard } = require("./catalog-external-write.guard.ts
 const { CatalogRuntimeSeedService } = require("./catalog-runtime-seed.service.ts");
 
 const GATE_ENV = "CATALOG_EXTERNAL_WRITE_GATE";
-const prevGate = process.env[GATE_ENV];
+const LOCK_KEYS = [
+  "CATALOG_EXTERNAL_WRITE_GATE",
+  "PRODUCTION_SOURCE_MODE",
+  "ALLOW_EXTERNAL_PRODUCT_INGEST",
+  "ALLOW_LEGACY_EXTERNAL_WRITES",
+];
+const prevLock = Object.fromEntries(LOCK_KEYS.map((k) => [k, process.env[k]]));
+const writeCore = require("../../catalog-external-write.core.cjs");
 
 function restoreGate() {
-  if (prevGate == null) delete process.env[GATE_ENV];
-  else process.env[GATE_ENV] = prevGate;
+  for (const k of LOCK_KEYS) {
+    if (prevLock[k] == null) delete process.env[k];
+    else process.env[k] = prevLock[k];
+  }
+}
+
+function pinUnlocked() {
+  writeCore.applyUnlockLegacyWrites(process.env);
+}
+
+function pinLocked() {
+  writeCore.applyProductionSourceLock(process.env);
 }
 
 class FakeCatalogDb {
@@ -167,7 +184,7 @@ function makeAdapters(opts) {
 
 async function main() {
   try {
-    process.env[GATE_ENV] = "off";
+    pinUnlocked();
     const readyDb = new FakeCatalogDb("ready");
     const readyGuard = makeGuard(readyDb);
     const readySeed = makeSeed(readyDb, readyGuard);
@@ -176,7 +193,7 @@ async function main() {
     assert.ok(readyDb.writes.some((s) => /INSERT INTO public\.listings/i.test(s)));
     console.log("PASS control persist insert");
 
-    process.env[GATE_ENV] = "on";
+    pinLocked();
     const gateDb = new FakeCatalogDb("ready");
     const gateTicks = [];
     const gateFx = [];
@@ -198,7 +215,7 @@ async function main() {
     assert.equal(gateEbay.ok, true);
     assert.equal(gateEbay.listingsPersisted ?? 0, 0);
     assert.equal(gateEbay.productWrite.status, "blocked");
-    assert.equal(gateEbay.productWrite.reason, "GATE_ON");
+    assert.equal(gateEbay.productWrite.reason, "SOURCE_DISABLED");
     assert.ok(gateTicks.length >= 1);
     const gatePersist = await makeSeed(gateDb, makeGuard(gateDb)).persistIngestListings(
       [adminListing()],
@@ -328,6 +345,7 @@ async function main() {
     assert.equal(failFx.length, 1);
     console.log("PASS schema query fail keeps heartbeat and FX");
 
+    pinUnlocked();
     const cutTicks = [];
     const cutAdapters = makeAdapters({
       guard: makeGuard(new FakeCatalogDb("ready")),

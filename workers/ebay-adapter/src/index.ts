@@ -51,6 +51,19 @@ export interface Env {
   EBAY_SEARCH_QUERIES_JSON?: string;
   NEST_ADAPTER_INGEST_URL?: string;
   ADAPTER_INGEST_TOKEN?: string;
+  PRODUCTION_SOURCE_MODE?: string;
+  ALLOW_EXTERNAL_PRODUCT_INGEST?: string;
+  ALLOW_LEGACY_EXTERNAL_WRITES?: string;
+}
+
+function isExternalIngestLocked(env: Env): boolean {
+  const mode = String(env.PRODUCTION_SOURCE_MODE || "").trim();
+  const ingest = String(env.ALLOW_EXTERNAL_PRODUCT_INGEST ?? "").trim().toLowerCase();
+  const legacy = String(env.ALLOW_LEGACY_EXTERNAL_WRITES ?? "").trim().toLowerCase();
+  if (mode === "operator_only") return true;
+  if (ingest === "false" || ingest === "0" || ingest === "off") return true;
+  if (legacy === "false" || legacy === "0" || legacy === "off") return true;
+  return false;
 }
 
 type MarketplaceTally = {
@@ -148,6 +161,25 @@ async function mapWithConcurrency<T>(
  * by `fetch`/`scheduled`, so production always uses the real TICK_BUDGET_MS.
  */
 export async function runTick(env: Env, testOverrides?: { tickBudgetMs?: number }) {
+  if (isExternalIngestLocked(env)) {
+    return {
+      ok: true,
+      skipped: true,
+      reason: "SOURCE_DISABLED",
+      adapterId: ADAPTER_ID,
+      marketplaceIds: parseMarketplaces(env.EBAY_MARKETPLACES),
+      queries: 0,
+      listings: 0,
+      observations: 0,
+      dryRun: true,
+      forwarded: 0,
+      errors: [],
+      marketplaceHealth: [],
+      providerTickId: "source_disabled",
+      tickIncomplete: false,
+      yahooJp: false,
+    };
+  }
   const marketplaces = parseMarketplaces(env.EBAY_MARKETPLACES);
   const queries = parseQueries(env.EBAY_SEARCH_QUERIES_JSON);
   const observedAt = new Date().toISOString();

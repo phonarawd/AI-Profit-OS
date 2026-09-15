@@ -263,9 +263,38 @@ async function main() {
     assert.equal(listed.items[0].revision, 1);
   }, fails);
 
-  await check("draft_not_in_supabase_migrations", async () => {
+  await check("official_sql_in_supabase_migrations", async () => {
     assert.equal(persist.draftSqlPath().includes("quality/migrations-draft"), true);
-    assert.equal(persist.draftSqlPath().includes("supabase/migrations"), false);
+    const official = persist.officialSqlPaths();
+    assert.equal(official.length, 2);
+    assert.equal(official.every((p) => p.startsWith("supabase/migrations/")), true);
+  }, fails);
+
+  await check("ops_persist_allowed_isolated_still_denied", async () => {
+    assert.equal(
+      persist.allowsOpsMallPersist({
+        supabaseProjectRef: persist.PRODUCTION_SUPABASE_REF,
+      }),
+      true,
+    );
+    assert.equal(
+      persist.allowsMallPersistWrite({
+        catalogTestDatabaseUrl:
+          "postgres://x@db." + persist.PRODUCTION_SUPABASE_REF + ".supabase.co/postgres",
+      }),
+      false,
+    );
+    const unready = await persist.resolveRuntimeMallPersistStore({
+      supabaseProjectRef: persist.PRODUCTION_SUPABASE_REF,
+    });
+    assert.equal(unready.ready, false);
+    const fakeDb = persist.createFakePersistMallDb({ schemaReady: true });
+    const opsStore = await persist.resolveRuntimeMallPersistStore(
+      { supabaseProjectRef: persist.PRODUCTION_SUPABASE_REF },
+      { opsDb: fakeDb },
+    );
+    assert.equal(opsStore.ready, true);
+    assert.equal(opsStore.opsPersist, true);
   }, fails);
 
   await check("runtime_unset_not_fake", async () => {

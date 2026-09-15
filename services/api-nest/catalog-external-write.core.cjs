@@ -1,18 +1,23 @@
 /**
- * 카탈로그 외부 쓰기 게이트 + 운영자 행 보호 — 순수 결정.
+ * 카탈로그 외부 쓰기 이중 잠금 + 운영자 행 보호 — 순수 결정.
  * writer는 잠금 후 이 결정을 같은 트랜잭션에서 재평가한다 (검사→나중에 쓰기 금지).
  *
- * 배포 순서 (운영 반영은 별 승인):
- * 1) opportunities.supply_source 마이그레이션 적용
- * 2) 이 가드가 있는 Nest 배포
+ * 운영 기본값 = 잠금. OFF/unset 이 허용이 아니다.
+ * 재활성은 코드·env 변경 + 새 배포가 필요하다. 어드민 토글 하나로 열리지 않는다.
+ *
  * 컬럼이 없으면 상품 쓰기 전부 차단. 게이트 OFF여도 예외 없음.
- * 정상적인 게이트 OFF + 스키마 준비 + legacy_external 만 기존 ingest/재가격을 유지한다.
+ * ALLOW_LEGACY 는 네 값이 모두 명시적으로 풀렸을 때만.
  */
 "use strict";
 
 const SUPPLY_OPERATOR = "operator";
 const SUPPLY_LEGACY = "legacy_external";
 const GATE_ENV = "CATALOG_EXTERNAL_WRITE_GATE";
+const SOURCE_MODE_ENV = "PRODUCTION_SOURCE_MODE";
+const ALLOW_INGEST_ENV = "ALLOW_EXTERNAL_PRODUCT_INGEST";
+const ALLOW_LEGACY_WRITES_ENV = "ALLOW_LEGACY_EXTERNAL_WRITES";
+const SOURCE_MODE_OPERATOR_ONLY = "operator_only";
+const SOURCE_MODE_ALLOW_LEGACY = "allow_legacy";
 
 /** 상품 writer 주체. S1 호출은 전부 LEGACY_EXTERNAL. OPERATOR_CANONICAL은 S2 예약. */
 const WRITER_KIND = Object.freeze({
@@ -24,6 +29,7 @@ const REASON = Object.freeze({
   ALLOW_LEGACY: "ALLOW_LEGACY",
   ALLOW_OPERATOR_CANONICAL: "ALLOW_OPERATOR_CANONICAL",
   GATE_ON: "GATE_ON",
+  SOURCE_DISABLED: "SOURCE_DISABLED",
   GATE_UNRESOLVED: "GATE_UNRESOLVED",
   SCHEMA_UNREADY: "SCHEMA_UNREADY",
   SCHEMA_QUERY_FAILED: "SCHEMA_QUERY_FAILED",
@@ -92,9 +98,11 @@ UPDATE public.opportunities SET
  * @returns {{ ok: true, engaged: boolean } | { ok: false, reason: string }}
  */
 function parseGate(raw) {
-  if (raw == null) return { ok: true, engaged: false };
+  if (raw == null || String(raw).trim() === "") {
+    return { ok: true, engaged: true };
+  }
   const t = String(raw).trim().toLowerCase();
-  if (t === "" || t === "off" || t === "0" || t === "false" || t === "no") {
+  if (t === "off" || t === "0" || t === "false" || t === "no") {
     return { ok: true, engaged: false };
   }
   if (t === "on" || t === "1" || t === "true" || t === "yes") {
@@ -103,9 +111,107 @@ function parseGate(raw) {
   return { ok: false, reason: REASON.GATE_UNRESOLVED };
 }
 
+function parseAllowFlag(raw) {
+  if (raw == null || String(raw).trim() === "") {
+    return { ok: true, allowed: false };
+  }
+  const t = String(raw).trim().toLowerCase();
+  if (t === "true" || t === "1" || t === "yes" || t === "on") {
+    return { ok: true, allowed: true };
+  }
+  if (t === "false" || t === "0" || t === "no" || t === "off") {
+    return { ok: true, allowed: false };
+  }
+  return { ok: false, reason: REASON.GATE_UNRESOLVED };
+}
+
+function parseSourceMode(raw) {
+  if (raw == null || String(raw).trim() === "") {
+    return { ok: true, mode: SOURCE_MODE_OPERATOR_ONLY };
+  }
+  const t = String(raw).trim();
+  if (t === SOURCE_MODE_OPERATOR_ONLY || t === SOURCE_MODE_ALLOW_LEGACY) {
+    return { ok: true, mode: t };
+  }
+  return { ok: false, reason: REASON.GATE_UNRESOLVED };
+}
+
+function envObject(env) {
+  return env && typeof env === "object" ? env : process.env;
+}
+
 function readGateFromEnv(env) {
-  const source = env && typeof env === "object" ? env : process.env;
-  return parseGate(source[GATE_ENV]);
+  return parseGate(envObject(env)[GATE_ENV]);
+}
+
+/**
+ * 이중 잠금. 기본 engaged=true.
+ * 풀려면 PRODUCTION_SOURCE_MODE=allow_legacy 와
+ * ALLOW_EXTERNAL_PRODUCT_INGEST=true 와
+ * ALLOW_LEGACY_EXTERNAL_WRITES=true 와
+ * CATALOG_EXTERNAL_WRITE_GATE=off 를 모두 명시해야 한다.
+ */
+function readSourceLockFromEnv(env) {
+  const source = envObject(env);
+  const mode = parseSourceMode(source[SOURCE_MODE_ENV]);
+  const ingest = parseAllowFlag(source[ALLOW_INGEST_ENV]);
+  const legacy = parseAllowFlag(source[ALLOW_LEGACY_WRITES_ENV]);
+  const gate = parseGate(source[GATE_ENV]);
+  if (!mode.ok || !ingest.ok || !legacy.ok || !gate.ok) {
+    return { ok: false, engaged: true, reason: REASON.GATE_UNRESOLVED };
+  }
+  const unlocked =
+    mode.mode === SOURCE_MODE_ALLOW_LEGACY &&
+    ingest.allowed === true &&
+    legacy.allowed === true &&
+    gate.engaged === false;
+  return {
+    ok: true,
+    engaged: !unlocked,
+    reason: unlocked ? REASON.ALLOW_LEGACY : REASON.SOURCE_DISABLED,
+    mode: mode.mode,
+    ingestAllowed: ingest.allowed,
+    legacyWritesAllowed: legacy.allowed,
+    gateEngaged: gate.engaged,
+  };
+}
+
+function applyUnlockLegacyWrites(env) {
+  const target = envObject(env);
+  target[GATE_ENV] = "off";
+  target[SOURCE_MODE_ENV] = SOURCE_MODE_ALLOW_LEGACY;
+  target[ALLOW_INGEST_ENV] = "true";
+  target[ALLOW_LEGACY_WRITES_ENV] = "true";
+  return target;
+}
+
+function applyProductionSourceLock(env) {
+  const target = envObject(env);
+  target[GATE_ENV] = "on";
+  target[SOURCE_MODE_ENV] = SOURCE_MODE_OPERATOR_ONLY;
+  target[ALLOW_INGEST_ENV] = "false";
+  target[ALLOW_LEGACY_WRITES_ENV] = "false";
+  return target;
+}
+
+function resolveSourceLock(input) {
+  if (input && input.sourceLock && typeof input.sourceLock === "object") {
+    if (input.sourceLock.ok === false) {
+      return { ok: false, engaged: true, reason: REASON.GATE_UNRESOLVED };
+    }
+    return {
+      ok: true,
+      engaged: input.sourceLock.engaged === true,
+      reason:
+        input.sourceLock.engaged === true
+          ? REASON.SOURCE_DISABLED
+          : REASON.ALLOW_LEGACY,
+    };
+  }
+  if (input && input.env) {
+    return readSourceLockFromEnv(input.env);
+  }
+  return { ok: true, engaged: true, reason: REASON.SOURCE_DISABLED };
 }
 
 /**
@@ -119,6 +225,8 @@ function readGateFromEnv(env) {
  *   schemaError?: boolean,
  *   sources: Array<string | null | undefined> | null,
  *   writerKind?: string,
+ *   sourceLock?: { ok?: boolean, engaged?: boolean, reason?: string },
+ *   env?: NodeJS.ProcessEnv | Record<string, string | undefined>,
  * }} input
  */
 function decideProductWrite(input) {
@@ -165,9 +273,6 @@ function decideProductWrite(input) {
     return { allow: true, reason: REASON.ALLOW_OPERATOR_CANONICAL };
   }
 
-  if (input.gate.engaged === true) {
-    return { allow: false, reason: REASON.GATE_ON };
-  }
   if (input.sources == null) {
     return { allow: false, reason: REASON.SUPPLY_SOURCE_UNREADABLE };
   }
@@ -183,6 +288,17 @@ function decideProductWrite(input) {
       return { allow: false, reason: REASON.SUPPLY_SOURCE_INVALID };
     }
   }
+
+  const sourceLock = resolveSourceLock(input);
+  if (!sourceLock.ok) {
+    return { allow: false, reason: REASON.GATE_UNRESOLVED };
+  }
+  if (sourceLock.engaged === true) {
+    return { allow: false, reason: REASON.SOURCE_DISABLED };
+  }
+  if (input.gate.engaged === true) {
+    return { allow: false, reason: REASON.GATE_ON };
+  }
   return { allow: true, reason: REASON.ALLOW_LEGACY };
 }
 
@@ -196,6 +312,8 @@ function decideBootSeed(input) {
     schemaReady: input.schemaReady,
     schemaError: input.schemaError,
     sources: [],
+    sourceLock: input.sourceLock,
+    env: input.env,
   });
   if (!d.allow) return { allow: false, reason: d.reason };
   return { allow: true, reason: REASON.ALLOW_LEGACY };
@@ -214,6 +332,7 @@ function isExpectedProductBlock(reason) {
   return (
     reason === REASON.OPERATOR_PROTECTED ||
     reason === REASON.GATE_ON ||
+    reason === REASON.SOURCE_DISABLED ||
     reason === REASON.GATE_UNRESOLVED ||
     reason === REASON.SCHEMA_UNREADY ||
     reason === REASON.SCHEMA_QUERY_FAILED ||
@@ -246,6 +365,7 @@ async function inspectSchemaOnClient(client) {
  */
 async function evaluateLockedAssetOnClient(client, assetId, env, opts) {
   const gate = readGateFromEnv(env);
+  const sourceLock = readSourceLockFromEnv(env);
   const writerKind = opts && opts.writerKind
     ? opts.writerKind
     : WRITER_KIND.LEGACY_EXTERNAL;
@@ -297,6 +417,8 @@ async function evaluateLockedAssetOnClient(client, assetId, env, opts) {
     schemaReady: true,
     sources,
     writerKind,
+    sourceLock,
+    env,
   });
   return {
     ...decided,
@@ -361,6 +483,7 @@ function createMemoryCatalog(initial) {
     schemaReady: initial.schemaReady !== false,
     schemaError: initial.schemaError === true,
     gateRaw: initial.gateRaw == null ? "" : initial.gateRaw,
+    sourceLockEngaged: initial.sourceLockEngaged !== false,
     assets: new Map(Object.entries(initial.assets || {})),
     opportunities: new Map(
       Object.entries(initial.opportunities || {}).map(([k, rows]) => [
@@ -422,6 +545,10 @@ function createMemoryCatalog(initial) {
 
   function evaluateLocked(assetId, writerKind) {
     const gate = parseGate(state.gateRaw);
+    const sourceLock = {
+      ok: true,
+      engaged: state.sourceLockEngaged !== false,
+    };
     if (state.schemaError) {
       return decideProductWrite({
         gate,
@@ -429,6 +556,7 @@ function createMemoryCatalog(initial) {
         schemaError: true,
         sources: null,
         writerKind,
+        sourceLock,
       });
     }
     if (!state.schemaReady) {
@@ -437,6 +565,7 @@ function createMemoryCatalog(initial) {
         schemaReady: false,
         sources: null,
         writerKind,
+        sourceLock,
       });
     }
     const rows = state.opportunities.get(assetId) || [];
@@ -445,6 +574,7 @@ function createMemoryCatalog(initial) {
       schemaReady: true,
       sources: rows.map((r) => r.supply_source),
       writerKind,
+      sourceLock,
     });
   }
 
@@ -519,6 +649,10 @@ function createMemoryCatalog(initial) {
 
   function setGateRaw(raw) {
     state.gateRaw = raw;
+  }
+
+  function setSourceLockEngaged(engaged) {
+    state.sourceLockEngaged = engaged === true;
   }
 
   function setSupplySource(assetId, opportunityId, supplySource) {
@@ -611,6 +745,7 @@ function createMemoryCatalog(initial) {
     patchPricing,
     reprice,
     setGateRaw,
+    setSourceLockEngaged,
     setSupplySource,
     setSchemaReady,
     snapshotAsset,
@@ -626,12 +761,22 @@ module.exports = {
   SUPPLY_OPERATOR,
   SUPPLY_LEGACY,
   GATE_ENV,
+  SOURCE_MODE_ENV,
+  ALLOW_INGEST_ENV,
+  ALLOW_LEGACY_WRITES_ENV,
+  SOURCE_MODE_OPERATOR_ONLY,
+  SOURCE_MODE_ALLOW_LEGACY,
   WRITER_KIND,
   REASON,
   LOCK_ORDER,
   SQL,
   parseGate,
+  parseAllowFlag,
+  parseSourceMode,
   readGateFromEnv,
+  readSourceLockFromEnv,
+  applyUnlockLegacyWrites,
+  applyProductionSourceLock,
   decideProductWrite,
   decideBootSeed,
   isUndefinedColumn,

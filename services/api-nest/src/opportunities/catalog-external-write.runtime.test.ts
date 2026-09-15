@@ -13,7 +13,8 @@ const core = requireCjs(
 function fixture(over: Record<string, unknown> = {}) {
   return core.createMemoryCatalog({
     schemaReady: true,
-    gateRaw: "",
+    gateRaw: "on",
+    sourceLockEngaged: true,
     assets: {
       op_asset: { image_url: "https://r2.example/op.jpg", image_source: "admin_r2" },
       leg_asset: { image_url: "https://i.ebayimg.com/old.jpg", image_source: "ebay" },
@@ -60,6 +61,10 @@ function fixture(over: Record<string, unknown> = {}) {
   });
 }
 
+function unlockedFixture(over: Record<string, unknown> = {}) {
+  return fixture({ gateRaw: "off", sourceLockEngaged: false, ...over });
+}
+
 const listingPatch = {
   market_id: "ebay_us",
   external_item_id: "ext-op",
@@ -67,21 +72,34 @@ const listingPatch = {
 };
 
 describe("catalog-external-write core", () => {
-  it("S1-A: 게이트 OFF · operator 없음 · 기본 OFF", () => {
+  it("S1-A: default and production env lock block ALLOW_LEGACY", () => {
     const gate = core.parseGate("");
     assert.equal(gate.ok, true);
-    if (gate.ok) assert.equal(gate.engaged, false);
-    const d = core.decideProductWrite({
+    if (gate.ok) assert.equal(gate.engaged, true);
+    const locked = core.decideProductWrite({
       gate,
       schemaReady: true,
       sources: ["legacy_external"],
     });
-    assert.equal(d.allow, true);
-    assert.equal(d.reason, core.REASON.ALLOW_LEGACY);
+    assert.equal(locked.allow, false);
+    assert.equal(locked.reason, core.REASON.SOURCE_DISABLED);
+
+    const envLocked = core.readSourceLockFromEnv(Object.create(null));
+    assert.equal(envLocked.engaged, true);
+    assert.equal(envLocked.reason, core.REASON.SOURCE_DISABLED);
+
+    const unlocked = core.decideProductWrite({
+      gate: core.parseGate("off"),
+      schemaReady: true,
+      sources: ["legacy_external"],
+      sourceLock: { ok: true, engaged: false },
+    });
+    assert.equal(unlocked.allow, true);
+    assert.equal(unlocked.reason, core.REASON.ALLOW_LEGACY);
   });
 
-  it("S1-B: 게이트 OFF · operator 동일 asset 불변", async () => {
-    const cat = fixture();
+  it("S1-B: operator rows stay immutable", async () => {
+    const cat = unlockedFixture();
     const before = cat.snapshotAsset("op_asset");
     const listing = await cat.persistListing("op_asset", listingPatch);
     const image = await cat.applyImage("op_asset", "https://i.ebayimg.com/new.jpg");
@@ -97,8 +115,8 @@ describe("catalog-external-write core", () => {
     assert.equal(after.asset?.image_url, before.asset?.image_url);
   });
 
-  it("S1-C: 다른 asset의 legacy는 갱신", async () => {
-    const cat = fixture();
+  it("S1-C: unlocked env can refresh a different legacy asset", async () => {
+    const cat = unlockedFixture();
     const listing = await cat.persistListing("leg_asset", {
       market_id: "ebay_us",
       external_item_id: "ext-leg",
@@ -119,8 +137,8 @@ describe("catalog-external-write core", () => {
     );
   });
 
-  it("S1-D: 게이트 ON이면 상품 쓰기 차단 · 결정만 (FX는 writer 밖)", async () => {
-    const cat = fixture({ gateRaw: "on" });
+  it("S1-D: locked env and gate ON block product writes", async () => {
+    const cat = fixture({ gateRaw: "on", sourceLockEngaged: true });
     const leg = await cat.persistListing("leg_asset", {
       market_id: "ebay_us",
       external_item_id: "ext-leg",
@@ -128,24 +146,33 @@ describe("catalog-external-write core", () => {
     });
     const op = await cat.persistListing("op_asset", listingPatch);
     assert.equal(leg.wrote, false);
-    assert.equal(leg.reason, core.REASON.GATE_ON);
+    assert.equal(leg.reason, core.REASON.SOURCE_DISABLED);
     assert.equal(op.wrote, false);
+    assert.equal(op.reason, core.REASON.OPERATOR_PROTECTED);
     const seed = core.decideBootSeed({
       gate: core.parseGate("on"),
       schemaReady: true,
     });
     assert.equal(seed.allow, false);
-    assert.equal(seed.reason, core.REASON.GATE_ON);
+    assert.equal(seed.reason, core.REASON.SOURCE_DISABLED);
   });
 
-  it("S1-E: ON→OFF 해도 operator 보호 유지 · legacy는 다시 허용", async () => {
-    const cat = fixture({ gateRaw: "on" });
+  it("S1-E: gate off alone does not unlock; operator stays protected", async () => {
+    const cat = fixture({ gateRaw: "on", sourceLockEngaged: true });
     await cat.persistListing("leg_asset", {
       market_id: "ebay_us",
       external_item_id: "ext-leg",
       price_usdt: "1",
     });
     cat.setGateRaw("off");
+    const stillLocked = await cat.persistListing("leg_asset", {
+      market_id: "ebay_us",
+      external_item_id: "ext-leg",
+      price_usdt: "88",
+    });
+    assert.equal(stillLocked.wrote, false);
+    assert.equal(stillLocked.reason, core.REASON.SOURCE_DISABLED);
+    cat.setSourceLockEngaged(false);
     const leg = await cat.persistListing("leg_asset", {
       market_id: "ebay_us",
       external_item_id: "ext-leg",
@@ -157,7 +184,7 @@ describe("catalog-external-write core", () => {
     assert.equal(op.reason, core.REASON.OPERATOR_PROTECTED);
   });
 
-  it("잘못된 게이트 값·컬럼 부재·정책 조회 실패는 쓰기 차단", async () => {
+  it("bad gate, missing column, and inspect failure stay fail-closed", async () => {
     assert.equal(core.parseGate("maybe").ok, false);
     const badGate = core.decideProductWrite({
       gate: core.parseGate("maybe"),
@@ -167,7 +194,7 @@ describe("catalog-external-write core", () => {
     assert.equal(badGate.allow, false);
     assert.equal(badGate.reason, core.REASON.GATE_UNRESOLVED);
 
-    const unready = fixture({ schemaReady: false, gateRaw: "off" });
+    const unready = unlockedFixture({ schemaReady: false, gateRaw: "off" });
     const u = await unready.persistListing("leg_asset", {
       market_id: "ebay_us",
       external_item_id: "ext-leg",
@@ -176,7 +203,7 @@ describe("catalog-external-write core", () => {
     assert.equal(u.wrote, false);
     assert.equal(u.reason, core.REASON.SCHEMA_UNREADY);
 
-    const errCat = fixture({ schemaError: true, gateRaw: "off" });
+    const errCat = unlockedFixture({ schemaError: true, gateRaw: "off" });
     const e = await errCat.persistListing("leg_asset", {
       market_id: "ebay_us",
       external_item_id: "ext-leg",
@@ -189,6 +216,7 @@ describe("catalog-external-write core", () => {
       gate: core.parseGate("off"),
       schemaReady: true,
       sources: ["mystery"],
+      sourceLock: { ok: true, engaged: false },
     });
     assert.equal(invalid.allow, false);
     assert.equal(invalid.reason, core.REASON.SUPPLY_SOURCE_INVALID);
@@ -197,13 +225,14 @@ describe("catalog-external-write core", () => {
       gate: core.parseGate("off"),
       schemaReady: true,
       sources: [null],
+      sourceLock: { ok: true, engaged: false },
     });
     assert.equal(unread.allow, false);
     assert.equal(unread.reason, core.REASON.SUPPLY_SOURCE_UNREADABLE);
   });
 
-  it("공급원 변경 경합: 잠금 안에서 operator로 바뀌면 같은 TX 재평가로 쓰기 0", async () => {
-    const cat = fixture();
+  it("supply race: operator flip inside lock writes 0", async () => {
+    const cat = unlockedFixture();
     const wrote = await cat.withAssetLock("leg_asset", async () => {
       await cat.setSupplySource("leg_asset", "opp-leg", "operator");
       return cat.persistListing("leg_asset", {
@@ -217,8 +246,8 @@ describe("catalog-external-write core", () => {
     assert.equal(cat.snapshotAsset("leg_asset").listings[0].price_usdt, "50");
   });
 
-  it("동시 ingest: operator는 둘 다 실패 · legacy는 직렬 성공", async () => {
-    const cat = fixture();
+  it("concurrent ingest: operator fails, unlocked legacy serializes", async () => {
+    const cat = unlockedFixture();
     const [a, b, c, d] = await Promise.all([
       cat.persistListing("op_asset", listingPatch),
       cat.persistListing("op_asset", { ...listingPatch, price_usdt: "2" }),
@@ -241,10 +270,10 @@ describe("catalog-external-write core", () => {
     assert.equal(cat.snapshotAsset("op_asset").listings[0].price_usdt, "100");
   });
 
-  it("게이트 전환 경합: 잠금 안에서 ON이면 같은 TX 재평가로 차단", async () => {
-    const cat = fixture({ gateRaw: "off" });
+  it("lock race: engaging source lock inside TX blocks write", async () => {
+    const cat = unlockedFixture();
     const result = await cat.withAssetLock("leg_asset", async () => {
-      cat.setGateRaw("on");
+      cat.setSourceLockEngaged(true);
       return cat.persistListing("leg_asset", {
         market_id: "ebay_us",
         external_item_id: "ext-leg",
@@ -252,11 +281,11 @@ describe("catalog-external-write core", () => {
       });
     });
     assert.equal(result.wrote, false);
-    assert.equal(result.reason, core.REASON.GATE_ON);
+    assert.equal(result.reason, core.REASON.SOURCE_DISABLED);
     assert.equal(cat.snapshotAsset("leg_asset").listings[0].price_usdt, "50");
   });
 
-  it("잠금 순서는 assets → opportunities", () => {
+  it("lock order is assets then opportunities", () => {
     assert.deepEqual(core.LOCK_ORDER, ["assets", "opportunities"]);
     assert.match(core.SQL.lockOpportunities, /ORDER BY id ASC/);
     assert.match(core.SQL.lockOpportunities, /FOR UPDATE/);
@@ -264,7 +293,7 @@ describe("catalog-external-write core", () => {
   });
 
   it("admin upsert blocks operator", async () => {
-    const cat = fixture();
+    const cat = unlockedFixture();
     const before = cat.snapshotAsset("op_asset");
     const first = await cat.upsertAsset("op_asset", { image_url: "https://cdn.example/x.jpg" });
     const retry = await cat.upsertAsset("op_asset", { image_url: "https://cdn.example/y.jpg" });
@@ -274,14 +303,14 @@ describe("catalog-external-write core", () => {
     assert.equal(cat.snapshotAsset("op_asset").asset.image_url, before.asset.image_url);
   });
   it("admin image and seed skip operator only", async () => {
-    const cat = fixture();
+    const cat = unlockedFixture();
     const op = await cat.applyAdminImage("op_asset", "https://cdn.example/r2.jpg");
     const leg = await cat.applyAdminImage("leg_asset", "https://cdn.example/r2-leg.jpg");
     assert.equal(op.wrote, false);
     assert.equal(leg.wrote, true);
   });
   it("patchPricing blocks operator", async () => {
-    const cat = fixture();
+    const cat = unlockedFixture();
     const op = await cat.patchPricing("op_asset", "opp-op", 99, "9.99");
     const leg = await cat.patchPricing("leg_asset", "opp-leg", 4, "0.88");
     assert.equal(op.wrote, false);
@@ -289,11 +318,14 @@ describe("catalog-external-write core", () => {
     assert.equal(cat.snapshotAsset("op_asset").opportunities[0].pricing_version, 3);
   });
   it("gate and schema fail-closed for admin writers", async () => {
-    const on = fixture({ gateRaw: "on" });
-    assert.equal((await on.upsertAsset("leg_asset", { image_url: "x" })).reason, core.REASON.GATE_ON);
-    const missing = fixture({ schemaReady: false, gateRaw: "off" });
+    const on = fixture({ gateRaw: "on", sourceLockEngaged: true });
+    assert.equal(
+      (await on.upsertAsset("leg_asset", { image_url: "x" })).reason,
+      core.REASON.SOURCE_DISABLED,
+    );
+    const missing = unlockedFixture({ schemaReady: false, gateRaw: "off" });
     assert.equal((await missing.patchPricing("leg_asset", "opp-leg", 8, "1")).reason, core.REASON.SCHEMA_UNREADY);
-    const fail = fixture({ schemaError: true, gateRaw: "off" });
+    const fail = unlockedFixture({ schemaError: true, gateRaw: "off" });
     assert.equal((await fail.applyAdminImage("leg_asset", "https://cdn.example/x.jpg")).reason, core.REASON.SCHEMA_QUERY_FAILED);
   });
   it("canonical writer is reserved and does not promote legacy", () => {
@@ -314,4 +346,22 @@ describe("catalog-external-write core", () => {
     assert.equal(noPromote.reason, core.REASON.LEGACY_NOT_PROMOTABLE);
   });
 
+  it("dual env must all unlock before ALLOW_LEGACY", () => {
+    const lockedEnv = {
+      CATALOG_EXTERNAL_WRITE_GATE: "off",
+      PRODUCTION_SOURCE_MODE: "operator_only",
+      ALLOW_EXTERNAL_PRODUCT_INGEST: "true",
+      ALLOW_LEGACY_EXTERNAL_WRITES: "true",
+    };
+    assert.equal(core.readSourceLockFromEnv(lockedEnv).engaged, true);
+    const unlockedEnv = core.applyUnlockLegacyWrites({});
+    assert.equal(core.readSourceLockFromEnv(unlockedEnv).engaged, false);
+    const d = core.decideProductWrite({
+      gate: core.parseGate("off"),
+      schemaReady: true,
+      sources: ["legacy_external"],
+      env: unlockedEnv,
+    });
+    assert.equal(d.allow, true);
+  });
 });

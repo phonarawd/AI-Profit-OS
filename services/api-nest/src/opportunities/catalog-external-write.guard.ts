@@ -1,6 +1,6 @@
 /**
  * 외부 카탈로그 쓰기 가드.
- * 게이트(기본 OFF)와 operator 행 보호를 writer가 같은 TX에서 강제한다.
+ * 운영 기본값은 이중 잠금(SOURCE_DISABLED). operator 행은 외부 writer가 못 바꾼다.
  */
 import { Injectable, Logger } from "@nestjs/common";
 import { createRequire } from "node:module";
@@ -30,17 +30,26 @@ const core = requireCjs(
   readGateFromEnv: (env?: NodeJS.ProcessEnv) =>
     | { ok: true; engaged: boolean }
     | { ok: false; reason: string };
+  readSourceLockFromEnv: (env?: NodeJS.ProcessEnv) => {
+    ok: boolean;
+    engaged: boolean;
+    reason: string;
+  };
   decideProductWrite: (input: {
     gate: { ok: boolean; engaged?: boolean; reason?: string };
     schemaReady: boolean | null;
     schemaError?: boolean;
     sources: Array<string | null | undefined> | null;
     writerKind?: string;
+    sourceLock?: { ok?: boolean; engaged?: boolean; reason?: string };
+    env?: NodeJS.ProcessEnv;
   }) => { allow: boolean; reason: string };
   decideBootSeed: (input: {
     gate: { ok: boolean; engaged?: boolean; reason?: string };
     schemaReady: boolean | null;
     schemaError?: boolean;
+    sourceLock?: { ok?: boolean; engaged?: boolean; reason?: string };
+    env?: NodeJS.ProcessEnv;
   }) => { allow: boolean; reason: string };
   isUndefinedColumn: (err: unknown) => boolean;
   isExpectedProductBlock: (reason: string) => boolean;
@@ -100,15 +109,15 @@ export class CatalogExternalWriteGuard {
   }
 
   /**
-   * 잠금 전 빠른 차단. 게이트 ON/미해석이면 DB 없이 상품 쓰기를 건너뛴다.
+   * 잠금 전 빠른 차단. 운영 기본 잠금/미해석이면 DB 없이 상품 쓰기를 건너뛴다.
    * 스키마·공급원은 TX 안에서 다시 확인한다.
    */
   preflightProductWrites(
     env: NodeJS.ProcessEnv = process.env,
   ): { skipAll: boolean; reason: string } {
-    const gate = this.readGate(env);
-    if (!gate.ok) return { skipAll: true, reason: gate.reason };
-    if (gate.engaged) return { skipAll: true, reason: core.REASON.GATE_ON };
+    const lock = core.readSourceLockFromEnv(env);
+    if (!lock.ok) return { skipAll: true, reason: lock.reason };
+    if (lock.engaged) return { skipAll: true, reason: core.REASON.SOURCE_DISABLED };
     return { skipAll: false, reason: core.REASON.ALLOW_LEGACY };
   }
 
@@ -186,10 +195,15 @@ export class CatalogExternalWriteGuard {
         schemaReady: false,
       };
     }
-    if (!gate.ok || gate.engaged) {
+    const lock = core.readSourceLockFromEnv(env);
+    if (!gate.ok || !lock.ok || lock.engaged) {
       return {
         allow: false,
-        reason: gate.ok ? core.REASON.GATE_ON : gate.reason,
+        reason: !gate.ok
+          ? gate.reason
+          : !lock.ok
+            ? lock.reason
+            : core.REASON.SOURCE_DISABLED,
         schemaReady: false,
       };
     }
@@ -201,6 +215,8 @@ export class CatalogExternalWriteGuard {
         gate,
         schemaReady: schema.ready,
         schemaError: schema.error,
+        sourceLock: lock,
+        env,
       });
       return { ...decided, schemaReady: schema.ready };
     } catch (err) {

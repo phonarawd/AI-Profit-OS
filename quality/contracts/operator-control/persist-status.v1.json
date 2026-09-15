@@ -7,7 +7,7 @@
   "workflowRunId": "34906126441",
   "workflowRunUrl": "https://github.com/phonarawd/AI-Profit-OS/actions/runs/34906126441",
   "measuredAt": "2026-09-14T22:53:13Z",
-  "note": "실PG 통합 PASS ≠ 정식 QA0–QA9 ≠ 운영 DB 적용 ≠ 출시. mock PASS 와 실PG PASS 를 섞지 말 것. QA 정산 표 PASS를 실원장 PASS로 승격하지 말 것.",
+  "note": "실PG 통합 PASS ≠ 정식 QA0–QA9 ≠ 운영 DB 적용 ≠ 출시. mock PASS 와 실PG PASS 를 섞지 말 것. QA 정산 표 PASS를 실원장 PASS로 승격하지 말 것. 2026-09-16: 공식 SQL은 supabase/migrations 에 있음. 라이브 apply_migration 은 Cursor hook 차단. schemaApplied/opsDb 거짓 유지.",
   "schemaApplied": false,
   "opsDb": false,
   "officialQa0to9": false,

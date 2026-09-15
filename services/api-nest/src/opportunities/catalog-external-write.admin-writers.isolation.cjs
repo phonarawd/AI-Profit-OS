@@ -12,11 +12,20 @@ const { InProcessEventBus } = require("../events/in-process.bus.ts");
 const cli = require("../../../../tooling/seed/catalog-runtime.cjs");
 
 const GATE_ENV = "CATALOG_EXTERNAL_WRITE_GATE";
-const prevGate = process.env[GATE_ENV];
+const LOCK_KEYS = [
+  "CATALOG_EXTERNAL_WRITE_GATE",
+  "PRODUCTION_SOURCE_MODE",
+  "ALLOW_EXTERNAL_PRODUCT_INGEST",
+  "ALLOW_LEGACY_EXTERNAL_WRITES",
+];
+const prevLock = Object.fromEntries(LOCK_KEYS.map((k) => [k, process.env[k]]));
+const writeCore = require("../../catalog-external-write.core.cjs");
 
 function restoreGate() {
-  if (prevGate == null) delete process.env[GATE_ENV];
-  else process.env[GATE_ENV] = prevGate;
+  for (const k of LOCK_KEYS) {
+    if (prevLock[k] == null) delete process.env[k];
+    else process.env[k] = prevLock[k];
+  }
 }
 
 class FakeAdminDb {
@@ -125,7 +134,7 @@ function makeAdmin(db) {
 
 async function main() {
   try {
-    process.env[GATE_ENV] = "off";
+    writeCore.applyUnlockLegacyWrites(process.env);
     const opDb = new FakeAdminDb({
       supplyByAsset: { "watch-op-1": "operator", "watch-leg-1": "legacy_external" },
       assets: {
@@ -210,7 +219,7 @@ async function main() {
     assert.equal(opDb.writes.some((w) => w.kind === "override"), false);
     console.log("PASS admin upsert/image/patchPricing block operator");
 
-    process.env[GATE_ENV] = "on";
+    writeCore.applyProductionSourceLock(process.env);
     const gateDb = new FakeAdminDb({
       supplyByAsset: { "watch-leg-1": "legacy_external" },
       assets: { "watch-leg-1": { image_url: "https://i.ebayimg.com/old.jpg" } },
@@ -224,10 +233,10 @@ async function main() {
       imageSource: "admin_r2",
     });
     assert.equal(gateUp.wrote, false);
-    assert.equal(gateUp.reason, "GATE_ON");
-    console.log("PASS admin upsert blocked when gate ON");
+    assert.equal(gateUp.reason, "SOURCE_DISABLED");
+    console.log("PASS admin upsert blocked when source lock engaged");
 
-    process.env[GATE_ENV] = "off";
+    writeCore.applyUnlockLegacyWrites(process.env);
     const missingDb = new FakeAdminDb({ schemaMode: "missing" });
     const missingAdmin = makeAdmin(missingDb);
     const missingUp = await missingAdmin.upsertAsset({

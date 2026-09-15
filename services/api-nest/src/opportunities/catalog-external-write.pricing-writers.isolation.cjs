@@ -14,11 +14,20 @@ const { PriceOverrideService } = require("../price-override/price-override.servi
 const { InProcessEventBus } = require("../events/in-process.bus.ts");
 
 const GATE_ENV = "CATALOG_EXTERNAL_WRITE_GATE";
-const prevGate = process.env[GATE_ENV];
+const LOCK_KEYS = [
+  "CATALOG_EXTERNAL_WRITE_GATE",
+  "PRODUCTION_SOURCE_MODE",
+  "ALLOW_EXTERNAL_PRODUCT_INGEST",
+  "ALLOW_LEGACY_EXTERNAL_WRITES",
+];
+const prevLock = Object.fromEntries(LOCK_KEYS.map((k) => [k, process.env[k]]));
+const writeCore = require("../../catalog-external-write.core.cjs");
 
 function restoreGate() {
-  if (prevGate == null) delete process.env[GATE_ENV];
-  else process.env[GATE_ENV] = prevGate;
+  for (const k of LOCK_KEYS) {
+    if (prevLock[k] == null) delete process.env[k];
+    else process.env[k] = prevLock[k];
+  }
 }
 
 class FakePricingDb {
@@ -161,7 +170,7 @@ async function expectBlocked(fn) {
 
 async function main() {
   try {
-    process.env[GATE_ENV] = "off";
+    writeCore.applyUnlockLegacyWrites(process.env);
 
     const opDb = operatorDb();
     const op = makeServices(opDb);
@@ -210,7 +219,20 @@ async function main() {
     assert.equal(legDb.writes.filter((w) => w.kind === "override").length, 1);
     console.log("PASS 2-arg persistComputedPricing and persistOverride write legacy");
 
-    process.env[GATE_ENV] = "off";
+    writeCore.applyProductionSourceLock(process.env);
+    const lockedDb = legacyDb();
+    const locked = makeServices(lockedDb);
+    const lockedPrice = await expectBlocked(() =>
+      locked.reprice.persistComputedPricing(locked.client, {
+        ...pricingInput,
+        id: "opp-leg-1",
+      }),
+    );
+    assert.equal(lockedPrice, "SOURCE_DISABLED");
+    assert.equal(lockedDb.writes.length, 0);
+    console.log("PASS env lock blocks legacy pricing writes");
+
+    writeCore.applyUnlockLegacyWrites(process.env);
     const missingDb = new FakePricingDb({
       schemaMode: "missing",
       supplyByAsset: { "watch-leg-1": "legacy_external" },

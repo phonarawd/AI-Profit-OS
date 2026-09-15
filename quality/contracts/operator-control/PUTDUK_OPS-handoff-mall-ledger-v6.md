@@ -57,8 +57,14 @@
 - 동시 두 요청 applied=1 · HTTP 유실 재시도 replay · Nest 재기동 재시도 journal count=1.
 - practice 경로 금지.
 
+## 유저 경로 (PUTDUK_WEB 호출)
+- `GET /api/v1/opportunities` · `GET /api/v1/opportunities/:id` · `POST /api/v1/opportunities/:id/preflight` · `POST /api/v1/opportunities/:id/participate`
+- 홈 피드는 같은 `listFeed`. `supply_source=operator` + visibility. `legacy_external` 숨김.
+- 이 워크스페이스는 AI-Profit-OS 만. 웹/어드민 레포 파일은 가져오지 않는다.
+
 ## 미구현 · BLOCKED
-- 운영 DB migration / 운영 `DATABASE_URL` / 운영 배포 / main 병합 / 출시
+- 출시 완료 / putduk-web 라이브 / main 병합 / 이 레포 Cloudflare production 재배포
+- 운영 mall persist 경로(코드)는 열림. ops DDL 파일은 `supabase/migrations/20260916033000_*` · `20260916033100_*`. 웹/어드민 UI 수신은 각 레포에서 위 API를 호출한다.
 - 정식 QA0–QA9 · ISSUED · 새 Human/PO ACK (아래 문구만 보고, AI가 ACK를 만들지 않음)
 - 풀 재원 보충 규칙(누가 얼마를 넣는가) 미확정 → 추측 지급/충전 금지. 현재 posting은 시스템 계정 음수를 기존과 같이 허용할 뿐 운영 재원 정책이 아님.
 - 진행 중 참여의 비공개 전환 취소 규칙 미확정
