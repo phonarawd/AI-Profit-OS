@@ -18,7 +18,7 @@ REMOTE_RAW_APPLIED = 59
 COMMITTED_UNAPPLIED = 0
 TRACK_A_FILE_RESTORE = 3
 REL_408_BASELINE = 1
-REL_502_ISSUED = 1
+REL_502_ISSUED = 0
 REL_701_DB_EXECUTED = 1
 ```
 
@@ -49,7 +49,7 @@ REL_701_DB_EXECUTED = 1
 - `committedUnapplied` 0. 2026-09-16 운영자 「적용해」 MCP `apply_migration` 이 mall/supply_source SQL을 적용. 같은 날 Human/PO 「너가 백엔드에서 해야될거 다해」 MCP `apply_migration` 이 admin_staff SQL을 적용. 원격 스탬프 `20260915191718`/`20260915191740`/`20260915220821` 은 apply-time alias. REL-701-DB 12건은 versions[] 유지. REL-504 자체 apply = 0.
 - Track A (REL-003) file restore 3: `20260819210000` · `20260819220000` · `20260820013000` + `opportunity-reprice.service.ts` 존재
 - REL-408 `SECURITY_BASELINE.md` · `REL-408-SECURITY-BASELINE.md` COMPLETED · APPLY_MIGRATION = 0
-- REL-502 `FINAL_ACCEPTANCE.md` STATUS = ISSUED · REBASE_REQUIRED = 0 · REBASE_APPLIED = 1 · ACK_RECEIVED = 1 · current epoch `ea-baseline-009750f0bef8-60f2feeec9d3`
+- REL-502 `FINAL_ACCEPTANCE.md` STATUS = NOT_ISSUED · REBASE_REQUIRED = 1 · REBASE_APPLIED = 1 · ACK_RECEIVED = 0 · current epoch `ea-baseline-12661a80e426-ad6275b2133b`
 
 ## VERIFY
 
