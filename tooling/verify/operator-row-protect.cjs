@@ -42,6 +42,8 @@ const required = [
   "services/api-nest/src/opportunities/opportunities.user.service.ts",
   "services/api-nest/src/opportunities/participate.service.ts",
   "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
+  "services/api-nest/src/opportunities/participate-amount.cjs",
+  "services/api-nest/src/opportunities/operator-mall-user-feed.runtime.cjs",
 ];
 for (const f of required) {
   if (!fs.existsSync(path.join(root, f))) fails.push("missing: " + f);

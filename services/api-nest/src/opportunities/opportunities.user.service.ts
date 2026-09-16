@@ -21,7 +21,6 @@ import { PostgresService } from "../db/postgres";
 import { buildBalanceAwareFeedWithOverrides } from "./balance-aware-feed";
 import {
   assetIconForCategory,
-  isV1FeedArbitrageType,
   projectCapitalProviderUserSurface,
   V1_FEED_ARBITRAGE_TYPES,
   withTimeSensitiveTag,
@@ -270,26 +269,20 @@ export class OpportunitiesUserService {
               sell_success_rate::text, sell_success_window_days,
               sell_success_as_of, risk_score, supply_source, visibility
          FROM public.opportunities
-        WHERE status = 'available'
-          AND execution_mode = 'orchestrate'
-          AND supply_source = 'operator'
+        WHERE supply_source = 'operator'
           AND COALESCE(visibility, 'all_public') <> 'private'
           AND (
             COALESCE(visibility, 'all_public') = 'all_public'
             OR (
               visibility = 'selected_members'
-              AND $2::uuid = ANY(selected_member_ids)
+              AND $1::uuid = ANY(selected_member_ids)
             )
           )
-          AND COALESCE((pricing->>'compareReady')::boolean, false) = true
-          AND arbitrage_type = ANY($1::text[])
-          AND NULLIF(BTRIM(arbitrage_type_ko), '') IS NOT NULL
-          AND NULLIF(BTRIM(asset_image_url), '') IS NOT NULL
         ORDER BY updated_at DESC
         LIMIT 200`,
-      [[...V1_FEED_ARBITRAGE_TYPES], userId],
+      [userId],
     );
-    return rows.filter((r) => isV1FeedArbitrageType(r.arbitrage_type));
+    return rows;
     } catch (e) {
       const code =
         e && typeof e === "object" && "code" in e

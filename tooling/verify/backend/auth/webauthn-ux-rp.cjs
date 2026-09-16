@@ -66,6 +66,12 @@ if (!corsSrc.includes("env.appHost") || !corsSrc.includes("enableCors")) {
 if (!corsSrc.includes("https://hiptk.app")) {
   fails.push("Nest CORS must allow apex https://hiptk.app");
 }
+if (!corsSrc.includes("https://www.hiptk.app")) {
+  fails.push("Nest CORS must allow https://www.hiptk.app");
+}
+if (!corsSrc.includes("https://app.hiptk.app")) {
+  fails.push("Nest CORS must allow https://app.hiptk.app");
+}
 
 const contract = JSON.parse(read("governance/pwa/webauthn-rp.v1.json"));
 if (contract.rpId !== manifest.rootDomain) {

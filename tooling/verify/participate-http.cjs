@@ -101,6 +101,8 @@ for (const needle of [
   "idempotency",
   "participate_lock",
   "priceSoftAccept",
+  "resolveParticipateAmountUsdt",
+  "zeroCapital",
 ]) {
   if (!svc.includes(needle)) {
     fails.push(`participate.service missing: ${needle}`);
@@ -249,6 +251,10 @@ if (fails.length) {
   console.error("[verify:participate-http] FAIL\n- " + fails.join("\n- "));
   process.exit(1);
 }
+require(path.join(
+  root,
+  "services/api-nest/src/opportunities/operator-mall-user-feed.runtime.cjs",
+));
 console.log(
   "[verify:participate-http] PASS (POST participate · P0b~P5 · idempotency · JWT-only · KYC0 · HTTP0)",
 );

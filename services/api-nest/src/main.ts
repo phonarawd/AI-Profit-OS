@@ -29,6 +29,8 @@ async function bootstrap() {
   }
   // Founder ACK 2026-09-13: apex user-web. Landing putduk.com never allowed.
   origins.add("https://hiptk.app");
+  origins.add("https://www.hiptk.app");
+  origins.add("https://app.hiptk.app");
   for (const o of [...origins]) {
     if (/(^|[/.])putduk\.com$/i.test(o.replace(/^https?:\/\//, ""))) {
       origins.delete(o);

@@ -22,12 +22,7 @@ import { CLOCK, type Clock } from "../common/clock";
 import { InProcessEventBus } from "../events/in-process.bus";
 import { ExecutionPolicyAdminService } from "../execution-policy/execution-policy.admin.service";
 import { LedgerBucketsService } from "../ledger/ledger.buckets.service";
-import {
-  assertAmountUsdt,
-  cmpAmount,
-  formatAmount,
-  parseAmount,
-} from "../ledger/ledger.money";
+import { cmpAmount, formatAmount, parseAmount } from "../ledger/ledger.money";
 import {
   assertFingerprintMatch,
   fingerprintPayload,
@@ -94,6 +89,14 @@ const moneyAuthorityCore = req(
     payoutAuthoritative: boolean;
     clientComputedNotAuthority: true;
   };
+};
+const participateAmount = req(
+  join(__dirname, "participate-amount.cjs"),
+) as {
+  resolveParticipateAmountUsdt: (input: {
+    amountUsdt?: string | null;
+    requiredCapitalUsdt?: string | null;
+  }) => { amountUsdt: string; requiredCapitalUsdt: string };
 };
 const persistCore = req(
   join(__dirname, "..", "membership", "operator-control.persist.cjs"),
@@ -320,29 +323,32 @@ export class ParticipateService {
       buckets = await this.buckets.getUserBuckets(userId);
     } catch (e) {
       if (e instanceof NotFoundException) {
-        throw new ForbiddenException({
-          code: "INSUFFICIENT_PRINCIPAL",
-          toastCode: "INSUFFICIENT_PRINCIPAL",
-          statusCode: 403,
-        });
+        buckets = { principalUsdt: "0" };
+      } else {
+        throw e;
       }
-      throw e;
     }
 
     let amountUsdt: string;
     try {
-      amountUsdt = assertAmountUsdt(validated.amountUsdt, "amountUsdt");
-    } catch {
-      throw new BadRequestException("amountUsdt must be decimal string > 0");
-    }
-    const required = formatAmount(parseAmount(opp.required_capital_usdt));
-    if (cmpAmount(amountUsdt, required) !== 0) {
-      throw new BadRequestException({
-        code: "VALIDATION_ERROR",
-        toastCode: "VALIDATION_ERROR",
-        message: "amountUsdt must equal requiredCapitalUsdt",
-        statusCode: 400,
-      });
+      amountUsdt = participateAmount.resolveParticipateAmountUsdt({
+        amountUsdt: validated.amountUsdt,
+        requiredCapitalUsdt: opp.required_capital_usdt,
+      }).amountUsdt;
+    } catch (e) {
+      const code =
+        e && typeof e === "object" && "code" in e
+          ? String((e as { code?: string }).code)
+          : "";
+      if (code === "AMOUNT_MISMATCH") {
+        throw new BadRequestException({
+          code: "VALIDATION_ERROR",
+          toastCode: "VALIDATION_ERROR",
+          message: "amountUsdt must equal requiredCapitalUsdt",
+          statusCode: 400,
+        });
+      }
+      throw new BadRequestException("amountUsdt must be decimal string >= 0");
     }
     if (cmpAmount(amountUsdt, buckets.principalUsdt) > 0) {
       throw new ForbiddenException({
@@ -351,7 +357,10 @@ export class ParticipateService {
         statusCode: 403,
       });
     }
-    if (cmpAmount(buckets.principalUsdt, "0") <= 0) {
+    if (
+      cmpAmount(amountUsdt, "0") > 0 &&
+      cmpAmount(buckets.principalUsdt, "0") <= 0
+    ) {
       throw new ForbiddenException({
         code: "INSUFFICIENT_BALANCE",
         toastCode: "INSUFFICIENT_BALANCE",
@@ -484,7 +493,7 @@ export class ParticipateService {
     const opportunityId = String(body.opportunityId ?? "").trim();
     const pricingVersion = Number(body.pricingVersion);
     const minProfitUsdt = String(body.minProfitUsdt ?? "");
-    const amountUsdt = String(body.amountUsdt ?? "");
+    const amountUsdt = String(body.amountUsdt ?? "").trim();
     const idempotencyKey = String(body.idempotencyKey ?? "");
     const preflightToken = String(body.preflightToken ?? "").trim();
 
@@ -500,7 +509,7 @@ export class ParticipateService {
     if (!/^-?[0-9]+(\.[0-9]+)?$/.test(minProfitUsdt)) {
       throw new BadRequestException("minProfitUsdt must be decimal string");
     }
-    if (!/^-?[0-9]+(\.[0-9]+)?$/.test(amountUsdt)) {
+    if (amountUsdt !== "" && !/^-?[0-9]+(\.[0-9]+)?$/.test(amountUsdt)) {
       throw new BadRequestException("amountUsdt must be decimal string");
     }
     if (idempotencyKey.length < 8) {
@@ -889,28 +898,31 @@ export class ParticipateService {
     };
     configuredPayoutUsdt?: string | null;
   }): Promise<ParticipateResult> {
-    // Lock capital principal → locked (§49) before trade rows
-    const lockJournal = await this.posting.postJournal({
-      idempotencyKey: `participate_lock:${input.idempotencyKey}`,
-      journalType: "participate_lock",
-      referenceType: "participate_request",
-      referenceId: input.idempotencyKey,
-      memo: "participate principal→locked",
-      fxSnapshotId: input.asset.fxSnapshotId,
-      createdBy: input.userId,
-      lines: [
-        {
-          account: { userId: input.userId, bucket: "principal" },
-          direction: "debit",
-          amountUsdt: input.amountUsdt,
-        },
-        {
-          account: { userId: input.userId, bucket: "locked" },
-          direction: "credit",
-          amountUsdt: input.amountUsdt,
-        },
-      ],
-    });
+    // 필요자본 0이면 0원 분개 금지(원장 >0 규칙 유지 · 지급액 창작 금지)
+    const zeroCapital = cmpAmount(input.amountUsdt, "0") === 0;
+    const lockJournal = zeroCapital
+      ? { id: null as string | null, reused: false }
+      : await this.posting.postJournal({
+          idempotencyKey: `participate_lock:${input.idempotencyKey}`,
+          journalType: "participate_lock",
+          referenceType: "participate_request",
+          referenceId: input.idempotencyKey,
+          memo: "participate principal→locked",
+          fxSnapshotId: input.asset.fxSnapshotId,
+          createdBy: input.userId,
+          lines: [
+            {
+              account: { userId: input.userId, bucket: "principal" },
+              direction: "debit",
+              amountUsdt: input.amountUsdt,
+            },
+            {
+              account: { userId: input.userId, bucket: "locked" },
+              direction: "credit",
+              amountUsdt: input.amountUsdt,
+            },
+          ],
+        });
 
     const created = await this.db.withTransaction(async (client) => {
       const capturedAt = new Date().toISOString();
@@ -934,7 +946,7 @@ export class ParticipateService {
             label: input.asset.label,
             category: input.asset.category,
             priceSoftAccept: input.priceSoftAccept,
-            lockJournalId: lockJournal.id,
+            ...(lockJournal.id ? { lockJournalId: lockJournal.id } : {}),
             ...(input.configuredPayoutUsdt
               ? { configuredPayoutUsdt: input.configuredPayoutUsdt }
               : {}),
