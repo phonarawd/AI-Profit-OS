@@ -18,6 +18,8 @@ function spec(extra) {
       photos: ["https://cdn.example/p.jpg"],
       compositionQty: 2,
       payoutAmount: "12.5",
+      requiredCapitalUsdt: "10",
+      expectedProfitKrwApprox: "14000",
       currency: "USDT",
       visibility: core.VISIBILITY.ALL_PUBLIC,
       priceConfirmationMemo: "확인: 12.5 USDT",
@@ -141,7 +143,39 @@ async function main() {
     assert.equal(again.visibility, "all_public");
     assert.equal(again.priceConfirmationMemo, "확인: 12.5 USDT");
     assert.equal(again.payoutAmount, "12.5");
-    assert.ok(db.state.opportunities.get(created.product.id));
+    assert.equal(again.requiredCapitalUsdt, "10");
+    assert.equal(again.expectedProfitKrwApprox, "14000");
+    const stamped = db.state.opportunities.get(created.product.id);
+    assert.ok(stamped);
+    assert.equal(stamped.configured_payout_usdt, "12.5");
+    assert.equal(stamped.expected_profit_usdt, "12.5");
+    assert.equal(stamped.required_capital_usdt, "10");
+    assert.equal(stamped.expected_profit_krw_approx, "14000");
+    const persistSrc = require("node:fs").readFileSync(
+      require("node:path").join(__dirname, "operator-mall-product.persist.cjs"),
+      "utf8",
+    );
+    const coreSrc = require("node:fs").readFileSync(
+      require("node:path").join(__dirname, "operator-mall-product.core.cjs"),
+      "utf8",
+    );
+    assert.equal(persistSrc.includes("approxKrw"), false);
+    assert.equal(persistSrc.includes("current-fx"), false);
+    assert.equal(coreSrc.includes("approxKrw"), false);
+    assert.equal(coreSrc.includes("current-fx"), false);
+
+    const noKrw = await core.registerProduct(
+      spec({
+        idempotencyKey: "persist-no-krw",
+        expectedProfitKrwApprox: undefined,
+      }),
+      { store: store1 },
+    );
+    assert.equal(noKrw.ok, true);
+    assert.equal(noKrw.product.expectedProfitKrwApprox, null);
+    const stampedNull = db.state.opportunities.get(noKrw.product.id);
+    assert.equal(stampedNull.expected_profit_krw_approx, null);
+    assert.equal(stampedNull.required_capital_usdt, "10");
   }, fails);
 
   await check("selected_c_after_persist", async () => {
@@ -266,8 +300,12 @@ async function main() {
   await check("official_sql_in_supabase_migrations", async () => {
     assert.equal(persist.draftSqlPath().includes("quality/migrations-draft"), true);
     const official = persist.officialSqlPaths();
-    assert.equal(official.length, 2);
+    assert.equal(official.length, 3);
     assert.equal(official.every((p) => p.startsWith("supabase/migrations/")), true);
+    assert.equal(
+      official.some((p) => p.endsWith("20260916120000_operator_mall_product_simple_amounts.sql")),
+      true,
+    );
   }, fails);
 
   await check("ops_persist_allowed_isolated_still_denied", async () => {

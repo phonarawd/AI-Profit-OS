@@ -115,6 +115,7 @@ const DRAFTS = [
   "quality/migrations-draft/20260913220000_opportunities_supply_source.sql",
   "quality/migrations-draft/20260915070000_operator_mall_product.sql",
   "quality/migrations-draft/20260915080000_admin_staff_credentials.sql",
+  "quality/migrations-draft/20260916120000_operator_mall_product_simple_amounts.sql",
 ];
 
 function fail(msg) {
@@ -470,6 +471,8 @@ async function stepProductHttp() {
         name: "gha-card",
         compositionQty: 2,
         payoutAmount: "12.5",
+        requiredCapitalUsdt: "10",
+        expectedProfitKrwApprox: "14000",
         currency: "USDT",
         visibility: "all_public",
         priceConfirmationMemo: "gha memo",
@@ -528,6 +531,7 @@ async function stepProductHttp() {
         name: "should-not-create",
         compositionQty: 2,
         payoutAmount: "99",
+        requiredCapitalUsdt: "20",
         currency: "USDT",
         visibility: "all_public",
         idempotencyKey: "gha-prod-1",
@@ -570,6 +574,7 @@ async function stepConcurrent() {
           name: "conc",
           compositionQty: 1,
           payoutAmount: "3",
+          requiredCapitalUsdt: "8",
           currency: "USDT",
           visibility: "all_public",
           idempotencyKey: "gha-conc",
@@ -630,6 +635,7 @@ async function stepSelected() {
           name: "sel",
           compositionQty: 1,
           payoutAmount: "2",
+          requiredCapitalUsdt: "5",
           currency: "USDT",
           visibility: mall.VISIBILITY.SELECTED_MEMBERS,
           selectedMemberIds: [A, B],
@@ -761,6 +767,7 @@ async function stepLedger() {
           name: "pay",
           compositionQty: 1,
           payoutAmount: "4.25",
+          requiredCapitalUsdt: "6",
           currency: "USDT",
           visibility: "all_public",
           idempotencyKey: "gha-pay",

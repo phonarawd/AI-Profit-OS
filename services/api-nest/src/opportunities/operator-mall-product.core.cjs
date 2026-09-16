@@ -115,6 +115,26 @@ function assertPayoutAmount(raw, field) {
   return formatAmount(n);
 }
 
+/**
+ * 운영자 표시 원화. 생략/빈값 → NULL. 0은 명시한 값만 저장. FX 환산 없음.
+ */
+function assertExpectedProfitKrwApprox(raw) {
+  if (raw == null || raw === "") return null;
+  const text = typeof raw === "number" && Number.isFinite(raw) ? String(raw) : raw;
+  if (typeof text !== "string" || !isDecimalAmount(text)) {
+    const err = new Error("expectedProfitKrwApprox must be decimal");
+    err.code = "INVALID_AMOUNT";
+    throw err;
+  }
+  const n = parseAmount(text);
+  if (n < 0n) {
+    const err = new Error("expectedProfitKrwApprox must be >= 0");
+    err.code = "INVALID_AMOUNT";
+    throw err;
+  }
+  return formatAmount(n);
+}
+
 function assertUuid(raw, field) {
   const s = String(raw || "").trim().toLowerCase();
   if (!UUID_RE.test(s)) {
@@ -250,6 +270,13 @@ function validateProductFields(input) {
     : [];
   const compositionQty = assertCompositionQty(input && input.compositionQty);
   const payoutAmount = assertPayoutAmount(input && input.payoutAmount, "payoutAmount");
+  const requiredCapitalUsdt = assertPayoutAmount(
+    input && input.requiredCapitalUsdt,
+    "requiredCapitalUsdt",
+  );
+  const expectedProfitKrwApprox = assertExpectedProfitKrwApprox(
+    input && input.expectedProfitKrwApprox,
+  );
   const currency = String((input && input.currency) || CURRENCY_USDT);
   if (currency !== CURRENCY_USDT) {
     const err = new Error("currency must be USDT");
@@ -275,6 +302,8 @@ function validateProductFields(input) {
     photos,
     compositionQty,
     payoutAmount,
+    requiredCapitalUsdt,
+    expectedProfitKrwApprox,
     currency,
     visibility,
     selectedMemberIds,
@@ -406,6 +435,16 @@ async function updateProduct(productId, input, deps) {
       compositionQty:
         input.compositionQty != null ? input.compositionQty : current.compositionQty,
       payoutAmount: input.payoutAmount != null ? input.payoutAmount : current.payoutAmount,
+      requiredCapitalUsdt:
+        input.requiredCapitalUsdt != null
+          ? input.requiredCapitalUsdt
+          : current.requiredCapitalUsdt,
+      expectedProfitKrwApprox: Object.prototype.hasOwnProperty.call(
+        input,
+        "expectedProfitKrwApprox",
+      )
+        ? input.expectedProfitKrwApprox
+        : current.expectedProfitKrwApprox,
       currency: input.currency != null ? input.currency : current.currency,
       visibility: input.visibility != null ? input.visibility : current.visibility,
       selectedMemberIds:
@@ -463,6 +502,9 @@ function projectAdminProduct(product) {
     photos: Array.isArray(product.photos) ? product.photos.slice() : [],
     compositionQty: product.compositionQty,
     payoutAmount: product.payoutAmount,
+    requiredCapitalUsdt: product.requiredCapitalUsdt,
+    expectedProfitKrwApprox:
+      product.expectedProfitKrwApprox == null ? null : product.expectedProfitKrwApprox,
     currency: product.currency,
     visibility: product.visibility,
     selectedMemberIds: Array.isArray(product.selectedMemberIds)
@@ -948,6 +990,7 @@ module.exports = {
   parseAmount,
   formatAmount,
   assertPayoutAmount,
+  assertExpectedProfitKrwApprox,
   assertPriceConfirmationMemo,
   canSeeProduct,
   countMemberInFlight,

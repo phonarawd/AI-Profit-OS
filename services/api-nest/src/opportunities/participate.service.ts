@@ -348,7 +348,15 @@ export class ParticipateService {
           statusCode: 400,
         });
       }
-      throw new BadRequestException("amountUsdt must be decimal string >= 0");
+      throw new BadRequestException({
+        code: "INVALID_AMOUNT",
+        toastCode: "VALIDATION_ERROR",
+        message:
+          e instanceof Error
+            ? e.message
+            : "requiredCapitalUsdt must be decimal string > 0",
+        statusCode: 400,
+      });
     }
     if (cmpAmount(amountUsdt, buckets.principalUsdt) > 0) {
       throw new ForbiddenException({
