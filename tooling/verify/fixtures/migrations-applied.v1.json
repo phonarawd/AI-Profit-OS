@@ -1,8 +1,8 @@
 {
   "projectRef": "mgsytcetsiecllmhcyox",
   "asOf": "2026-09-16",
-  "source": "Supabase MCP execute_sql + list_migrations on mgsytcetsiecllmhcyox: 2026-09-04 REL-701-DB snapshot plus 2026-09-13 20260905110000 already remote, plus 2026-09-16 operator-authorized MCP apply_migration for mall/supply_source (remote stamps 20260915191718/20260915191740 mapped to local 20260916033000/20260916033100), plus 2026-09-16 Human/PO ACK apply_migration for admin_staff (remote stamp 20260915220821 mapped to local 20260916080000), plus 2026-09-16 Human/PO 「진행하자」 apply_migration for mall SIMPLE amounts (remote stamp 20260916105643 mapped to local 20260916120000). Later remote-only versions remain outside this repo source and are not added to this snapshot.",
-  "remoteRawAppliedCount": 60,
+  "source": "Supabase MCP execute_sql + list_migrations on mgsytcetsiecllmhcyox: 2026-09-04 REL-701-DB snapshot plus 2026-09-13 20260905110000 already remote, plus 2026-09-16 operator-authorized MCP apply_migration for mall/supply_source (remote stamps 20260915191718/20260915191740 mapped to local 20260916033000/20260916033100), plus 2026-09-16 Human/PO ACK apply_migration for admin_staff (remote stamp 20260915220821 mapped to local 20260916080000), plus 2026-09-16 Human/PO 「진행하자」 apply_migration for mall SIMPLE amounts (remote stamp 20260916105643 mapped to local 20260916120000), plus 2026-09-16 Human/PO 「전부다해라」/resume apply_migration for cms_posts (remote stamp 20260916142723 mapped to local 20260916220000). Later remote-only versions remain outside this repo source and are not added to this snapshot.",
+  "remoteRawAppliedCount": 61,
   "remoteHistoricalMappings": [
     {
       "remoteVersion": "20260810212231",
@@ -66,9 +66,16 @@
       "name": "operator_mall_product_simple_amounts",
       "kind": "apply-time-version-alias",
       "rawCountDelta": 0
+    },
+    {
+      "remoteVersion": "20260916142723",
+      "localVersion": "20260916220000",
+      "name": "cms_posts",
+      "kind": "apply-time-version-alias",
+      "rawCountDelta": 0
     }
   ],
-  "note": "versions[] = canonical local version prefixes corresponding to remote-applied schema truth. committedUnapplied[] = repo-only migrations awaiting their authorized production apply. remoteRawAppliedCount is the fixture snapshot for repo-owned files (59 canonical + 1 historical delta = 60), not a live census of later remote-only versions. remoteHistoricalMappings records apply-time aliases (never renamed · never reapplied · never repaired). 2026-09-04 REL-701-DB applied 12 versions via db push. 2026-09-13: 20260905110000 already remote. 2026-09-16: operator 「적용해」 MCP apply_migration applied mall/supply_source SQL; MCP stamped 20260915191718/20260915191740; local file versions stay 20260916033000/20260916033100. Same day Human/PO 「너가 백엔드에서 해야될거 다해」 MCP apply_migration applied admin_staff SQL; MCP stamped 20260915220821; local file version stays 20260916080000. Same day Human/PO 「진행하자」 MCP apply_migration applied mall SIMPLE amount columns; MCP stamped 20260916105643; local file version stays 20260916120000. Evidence = rel701db + mallSupplySourceApply + adminStaffApply + mallSimpleAmountsApply.",
+  "note": "versions[] = canonical local version prefixes corresponding to remote-applied schema truth. committedUnapplied[] = repo-only migrations awaiting their authorized production apply. remoteRawAppliedCount is the fixture snapshot for repo-owned files (60 canonical + 1 historical delta = 61), not a live census of later remote-only versions. remoteHistoricalMappings records apply-time aliases (never renamed · never reapplied · never repaired). 2026-09-04 REL-701-DB applied 12 versions via db push. 2026-09-13: 20260905110000 already remote. 2026-09-16: operator 「적용해」 MCP apply_migration applied mall/supply_source SQL; MCP stamped 20260915191718/20260915191740; local file versions stay 20260916033000/20260916033100. Same day Human/PO 「너가 백엔드에서 해야될거 다해」 MCP apply_migration applied admin_staff SQL; MCP stamped 20260915220821; local file version stays 20260916080000. Same day Human/PO 「진행하자」 MCP apply_migration applied mall SIMPLE amount columns; MCP stamped 20260916105643; local file version stays 20260916120000. Same day Human/PO 「전부다해라」/resume MCP apply_migration applied cms_posts; MCP stamped 20260916142723; local file version stays 20260916220000; seed 0. Evidence = rel701db + mallSupplySourceApply + adminStaffApply + mallSimpleAmountsApply + cmsPostsApply.",
   "rel701db": {
     "status": "APPLIED",
     "appliedAtUtc": "2026-09-04T02:33:15Z",
@@ -137,6 +144,18 @@
     "columns": ["required_capital_usdt", "expected_profit_krw_approx"],
     "fxConvert": 0
   },
+  "cmsPostsApply": {
+    "status": "APPLIED",
+    "appliedAtUtc": "2026-09-16T14:27:23Z",
+    "authorization": "Human/PO chat 「너가해야될거 전부다해라」 + resume 「중단된 시점부터 계속」 2026-09-16 KST · Night Guard founder-auth scope REL-701-DB (file removed after apply)",
+    "method": "Supabase MCP apply_migration on project_ref mgsytcetsiecllmhcyox only",
+    "localVersions": ["20260916220000"],
+    "remoteVersions": ["20260916142723"],
+    "seedRows": 0,
+    "tables": ["cms_posts"],
+    "kinds": ["notice", "event", "benefit", "banner", "notification"],
+    "fxConvert": 0
+  },
   "versions": [
     "20260808205842",
     "20260808205844",
@@ -196,9 +215,8 @@
     "20260916033000",
     "20260916033100",
     "20260916080000",
-    "20260916120000"
-  ],
-  "committedUnapplied": [
+    "20260916120000",
     "20260916220000"
-  ]
+  ],
+  "committedUnapplied": []
 }

@@ -23,7 +23,7 @@ PROJECT_REF = mgsytcetsiecllmhcyox
 ```
 
 REL-508 이 `POST /api/v1/me/current-fx/approx` Nest 배선을 열었다. SDK/Nest 충돌은 닫혔다.
-`services/api-nest` + `supabase/migrations` protected-scope 변경은 REL-502 formal rebase(`ea-baseline-7f9590aebc26-f8542af95c2c`)에 포함되었고 drift는 0이다.
+`services/api-nest` + `supabase/migrations` protected-scope 변경은 REL-502 formal rebase(`ea-baseline-d1479769a6ca-98e290e37fc6`)에 포함되었고 drift는 0이다.
 REL-502 current-epoch QA1~QA9는 아직 재실행 전이라 CERT_ISSUED=0 · STALE_PENDING_REBASE=1이다. predecessor 인증을 current로 세탁하지 않았다.
 
 ## 1. CLOSED CONFLICT
@@ -47,8 +47,8 @@ missing snapshot/amount → null. KRW 0 위조 0. client `Number()*rate` 0.
 | idempotency | SDK participate/withdraw keys | Nest participate + wallet withdraw | ALIGNED | money |
 | auth_permission | Nest `JwtAuthGuard` | `supabase.auth` 0 in api-nest | ALIGNED | REL-405 |
 | rls | REL-408 80/80 ON | `SECURITY_BASELINE.md` | ALIGNED | REL-408 |
-| indexes | applied migration `CREATE INDEX` | file-only indexes 0 | applied indexes remain; post-head `20260916220000` cms_posts is committedUnapplied (apply 0) | REL-408 / REL-701-DB |
-| migration_head | local `20260916220000` | remote applied `20260916120000` | PENDING committedUnapplied cms_posts (apply 0 · REL-504/REL-701-DB owner · 가짜 시드 0) | REL-701-DB |
+| indexes | applied migration `CREATE INDEX` | file-only indexes 0 | applied indexes remain; cms_posts indexes applied | REL-408 / REL-701-DB |
+| migration_head | local `20260916220000` | remote applied `20260916220000` | ALIGNED · MCP apply_migration cms_posts (seed 0 · REL-701-DB) | REL-701-DB |
 | p0_p3_engine | REL-502 `FINAL_ACCEPTANCE` | DEFECTS_P0/P1 = 0 | STALE_PENDING_RERUN | REL-502 |
 | p0_p3_admin | REL-409 R6 cert | KNOWN_P0~P3 = 0 | ALIGNED | REL-409 |
 | ui_truth_home_money | home-money-read contract | Engine todayPossible 0 · fake zero 0 | ALIGNED | money / UI |
