@@ -36,9 +36,15 @@ export class MembershipAdminController {
   listUsers(
     @Query("q") q: string,
     @Query("cursor") cursor: string,
+    @Query("limit") limit: string,
     @AdminOperator() operatorId: string,
   ) {
-    return this.membership.searchUsers({ q, cursor, operatorId });
+    return this.membership.searchUsers({ q, cursor, limit, operatorId });
+  }
+
+  @Get(MEMBERSHIP_ADMIN_ROUTES.userProfile)
+  getUser(@Param("id") id: string) {
+    return this.membership.getUserProfile(id);
   }
 
   @Get(MEMBERSHIP_ADMIN_ROUTES.membership)

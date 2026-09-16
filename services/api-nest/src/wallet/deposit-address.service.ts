@@ -37,6 +37,15 @@ export class DepositAddressService {
     private readonly killSwitch: KillSwitchService,
   ) {}
 
+  /** Admin 조회 only — 없으면 null. 발급하지 않는다. */
+  async getExisting(userId: string): Promise<UserDepositAddressV1 | null> {
+    if (!userId || userId.length < 1) {
+      throw new BadRequestException("userId required");
+    }
+    const existing = await this.fetch(userId);
+    return existing ? this.toV1(existing) : null;
+  }
+
   /** GET /wallet/my-deposit-address — auth · lazy-create */
   async getOrCreate(userId: string): Promise<UserDepositAddressV1> {
     if (!userId || userId.length < 1) {

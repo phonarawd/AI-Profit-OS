@@ -24,8 +24,12 @@ function projectPublicRow(row) {
     userId: row.userId,
     membership: row.membership || null,
     resellerId: row.resellerId || row.referralCode || null,
+    username: row.username || null,
+    status: row.status || null,
+    createdAt: row.createdAt || null,
     emailMasked: row.email ? maskPii(row.email) : null,
     phoneMasked: row.phone ? maskPii(row.phone) : null,
+    signupIp: row.signupIp || null,
   };
 }
 

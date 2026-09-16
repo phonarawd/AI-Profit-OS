@@ -87,6 +87,7 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
   },
   MembershipAdminController: {
     listUsers: read("users"),
+    getUser: read("users"),
     get: read("userMembershipForce"),
     force: write("userMembershipForce"),
     getMatchPolicy: read("userMatchPolicy"),
@@ -171,6 +172,17 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     growthGate: read("all"),
     getGrowthEnabled: read("growth"),
     putGrowthEnabled: write("growth"),
+  },
+  UserDepositAddressAdminController: {
+    get: read("users"),
+  },
+  CmsAdminController: {
+    list: read("content"),
+    get: read("content"),
+    create: write("content"),
+    patch: write("content"),
+    publish: write("content"),
+    end: write("content"),
   },
   DepositConfigAdminController: {
     get: read("wallet"),
