@@ -27,14 +27,47 @@ const REMOVED = [
   ".github/workflows/engine-rebase-approved-once.yml",
   ".github/workflows/engine-current-epoch-publish-once.yml",
 ];
-// RC re-seal 2026-09-16: current epoch (ENGINE_ACCEPTANCE_REBASE_V1 · ea-rebase-009750f0bef8-60f2feeec9d3 · QA0-QA9 ISSUED).
-// 하드코딩 = 잠금. 새 epoch 로의 re-seal 은 이 상수와 FINAL_ACCEPTANCE.md 를 함께 갱신해야 한다.
+// Last ISSUED RC seal (ENGINE_ACCEPTANCE_REBASE_V1 · ea-rebase-009750f0bef8-60f2feeec9d3 · QA0-QA9).
+// 하드코딩 = 그 ISSUED 봉인. 새 epoch re-seal 은 current-epoch QA 후 이 상수와 FINAL_ACCEPTANCE.md 를 함께 갱신한다.
+// Official rebase 직후 pending-rerun 은 이 봉인을 세탁하지 않고 STALE 로 둔다.
 const CURRENT_BASELINE = "ea-baseline-009750f0bef8-60f2feeec9d3";
 const APPLIED_FX = "tooling/verify/fixtures/migrations-applied.v1.json";
+
+function parseCert(text) {
+  const out = {};
+  for (const line of text.split(/\r?\n/)) {
+    const m = line.match(/^([A-Z][A-Z0-9_-]*) = (.+)$/);
+    if (m) out[m[1]] = m[2].trim();
+  }
+  return out;
+}
 
 const artRaw = read(ART);
 const doc = read(DOC);
 const cert = read(CERT);
+const certFields = parseCert(cert);
+const live = psm.compareProtectedScope();
+const qa = psm.currentEpochQaReady(root, live.baselineId);
+const issuedLock =
+  certFields.STATUS === "ISSUED" &&
+  certFields.CERT_ISSUED === "1" &&
+  certFields.REBASE_REQUIRED === "0" &&
+  certFields.ACK_RECEIVED === "1" &&
+  certFields.NEXT === "RC_FORMAL" &&
+  certFields.BASELINE_ID === CURRENT_BASELINE &&
+  live.baselineId === CURRENT_BASELINE &&
+  !live.drift &&
+  qa.ready;
+const pendingRerun =
+  certFields.STATUS === "NOT_ISSUED" &&
+  certFields.CERT_ISSUED === "0" &&
+  certFields.REBASE_REQUIRED === "1" &&
+  certFields.REBASE_APPLIED === "1" &&
+  certFields.ACK_RECEIVED === "0" &&
+  certFields.BASELINE_ID === live.baselineId &&
+  live.baselineId !== CURRENT_BASELINE &&
+  !live.drift &&
+  !qa.ready;
 let art;
 try {
   art = artRaw ? JSON.parse(artRaw) : null;
@@ -97,7 +130,7 @@ if (art) {
             p !== ".gitignore" &&
             p !== ".gitattributes",
         );
-        if (disallowed.length) {
+        if (disallowed.length && !pendingRerun) {
           fails.push(
             "HEAD diverges from RC binding outside governance/evidence: " +
               disallowed.slice(0, 8).join(","),
@@ -198,24 +231,44 @@ if (!/RC_SOURCE_SHA_BINDING = [0-9a-f]{40}/.test(doc)) {
   fails.push("doc missing exact RC_SOURCE_SHA_BINDING SHA");
 }
 
-if (!cert.includes("STATUS = ISSUED") || !cert.includes("CERT_ISSUED = 1")) {
-  fails.push("FINAL_ACCEPTANCE must stay ISSUED");
+if (issuedLock) {
+  if (!cert.includes("STATUS = ISSUED") || !cert.includes("CERT_ISSUED = 1")) {
+    fails.push("FINAL_ACCEPTANCE must stay ISSUED");
+  }
+  if (!cert.includes("REBASE_REQUIRED = 0") || !cert.includes("ACK_RECEIVED = 1")) {
+    fails.push("FINAL_ACCEPTANCE rebase/ACK lock");
+  }
+  if (!cert.includes("NEXT = RC_FORMAL")) fails.push("FINAL_ACCEPTANCE NEXT must stay RC_FORMAL");
+  if (live.baselineId !== CURRENT_BASELINE) {
+    fails.push("live baseline id");
+  }
+  if (!cert.includes("BASELINE_ID = " + CURRENT_BASELINE)) {
+    fails.push("FINAL_ACCEPTANCE BASELINE_ID must equal RC engine_baseline");
+  }
+} else if (pendingRerun) {
+  if (!cert.includes("STATUS = NOT_ISSUED") || !cert.includes("CERT_ISSUED = 0")) {
+    fails.push("pending-rerun cert must stay NOT_ISSUED");
+  }
+  if (!cert.includes("NEXT = QA1_DETERMINISTIC_TRUTH")) {
+    fails.push("pending-rerun NEXT must stay QA1_DETERMINISTIC_TRUTH");
+  }
+  if (!cert.includes("BASELINE_ID = " + live.baselineId)) {
+    fails.push("pending-rerun BASELINE_ID must equal live baseline");
+  }
+} else {
+  fails.push(
+    "RC epoch unrecognized (STATUS=" +
+      certFields.STATUS +
+      " CERT_ISSUED=" +
+      certFields.CERT_ISSUED +
+      " live=" +
+      live.baselineId +
+      ")",
+  );
 }
-if (!cert.includes("REBASE_REQUIRED = 0") || !cert.includes("ACK_RECEIVED = 1")) {
-  fails.push("FINAL_ACCEPTANCE rebase/ACK lock");
-}
-if (!cert.includes("NEXT = RC_FORMAL")) fails.push("FINAL_ACCEPTANCE NEXT must stay RC_FORMAL");
-
-const live = psm.compareProtectedScope();
 if (live.changedPathCount !== 0) fails.push("live changed_paths must be 0");
 if (live.liveAggregate !== live.baselineAggregate) {
   fails.push("live aggregate must equal baseline aggregate");
-}
-if (live.baselineId !== CURRENT_BASELINE) {
-  fails.push("live baseline id");
-}
-if (!cert.includes("BASELINE_ID = " + CURRENT_BASELINE)) {
-  fails.push("FINAL_ACCEPTANCE BASELINE_ID must equal RC engine_baseline");
 }
 
 if (!fs.existsSync(path.join(root, ARCHIVE_INV))) {
@@ -245,5 +298,7 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:rc-formal] PASS (LOCKED · ISSUED · drift 0 · history 82 · one-shot removed · prod deploy 0 · REL-701-DB state mirrored)",
+  "[verify:rc-formal] PASS (LOCKED · " +
+    (pendingRerun ? "pending-rerun" : "ISSUED") +
+    " · drift 0 · history 82 · one-shot removed · prod deploy 0 · REL-701-DB state mirrored)",
 );
