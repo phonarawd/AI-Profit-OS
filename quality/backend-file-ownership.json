@@ -1,10 +1,10 @@
 {
- "generatedAt": "2026-09-16T10:50:26.595Z",
- "headSha": "e31e718b6726b91e91ad8da9574b2db582ab58da",
+ "generatedAt": "2026-09-16T14:03:08.201Z",
+ "headSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
  "generator": "tooling/backend/ownership-graph.cjs",
  "overrides": "tooling/backend/ownership-overrides.json",
  "inputs": {
-  "gitLsFiles": 1523,
+  "gitLsFiles": 1535,
   "deletedUiPrefixes": [
    "apps/admin/",
    "apps/web/",
@@ -47,24 +47,24 @@
  },
  "totals": {
   "byClass": {
-   "BACKEND_INFRA": 249,
+   "BACKEND_INFRA": 250,
    "BACKEND_DOC": 298,
    "FUTURE_ADMIN_REQUIREMENT": 2,
-   "BACKEND_TEST": 354,
+   "BACKEND_TEST": 356,
    "BACKEND_CONTRACT": 83,
-   "BACKEND_RUNTIME": 532,
+   "BACKEND_RUNTIME": 541,
    "GENERATED": 5
   },
   "byDecision": {
-   "KEEP": 1523
+   "KEEP": 1535
   },
   "byClassDecision": {
-   "BACKEND_INFRA/KEEP": 249,
+   "BACKEND_INFRA/KEEP": 250,
    "BACKEND_DOC/KEEP": 298,
    "FUTURE_ADMIN_REQUIREMENT/KEEP": 2,
-   "BACKEND_TEST/KEEP": 354,
+   "BACKEND_TEST/KEEP": 356,
    "BACKEND_CONTRACT/KEEP": 83,
-   "BACKEND_RUNTIME/KEEP": 532,
+   "BACKEND_RUNTIME/KEEP": 541,
    "GENERATED/KEEP": 5
   },
   "unknown": 0,
@@ -384,8 +384,8 @@
    "SPLIT": 0
   },
   "services/api-nest": {
-   "total": 403,
-   "KEEP": 403,
+   "total": 412,
+   "KEEP": 412,
    "DELETE": 0,
    "MOVE": 0,
    "SPLIT": 0
@@ -454,8 +454,8 @@
    "SPLIT": 0
   },
   "supabase/migrations": {
-   "total": 59,
-   "KEEP": 59,
+   "total": 60,
+   "KEEP": 60,
    "DELETE": 0,
    "MOVE": 0,
    "SPLIT": 0
@@ -580,8 +580,8 @@
    "SPLIT": 0
   },
   "tooling/verify": {
-   "total": 248,
-   "KEEP": 248,
+   "total": 250,
+   "KEEP": 250,
    "DELETE": 0,
    "MOVE": 0,
    "SPLIT": 0
@@ -801,7 +801,7 @@
  "retiredStubs": {
   "dismantled": true,
   "handoff": "quality/putduk-web-ui-assertions-handoff.md",
-  "backendPorts": 49,
+  "backendPorts": 51,
   "backendPortSummary": [
    {
     "file": "tooling/verify/backend/admin-rbac/admin-controller-guards.cjs",
@@ -871,6 +871,18 @@
    },
    {
     "file": "tooling/verify/backend/benefit-referral/share-copy.cjs",
+    "class": "BACKEND_TEST",
+    "decision": "KEEP",
+    "backendRefs": 2
+   },
+   {
+    "file": "tooling/verify/backend/cms/cms-admin-http.runtime.cjs",
+    "class": "BACKEND_TEST",
+    "decision": "KEEP",
+    "backendRefs": 0
+   },
+   {
+    "file": "tooling/verify/backend/cms/cms-posts.cjs",
     "class": "BACKEND_TEST",
     "decision": "KEEP",
     "backendRefs": 2
@@ -3626,7 +3638,7 @@
     },
     {
      "id": "admin-rbac",
-     "steps": 11,
+     "steps": 12,
      "noop": false,
      "noopSteps": [],
      "needs": [],
@@ -4901,7 +4913,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "doc-link",
@@ -4989,7 +5001,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations** (59 files)"
+     "ref": "supabase/migrations** (60 files)"
     },
     {
      "kind": "doc-link",
@@ -5193,7 +5205,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest (403 files)"
+     "ref": "services/api-nest (412 files)"
     },
     {
      "kind": "doc-link",
@@ -5213,7 +5225,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations/* (59 files)"
+     "ref": "supabase/migrations/* (60 files)"
     },
     {
      "kind": "doc-link",
@@ -5309,7 +5321,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest/src/wallet/ (46 files)"
+     "ref": "services/api-nest/src/wallet/ (47 files)"
     },
     {
      "kind": "doc-link",
@@ -5460,7 +5472,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/** (504 files)"
+     "ref": "services/** (513 files)"
     },
     {
      "kind": "doc-link",
@@ -5662,7 +5674,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/verify/ (248 files)"
+     "ref": "tooling/verify/ (250 files)"
     },
     {
      "kind": "doc-link",
@@ -6204,7 +6216,7 @@
    "evidence": [
     {
      "kind": "doc-link",
-     "ref": "services/**/api*/** (403 files)"
+     "ref": "services/**/api*/** (412 files)"
     }
    ],
    "referrers": [
@@ -6660,7 +6672,7 @@
    "evidence": [
     {
      "kind": "doc-link",
-     "ref": "services/**/wallet*/** (46 files)"
+     "ref": "services/**/wallet*/** (47 files)"
     },
     {
      "kind": "doc-link",
@@ -6716,7 +6728,7 @@
    "evidence": [
     {
      "kind": "doc-link",
-     "ref": "services/**/wallet*/** (46 files)"
+     "ref": "services/**/wallet*/** (47 files)"
     }
    ],
    "referrers": [
@@ -7287,7 +7299,7 @@
    "evidence": [
     {
      "kind": "doc-link",
-     "ref": "supabase/** (66 files)"
+     "ref": "supabase/** (67 files)"
     }
    ],
    "referrers": [
@@ -7671,7 +7683,7 @@
    "blockers": [],
    "lastCommit": "2026-09-12T16:24:40+09:00",
    "lastCommitSha": "bceb1867f06be5e2a46977b4e894588e788c2922",
-   "sizeBytes": 34675,
+   "sizeBytes": 34854,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -9360,7 +9372,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest (403 files)"
+     "ref": "services/api-nest (412 files)"
     },
     {
      "kind": "doc-link",
@@ -10487,7 +10499,7 @@
    "evidence": [
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "doc-link",
@@ -10535,7 +10547,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/verify (248 files)"
+     "ref": "tooling/verify (250 files)"
     },
     {
      "kind": "doc-link",
@@ -10733,7 +10745,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations/ (59 files)"
+     "ref": "supabase/migrations/ (60 files)"
     },
     {
      "kind": "doc-link",
@@ -10825,7 +10837,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "doc-link",
@@ -10837,11 +10849,11 @@
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/verify/ (248 files)"
+     "ref": "tooling/verify/ (250 files)"
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest (403 files)"
+     "ref": "services/api-nest (412 files)"
     },
     {
      "kind": "doc-link",
@@ -11510,7 +11522,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations/* (59 files)"
+     "ref": "supabase/migrations/* (60 files)"
     },
     {
      "kind": "doc-link",
@@ -12778,11 +12790,11 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src/**/*.admin.controller.ts (26 files)"
+     "ref": "services/api-nest/src/**/*.admin.controller.ts (28 files)"
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src/wallet/*.controller.ts (7 files)"
+     "ref": "services/api-nest/src/wallet/*.controller.ts (8 files)"
     },
     {
      "kind": "verifier-reads",
@@ -12810,7 +12822,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src/** (385 files)"
+     "ref": "services/api-nest/src/** (394 files)"
     }
    ],
    "referrers": [
@@ -27135,7 +27147,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest (403 files)"
+     "ref": "services/api-nest (412 files)"
     },
     {
      "kind": "verifier-reads",
@@ -27143,7 +27155,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "verifier-reads",
@@ -27492,7 +27504,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/** (504 files)"
+     "ref": "services/** (513 files)"
     }
    ],
    "referrers": [
@@ -27599,7 +27611,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/** (504 files)"
+     "ref": "services/** (513 files)"
     }
    ],
    "referrers": [
@@ -28994,7 +29006,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/** (504 files)"
+     "ref": "services/** (513 files)"
     },
     {
      "kind": "doc-link",
@@ -29256,7 +29268,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest (403 files)"
+     "ref": "services/api-nest (412 files)"
     },
     {
      "kind": "verifier-reads",
@@ -32388,7 +32400,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations/** (59 files)"
+     "ref": "supabase/migrations/** (60 files)"
     },
     {
      "kind": "doc-link",
@@ -32963,7 +32975,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest (403 files)"
+     "ref": "services/api-nest (412 files)"
     },
     {
      "kind": "verifier-reads",
@@ -34028,7 +34040,7 @@
    "evidence": [
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations/** (59 files)"
+     "ref": "supabase/migrations/** (60 files)"
     },
     {
      "kind": "doc-link",
@@ -34040,7 +34052,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations/*.sql (59 files)"
+     "ref": "supabase/migrations/*.sql (60 files)"
     },
     {
      "kind": "doc-link",
@@ -34071,9 +34083,9 @@
     "tooling/verify/release-engine-truth-consistency.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-16T19:29:42+09:00",
-   "lastCommitSha": "7f9590aebc26adae97a75d5cc7e95d3b702a3148",
-   "sizeBytes": 5381,
+   "lastCommit": "2026-09-16T20:01:56+09:00",
+   "lastCommitSha": "8347780a4df24fd9b99cbef7859ad65845c894ed",
+   "sizeBytes": 5652,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -34104,7 +34116,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations/** (59 files)"
+     "ref": "supabase/migrations/** (60 files)"
     },
     {
      "kind": "doc-link",
@@ -34159,11 +34171,11 @@
    "evidence": [
     {
      "kind": "doc-link",
-     "ref": "services/api-nest (403 files)"
+     "ref": "services/api-nest (412 files)"
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     }
    ],
    "referrers": [
@@ -34189,9 +34201,9 @@
     "tooling/verify/release-engine-truth-consistency.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-16T19:44:44+09:00",
-   "lastCommitSha": "e31e718b6726b91e91ad8da9574b2db582ab58da",
-   "sizeBytes": 3741,
+   "lastCommit": "2026-09-16T20:01:56+09:00",
+   "lastCommitSha": "8347780a4df24fd9b99cbef7859ad65845c894ed",
+   "sizeBytes": 3780,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -36336,7 +36348,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/** (403 files)"
+     "ref": "services/api-nest/** (412 files)"
     },
     {
      "kind": "verifier-reads",
@@ -36894,7 +36906,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest (403 files)"
+     "ref": "services/api-nest (412 files)"
     }
    ],
    "referrers": [
@@ -37043,7 +37055,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest (403 files)"
+     "ref": "services/api-nest (412 files)"
     },
     {
      "kind": "verifier-reads",
@@ -37111,7 +37123,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest (403 files)"
+     "ref": "services/api-nest (412 files)"
     },
     {
      "kind": "doc-link",
@@ -37676,11 +37688,11 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "tooling/* (421 files)"
+     "ref": "tooling/* (423 files)"
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/* (504 files)"
+     "ref": "services/* (513 files)"
     },
     {
      "kind": "verifier-reads",
@@ -37826,11 +37838,11 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest (403 files)"
+     "ref": "services/api-nest (412 files)"
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest/src (385 files)"
+     "ref": "services/api-nest/src (394 files)"
     },
     {
      "kind": "doc-link",
@@ -38065,7 +38077,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/verify (248 files)"
+     "ref": "tooling/verify (250 files)"
     },
     {
      "kind": "doc-link",
@@ -38157,7 +38169,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/* (421 files)"
+     "ref": "tooling/* (423 files)"
     },
     {
      "kind": "doc-link",
@@ -38411,11 +38423,11 @@
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/verify/** (248 files)"
+     "ref": "tooling/verify/** (250 files)"
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/verify (248 files)"
+     "ref": "tooling/verify (250 files)"
     },
     {
      "kind": "doc-link",
@@ -38740,9 +38752,9 @@
     "tooling/backend/ownership-graph.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-16T19:44:44+09:00",
-   "lastCommitSha": "e31e718b6726b91e91ad8da9574b2db582ab58da",
-   "sizeBytes": 3994366,
+   "lastCommit": "2026-09-16T19:50:36+09:00",
+   "lastCommitSha": "4c6dcb68e31f38a2b0933dc5c36b5f1f68c1fdf9",
+   "sizeBytes": 4120301,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -38807,9 +38819,9 @@
     "tooling/verify/workers-typecheck.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-16T19:44:44+09:00",
-   "lastCommitSha": "e31e718b6726b91e91ad8da9574b2db582ab58da",
-   "sizeBytes": 5684703,
+   "lastCommit": "2026-09-16T19:50:36+09:00",
+   "lastCommitSha": "4c6dcb68e31f38a2b0933dc5c36b5f1f68c1fdf9",
+   "sizeBytes": 5763454,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -38840,7 +38852,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest/** (403 files)"
+     "ref": "services/api-nest/** (412 files)"
     },
     {
      "kind": "doc-link",
@@ -38852,7 +38864,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations/** (59 files)"
+     "ref": "supabase/migrations/** (60 files)"
     },
     {
      "kind": "doc-link",
@@ -38928,7 +38940,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/verify/*-closure.cjs (248 files)"
+     "ref": "tooling/verify/*-closure.cjs (250 files)"
     },
     {
      "kind": "doc-link",
@@ -38960,7 +38972,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/verify (248 files)"
+     "ref": "tooling/verify (250 files)"
     },
     {
      "kind": "doc-link",
@@ -39053,7 +39065,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest (403 files)"
+     "ref": "services/api-nest (412 files)"
     },
     {
      "kind": "doc-link",
@@ -39141,11 +39153,11 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/verify (248 files)"
+     "ref": "tooling/verify (250 files)"
     },
     {
      "kind": "doc-link",
@@ -39157,7 +39169,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/* (504 files)"
+     "ref": "services/* (513 files)"
     },
     {
      "kind": "doc-link",
@@ -39165,7 +39177,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/* (421 files)"
+     "ref": "tooling/* (423 files)"
     },
     {
      "kind": "doc-link",
@@ -39365,7 +39377,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/* (504 files)"
+     "ref": "services/* (513 files)"
     },
     {
      "kind": "doc-link",
@@ -39373,7 +39385,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/* (421 files)"
+     "ref": "tooling/* (423 files)"
     },
     {
      "kind": "doc-link",
@@ -39401,7 +39413,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest (403 files)"
+     "ref": "services/api-nest (412 files)"
     },
     {
      "kind": "doc-link",
@@ -39445,7 +39457,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations/*.sql (59 files)"
+     "ref": "supabase/migrations/*.sql (60 files)"
     },
     {
      "kind": "doc-link",
@@ -39546,7 +39558,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest (403 files)"
+     "ref": "services/api-nest (412 files)"
     },
     {
      "kind": "doc-link",
@@ -39554,7 +39566,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/* (504 files)"
+     "ref": "services/* (513 files)"
     },
     {
      "kind": "doc-link",
@@ -39574,7 +39586,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "doc-link",
@@ -39704,7 +39716,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/verify (248 files)"
+     "ref": "tooling/verify (250 files)"
     },
     {
      "kind": "doc-link",
@@ -39712,7 +39724,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest/** (403 files)"
+     "ref": "services/api-nest/** (412 files)"
     },
     {
      "kind": "doc-link",
@@ -39732,7 +39744,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/** (66 files)"
+     "ref": "supabase/** (67 files)"
     },
     {
      "kind": "doc-link",
@@ -39776,7 +39788,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/verify/** (248 files)"
+     "ref": "tooling/verify/** (250 files)"
     },
     {
      "kind": "doc-link",
@@ -39824,7 +39836,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/** (504 files)"
+     "ref": "services/** (513 files)"
     },
     {
      "kind": "doc-link",
@@ -39956,7 +39968,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "doc-link",
@@ -39998,7 +40010,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     }
    ],
    "referrers": [
@@ -40875,7 +40887,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     }
    ],
    "referrers": [
@@ -41014,7 +41026,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "verifier-reads",
@@ -41058,7 +41070,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     }
    ],
    "referrers": [
@@ -41148,7 +41160,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     }
    ],
    "referrers": [
@@ -41187,7 +41199,7 @@
    "evidence": [
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "doc-link",
@@ -41269,7 +41281,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     }
    ],
    "referrers": [
@@ -41552,7 +41564,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "doc-link",
@@ -41560,7 +41572,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/api-nest (403 files)"
+     "ref": "services/api-nest (412 files)"
     },
     {
      "kind": "doc-link",
@@ -41698,7 +41710,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations/ (59 files)"
+     "ref": "supabase/migrations/ (60 files)"
     },
     {
      "kind": "doc-link",
@@ -41853,7 +41865,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "doc-link",
@@ -42008,7 +42020,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "doc-link",
@@ -42448,7 +42460,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "services/** (504 files)"
+     "ref": "services/** (513 files)"
     },
     {
      "kind": "doc-link",
@@ -42536,11 +42548,11 @@
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/verify/ (248 files)"
+     "ref": "tooling/verify/ (250 files)"
     },
     {
      "kind": "doc-link",
-     "ref": "services/** (504 files)"
+     "ref": "services/** (513 files)"
     },
     {
      "kind": "doc-link",
@@ -42548,7 +42560,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "supabase/** (66 files)"
+     "ref": "supabase/** (67 files)"
     },
     {
      "kind": "doc-link",
@@ -42564,7 +42576,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/verify/backend/ (50 files)"
+     "ref": "tooling/verify/backend/ (52 files)"
     },
     {
      "kind": "doc-link",
@@ -42668,7 +42680,7 @@
     },
     {
      "kind": "doc-link",
-     "ref": "tooling/verify/backend/** (50 files)"
+     "ref": "tooling/verify/backend/** (52 files)"
     },
     {
      "kind": "doc-link",
@@ -51118,7 +51130,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations/ (59 files)"
+     "ref": "supabase/migrations/ (60 files)"
     }
    ],
    "referrers": [
@@ -52480,7 +52492,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest (403 files)"
+     "ref": "services/api-nest (412 files)"
     }
    ],
    "referrers": [
@@ -55166,7 +55178,7 @@
    "evidence": [
     {
      "kind": "nest-module-registry",
-     "ref": "CommonModule,AuthModule,ComplianceModule,EventsModule,LedgerModule,AdaptersModule,ExecutionPolicyModule,MembershipModule,InboxModule,UserUxPrefsModule,PushModule,LoopModule,OpportunitiesModule,MissionModule,ReferralModule,RiskModule,SimulationModule,AiModule,TradesModule,WalletModule,GrowthModule,HomeReadModule,AdminAuditModule,KillSwitchModule,AdminOpsModule,MatchControlModule,SourcePolicyModule,AppModule"
+     "ref": "CommonModule,AuthModule,ComplianceModule,EventsModule,LedgerModule,AdaptersModule,ExecutionPolicyModule,MembershipModule,InboxModule,UserUxPrefsModule,PushModule,LoopModule,OpportunitiesModule,MissionModule,ReferralModule,RiskModule,SimulationModule,AiModule,TradesModule,WalletModule,GrowthModule,HomeReadModule,AdminAuditModule,KillSwitchModule,AdminOpsModule,MatchControlModule,SourcePolicyModule,CmsModule,AppModule"
     },
     {
      "kind": "import",
@@ -55294,6 +55306,10 @@
     },
     {
      "kind": "import",
+     "ref": "services/api-nest/src/cms/cms.module.ts"
+    },
+    {
+     "kind": "import",
      "ref": "services/api-nest/src/observability/obs.exception-filter.ts"
     }
    ],
@@ -55340,9 +55356,9 @@
     "quality/backend-only-official-basis.md|doc-link|services/*"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-01T19:33:58+09:00",
-   "lastCommitSha": "bba6f339d27b54b40ea58eb7b465f40d8d595d15",
-   "sizeBytes": 2901,
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 2964,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -55376,6 +55392,7 @@
      "./admin-ops/admin-ops.module",
      "./match-control/match-control.module",
      "./source-policy/source-policy.module",
+     "./cms/cms.module",
      "./observability/obs.exception-filter"
     ],
     "governanceBackendRefs": [],
@@ -58384,6 +58401,535 @@
    }
   },
   {
+   "path": "services/api-nest/src/cms/cms.admin.controller.ts",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "api-nest",
+   "reasons": [
+    "Nest API 런타임 (tsconfig include src/**)"
+   ],
+   "evidence": [
+    {
+     "kind": "import",
+     "ref": "pkg:@nestjs/common"
+    },
+    {
+     "kind": "import",
+     "ref": "services/api-nest/src/common/admin.guard.ts"
+    },
+    {
+     "kind": "import",
+     "ref": "services/api-nest/src/common/admin-operator.decorator.ts"
+    },
+    {
+     "kind": "import",
+     "ref": "services/api-nest/src/cms/cms.routes.ts"
+    },
+    {
+     "kind": "import",
+     "ref": "services/api-nest/src/cms/cms.service.ts"
+    }
+   ],
+   "referrers": [
+    ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md|doc-link|services/api-nest/**",
+    ".cursor/plans/ai_profit_os_02_5_engine_acceptance_qa_fd1cd7cc.plan.md|doc-link|services/**",
+    ".cursor/rules/auth-boundary.mdc|doc-link|services/**/api*/**",
+    "governance/engine-acceptance/asvs-mapping.v1.json|verifier-reads|services/api-nest/src/**/*.admin.controller.ts",
+    "governance/engine-acceptance/asvs-mapping.v1.json|verifier-reads|services/api-nest/src/**",
+    "governance/engine-acceptance/qa4-result.v1.json|verifier-reads|services/**",
+    "governance/engine-acceptance/qa5-result.v1.json|verifier-reads|services/**",
+    "governance/platform-redesign/change-control.v1.md|doc-link|services/**",
+    "governance/release-master/staging-topology.current.v1.json|verifier-reads|services/api-nest/**",
+    "pnpm-workspace.yaml|verifier-reads|services/*",
+    "quality/backend-only-deletion-plan.md|doc-link|services/api-nest/**",
+    "quality/backend-only-inventory.md|doc-link|services/*",
+    "quality/backend-only-inventory.md|doc-link|services/api-nest/**",
+    "quality/backend-only-inventory.md|doc-link|services/api-nest/src/**",
+    "quality/backend-only-official-basis.md|doc-link|services/*",
+    "quality/backend-only-verification.md|doc-link|services/*",
+    "quality/backend-residual-report.md|doc-link|services/api-nest/**",
+    "quality/backend-residual-report.md|doc-link|services/**",
+    "quality/putduk-web-sdk-handoff.md|doc-link|services/**",
+    "quality/putduk-web-ui-assertions-handoff.md|doc-link|services/**",
+    "services/api-nest/src/cms/cms.module.ts|import",
+    "tooling/backend/ownership-overrides.json|verifier-reads|services/**/ai",
+    "tooling/engine-acceptance/run-qa9.cjs|test-ref|services/api-nest/src/**",
+    "tooling/verify/backend/cms/cms-posts.cjs|verifier-reads",
+    "tooling/verify/unit-tests.cjs|verifier-reads|services/**/*.test.cjs"
+   ],
+   "blockers": [],
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 1777,
+   "refSummary": {
+    "deletedUiRefs": [],
+    "uiRefs": [],
+    "backendRefs": [
+     "../common/admin.guard",
+     "../common/admin-operator.decorator",
+     "./cms.routes",
+     "./cms.service"
+    ],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
+   }
+  },
+  {
+   "path": "services/api-nest/src/cms/cms.core.cjs",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "api-nest",
+   "reasons": [
+    "Nest API 런타임 (tsconfig include src/**)"
+   ],
+   "evidence": [],
+   "referrers": [
+    ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md|doc-link|services/api-nest/**",
+    ".cursor/plans/ai_profit_os_02_5_engine_acceptance_qa_fd1cd7cc.plan.md|doc-link|services/**",
+    ".cursor/rules/auth-boundary.mdc|doc-link|services/**/api*/**",
+    "governance/engine-acceptance/asvs-mapping.v1.json|verifier-reads|services/api-nest/src/**",
+    "governance/engine-acceptance/qa4-result.v1.json|verifier-reads|services/**",
+    "governance/engine-acceptance/qa5-result.v1.json|verifier-reads|services/**",
+    "governance/platform-redesign/change-control.v1.md|doc-link|services/**",
+    "governance/release-master/staging-topology.current.v1.json|verifier-reads|services/api-nest/**",
+    "pnpm-workspace.yaml|verifier-reads|services/*",
+    "quality/backend-only-deletion-plan.md|doc-link|services/api-nest/**",
+    "quality/backend-only-inventory.md|doc-link|services/*",
+    "quality/backend-only-inventory.md|doc-link|services/api-nest/**",
+    "quality/backend-only-inventory.md|doc-link|services/api-nest/src/**",
+    "quality/backend-only-official-basis.md|doc-link|services/*",
+    "quality/backend-only-verification.md|doc-link|services/*",
+    "quality/backend-residual-report.md|doc-link|services/api-nest/**",
+    "quality/backend-residual-report.md|doc-link|services/**",
+    "quality/putduk-web-sdk-handoff.md|doc-link|services/**",
+    "quality/putduk-web-ui-assertions-handoff.md|doc-link|services/**",
+    "services/api-nest/src/cms/cms.spec.runtime.cjs|require",
+    "tooling/backend/ownership-overrides.json|verifier-reads|services/**/ai",
+    "tooling/engine-acceptance/run-qa9.cjs|test-ref|services/api-nest/src/**",
+    "tooling/verify/unit-tests.cjs|verifier-reads|services/**/*.test.cjs"
+   ],
+   "blockers": [],
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 5683,
+   "refSummary": {
+    "deletedUiRefs": [],
+    "uiRefs": [],
+    "backendRefs": [],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
+   }
+  },
+  {
+   "path": "services/api-nest/src/cms/cms.module.ts",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "api-nest",
+   "reasons": [
+    "Nest API 런타임 (tsconfig include src/**)"
+   ],
+   "evidence": [
+    {
+     "kind": "import",
+     "ref": "pkg:@nestjs/common"
+    },
+    {
+     "kind": "import",
+     "ref": "services/api-nest/src/events/events.module.ts"
+    },
+    {
+     "kind": "import",
+     "ref": "services/api-nest/src/inbox/inbox.module.ts"
+    },
+    {
+     "kind": "import",
+     "ref": "services/api-nest/src/push/push.module.ts"
+    },
+    {
+     "kind": "import",
+     "ref": "services/api-nest/src/cms/cms.admin.controller.ts"
+    },
+    {
+     "kind": "import",
+     "ref": "services/api-nest/src/cms/cms.public.controller.ts"
+    },
+    {
+     "kind": "import",
+     "ref": "services/api-nest/src/cms/cms.service.ts"
+    }
+   ],
+   "referrers": [
+    ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md|doc-link|services/api-nest/**",
+    ".cursor/plans/ai_profit_os_02_5_engine_acceptance_qa_fd1cd7cc.plan.md|doc-link|services/**",
+    ".cursor/rules/auth-boundary.mdc|doc-link|services/**/api*/**",
+    "governance/engine-acceptance/asvs-mapping.v1.json|verifier-reads|services/api-nest/src/**",
+    "governance/engine-acceptance/qa4-result.v1.json|verifier-reads|services/**",
+    "governance/engine-acceptance/qa5-result.v1.json|verifier-reads|services/**",
+    "governance/platform-redesign/change-control.v1.md|doc-link|services/**",
+    "governance/release-master/staging-topology.current.v1.json|verifier-reads|services/api-nest/**",
+    "pnpm-workspace.yaml|verifier-reads|services/*",
+    "quality/backend-only-deletion-plan.md|doc-link|services/api-nest/**",
+    "quality/backend-only-inventory.md|doc-link|services/*",
+    "quality/backend-only-inventory.md|doc-link|services/api-nest/**",
+    "quality/backend-only-inventory.md|doc-link|services/api-nest/src/**",
+    "quality/backend-only-official-basis.md|doc-link|services/*",
+    "quality/backend-only-verification.md|doc-link|services/*",
+    "quality/backend-residual-report.md|doc-link|services/api-nest/**",
+    "quality/backend-residual-report.md|doc-link|services/**",
+    "quality/putduk-web-sdk-handoff.md|doc-link|services/**",
+    "quality/putduk-web-ui-assertions-handoff.md|doc-link|services/**",
+    "services/api-nest/src/app.module.ts|import",
+    "services/api-nest/src/cms/index.ts|import",
+    "tooling/backend/ownership-overrides.json|verifier-reads|services/**/ai",
+    "tooling/engine-acceptance/run-qa9.cjs|test-ref|services/api-nest/src/**",
+    "tooling/verify/unit-tests.cjs|verifier-reads|services/**/*.test.cjs"
+   ],
+   "blockers": [],
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 585,
+   "refSummary": {
+    "deletedUiRefs": [],
+    "uiRefs": [],
+    "backendRefs": [
+     "../events/events.module",
+     "../inbox/inbox.module",
+     "../push/push.module",
+     "./cms.admin.controller",
+     "./cms.public.controller",
+     "./cms.service"
+    ],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
+   }
+  },
+  {
+   "path": "services/api-nest/src/cms/cms.public.controller.ts",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "api-nest",
+   "reasons": [
+    "Nest API 런타임 (tsconfig include src/**)"
+   ],
+   "evidence": [
+    {
+     "kind": "import",
+     "ref": "pkg:@nestjs/common"
+    },
+    {
+     "kind": "import",
+     "ref": "services/api-nest/src/cms/cms.routes.ts"
+    },
+    {
+     "kind": "import",
+     "ref": "services/api-nest/src/cms/cms.service.ts"
+    }
+   ],
+   "referrers": [
+    ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md|doc-link|services/api-nest/**",
+    ".cursor/plans/ai_profit_os_02_5_engine_acceptance_qa_fd1cd7cc.plan.md|doc-link|services/**",
+    ".cursor/rules/auth-boundary.mdc|doc-link|services/**/api*/**",
+    "governance/engine-acceptance/asvs-mapping.v1.json|verifier-reads|services/api-nest/src/**",
+    "governance/engine-acceptance/qa4-result.v1.json|verifier-reads|services/**",
+    "governance/engine-acceptance/qa5-result.v1.json|verifier-reads|services/**",
+    "governance/platform-redesign/change-control.v1.md|doc-link|services/**",
+    "governance/release-master/staging-topology.current.v1.json|verifier-reads|services/api-nest/**",
+    "pnpm-workspace.yaml|verifier-reads|services/*",
+    "quality/backend-only-deletion-plan.md|doc-link|services/api-nest/**",
+    "quality/backend-only-inventory.md|doc-link|services/*",
+    "quality/backend-only-inventory.md|doc-link|services/api-nest/**",
+    "quality/backend-only-inventory.md|doc-link|services/api-nest/src/**",
+    "quality/backend-only-official-basis.md|doc-link|services/*",
+    "quality/backend-only-verification.md|doc-link|services/*",
+    "quality/backend-residual-report.md|doc-link|services/api-nest/**",
+    "quality/backend-residual-report.md|doc-link|services/**",
+    "quality/putduk-web-sdk-handoff.md|doc-link|services/**",
+    "quality/putduk-web-ui-assertions-handoff.md|doc-link|services/**",
+    "services/api-nest/src/cms/cms.module.ts|import",
+    "tooling/backend/ownership-overrides.json|verifier-reads|services/**/ai",
+    "tooling/engine-acceptance/run-qa9.cjs|test-ref|services/api-nest/src/**",
+    "tooling/verify/unit-tests.cjs|verifier-reads|services/**/*.test.cjs"
+   ],
+   "blockers": [],
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 635,
+   "refSummary": {
+    "deletedUiRefs": [],
+    "uiRefs": [],
+    "backendRefs": [
+     "./cms.routes",
+     "./cms.service"
+    ],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
+   }
+  },
+  {
+   "path": "services/api-nest/src/cms/cms.routes.ts",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "api-nest",
+   "reasons": [
+    "Nest API 런타임 (tsconfig include src/**)"
+   ],
+   "evidence": [],
+   "referrers": [
+    ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md|doc-link|services/api-nest/**",
+    ".cursor/plans/ai_profit_os_02_5_engine_acceptance_qa_fd1cd7cc.plan.md|doc-link|services/**",
+    ".cursor/rules/auth-boundary.mdc|doc-link|services/**/api*/**",
+    "governance/engine-acceptance/asvs-mapping.v1.json|verifier-reads|services/api-nest/src/**",
+    "governance/engine-acceptance/qa4-result.v1.json|verifier-reads|services/**",
+    "governance/engine-acceptance/qa5-result.v1.json|verifier-reads|services/**",
+    "governance/platform-redesign/change-control.v1.md|doc-link|services/**",
+    "governance/release-master/staging-topology.current.v1.json|verifier-reads|services/api-nest/**",
+    "pnpm-workspace.yaml|verifier-reads|services/*",
+    "quality/backend-only-deletion-plan.md|doc-link|services/api-nest/**",
+    "quality/backend-only-inventory.md|doc-link|services/*",
+    "quality/backend-only-inventory.md|doc-link|services/api-nest/**",
+    "quality/backend-only-inventory.md|doc-link|services/api-nest/src/**/*.routes.ts",
+    "quality/backend-only-inventory.md|doc-link|services/api-nest/src/**",
+    "quality/backend-only-official-basis.md|doc-link|services/*",
+    "quality/backend-only-verification.md|doc-link|services/*",
+    "quality/backend-residual-report.md|doc-link|services/api-nest/**",
+    "quality/backend-residual-report.md|doc-link|services/**",
+    "quality/putduk-web-sdk-handoff.md|doc-link|services/**",
+    "quality/putduk-web-ui-assertions-handoff.md|doc-link|services/**",
+    "services/api-nest/src/cms/cms.admin.controller.ts|import",
+    "services/api-nest/src/cms/cms.public.controller.ts|import",
+    "services/api-nest/src/cms/cms.service.ts|import",
+    "services/api-nest/src/cms/index.ts|import",
+    "tooling/backend/ownership-overrides.json|verifier-reads|services/**/ai",
+    "tooling/engine-acceptance/run-qa9.cjs|test-ref|services/api-nest/src/**",
+    "tooling/verify/unit-tests.cjs|verifier-reads|services/**/*.test.cjs"
+   ],
+   "blockers": [],
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 524,
+   "refSummary": {
+    "deletedUiRefs": [],
+    "uiRefs": [],
+    "backendRefs": [],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
+   }
+  },
+  {
+   "path": "services/api-nest/src/cms/cms.service.ts",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "api-nest",
+   "reasons": [
+    "Nest API 런타임 (tsconfig include src/**)"
+   ],
+   "evidence": [
+    {
+     "kind": "import",
+     "ref": "pkg:@nestjs/common"
+    },
+    {
+     "kind": "import",
+     "ref": "services/api-nest/src/db/postgres.ts"
+    },
+    {
+     "kind": "import",
+     "ref": "services/api-nest/src/inbox/ops-inbox.service.ts"
+    },
+    {
+     "kind": "import",
+     "ref": "services/api-nest/src/push/push-emit.service.ts"
+    },
+    {
+     "kind": "import",
+     "ref": "services/api-nest/src/cms/cms.routes.ts"
+    }
+   ],
+   "referrers": [
+    ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md|doc-link|services/api-nest/**",
+    ".cursor/plans/ai_profit_os_02_5_engine_acceptance_qa_fd1cd7cc.plan.md|doc-link|services/**",
+    ".cursor/rules/auth-boundary.mdc|doc-link|services/**/api*/**",
+    "governance/engine-acceptance/asvs-mapping.v1.json|verifier-reads|services/api-nest/src/**",
+    "governance/engine-acceptance/qa4-result.v1.json|verifier-reads|services/**",
+    "governance/engine-acceptance/qa5-result.v1.json|verifier-reads|services/**",
+    "governance/platform-redesign/change-control.v1.md|doc-link|services/**",
+    "governance/release-master/staging-topology.current.v1.json|verifier-reads|services/api-nest/**",
+    "pnpm-workspace.yaml|verifier-reads|services/*",
+    "quality/backend-only-deletion-plan.md|doc-link|services/api-nest/**",
+    "quality/backend-only-inventory.md|doc-link|services/*",
+    "quality/backend-only-inventory.md|doc-link|services/api-nest/**",
+    "quality/backend-only-inventory.md|doc-link|services/api-nest/src/**",
+    "quality/backend-only-official-basis.md|doc-link|services/*",
+    "quality/backend-only-verification.md|doc-link|services/*",
+    "quality/backend-residual-report.md|doc-link|services/api-nest/**",
+    "quality/backend-residual-report.md|doc-link|services/**",
+    "quality/putduk-web-sdk-handoff.md|doc-link|services/**",
+    "quality/putduk-web-ui-assertions-handoff.md|doc-link|services/**",
+    "services/api-nest/src/cms/cms.admin.controller.ts|import",
+    "services/api-nest/src/cms/cms.module.ts|import",
+    "services/api-nest/src/cms/cms.public.controller.ts|import",
+    "services/api-nest/src/cms/index.ts|import",
+    "tooling/backend/ownership-overrides.json|verifier-reads|services/**/ai",
+    "tooling/engine-acceptance/run-qa9.cjs|test-ref|services/api-nest/src/**",
+    "tooling/verify/unit-tests.cjs|verifier-reads|services/**/*.test.cjs"
+   ],
+   "blockers": [],
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 11537,
+   "refSummary": {
+    "deletedUiRefs": [],
+    "uiRefs": [],
+    "backendRefs": [
+     "../db/postgres",
+     "../inbox/ops-inbox.service",
+     "../push/push-emit.service",
+     "./cms.routes"
+    ],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
+   }
+  },
+  {
+   "path": "services/api-nest/src/cms/cms.spec.runtime.cjs",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "api-nest",
+   "reasons": [
+    "Nest API 런타임 (tsconfig include src/**)"
+   ],
+   "evidence": [
+    {
+     "kind": "require",
+     "ref": "services/api-nest/src/cms/cms.core.cjs"
+    }
+   ],
+   "referrers": [
+    ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md|doc-link|services/api-nest/**",
+    ".cursor/plans/ai_profit_os_02_5_engine_acceptance_qa_fd1cd7cc.plan.md|doc-link|services/**",
+    ".cursor/rules/auth-boundary.mdc|doc-link|services/**/api*/**",
+    "governance/engine-acceptance/asvs-mapping.v1.json|verifier-reads|services/api-nest/src/**",
+    "governance/engine-acceptance/qa4-result.v1.json|verifier-reads|services/**",
+    "governance/engine-acceptance/qa5-result.v1.json|verifier-reads|services/**",
+    "governance/platform-redesign/change-control.v1.md|doc-link|services/**",
+    "governance/release-master/staging-topology.current.v1.json|verifier-reads|services/api-nest/**",
+    "pnpm-workspace.yaml|verifier-reads|services/*",
+    "quality/backend-only-deletion-plan.md|doc-link|services/api-nest/**",
+    "quality/backend-only-inventory.md|doc-link|services/*",
+    "quality/backend-only-inventory.md|doc-link|services/api-nest/**",
+    "quality/backend-only-inventory.md|doc-link|services/api-nest/src/**",
+    "quality/backend-only-official-basis.md|doc-link|services/*",
+    "quality/backend-only-verification.md|doc-link|services/*",
+    "quality/backend-residual-report.md|doc-link|services/api-nest/**",
+    "quality/backend-residual-report.md|doc-link|services/**",
+    "quality/putduk-web-sdk-handoff.md|doc-link|services/**",
+    "quality/putduk-web-ui-assertions-handoff.md|doc-link|services/**",
+    "tooling/backend/ownership-overrides.json|verifier-reads|services/**/ai",
+    "tooling/engine-acceptance/run-qa9.cjs|test-ref|services/api-nest/src/**",
+    "tooling/verify/backend/cms/cms-posts.cjs|verifier-reads",
+    "tooling/verify/unit-tests.cjs|verifier-reads|services/**/*.test.cjs"
+   ],
+   "blockers": [],
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 975,
+   "refSummary": {
+    "deletedUiRefs": [],
+    "uiRefs": [],
+    "backendRefs": [
+     "./cms.core.cjs"
+    ],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
+   }
+  },
+  {
+   "path": "services/api-nest/src/cms/index.ts",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "api-nest",
+   "reasons": [
+    "Nest API 런타임 (tsconfig include src/**)"
+   ],
+   "evidence": [
+    {
+     "kind": "import",
+     "ref": "services/api-nest/src/cms/cms.module.ts"
+    },
+    {
+     "kind": "import",
+     "ref": "services/api-nest/src/cms/cms.service.ts"
+    },
+    {
+     "kind": "import",
+     "ref": "services/api-nest/src/cms/cms.routes.ts"
+    }
+   ],
+   "referrers": [
+    ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md|doc-link|services/api-nest/**",
+    ".cursor/plans/ai_profit_os_02_5_engine_acceptance_qa_fd1cd7cc.plan.md|doc-link|services/**",
+    ".cursor/rules/auth-boundary.mdc|doc-link|services/**/api*/**",
+    "governance/engine-acceptance/asvs-mapping.v1.json|verifier-reads|services/api-nest/src/**",
+    "governance/engine-acceptance/qa4-result.v1.json|verifier-reads|services/**",
+    "governance/engine-acceptance/qa5-result.v1.json|verifier-reads|services/**",
+    "governance/platform-redesign/change-control.v1.md|doc-link|services/**",
+    "governance/release-master/staging-topology.current.v1.json|verifier-reads|services/api-nest/**",
+    "pnpm-workspace.yaml|verifier-reads|services/*",
+    "quality/backend-only-deletion-plan.md|doc-link|services/api-nest/**",
+    "quality/backend-only-inventory.md|doc-link|services/*",
+    "quality/backend-only-inventory.md|doc-link|services/api-nest/**",
+    "quality/backend-only-inventory.md|doc-link|services/api-nest/src/**",
+    "quality/backend-only-official-basis.md|doc-link|services/*",
+    "quality/backend-only-verification.md|doc-link|services/*",
+    "quality/backend-residual-report.md|doc-link|services/api-nest/**",
+    "quality/backend-residual-report.md|doc-link|services/**",
+    "quality/putduk-web-sdk-handoff.md|doc-link|services/**",
+    "quality/putduk-web-ui-assertions-handoff.md|doc-link|services/**",
+    "tooling/backend/ownership-overrides.json|verifier-reads|services/**/ai",
+    "tooling/engine-acceptance/run-qa9.cjs|test-ref|services/api-nest/src/**",
+    "tooling/verify/unit-tests.cjs|verifier-reads|services/**/*.test.cjs"
+   ],
+   "blockers": [],
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 168,
+   "refSummary": {
+    "deletedUiRefs": [],
+    "uiRefs": [],
+    "backendRefs": [
+     "./cms.module",
+     "./cms.service",
+     "./cms.routes"
+    ],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
+   }
+  },
+  {
    "path": "services/api-nest/src/common/admin-capabilities.ts",
    "class": "BACKEND_RUNTIME",
    "decision": "KEEP",
@@ -58441,9 +58987,9 @@
     "services/api-nest/src/common/admin.guard.ts|import"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-15T03:25:11+09:00",
-   "lastCommitSha": "cbbda52892273ba5cd6326af222bb7b2644437ff",
-   "sizeBytes": 7764,
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 8071,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -58621,9 +59167,9 @@
     "quality/putduk-web-ui-assertions-handoff.md|doc-link|services/**",
     "services/api-nest/src/admin-ops/admin-ops.admin.controller.ts|import",
     "services/api-nest/src/ai/shadow-replay.admin.controller.ts|import",
+    "services/api-nest/src/cms/cms.admin.controller.ts|import",
     "services/api-nest/src/compliance/kyc.admin.controller.ts|import",
-    "services/api-nest/src/execution-policy/execution-policy.admin.controller.ts|import",
-    "services/api-nest/src/inbox/ops-inbox.admin.controller.ts|import"
+    "services/api-nest/src/execution-policy/execution-policy.admin.controller.ts|import"
    ],
    "blockers": [],
    "lastCommit": "2026-08-14T04:28:54+09:00",
@@ -63734,8 +64280,8 @@
     "quality/backend-residual-report.md|doc-link|services/**",
     "quality/putduk-web-sdk-handoff.md|doc-link|services/**",
     "quality/putduk-web-ui-assertions-handoff.md|doc-link|services/**",
-    "services/api-nest/src/inbox/inbox.module.ts|import",
-    "services/api-nest/src/inbox/inbox.user.controller.ts|import"
+    "services/api-nest/src/cms/cms.service.ts|import",
+    "services/api-nest/src/inbox/inbox.module.ts|import"
    ],
    "blockers": [],
    "lastCommit": "2026-08-10T07:22:06+09:00",
@@ -66886,9 +67432,9 @@
     "tooling/verify/unit-tests.cjs|verifier-reads|services/**/*.test.cjs"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-15T01:32:55+09:00",
-   "lastCommitSha": "31c8e7310032444e7bb3abe879d40cafc22b8bbe",
-   "sizeBytes": 7738,
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 8058,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -66957,9 +67503,9 @@
     "tooling/verify/unit-tests.cjs|verifier-reads|services/**/*.test.cjs"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-15T00:38:00+09:00",
-   "lastCommitSha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
-   "sizeBytes": 3763,
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 3909,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -67890,9 +68436,9 @@
     "quality/backend-residual-report.md|doc-link|services/api-nest/**"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-15T00:38:00+09:00",
-   "lastCommitSha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
-   "sizeBytes": 7557,
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 7738,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -67995,9 +68541,9 @@
     "quality/operator-backend-work-queue.json|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-15T03:25:11+09:00",
-   "lastCommitSha": "cbbda52892273ba5cd6326af222bb7b2644437ff",
-   "sizeBytes": 34946,
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 41951,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -68398,9 +68944,9 @@
     "quality/backend-residual-report.md|doc-link|services/**"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-15T00:38:00+09:00",
-   "lastCommitSha": "1bcddf3c5da1465ea30d44758a0bd1d6d1777e73",
-   "sizeBytes": 670,
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 699,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -72460,7 +73006,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations/ (59 files)"
+     "ref": "supabase/migrations/ (60 files)"
     }
    ],
    "referrers": [
@@ -74517,13 +75063,13 @@
     "quality/backend-residual-report.md|doc-link|services/**",
     "quality/putduk-web-sdk-handoff.md|doc-link|services/**",
     "quality/putduk-web-ui-assertions-handoff.md|doc-link|services/**",
+    "services/api-nest/src/cms/cms.service.ts|import",
     "services/api-nest/src/push/push.module.ts|import",
     "tooling/backend/ownership-overrides.json|verifier-reads|services/**/ai",
     "tooling/engine-acceptance/run-qa9.cjs|test-ref|services/api-nest/src/**",
     "tooling/verify/CATALOG.md|verifier-reads|services/api-nest/src/push/**",
     "tooling/verify/push-channel-prefs.cjs|verifier-reads",
-    "tooling/verify/pwa-push-badge.cjs|verifier-reads",
-    "tooling/verify/rel-406-kill-switch.cjs|verifier-reads"
+    "tooling/verify/pwa-push-badge.cjs|verifier-reads"
    ],
    "blockers": [],
    "lastCommit": "2026-08-23T16:52:51+09:00",
@@ -74882,6 +75428,7 @@
     "quality/putduk-web-sdk-handoff.md|doc-link|services/**",
     "quality/putduk-web-ui-assertions-handoff.md|doc-link|services/**",
     "services/api-nest/src/app.module.ts|import",
+    "services/api-nest/src/cms/cms.module.ts|import",
     "tooling/backend/ownership-overrides.json|verifier-reads|services/**/ai",
     "tooling/engine-acceptance/run-qa9.cjs|test-ref|services/api-nest/src/**",
     "tooling/verify/CATALOG.md|verifier-reads|services/api-nest/src/push/**",
@@ -81137,9 +81684,9 @@
     "quality/backend-only-verification.md|doc-link|services/*"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-01T21:29:18+09:00",
-   "lastCommitSha": "5e201cecd04b0fc2d02a84fe3bcb8b5a0fa24c09",
-   "sizeBytes": 5519,
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 6051,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -83331,6 +83878,83 @@
    }
   },
   {
+   "path": "services/api-nest/src/wallet/user-deposit-address.admin.controller.ts",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "api-nest",
+   "reasons": [
+    "Nest API 런타임 (tsconfig include src/**)"
+   ],
+   "evidence": [
+    {
+     "kind": "import",
+     "ref": "pkg:@nestjs/common"
+    },
+    {
+     "kind": "import",
+     "ref": "services/api-nest/src/common/admin.guard.ts"
+    },
+    {
+     "kind": "import",
+     "ref": "services/api-nest/src/wallet/deposit-address.service.ts"
+    },
+    {
+     "kind": "import",
+     "ref": "services/api-nest/src/wallet/wallet.routes.ts"
+    }
+   ],
+   "referrers": [
+    ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md|doc-link|services/api-nest/**",
+    ".cursor/plans/ai_profit_os_01_money_c3d4e5f6.plan.md|doc-link|services/api-nest/src/wallet/",
+    ".cursor/plans/ai_profit_os_02_5_engine_acceptance_qa_fd1cd7cc.plan.md|doc-link|services/**",
+    ".cursor/rules/auth-boundary.mdc|doc-link|services/**/api*/**",
+    ".cursor/rules/money-ledger.mdc|doc-link|services/**/wallet*/**",
+    ".cursor/rules/pg-gateway-ban.mdc|doc-link|services/**/wallet*/**",
+    "governance/engine-acceptance/asvs-mapping.v1.json|verifier-reads|services/api-nest/src/**/*.admin.controller.ts",
+    "governance/engine-acceptance/asvs-mapping.v1.json|verifier-reads|services/api-nest/src/wallet/*.controller.ts",
+    "governance/engine-acceptance/asvs-mapping.v1.json|verifier-reads|services/api-nest/src/**",
+    "governance/engine-acceptance/qa4-result.v1.json|verifier-reads|services/**",
+    "governance/engine-acceptance/qa5-result.v1.json|verifier-reads|services/**",
+    "governance/platform-redesign/change-control.v1.md|doc-link|services/**",
+    "governance/release-master/staging-topology.current.v1.json|verifier-reads|services/api-nest/**",
+    "pnpm-workspace.yaml|verifier-reads|services/*",
+    "quality/backend-only-deletion-plan.md|doc-link|services/api-nest/**",
+    "quality/backend-only-inventory.md|doc-link|services/*",
+    "quality/backend-only-inventory.md|doc-link|services/api-nest/**",
+    "quality/backend-only-inventory.md|doc-link|services/api-nest/src/**",
+    "quality/backend-only-official-basis.md|doc-link|services/*",
+    "quality/backend-only-verification.md|doc-link|services/*",
+    "quality/backend-residual-report.md|doc-link|services/api-nest/**",
+    "quality/backend-residual-report.md|doc-link|services/**",
+    "quality/putduk-web-sdk-handoff.md|doc-link|services/**",
+    "quality/putduk-web-ui-assertions-handoff.md|doc-link|services/**",
+    "services/api-nest/src/wallet/wallet.module.ts|import",
+    "tooling/backend/ownership-overrides.json|verifier-reads|services/**/ai",
+    "tooling/engine-acceptance/run-qa9.cjs|test-ref|services/api-nest/src/**",
+    "tooling/verify/backend/deposit-withdraw/krw-admin-decide.cjs|verifier-reads|services/api-nest/src/wallet",
+    "tooling/verify/no-per-address-poll.cjs|verifier-reads|services/api-nest/src/wallet",
+    "tooling/verify/unit-tests.cjs|verifier-reads|services/**/*.test.cjs"
+   ],
+   "blockers": [],
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 961,
+   "refSummary": {
+    "deletedUiRefs": [],
+    "uiRefs": [],
+    "backendRefs": [
+     "../common/admin.guard",
+     "./deposit-address.service",
+     "./wallet.routes"
+    ],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
+   }
+  },
+  {
    "path": "services/api-nest/src/wallet/wallet.controller.ts",
    "class": "BACKEND_RUNTIME",
    "decision": "KEEP",
@@ -83681,6 +84305,10 @@
     },
     {
      "kind": "import",
+     "ref": "services/api-nest/src/wallet/user-deposit-address.admin.controller.ts"
+    },
+    {
+     "kind": "import",
      "ref": "services/api-nest/src/wallet/withdraw-review.service.ts"
     },
     {
@@ -83735,9 +84363,9 @@
     "quality/backend-only-verification.md|doc-link|services/*"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-01T13:53:11+09:00",
-   "lastCommitSha": "1ee0d2b8d7af532a39b1765d707b5352ebcd25b5",
-   "sizeBytes": 3659,
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 3793,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -83770,6 +84398,7 @@
      "./withdraw-fee.service",
      "./withdraw-intent.service",
      "./withdraw-review.admin.controller",
+     "./user-deposit-address.admin.controller",
      "./withdraw-review.service",
      "./withdraw-kyc.guard",
      "./withdraw-stepup.service"
@@ -83833,9 +84462,9 @@
     "quality/backend-only-inventory.md|doc-link|services/api-nest/src/**/*.routes.ts"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-01T14:06:53+09:00",
-   "lastCommitSha": "4e127ab320d98f1307bfca2f3a341cf7b32259d3",
-   "sizeBytes": 2353,
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 2535,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -91801,7 +92430,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest (403 files)"
+     "ref": "services/api-nest (412 files)"
     }
    ],
    "referrers": [
@@ -93220,6 +93849,48 @@
    }
   },
   {
+   "path": "supabase/migrations/20260916220000_cms_posts.sql",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "supabase",
+   "reasons": [
+    "Supabase migration/config (ADR-001 · apply는 별도 절차)"
+   ],
+   "evidence": [],
+   "referrers": [
+    ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md|doc-link|supabase/migrations/**",
+    ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md|doc-link|supabase/migrations**",
+    ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md|doc-link|supabase/migrations/*.sql",
+    ".cursor/plans/ai_profit_os_01_money_c3d4e5f6.plan.md|doc-link|supabase/migrations/*",
+    ".cursor/rules/supabase-db-only.mdc|doc-link|supabase/**",
+    "governance/admin/control-plane-superset.md|doc-link|supabase/migrations/*",
+    "governance/recovery/founder-gates-executed-20260904.md|doc-link|supabase/migrations/**",
+    "governance/release-master/MIGRATION_READINESS.md|doc-link|supabase/migrations/**",
+    "governance/release-master/MIGRATION_READINESS.md|doc-link|supabase/migrations/*.sql",
+    "governance/release-master/PROD_READINESS.md|doc-link|supabase/migrations/**",
+    "quality/backend-only-deletion-plan.md|doc-link|supabase/migrations/**",
+    "quality/backend-only-inventory.md|doc-link|supabase/migrations/**",
+    "quality/backend-only-official-basis.md|doc-link|supabase/migrations/*.sql",
+    "quality/backend-residual-report.md|doc-link|supabase/**",
+    "quality/putduk-web-ui-assertions-handoff.md|doc-link|supabase/**",
+    "tooling/verify/CATALOG.md|verifier-reads|supabase/migrations/**"
+   ],
+   "blockers": [],
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 1865,
+   "refSummary": {
+    "deletedUiRefs": [],
+    "uiRefs": [],
+    "backendRefs": [],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
+   }
+  },
+  {
    "path": "supabase/staging/20260901120000_admin_audit_append_only.sql",
    "class": "BACKEND_INFRA",
    "decision": "KEEP",
@@ -93353,7 +94024,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     }
    ],
    "referrers": [
@@ -93599,7 +94270,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "tooling/verify (248 files)"
+     "ref": "tooling/verify (250 files)"
     },
     {
      "kind": "verifier-reads",
@@ -93615,15 +94286,15 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest (403 files)"
+     "ref": "services/api-nest (412 files)"
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src (385 files)"
+     "ref": "services/api-nest/src (394 files)"
     },
     {
      "kind": "verifier-reads",
@@ -93742,7 +94413,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/**/ai (504 files)"
+     "ref": "services/**/ai (513 files)"
     },
     {
      "kind": "verifier-reads",
@@ -95070,7 +95741,7 @@
     },
     {
      "kind": "deploy-cmd",
-     "ref": "services/api-nest (403 files)"
+     "ref": "services/api-nest (412 files)"
     }
    ],
    "referrers": [
@@ -96247,7 +96918,7 @@
     },
     {
      "kind": "test-ref",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "test-ref",
@@ -96806,7 +97477,7 @@
     },
     {
      "kind": "test-ref",
-     "ref": "services/api-nest/src (385 files)"
+     "ref": "services/api-nest/src (394 files)"
     },
     {
      "kind": "test-ref",
@@ -97317,7 +97988,7 @@
     },
     {
      "kind": "test-ref",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "test-ref",
@@ -98652,7 +99323,7 @@
     },
     {
      "kind": "test-ref",
-     "ref": "services/api-nest (403 files)"
+     "ref": "services/api-nest (412 files)"
     }
    ],
    "referrers": [
@@ -99232,7 +99903,7 @@
     },
     {
      "kind": "test-ref",
-     "ref": "services/api-nest (403 files)"
+     "ref": "services/api-nest (412 files)"
     }
    ],
    "referrers": [
@@ -99950,7 +100621,7 @@
     },
     {
      "kind": "test-ref",
-     "ref": "services/api-nest/src (385 files)"
+     "ref": "services/api-nest/src (394 files)"
     },
     {
      "kind": "test-ref",
@@ -101777,7 +102448,7 @@
     },
     {
      "kind": "test-ref",
-     "ref": "services/api-nest/src/** (385 files)"
+     "ref": "services/api-nest/src/** (394 files)"
     },
     {
      "kind": "test-ref",
@@ -103383,7 +104054,7 @@
     },
     {
      "kind": "deploy-cmd",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "deploy-cmd",
@@ -105743,9 +106414,9 @@
     "tooling/verify/idempotency-conflict-detection.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-16T18:04:29+09:00",
-   "lastCommitSha": "84dc313fe4fcbda62d43b25cc69f950f1cd57d3d",
-   "sizeBytes": 43857,
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 43981,
    "refSummary": {
     "deletedUiRefs": [
      "apps/web/public/brand",
@@ -105932,7 +106603,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src (385 files)"
+     "ref": "services/api-nest/src (394 files)"
     },
     {
      "kind": "verifier-reads",
@@ -106661,7 +107332,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "verifier-reads",
@@ -106947,7 +107618,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest (403 files)"
+     "ref": "services/api-nest (412 files)"
     },
     {
      "kind": "gate-tier",
@@ -106975,9 +107646,9 @@
     ".github/workflows/operator-mall-gha-pg.yml|workflow-run|verify:api-nest-build"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-15T19:41:08+09:00",
-   "lastCommitSha": "f295d67f1c3c5b0cbc824c06e568074fd382e85a",
-   "sizeBytes": 3307,
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 3332,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -107637,7 +108308,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "tooling/verify (248 files)"
+     "ref": "tooling/verify (250 files)"
     },
     {
      "kind": "verifier-reads",
@@ -107727,7 +108398,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src (385 files)"
+     "ref": "services/api-nest/src (394 files)"
     },
     {
      "kind": "verifier-reads",
@@ -107743,15 +108414,15 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations/ (59 files)"
+     "ref": "supabase/migrations/ (60 files)"
     },
     {
      "kind": "verifier-reads",
-     "ref": "tooling/verify (248 files)"
+     "ref": "tooling/verify (250 files)"
     }
    ],
    "referrers": [
@@ -107891,7 +108562,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src (385 files)"
+     "ref": "services/api-nest/src (394 files)"
     },
     {
      "kind": "verifier-reads",
@@ -108288,7 +108959,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src (385 files)"
+     "ref": "services/api-nest/src (394 files)"
     },
     {
      "kind": "verifier-reads",
@@ -108829,6 +109500,100 @@
    "override": true
   },
   {
+   "path": "tooling/verify/backend/cms/cms-admin-http.runtime.cjs",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "verify-backend-port",
+   "reasons": [
+    "mixed 검증기 백엔드 어서션 포트 (원본 SHA 86f15964 · UI 어서션은 quality/putduk-web-ui-assertions-handoff.md) · evidence 재판정 대상",
+    "레포 경로 참조 0 (순수 로직 또는 도구) · 시드 유지",
+    "[override] 5단계 mixed 분리 산출물 · 원본 mixed 검증기(SHA 86f15964)에서 백엔드 어서션만 옮긴 테스트 · UI 어서션은 quality/putduk-web-ui-assertions-handoff.md 기록 후 제거 · 러너 backend/run-all.cjs(verify:backend · T1)."
+   ],
+   "evidence": [],
+   "referrers": [
+    "pnpm-workspace.yaml|verifier-reads|tooling/*",
+    "quality/backend-ci.md|doc-link|tooling/*",
+    "quality/backend-deletion-ledger.md|doc-link|tooling/verify/**",
+    "quality/backend-deletion-ledger.md|doc-link|tooling/verify/backend/",
+    "quality/backend-only-deletion-plan.md|doc-link|tooling/verify/*-closure.cjs",
+    "quality/backend-only-inventory.md|doc-link|tooling/*",
+    "quality/backend-only-official-basis.md|doc-link|tooling/*",
+    "quality/backend-residual-report.md|doc-link|tooling/verify/**",
+    "quality/putduk-web-ui-assertions-handoff.md|doc-link|tooling/verify/backend/",
+    "quality/putduk-web-ui-assertions-handoff.md|doc-link|tooling/verify/backend/**",
+    "tooling/backend/ownership-overrides.json|verifier-reads|tooling/verify/backend/**/*.cjs",
+    "tooling/verify/CATALOG.md|verifier-reads|tooling/verify/backend/"
+   ],
+   "blockers": [],
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 453,
+   "refSummary": {
+    "deletedUiRefs": [],
+    "uiRefs": [],
+    "backendRefs": [],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
+   },
+   "override": true
+  },
+  {
+   "path": "tooling/verify/backend/cms/cms-posts.cjs",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP",
+   "stage": "-",
+   "rule": "verify-backend-port",
+   "reasons": [
+    "mixed 검증기 백엔드 어서션 포트 (원본 SHA 86f15964 · UI 어서션은 quality/putduk-web-ui-assertions-handoff.md) · evidence 재판정 대상",
+    "백엔드 경로만 참조 (services/api-nest/src/cms/cms.spec.runtime.cjs, services/api-nest/src/cms/cms.admin.controller.ts)",
+    "[override] 5단계 mixed 분리 산출물 · 원본 mixed 검증기(SHA 86f15964)에서 백엔드 어서션만 옮긴 테스트 · UI 어서션은 quality/putduk-web-ui-assertions-handoff.md 기록 후 제거 · 러너 backend/run-all.cjs(verify:backend · T1)."
+   ],
+   "evidence": [
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/cms/cms.spec.runtime.cjs"
+    },
+    {
+     "kind": "verifier-reads",
+     "ref": "services/api-nest/src/cms/cms.admin.controller.ts"
+    }
+   ],
+   "referrers": [
+    "pnpm-workspace.yaml|verifier-reads|tooling/*",
+    "quality/backend-ci.md|doc-link|tooling/*",
+    "quality/backend-deletion-ledger.md|doc-link|tooling/verify/**",
+    "quality/backend-deletion-ledger.md|doc-link|tooling/verify/backend/",
+    "quality/backend-only-deletion-plan.md|doc-link|tooling/verify/*-closure.cjs",
+    "quality/backend-only-inventory.md|doc-link|tooling/*",
+    "quality/backend-only-official-basis.md|doc-link|tooling/*",
+    "quality/backend-residual-report.md|doc-link|tooling/verify/**",
+    "quality/putduk-web-ui-assertions-handoff.md|doc-link|tooling/verify/backend/",
+    "quality/putduk-web-ui-assertions-handoff.md|doc-link|tooling/verify/backend/**",
+    "tooling/backend/ownership-overrides.json|verifier-reads|tooling/verify/backend/**/*.cjs",
+    "tooling/verify/CATALOG.md|verifier-reads|tooling/verify/backend/"
+   ],
+   "blockers": [],
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 1217,
+   "refSummary": {
+    "deletedUiRefs": [],
+    "uiRefs": [],
+    "backendRefs": [
+     "services/api-nest/src/cms/cms.spec.runtime.cjs",
+     "services/api-nest/src/cms/cms.admin.controller.ts"
+    ],
+    "governanceBackendRefs": [],
+    "sdkOnlyUi": false,
+    "browserHarness": false,
+    "uiMarkers": false
+   },
+   "override": true
+  },
+  {
    "path": "tooling/verify/backend/deposit-withdraw/deposit-config-fail-closed.cjs",
    "class": "BACKEND_TEST",
    "decision": "KEEP",
@@ -108898,11 +109663,11 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "verifier-reads",
-     "ref": "tooling/verify (248 files)"
+     "ref": "tooling/verify (250 files)"
     }
    ],
    "referrers": [
@@ -109112,7 +109877,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src/wallet (46 files)"
+     "ref": "services/api-nest/src/wallet (47 files)"
     },
     {
      "kind": "verifier-reads",
@@ -109738,7 +110503,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src (385 files)"
+     "ref": "services/api-nest/src (394 files)"
     }
    ],
    "referrers": [
@@ -110538,7 +111303,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     }
    ],
    "referrers": [
@@ -111612,7 +112377,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src (385 files)"
+     "ref": "services/api-nest/src (394 files)"
     },
     {
      "kind": "verifier-reads",
@@ -113968,9 +114733,9 @@
     "tooling/verify/settlement-rule-parity.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-16T06:51:59+09:00",
-   "lastCommitSha": "009750f0bef8c5c33f04dd55d8a23f8e5edf1754",
-   "sizeBytes": 64299,
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 64636,
    "refSummary": {
     "deletedUiRefs": [
      "apps/web/",
@@ -114365,7 +115130,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src (385 files)"
+     "ref": "services/api-nest/src (394 files)"
     },
     {
      "kind": "verifier-reads",
@@ -115289,7 +116054,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "verifier-reads",
@@ -115329,9 +116094,9 @@
     "tooling/verify/shadow-replay-drift.cjs|verifier-reads"
    ],
    "blockers": [],
-   "lastCommit": "2026-09-16T19:29:42+09:00",
-   "lastCommitSha": "7f9590aebc26adae97a75d5cc7e95d3b702a3148",
-   "sizeBytes": 7322,
+   "lastCommit": "2026-09-16T22:53:12+09:00",
+   "lastCommitSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
+   "sizeBytes": 8509,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -116307,7 +117072,7 @@
    "blockers": [],
    "lastCommit": "2026-09-11T13:43:29+09:00",
    "lastCommitSha": "e8d0c371fee9fad94a71c122d29f288f01dbdb01",
-   "sizeBytes": 9485,
+   "sizeBytes": 9517,
    "refSummary": {
     "deletedUiRefs": [],
     "uiRefs": [],
@@ -117968,7 +118733,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "gate-tier",
@@ -118021,7 +118786,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "verifier-reads",
@@ -118316,7 +119081,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src (385 files)"
+     "ref": "services/api-nest/src (394 files)"
     },
     {
      "kind": "verifier-reads",
@@ -118690,7 +119455,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/api-nest/src/wallet (46 files)"
+     "ref": "services/api-nest/src/wallet (47 files)"
     },
     {
      "kind": "verifier-reads",
@@ -119499,7 +120264,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations/ (59 files)"
+     "ref": "supabase/migrations/ (60 files)"
     }
    ],
    "referrers": [
@@ -119560,7 +120325,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations/ (59 files)"
+     "ref": "supabase/migrations/ (60 files)"
     },
     {
      "kind": "verifier-reads",
@@ -120865,7 +121630,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "verifier-reads",
@@ -121653,7 +122418,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "tooling/verify/ (248 files)"
+     "ref": "tooling/verify/ (250 files)"
     },
     {
      "kind": "verifier-reads",
@@ -123283,7 +124048,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "tooling/verify (248 files)"
+     "ref": "tooling/verify (250 files)"
     },
     {
      "kind": "verifier-reads",
@@ -123389,7 +124154,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "tooling/verify (248 files)"
+     "ref": "tooling/verify (250 files)"
     },
     {
      "kind": "verifier-reads",
@@ -123476,7 +124241,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "tooling/verify (248 files)"
+     "ref": "tooling/verify (250 files)"
     },
     {
      "kind": "verifier-reads",
@@ -123632,7 +124397,7 @@
    "evidence": [
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations (59 files)"
+     "ref": "supabase/migrations (60 files)"
     },
     {
      "kind": "verifier-reads",
@@ -123668,7 +124433,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "tooling/verify (248 files)"
+     "ref": "tooling/verify (250 files)"
     },
     {
      "kind": "verifier-reads",
@@ -123890,7 +124655,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "tooling/verify (248 files)"
+     "ref": "tooling/verify (250 files)"
     },
     {
      "kind": "verifier-reads",
@@ -124143,7 +124908,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "tooling/verify (248 files)"
+     "ref": "tooling/verify (250 files)"
     },
     {
      "kind": "verifier-reads",
@@ -124237,7 +125002,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "tooling/verify (248 files)"
+     "ref": "tooling/verify (250 files)"
     },
     {
      "kind": "verifier-reads",
@@ -124341,7 +125106,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "tooling/verify (248 files)"
+     "ref": "tooling/verify (250 files)"
     },
     {
      "kind": "verifier-reads",
@@ -125814,7 +126579,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "supabase/migrations/ (59 files)"
+     "ref": "supabase/migrations/ (60 files)"
     },
     {
      "kind": "gate-tier",
@@ -126329,7 +127094,7 @@
     },
     {
      "kind": "verifier-reads",
-     "ref": "services/**/*.test.cjs (504 files)"
+     "ref": "services/**/*.test.cjs (513 files)"
     },
     {
      "kind": "gate-tier",

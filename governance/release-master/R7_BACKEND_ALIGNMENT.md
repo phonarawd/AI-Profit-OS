@@ -47,8 +47,8 @@ missing snapshot/amount → null. KRW 0 위조 0. client `Number()*rate` 0.
 | idempotency | SDK participate/withdraw keys | Nest participate + wallet withdraw | ALIGNED | money |
 | auth_permission | Nest `JwtAuthGuard` | `supabase.auth` 0 in api-nest | ALIGNED | REL-405 |
 | rls | REL-408 80/80 ON | `SECURITY_BASELINE.md` | ALIGNED | REL-408 |
-| indexes | applied migration `CREATE INDEX` | file-only indexes 0 | ALIGNED (REL-701-DB 2026-09-04 · mall MCP apply 2026-09-16 · unapplied 0) | REL-408 / REL-701-DB |
-| migration_head | local `20260916120000` | remote applied `20260916120000` | ALIGNED (MCP apply_migration 2026-09-16 · remote stamp `20260916105643` mapped · REL-701-DB 실행 이력 유지) | REL-701-DB |
+| indexes | applied migration `CREATE INDEX` | file-only indexes 0 | applied indexes remain; post-head `20260916220000` cms_posts is committedUnapplied (apply 0) | REL-408 / REL-701-DB |
+| migration_head | local `20260916220000` | remote applied `20260916120000` | PENDING committedUnapplied cms_posts (apply 0 · REL-504/REL-701-DB owner · 가짜 시드 0) | REL-701-DB |
 | p0_p3_engine | REL-502 `FINAL_ACCEPTANCE` | DEFECTS_P0/P1 = 0 | STALE_PENDING_RERUN | REL-502 |
 | p0_p3_admin | REL-409 R6 cert | KNOWN_P0~P3 = 0 | ALIGNED | REL-409 |
 | ui_truth_home_money | home-money-read contract | Engine todayPossible 0 · fake zero 0 | ALIGNED | money / UI |

@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-09-16T10:50:26.595Z",
- "headSha": "e31e718b6726b91e91ad8da9574b2db582ab58da",
+ "generatedAt": "2026-09-16T14:03:08.201Z",
+ "headSha": "e14f6ced5659a18eecdad29815ce6e37a6c05fd2",
  "edgeKinds": [
   "import",
   "require",
@@ -3397,6 +3397,54 @@
    "decision": "KEEP"
   },
   {
+   "id": "services/api-nest/src/cms/cms.admin.controller.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/cms/cms.core.cjs",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/cms/cms.module.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/cms/cms.public.controller.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/cms/cms.routes.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/cms/cms.service.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/cms/cms.spec.runtime.cjs",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/cms/index.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
    "id": "services/api-nest/src/common/admin-capabilities.ts",
    "type": "file",
    "class": "BACKEND_RUNTIME",
@@ -5161,6 +5209,12 @@
    "decision": "KEEP"
   },
   {
+   "id": "services/api-nest/src/wallet/user-deposit-address.admin.controller.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
    "id": "services/api-nest/src/wallet/wallet.controller.ts",
    "type": "file",
    "class": "BACKEND_RUNTIME",
@@ -6086,6 +6140,12 @@
   },
   {
    "id": "supabase/migrations/20260916120000_operator_mall_product_simple_amounts.sql",
+   "type": "file",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
+  },
+  {
+   "id": "supabase/migrations/20260916220000_cms_posts.sql",
    "type": "file",
    "class": "BACKEND_INFRA",
    "decision": "KEEP"
@@ -7376,6 +7436,18 @@
   },
   {
    "id": "tooling/verify/backend/benefit-referral/share-copy.cjs",
+   "type": "file",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
+   "id": "tooling/verify/backend/cms/cms-admin-http.runtime.cjs",
+   "type": "file",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
+   "id": "tooling/verify/backend/cms/cms-posts.cjs",
    "type": "file",
    "class": "BACKEND_TEST",
    "decision": "KEEP"
@@ -9303,7 +9375,7 @@
   {
    "id": "dir:services/api-nest/**",
    "type": "glob",
-   "files": 403
+   "files": 412
   },
   {
    "id": "dir:services/engine-rust/**",
@@ -9323,7 +9395,7 @@
   {
    "id": "dir:supabase/migrations/**",
    "type": "glob",
-   "files": 59
+   "files": 60
   },
   {
    "id": "missing:.cursor/tmp",
@@ -9336,12 +9408,12 @@
   {
    "id": "dir:supabase/migrations",
    "type": "directory",
-   "files": 59
+   "files": 60
   },
   {
    "id": "dir:tooling/verify",
    "type": "directory",
-   "files": 248
+   "files": 250
   },
   {
    "id": "deleted:packages/ui/tokens",
@@ -9350,7 +9422,7 @@
   {
    "id": "dir:services/api-nest",
    "type": "directory",
-   "files": 403
+   "files": 412
   },
   {
    "id": "missing:tooling/verify/web-lint.cjs",
@@ -9766,7 +9838,7 @@
   {
    "id": "dir:supabase/migrations**",
    "type": "glob",
-   "files": 59
+   "files": 60
   },
   {
    "id": "deleted:packages/ui",
@@ -9956,7 +10028,7 @@
   {
    "id": "dir:supabase/migrations/",
    "type": "directory",
-   "files": 59
+   "files": 60
   },
   {
    "id": "missing:supabase/auth*",
@@ -9973,7 +10045,7 @@
   {
    "id": "dir:supabase/migrations/*.sql",
    "type": "glob",
-   "files": 59
+   "files": 60
   },
   {
    "id": "missing:services/realtime-service",
@@ -10004,7 +10076,7 @@
   {
    "id": "dir:supabase/migrations/*",
    "type": "glob",
-   "files": 59
+   "files": 60
   },
   {
    "id": "deleted:apps/admin/**",
@@ -10047,7 +10119,7 @@
   {
    "id": "dir:services/api-nest/src/wallet/",
    "type": "directory",
-   "files": 46
+   "files": 47
   },
   {
    "id": "dir:services/api-nest/src/compliance/",
@@ -10085,7 +10157,7 @@
   {
    "id": "dir:services/**",
    "type": "glob",
-   "files": 504
+   "files": 513
   },
   {
    "id": "missing:apps/**",
@@ -10178,7 +10250,7 @@
   {
    "id": "dir:tooling/verify/",
    "type": "directory",
-   "files": 248
+   "files": 250
   },
   {
    "id": "deleted:packages/ui/brand/assets/markets/manifest.json",
@@ -10319,7 +10391,7 @@
   {
    "id": "dir:services/**/api*/**",
    "type": "glob",
-   "files": 403
+   "files": 412
   },
   {
    "id": "dir:.github/workflows/**",
@@ -10362,7 +10434,7 @@
   {
    "id": "dir:services/**/wallet*/**",
    "type": "glob",
-   "files": 46
+   "files": 47
   },
   {
    "id": "dir:services/**/ledger*/**",
@@ -10395,7 +10467,7 @@
   {
    "id": "dir:supabase/**",
    "type": "glob",
-   "files": 66
+   "files": 67
   },
   {
    "id": "missing:.cursor/plans/ai_profit_os_launch_*.plan.md",
@@ -10577,17 +10649,17 @@
   {
    "id": "dir:services/api-nest/src/**/*.admin.controller.ts",
    "type": "glob",
-   "files": 26
+   "files": 28
   },
   {
    "id": "dir:services/api-nest/src/wallet/*.controller.ts",
    "type": "glob",
-   "files": 7
+   "files": 8
   },
   {
    "id": "dir:services/api-nest/src/**",
    "type": "glob",
-   "files": 385
+   "files": 394
   },
   {
    "id": "missing:.cursor/hooks.json.bak-20260914-hook-temp-disable",
@@ -13151,12 +13223,12 @@
   {
    "id": "dir:tooling/*",
    "type": "glob",
-   "files": 421
+   "files": 423
   },
   {
    "id": "dir:services/*",
    "type": "glob",
-   "files": 504
+   "files": 513
   },
   {
    "id": "dir:workers/*",
@@ -13175,7 +13247,7 @@
   {
    "id": "dir:services/api-nest/src",
    "type": "directory",
-   "files": 385
+   "files": 394
   },
   {
    "id": "missing:packages/sdk/src",
@@ -13316,7 +13388,7 @@
   {
    "id": "dir:tooling/verify/**",
    "type": "glob",
-   "files": 248
+   "files": 250
   },
   {
    "id": "dir:governance/release-master/**",
@@ -13919,7 +13991,7 @@
   {
    "id": "dir:tooling/verify/backend/",
    "type": "directory",
-   "files": 50
+   "files": 52
   },
   {
    "id": "missing:tooling/verify/lib/retired-ui-stubs.cjs",
@@ -14791,7 +14863,7 @@
   {
    "id": "dir:tooling/verify/*-closure.cjs",
    "type": "glob",
-   "files": 248
+   "files": 250
   },
   {
    "id": "missing:.github/workflows/{consumer-spark-worldclass",
@@ -15092,7 +15164,7 @@
   {
    "id": "dir:services/api-nest/src/**/*.routes.ts",
    "type": "glob",
-   "files": 31
+   "files": 32
   },
   {
    "id": "deleted:packages/ui/canon/contracts/*.md",
@@ -15446,7 +15518,7 @@
   {
    "id": "dir:tooling/verify/backend/**",
    "type": "glob",
-   "files": 50
+   "files": 52
   },
   {
    "id": "missing:CONSTITUTION/46b",
@@ -15814,7 +15886,7 @@
   {
    "id": "dir:services/**/ai",
    "type": "glob",
-   "files": 504
+   "files": 513
   },
   {
    "id": "deleted:apps/web/**/peotteok",
@@ -15828,7 +15900,7 @@
   {
    "id": "dir:tooling/verify/backend/**/*.cjs",
    "type": "glob",
-   "files": 50
+   "files": 52
   },
   {
    "id": "missing:.cursor/projects/${name}",
@@ -16238,7 +16310,7 @@
   {
    "id": "dir:services/api-nest/src/wallet",
    "type": "directory",
-   "files": 46
+   "files": 47
   },
   {
    "id": "dir:services/engine-rust/testdata/golden",
@@ -16415,7 +16487,7 @@
   {
    "id": "dir:services/**/*.test.cjs",
    "type": "glob",
-   "files": 504
+   "files": 513
   },
   {
    "id": "missing:services/api-nest/dist/ledger/ledger.user-query.selftest.js",
@@ -92494,6 +92566,12 @@
   },
   {
    "from": "services/api-nest/src/app.module.ts",
+   "to": "services/api-nest/src/cms/cms.module.ts",
+   "kind": "import",
+   "spec": "./cms/cms.module"
+  },
+  {
+   "from": "services/api-nest/src/app.module.ts",
    "to": "services/api-nest/src/observability/obs.exception-filter.ts",
    "kind": "import",
    "spec": "./observability/obs.exception-filter"
@@ -93385,6 +93463,150 @@
    "to": "services/api-nest/src/auth/webauthn-rp.ts",
    "kind": "import",
    "spec": "./webauthn-rp"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.admin.controller.ts",
+   "to": "pkg:@nestjs/common",
+   "kind": "import",
+   "spec": "@nestjs/common"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.admin.controller.ts",
+   "to": "services/api-nest/src/common/admin.guard.ts",
+   "kind": "import",
+   "spec": "../common/admin.guard"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.admin.controller.ts",
+   "to": "services/api-nest/src/common/admin-operator.decorator.ts",
+   "kind": "import",
+   "spec": "../common/admin-operator.decorator"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.admin.controller.ts",
+   "to": "services/api-nest/src/cms/cms.routes.ts",
+   "kind": "import",
+   "spec": "./cms.routes"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.admin.controller.ts",
+   "to": "services/api-nest/src/cms/cms.service.ts",
+   "kind": "import",
+   "spec": "./cms.service"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.module.ts",
+   "to": "pkg:@nestjs/common",
+   "kind": "import",
+   "spec": "@nestjs/common"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.module.ts",
+   "to": "services/api-nest/src/events/events.module.ts",
+   "kind": "import",
+   "spec": "../events/events.module"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.module.ts",
+   "to": "services/api-nest/src/inbox/inbox.module.ts",
+   "kind": "import",
+   "spec": "../inbox/inbox.module"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.module.ts",
+   "to": "services/api-nest/src/push/push.module.ts",
+   "kind": "import",
+   "spec": "../push/push.module"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.module.ts",
+   "to": "services/api-nest/src/cms/cms.admin.controller.ts",
+   "kind": "import",
+   "spec": "./cms.admin.controller"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.module.ts",
+   "to": "services/api-nest/src/cms/cms.public.controller.ts",
+   "kind": "import",
+   "spec": "./cms.public.controller"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.module.ts",
+   "to": "services/api-nest/src/cms/cms.service.ts",
+   "kind": "import",
+   "spec": "./cms.service"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.public.controller.ts",
+   "to": "pkg:@nestjs/common",
+   "kind": "import",
+   "spec": "@nestjs/common"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.public.controller.ts",
+   "to": "services/api-nest/src/cms/cms.routes.ts",
+   "kind": "import",
+   "spec": "./cms.routes"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.public.controller.ts",
+   "to": "services/api-nest/src/cms/cms.service.ts",
+   "kind": "import",
+   "spec": "./cms.service"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.service.ts",
+   "to": "pkg:@nestjs/common",
+   "kind": "import",
+   "spec": "@nestjs/common"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.service.ts",
+   "to": "services/api-nest/src/db/postgres.ts",
+   "kind": "import",
+   "spec": "../db/postgres"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.service.ts",
+   "to": "services/api-nest/src/inbox/ops-inbox.service.ts",
+   "kind": "import",
+   "spec": "../inbox/ops-inbox.service"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.service.ts",
+   "to": "services/api-nest/src/push/push-emit.service.ts",
+   "kind": "import",
+   "spec": "../push/push-emit.service"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.service.ts",
+   "to": "services/api-nest/src/cms/cms.routes.ts",
+   "kind": "import",
+   "spec": "./cms.routes"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.spec.runtime.cjs",
+   "to": "services/api-nest/src/cms/cms.core.cjs",
+   "kind": "require",
+   "spec": "./cms.core.cjs"
+  },
+  {
+   "from": "services/api-nest/src/cms/index.ts",
+   "to": "services/api-nest/src/cms/cms.module.ts",
+   "kind": "import",
+   "spec": "./cms.module"
+  },
+  {
+   "from": "services/api-nest/src/cms/index.ts",
+   "to": "services/api-nest/src/cms/cms.service.ts",
+   "kind": "import",
+   "spec": "./cms.service"
+  },
+  {
+   "from": "services/api-nest/src/cms/index.ts",
+   "to": "services/api-nest/src/cms/cms.routes.ts",
+   "kind": "import",
+   "spec": "./cms.routes"
   },
   {
    "from": "services/api-nest/src/common/admin-capabilities.ts",
@@ -100288,6 +100510,30 @@
    "spec": "./wallet.types"
   },
   {
+   "from": "services/api-nest/src/wallet/user-deposit-address.admin.controller.ts",
+   "to": "pkg:@nestjs/common",
+   "kind": "import",
+   "spec": "@nestjs/common"
+  },
+  {
+   "from": "services/api-nest/src/wallet/user-deposit-address.admin.controller.ts",
+   "to": "services/api-nest/src/common/admin.guard.ts",
+   "kind": "import",
+   "spec": "../common/admin.guard"
+  },
+  {
+   "from": "services/api-nest/src/wallet/user-deposit-address.admin.controller.ts",
+   "to": "services/api-nest/src/wallet/deposit-address.service.ts",
+   "kind": "import",
+   "spec": "./deposit-address.service"
+  },
+  {
+   "from": "services/api-nest/src/wallet/user-deposit-address.admin.controller.ts",
+   "to": "services/api-nest/src/wallet/wallet.routes.ts",
+   "kind": "import",
+   "spec": "./wallet.routes"
+  },
+  {
    "from": "services/api-nest/src/wallet/wallet.controller.ts",
    "to": "pkg:@nestjs/common",
    "kind": "import",
@@ -100568,6 +100814,12 @@
    "to": "services/api-nest/src/wallet/withdraw-review.admin.controller.ts",
    "kind": "import",
    "spec": "./withdraw-review.admin.controller"
+  },
+  {
+   "from": "services/api-nest/src/wallet/wallet.module.ts",
+   "to": "services/api-nest/src/wallet/user-deposit-address.admin.controller.ts",
+   "kind": "import",
+   "spec": "./user-deposit-address.admin.controller"
   },
   {
    "from": "services/api-nest/src/wallet/wallet.module.ts",
@@ -109745,6 +109997,16 @@
   {
    "from": "tooling/verify/backend/benefit-referral/share-copy.cjs",
    "to": "services/api-nest/src/referral/referral.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/backend/cms/cms-posts.cjs",
+   "to": "services/api-nest/src/cms/cms.spec.runtime.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/backend/cms/cms-posts.cjs",
+   "to": "services/api-nest/src/cms/cms.admin.controller.ts",
    "kind": "verifier-reads"
   },
   {
@@ -123294,6 +123556,12 @@
    "to": "script:verify:observability",
    "kind": "workflow-run",
    "spec": "pnpm verify:observability"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "tooling/verify/backend/run-all.cjs",
+   "kind": "workflow-run",
+   "spec": "node tooling/verify/backend/run-all.cjs"
   },
   {
    "from": ".github/workflows/backend-ci.yml",
