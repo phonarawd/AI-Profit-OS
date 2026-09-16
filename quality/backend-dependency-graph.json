@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-09-16T08:51:06.715Z",
- "headSha": "e86c753fbc475c6f9d7cd05b6346fc9f9f25e969",
+ "generatedAt": "2026-09-16T10:41:56.299Z",
+ "headSha": "7f9590aebc26adae97a75d5cc7e95d3b702a3148",
  "edgeKinds": [
   "import",
   "require",
@@ -2048,6 +2048,12 @@
   },
   {
    "id": "quality/migrations-draft/20260915080000_admin_staff_credentials.sql",
+   "type": "file",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP"
+  },
+  {
+   "id": "quality/migrations-draft/20260916120000_operator_mall_product_simple_amounts.sql",
    "type": "file",
    "class": "BACKEND_DOC",
    "decision": "KEEP"
@@ -6073,6 +6079,12 @@
    "decision": "KEEP"
   },
   {
+   "id": "supabase/migrations/20260916120000_operator_mall_product_simple_amounts.sql",
+   "type": "file",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
+  },
+  {
    "id": "supabase/staging/20260901120000_admin_audit_append_only.sql",
    "type": "file",
    "class": "BACKEND_INFRA",
@@ -9305,7 +9317,7 @@
   {
    "id": "dir:supabase/migrations/**",
    "type": "glob",
-   "files": 58
+   "files": 59
   },
   {
    "id": "missing:.cursor/tmp",
@@ -9318,7 +9330,7 @@
   {
    "id": "dir:supabase/migrations",
    "type": "directory",
-   "files": 58
+   "files": 59
   },
   {
    "id": "dir:tooling/verify",
@@ -9748,7 +9760,7 @@
   {
    "id": "dir:supabase/migrations**",
    "type": "glob",
-   "files": 58
+   "files": 59
   },
   {
    "id": "deleted:packages/ui",
@@ -9938,7 +9950,7 @@
   {
    "id": "dir:supabase/migrations/",
    "type": "directory",
-   "files": 58
+   "files": 59
   },
   {
    "id": "missing:supabase/auth*",
@@ -9955,7 +9967,7 @@
   {
    "id": "dir:supabase/migrations/*.sql",
    "type": "glob",
-   "files": 58
+   "files": 59
   },
   {
    "id": "missing:services/realtime-service",
@@ -9986,7 +9998,7 @@
   {
    "id": "dir:supabase/migrations/*",
    "type": "glob",
-   "files": 58
+   "files": 59
   },
   {
    "id": "deleted:apps/admin/**",
@@ -10377,7 +10389,7 @@
   {
    "id": "dir:supabase/**",
    "type": "glob",
-   "files": 65
+   "files": 66
   },
   {
    "id": "missing:.cursor/plans/ai_profit_os_launch_*.plan.md",
@@ -14764,7 +14776,7 @@
   {
    "id": "dir:quality/**",
    "type": "glob",
-   "files": 61
+   "files": 62
   },
   {
    "id": "missing:apps/*",
@@ -15331,7 +15343,7 @@
   {
    "id": "dir:quality/migrations-draft/",
    "type": "directory",
-   "files": 10
+   "files": 11
   },
   {
    "id": "missing:assets/listings/opportunities/fx",
@@ -15481,7 +15493,7 @@
   {
    "id": "dir:quality/migrations-draft",
    "type": "directory",
-   "files": 10
+   "files": 11
   },
   {
    "id": "env:AUTH_RATE_LIMIT_MAX",
@@ -26714,6 +26726,11 @@
   {
    "from": "governance/engine-acceptance/baseline.v1.json",
    "to": "supabase/migrations/20260916080000_admin_staff_credentials.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "supabase/migrations/20260916120000_operator_mall_product_simple_amounts.sql",
    "kind": "verifier-reads"
   },
   {
@@ -68016,6 +68033,16 @@
   },
   {
    "from": "governance/engine-acceptance/product-rebases.v1.json",
+   "to": "schemas/opportunity-card.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/product-rebases.v1.json",
+   "to": "supabase/migrations/20260916120000_operator_mall_product_simple_amounts.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/product-rebases.v1.json",
    "to": "package.json",
    "kind": "verifier-reads"
   },
@@ -86103,6 +86130,11 @@
    "spec": "supabase/migrations"
   },
   {
+   "from": "quality/migrations-draft/20260916120000_operator_mall_product_simple_amounts.sql",
+   "to": "supabase/migrations/20260916120000_operator_mall_product_simple_amounts.sql",
+   "kind": "verifier-reads"
+  },
+  {
    "from": "quality/migrations-draft/admin-staff-credentials.v1.md",
    "to": "supabase/migrations/20260916080000_admin_staff_credentials.sql",
    "kind": "doc-link"
@@ -93816,6 +93848,11 @@
   {
    "from": "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
    "to": "supabase/migrations/20260916033100_operator_mall_product.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
+   "to": "supabase/migrations/20260916120000_operator_mall_product_simple_amounts.sql",
    "kind": "verifier-reads"
   },
   {
@@ -111704,6 +111741,11 @@
   {
    "from": "tooling/verify/operator-mall-gha-pg.cjs",
    "to": "quality/migrations-draft/20260915080000_admin_staff_credentials.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/operator-mall-gha-pg.cjs",
+   "to": "quality/migrations-draft/20260916120000_operator_mall_product_simple_amounts.sql",
    "kind": "verifier-reads"
   },
   {
