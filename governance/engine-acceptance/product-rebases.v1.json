@@ -1425,6 +1425,76 @@
       "qa9_complete": false,
       "qa9_verdict_issued": false,
       "eval_dataset_status": "MATCH"
+    },
+    {
+      "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
+      "rebase_id": "ea-rebase-12661a80e426-ad6275b2133b",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-09-16T08:32:00.265Z",
+        "statement": "ACK APPROVED ENGINE_ACCEPTANCE_REBASE_V1: user standing order 너가 백엔드에서 해야될거 다해 + live operator report list empty / participate 0 / CORS; product SHA = 12661a80e4261c57fa59e958674885e92b4196f2; predecessor = ea-baseline-009750f0bef8-60f2feeec9d3; do not laundry old QA9 / ISSUED"
+      },
+      "predecessor_baseline_id": "ea-baseline-009750f0bef8-60f2feeec9d3",
+      "new_baseline_id": "ea-baseline-12661a80e426-ad6275b2133b",
+      "reason": "Protected product mutation creates a new acceptance epoch. Predecessor hashes are history; discovery suites QA1-QA8 must rerun; QA9 aggregation is stale and must rerun only after current-epoch discovery evidence exists. Do not fabricate a verdict at rebase time.",
+      "product_commit": "12661a80e4261c57fa59e958674885e92b4196f2",
+      "changed_protected_paths": [
+        "services/api-nest/src/main.ts",
+        "services/api-nest/src/opportunities/operator-mall-user-feed.runtime.cjs",
+        "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
+        "services/api-nest/src/opportunities/opportunities.user.service.ts",
+        "services/api-nest/src/opportunities/participate-amount.cjs",
+        "services/api-nest/src/opportunities/participate.service.ts"
+      ],
+      "changed_nonprotected_support_paths": [
+        "services/ai-platform/src/index.d.ts"
+      ],
+      "old_prompt_hash": "b58b3f2c15d0234e13ac617f26f41acbd41e8b3186218b7e652f8ae36ec6dafb",
+      "new_prompt_hash": "b58b3f2c15d0234e13ac617f26f41acbd41e8b3186218b7e652f8ae36ec6dafb",
+      "old_protected_manifest_hash": "60f2feeec9d3b2507b6c419ba413400d4ee6e06c567cfa1d3a66ef7c325a73c4",
+      "new_protected_manifest_hash": "ad6275b2133b56dafa6e7981f7c770289aaadccf29a3619dae13b4a1638c31c3",
+      "eval_dataset_hash": "710cc5f7e3f1ac7ad6ee934eb9028d7bb8f0adbce38e94c44c1c6445cda0a47d",
+      "acceptance_workflow_hash": "1d5485d0fb73966dc7b78daa3e609e56eda1edea63fe359e816e5e2cf1b7bd10",
+      "predecessor_suite_checksums": {
+        "QA1": "20f82a0390e65f84373b2c4613b3282bb4f8187f42830ecd63ca3d66583b9492",
+        "QA2": "4cc4aaab6993a169add87fdbf6de34e0d70e2b7ed4ff40c7c6f65833af265112",
+        "QA3": "789fbc5b9aafc0453f980c9f5e781c5731c0fc3bc38e98acf0e50c8941583970",
+        "QA4": "cfd870d668feec127c507e2d10c195dae1c2770b3388b0d9355e09257c76f3d9",
+        "QA5": "4d5c69833e6d103fa405ff840c1cd33a5986dacf2717c3db4a394110bcb97de5",
+        "QA6": "39ac16c813b72b15df479bd62f0cb5f258a7e08ebf0599fd3526120c1208d699",
+        "QA8": "c4477639fba2b25db5bcc153c5a7e0e4fc24e25651571f7d8ce8dc7812f868f0",
+        "QA9": "e101ca6164a8458673b68ebb7fb0b43eb9c297f965b87615e454304c22d28b2a"
+      },
+      "timestamp": "2026-09-16T08:32:00.265Z",
+      "commit_sha_or_pending": "12661a80e4261c57fa59e958674885e92b4196f2",
+      "rebase_policy_version": "ENGINE_ACCEPTANCE_REBASE_POLICY_V2",
+      "invalidated_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA8"
+      ],
+      "required_rerun_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA7",
+        "QA8"
+      ],
+      "stale_aggregation_phases": [
+        "QA9"
+      ],
+      "qa7_complete": false,
+      "qa8_complete": false,
+      "qa9_complete": false,
+      "qa9_verdict_issued": false,
+      "eval_dataset_status": "MATCH"
     }
   ]
 }

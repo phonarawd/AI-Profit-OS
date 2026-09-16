@@ -1,14 +1,18 @@
 {
   "schema": "governance.engine-acceptance.baseline.v1",
   "version": "1.0.0",
-  "id": "ea-baseline-12661a80e426-ad6275b2133b",
+  "id": "ea-baseline-009750f0bef8-60f2feeec9d3",
   "todoId": "engine-acceptance-rebase-v1",
-  "measuredAt": "2026-09-16T08:32:00.265Z",
-  "commit_sha": "12661a80e4261c57fa59e958674885e92b4196f2",
-  "tree_sha": "dedf4a6ececce290d800b8e73363705e27cffeee",
+  "measuredAt": "2026-09-15T22:09:47.712Z",
+  "commit_sha": "009750f0bef8c5c33f04dd55d8a23f8e5edf1754",
+  "tree_sha": "b75ebd5e6110badb5a0eb85d13d2d668d079bb45",
   "working_tree_clean": false,
   "protected_scope_clean": true,
   "dirty_paths_all": [
+    "governance/release-master/MIGRATION_READINESS.md",
+    "package.json",
+    "tooling/verify/CATALOG.md",
+    "tooling/verify/fixtures/migrations-applied.v1.json",
     ".cursor/hooks.json.bak-20260914-hook-temp-disable",
     "PUTDUK_BACKEND_CURSOR_FINAL_PROMPT_QUOTA_GRADE_20260914.md",
     "PUTDUK_BACKEND_PARALLEL_CROSSCHECK_20260913.md",
@@ -22,13 +26,11 @@
     "_tmp_official_acceptance_34998389520/",
     "_tmp_official_deploy_34999084022/",
     "_tmp_official_post001_019/",
-    "_tmp_official_rebase_009750f0/",
     "_tmp_official_rebase_35ec80ee/",
     "_tmp_official_rel702_smoke/",
     "_tmp_official_rel703_obs/",
     "_tmp_official_rel704_closure/",
     "_tmp_qa_harness/",
-    "governance/engine-acceptance/REBASE_EXECUTION_20260916_PR230.md",
     "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_FOUNDER_LEFTOVER_RELEASE_BUILD_V1.md",
     "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_MAIN_FULL_DISPATCH_THEN_RELEASE_V1.json",
     "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_BLANKET_OFFICIAL_RELEASE_V1.json",
@@ -89,8 +91,8 @@
   "protected_scope_manifest": {
     "pathSeparator": "/",
     "hashAlgorithm": "sha256",
-    "aggregate": "ad6275b2133b56dafa6e7981f7c770289aaadccf29a3619dae13b4a1638c31c3",
-    "pathCount": 562,
+    "aggregate": "60f2feeec9d3b2507b6c419ba413400d4ee6e06c567cfa1d3a66ef7c325a73c4",
+    "pathCount": 560,
     "entries": [
       {
         "path": "eval/coach_redteam.jsonl",
@@ -1198,7 +1200,7 @@
       },
       {
         "path": "services/api-nest/src/main.ts",
-        "sha256": "a809f581a96de0e5c8eb64710804dd1a9ccae45da9ac75d3f9f95a3bc766f382"
+        "sha256": "9d6a9d0053e557bffa79ae752a5d9b1802e45142438b2d1e0f93b9bbc96b9187"
       },
       {
         "path": "services/api-nest/src/match-control/match-control.admin.controller.ts",
@@ -1497,12 +1499,8 @@
         "sha256": "44f2acbeb00d9eea88411cb54de9f3ff6c2284aa6f7cae97548642665331dbcf"
       },
       {
-        "path": "services/api-nest/src/opportunities/operator-mall-user-feed.runtime.cjs",
-        "sha256": "2cba23df9fbeeba5d003208d893ff13d1d0dfdd255dea821a4daa3087ed48456"
-      },
-      {
         "path": "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
-        "sha256": "e6dc9e1cab7ce0f3a53f3aa1388ae1994c35d964d0610f8035d03f1123ca3d1f"
+        "sha256": "0b5571e3d188d1a3ae351477f166ba307a1710f1d199774af0460912ffba4b2e"
       },
       {
         "path": "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
@@ -1542,19 +1540,15 @@
       },
       {
         "path": "services/api-nest/src/opportunities/opportunities.user.service.ts",
-        "sha256": "d5504925d86c1739c3096e2b9ba3ae9b36e9ee767ffecc29a6b36fcf861d449b"
+        "sha256": "df8d7fbab871a91c2831b256e60879cf7598017d2051308d75d762438248617b"
       },
       {
         "path": "services/api-nest/src/opportunities/opportunity-reprice.service.ts",
         "sha256": "6aee9875b16936e45e8e25bb1b82bb5e37cc94b75bf7c84c7c9fbbb4e103c094"
       },
       {
-        "path": "services/api-nest/src/opportunities/participate-amount.cjs",
-        "sha256": "52b2d8449bfdc0496d94f754a2bae883c7ba38f478e33adba3aa5a06d47887d1"
-      },
-      {
         "path": "services/api-nest/src/opportunities/participate.service.ts",
-        "sha256": "8a11797dee46a8b3e72b049664d4cf943c61b7e9cb35c57c9469e9f2a012eeb5"
+        "sha256": "6fbde929d24b391236a805ad14934926b9daa7630fdddb9531b8a7079b6c5c95"
       },
       {
         "path": "services/api-nest/src/opportunities/user-opportunity-override.admin.controller.ts",
@@ -2348,8 +2342,8 @@
   "next": "QA1_DETERMINISTIC_TRUTH",
   "epoch": {
     "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
-    "rebase_id": "ea-rebase-12661a80e426-ad6275b2133b",
-    "predecessor_baseline_id": "ea-baseline-009750f0bef8-60f2feeec9d3",
+    "rebase_id": "ea-rebase-009750f0bef8-60f2feeec9d3",
+    "predecessor_baseline_id": "ea-baseline-35ec80eeb89d-77e54a036c46",
     "kind": "product_rebase"
   }
 }
