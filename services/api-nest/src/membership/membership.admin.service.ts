@@ -91,10 +91,43 @@ const directoryCore = reqCjs("./admin-member-directory.core.cjs") as {
       userId: string;
       membership?: string | null;
       resellerId?: string | null;
+      username?: string | null;
+      status?: string | null;
+      createdAt?: string | null;
+      emailMasked?: string | null;
+      phoneMasked?: string | null;
+      signupIp?: string | null;
     }>;
     nextCursor?: string | null;
     exact?: boolean;
   }>;
+};
+const member360 = reqCjs("./member-360.core.cjs") as {
+  maskPii: (value: unknown) => string;
+};
+
+type AdminMemberListItem = {
+  userId: string;
+  createdAt: string | null;
+  username: string | null;
+  status: string | null;
+  emailMasked: string | null;
+  phoneMasked: string | null;
+  resellerId: string | null;
+  membership: MembershipId | null;
+  signupIp: string | null;
+};
+
+type ProductionUserRow = {
+  user_id: string;
+  created_at: Date | string | null;
+  username: string | null;
+  status: string | null;
+  email: string | null;
+  phone_e164: string | null;
+  referral_code: string | null;
+  membership: string | null;
+  signup_ip: string | null;
 };
 const directoryPersist = reqCjs("./admin-member-directory.persist.cjs") as {
   resolveRuntimeMemberDirectoryStore: (
@@ -174,70 +207,103 @@ export class MembershipAdminService {
   async searchUsers(input: {
     q?: string;
     cursor?: string;
+    limit?: string | number;
     operatorId: string;
   }): Promise<{
-    items: Array<{
-      userId: string;
-      membership: MembershipId | null;
-      resellerId: string | null;
-    }>;
+    items: AdminMemberListItem[];
     nextCursor: string | null;
     exact: boolean;
     substituted: false;
   }> {
     const q = String(input.q || "").trim();
     if (!q) {
-      // this.db = 앱 DATABASE_URL. 디렉터리 목록은 격리 QA persist 만.
-      const store = await directoryPersist.resolveRuntimeMemberDirectoryStore(
-        process.env,
-      );
-      const out = await directoryCore.searchMembers(
-        { cursor: input.cursor, limit: 20 },
-        store,
-      );
-      if (!out.ok || out.code === "STORE_UNREADY") {
-        throw new ServiceUnavailableException({
-          code: out.code || "STORE_UNREADY",
-          toastCode: "STORE_UNREADY",
-          message: "member directory list requires isolated QA persist; not DATABASE_URL",
-          applied: false,
-          storeStatus: "unready",
-          statusCode: 503,
-        });
-      }
+      const listed = await this.listProductionUsers(input.cursor, input.limit);
       this.bus.emit(MEMBERSHIP_EVENTS.memberLookup, {
         operatorId: input.operatorId,
         list: true,
       });
-      return {
-        items: (out.items || []).map((row) => ({
-          userId: row.userId,
-          membership: (row.membership as MembershipId) || null,
-          resellerId: row.resellerId || null,
-        })),
-        nextCursor: out.nextCursor ?? null,
-        exact: false,
-        substituted: false,
-      };
+      return listed;
     }
     this.assertUuid(q, "q");
-    await this.assertUserExists(q);
-    const found = await this.getMembership(q);
+    const item = await this.loadMemberListItem(q);
+    if (!item) throw new NotFoundException("user not found");
     this.bus.emit(MEMBERSHIP_EVENTS.memberLookup, {
       userId: q,
       operatorId: input.operatorId,
     });
     return {
-      items: [
-        {
-          userId: q,
-          membership: found.membership.membership,
-          resellerId: found.resellerId,
-        },
-      ],
+      items: [item],
       nextCursor: null,
       exact: true,
       substituted: false,
+    };
+  }
+
+  async getUserProfile(userId: string): Promise<{
+    item: AdminMemberListItem & {
+      profile: {
+        displayName: string | null;
+        declaredName: string | null;
+        onboardingStage: string | null;
+        birthDate: string | null;
+      } | null;
+    };
+  }> {
+    this.assertUuid(userId, "userId");
+    const item = await this.loadMemberListItem(userId);
+    if (!item) throw new NotFoundException("user not found");
+    let rows: Array<{
+      display_name: string | null;
+      declared_name: string | null;
+      onboarding_stage: string | null;
+      birth_date: Date | null;
+    }> = [];
+    try {
+      const q = await this.db.query<{
+        display_name: string | null;
+        declared_name: string | null;
+        onboarding_stage: string | null;
+        birth_date: Date | null;
+      }>(
+        `SELECT display_name, declared_name, onboarding_stage, birth_date
+           FROM public.user_profiles
+          WHERE user_id = $1::uuid`,
+        [userId],
+      );
+      rows = q.rows;
+    } catch (e) {
+      const code =
+        e && typeof e === "object" && "code" in e
+          ? String((e as { code?: string }).code)
+          : "";
+      if (code !== "42703") throw e;
+      const q = await this.db.query<{
+        display_name: string | null;
+        onboarding_stage: string | null;
+        birth_date: Date | null;
+      }>(
+        `SELECT display_name, onboarding_stage, birth_date
+           FROM public.user_profiles
+          WHERE user_id = $1::uuid`,
+        [userId],
+      );
+      rows = q.rows.map((r) => ({ ...r, declared_name: null }));
+    }
+    const p = rows[0];
+    return {
+      item: {
+        ...item,
+        profile: p
+          ? {
+              displayName: p.display_name,
+              declaredName: p.declared_name,
+              onboardingStage: p.onboarding_stage,
+              birthDate: p.birth_date
+                ? new Date(p.birth_date).toISOString().slice(0, 10)
+                : null,
+            }
+          : null,
+      },
     };
   }
 
@@ -1030,6 +1096,159 @@ export class MembershipAdminService {
       out.dailyUserMatchCap = Number(row.daily_user_match_cap);
     }
     return out;
+  }
+
+  /**
+   * 운영 public.users 목록. 가입 IP 컬럼이 없으면 첫 auth_sessions.ip.
+   * IP 를 지어내지 않는다. DATABASE_URL 없으면 격리 persist (GHA) 만.
+   */
+  private async listProductionUsers(
+    cursor?: string,
+    limitRaw?: string | number,
+  ): Promise<{
+    items: AdminMemberListItem[];
+    nextCursor: string | null;
+    exact: false;
+    substituted: false;
+  }> {
+    const limitNum = Number(limitRaw || 20);
+    const limit = Number.isInteger(limitNum) && limitNum > 0 && limitNum <= 50 ? limitNum : 20;
+    if (this.db.configured()) {
+      const offset = this.decodeOffset(cursor);
+      const { rows } = await this.db.query<ProductionUserRow>(
+        `SELECT u.id::text AS user_id,
+                u.created_at,
+                u.username,
+                u.status,
+                u.email,
+                u.phone_e164,
+                u.referral_code,
+                m.membership,
+                s.ip AS signup_ip
+           FROM public.users u
+           LEFT JOIN public.user_membership m ON m.user_id = u.id
+           LEFT JOIN LATERAL (
+             SELECT ip
+               FROM public.auth_sessions
+              WHERE user_id = u.id
+                AND ip IS NOT NULL
+                AND btrim(ip) <> ''
+              ORDER BY created_at ASC
+              LIMIT 1
+           ) s ON true
+          ORDER BY u.created_at DESC
+          OFFSET $1 LIMIT $2`,
+        [offset, limit],
+      );
+      const items = rows.map((r) => this.toListItem(r));
+      return {
+        items,
+        nextCursor: items.length === limit ? String(offset + limit) : null,
+        exact: false,
+        substituted: false,
+      };
+    }
+    const store = await directoryPersist.resolveRuntimeMemberDirectoryStore(
+      process.env,
+    );
+    const out = await directoryCore.searchMembers(
+      { cursor, limit },
+      store,
+    );
+    if (!out.ok || out.code === "STORE_UNREADY") {
+      throw new ServiceUnavailableException({
+        code: out.code || "STORE_UNREADY",
+        toastCode: "STORE_UNREADY",
+        message: "member directory requires DATABASE_URL or isolated QA persist",
+        applied: false,
+        storeStatus: "unready",
+        statusCode: 503,
+      });
+    }
+    return {
+      items: (out.items || []).map((row) => ({
+        userId: row.userId,
+        createdAt: row.createdAt || null,
+        username: row.username || null,
+        status: row.status || null,
+        emailMasked: row.emailMasked || null,
+        phoneMasked: row.phoneMasked || null,
+        resellerId: row.resellerId || null,
+        membership: (row.membership as MembershipId) || null,
+        signupIp: row.signupIp || null,
+      })),
+      nextCursor: out.nextCursor ?? null,
+      exact: false,
+      substituted: false,
+    };
+  }
+
+  private async loadMemberListItem(
+    userId: string,
+  ): Promise<AdminMemberListItem | null> {
+    if (this.db.configured()) {
+      const { rows } = await this.db.query<ProductionUserRow>(
+        `SELECT u.id::text AS user_id,
+                u.created_at,
+                u.username,
+                u.status,
+                u.email,
+                u.phone_e164,
+                u.referral_code,
+                m.membership,
+                s.ip AS signup_ip
+           FROM public.users u
+           LEFT JOIN public.user_membership m ON m.user_id = u.id
+           LEFT JOIN LATERAL (
+             SELECT ip
+               FROM public.auth_sessions
+              WHERE user_id = u.id
+                AND ip IS NOT NULL
+                AND btrim(ip) <> ''
+              ORDER BY created_at ASC
+              LIMIT 1
+           ) s ON true
+          WHERE u.id = $1::uuid`,
+        [userId],
+      );
+      return rows[0] ? this.toListItem(rows[0]) : null;
+    }
+    await this.assertUserExists(userId);
+    const found = await this.getMembership(userId);
+    return {
+      userId,
+      createdAt: null,
+      username: null,
+      status: null,
+      emailMasked: null,
+      phoneMasked: null,
+      resellerId: found.resellerId,
+      membership: found.membership.membership,
+      signupIp: null,
+    };
+  }
+
+  private toListItem(row: ProductionUserRow): AdminMemberListItem {
+    return {
+      userId: row.user_id,
+      createdAt: row.created_at ? new Date(row.created_at).toISOString() : null,
+      username: row.username || null,
+      status: row.status || null,
+      emailMasked: row.email ? member360.maskPii(row.email) : null,
+      phoneMasked: row.phone_e164 ? member360.maskPii(row.phone_e164) : null,
+      resellerId: row.referral_code || null,
+      membership: (row.membership as MembershipId) || null,
+      signupIp: row.signup_ip && String(row.signup_ip).trim() ? String(row.signup_ip).trim() : null,
+    };
+  }
+
+  private decodeOffset(raw?: string): number {
+    if (raw == null || raw === "") return 0;
+    const n = Number(raw);
+    if (!Number.isInteger(n) || n < 0) {
+      throw new BadRequestException("cursor must be a non-negative integer");
+    }
+    return n;
   }
 
   private async lookupResellerId(userId: string): Promise<string | null> {

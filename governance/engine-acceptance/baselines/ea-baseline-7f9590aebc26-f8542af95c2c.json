@@ -1,54 +1,15 @@
 {
   "schema": "governance.engine-acceptance.baseline.v1",
   "version": "1.0.0",
-  "id": "ea-baseline-d1479769a6ca-98e290e37fc6",
+  "id": "ea-baseline-7f9590aebc26-f8542af95c2c",
   "todoId": "engine-acceptance-rebase-v1",
-  "measuredAt": "2026-09-16T14:33:12.373Z",
-  "commit_sha": "d1479769a6ca46fe4d93dbdcd5937a0934f97a8b",
-  "tree_sha": "4769c061dc104fcb650dcad93aff1dcf3ae52ab5",
+  "measuredAt": "2026-09-16T10:41:08.432Z",
+  "commit_sha": "7f9590aebc26adae97a75d5cc7e95d3b702a3148",
+  "tree_sha": "c5c44187fda8973b80e2058e13c3ba126a6db116",
   "working_tree_clean": false,
   "protected_scope_clean": true,
   "dirty_paths_all": [
-    ".cursor/rules/git-safety.mdc",
-    ".cursor/rules/legal-out-of-plan.mdc",
-    ".cursor/rules/money-ledger.mdc",
-    ".cursor/rules/phase0-ram.mdc",
-    ".cursor/rules/plan-file-serial.mdc",
-    ".cursor/rules/product-drift-lock.mdc",
-    ".cursor/rules/verify-before-done.mdc",
-    ".env.example",
-    ".github/workflows/deploy-cloudflare.yml",
-    ".husky/pre-commit",
-    ".husky/pre-push",
-    ".vscode/extensions.json",
-    "COMPANY_REGISTRATION_SUMMARY.md",
-    "governance/recovery/engine-drift-inventory.current.v1.json",
-    "governance/recovery/engine-rebase-evidence.current.v1.json",
-    "governance/release-master/MIGRATION_READINESS.md",
-    "governance/release-master/R7_BACKEND_ALIGNMENT.md",
-    "quality/migrations-draft/20260913220000_opportunities_supply_source.sql",
-    "quality/operator-registered-catalog-investigation-2026-09-13.md",
-    "quality/operator-registered-catalog-revision-plan-2026-09-13.md",
-    "quality/operator-registered-catalog-s1-remediation-20260914.md",
-    "quality/operator-registered-catalog-s1-supplement-2026-09-14.md",
-    "services/market-intelligence/src/asset-image.cjs",
-    "services/market-intelligence/src/asset-master.cjs",
-    "services/market-intelligence/src/card-grade.cjs",
-    "services/market-intelligence/src/index.d.ts",
-    "services/market-intelligence/src/membership.cjs",
-    "tooling/deploy/cf-preflight.cjs",
-    "tooling/github/apply-main-gate.ps1",
-    "tooling/schemas/_write-trade-license-html.cjs",
-    "tooling/verify/fixtures/migrations-applied.v1.json",
-    "workers/chain-sweeper/wrangler.toml",
-    "workers/push-dispatcher/wrangler.toml",
-    "workers/yahoo-jp-adapter/src/index.ts",
     ".cursor/hooks.json.bak-20260914-hook-temp-disable",
-    ".cursor/hooks.json.bak-20260916-login-font",
-    ".cursor/hooks.json.bak-20260916-ops-full-ux",
-    ".cursor/hooks.json.bak-20260916-ops-once",
-    ".cursor/hooks.json.bak-20260916-ops-screenshots",
-    ".cursor/hooks.json.bak-20260916-resume",
     "PUTDUK_BACKEND_CURSOR_FINAL_PROMPT_QUOTA_GRADE_20260914.md",
     "PUTDUK_BACKEND_PARALLEL_CROSSCHECK_20260913.md",
     "PUTDUK_CURSOR_AUTONOMOUS_FULL_PRODUCTION_MASTER_PROMPT_2026-09-06.md",
@@ -66,10 +27,8 @@
     "_tmp_official_rel702_smoke/",
     "_tmp_official_rel703_obs/",
     "_tmp_official_rel704_closure/",
-    "_tmp_ops_screenshots/",
     "_tmp_qa_harness/",
     "governance/engine-acceptance/REBASE_EXECUTION_20260916_PR230.md",
-    "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
     "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_FOUNDER_LEFTOVER_RELEASE_BUILD_V1.md",
     "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_MAIN_FULL_DISPATCH_THEN_RELEASE_V1.json",
     "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_BLANKET_OFFICIAL_RELEASE_V1.json",
@@ -120,7 +79,7 @@
   ],
   "dirty_paths_protected": [],
   "lockfile_hash": "5e842f9da69d407c8cb1b3e0d67ec7e220cd715a26ba1c4400466c57d7e147a3",
-  "schema_migration_hash": "89eef730dfc2c03d682d4729b8e3ffee47e84da5d0f26f9212850967954d9e64",
+  "schema_migration_hash": "81c8465543356d85576d2cb7f3634bfe176aa364812611526f56a19ed1f3740a",
   "prompt_hash": "b58b3f2c15d0234e13ac617f26f41acbd41e8b3186218b7e652f8ae36ec6dafb",
   "eval_dataset_hash": "710cc5f7e3f1ac7ad6ee934eb9028d7bb8f0adbce38e94c44c1c6445cda0a47d",
   "acceptance_workflow_hash": "1d5485d0fb73966dc7b78daa3e609e56eda1edea63fe359e816e5e2cf1b7bd10",
@@ -130,8 +89,8 @@
   "protected_scope_manifest": {
     "pathSeparator": "/",
     "hashAlgorithm": "sha256",
-    "aggregate": "98e290e37fc64af9808cf93975cbf61e8d15f65537d7f0e04a81495a4d3f76dd",
-    "pathCount": 573,
+    "aggregate": "f8542af95c2c314b0d89f11acb36b111702649bc7e9f15e9c9a51a0251b6648a",
+    "pathCount": 563,
     "entries": [
       {
         "path": "eval/coach_redteam.jsonl",
@@ -707,7 +666,7 @@
       },
       {
         "path": "services/api-nest/src/app.module.ts",
-        "sha256": "05629fe769048fb1121aa1e82c37151a0bab8895707dc9b5bf5836ae497591bc"
+        "sha256": "d47aa1ec42e57f6dfd4383eaf9eb113a1ee6f278b264aa27b67e909d2f1b1e75"
       },
       {
         "path": "services/api-nest/src/audit/admin-audit.module.ts",
@@ -850,40 +809,8 @@
         "sha256": "610361f37226bb6b24825c22fe87dc4280600e21b5efb76e0b5fca1b3596b051"
       },
       {
-        "path": "services/api-nest/src/cms/cms.admin.controller.ts",
-        "sha256": "2229aee28601481e46113f16aec4be6e6c2863e433847157a6b5c369fdaec0d7"
-      },
-      {
-        "path": "services/api-nest/src/cms/cms.core.cjs",
-        "sha256": "5eea420ad8b677927953a646a3b2d61ec06dcceaa517f4539d61ae0b86ede434"
-      },
-      {
-        "path": "services/api-nest/src/cms/cms.module.ts",
-        "sha256": "cec781f327e588a22cf651d5f5b4584d8e525c666bad2f2013faf656dc4bb5fa"
-      },
-      {
-        "path": "services/api-nest/src/cms/cms.public.controller.ts",
-        "sha256": "925db5c80130c9670e372e565b6e57049c95dec17f7133410eee20479c154d0a"
-      },
-      {
-        "path": "services/api-nest/src/cms/cms.routes.ts",
-        "sha256": "f3dfdcbe4f3571bfe004532237499fa483bf931c4dc7228166c7a01e31bce87e"
-      },
-      {
-        "path": "services/api-nest/src/cms/cms.service.ts",
-        "sha256": "90aaef635b8abe83601fe25d8058bcfe62c869cf450a43a9561de3858044b271"
-      },
-      {
-        "path": "services/api-nest/src/cms/cms.spec.runtime.cjs",
-        "sha256": "0fe98328fc49cd0e6617e3f33926ab6e21ca7c4ff0c0e0a7b61b6a2b587b59a7"
-      },
-      {
-        "path": "services/api-nest/src/cms/index.ts",
-        "sha256": "3d40d70a438601c26c1b419738758287512b7721d0cb489bdec2dad21f282cb6"
-      },
-      {
         "path": "services/api-nest/src/common/admin-capabilities.ts",
-        "sha256": "10962cfed912c47ce44086bff29f08442087c3d45025b484178b545bdcad901e"
+        "sha256": "dae17bdcb5c381d07ca49e63bf960361d3236cc0f61442aba3d26b3082299fac"
       },
       {
         "path": "services/api-nest/src/common/admin-guard.selftest.ts",
@@ -1291,11 +1218,11 @@
       },
       {
         "path": "services/api-nest/src/membership/admin-member-directory.admin-http.cjs",
-        "sha256": "c06dfc1ab6f3b4b9cb35055592409cf460c835d68de544c40fcc0ecb5894e9bd"
+        "sha256": "26dadeea2702587e157ed4afcf70338f604cad5cdd2cea41d194359f20766461"
       },
       {
         "path": "services/api-nest/src/membership/admin-member-directory.core.cjs",
-        "sha256": "8d95c60d0ef6d7bea1f204b72bf63206a5160b6fba8c4dc568381aab25c1df3e"
+        "sha256": "9dd6d9c79e22f167a4f4aba0a538de92c4b72f32f1a89e1f98a44bbba9d5f05e"
       },
       {
         "path": "services/api-nest/src/membership/admin-member-directory.isolation.cjs",
@@ -1351,11 +1278,11 @@
       },
       {
         "path": "services/api-nest/src/membership/membership.admin.controller.ts",
-        "sha256": "d055d672025ff69da7033abbe28331a6164940867396af407b91cca9f6d080b2"
+        "sha256": "d9859a4fe50bad4df5958d3ad86f50c0f765c8db6687bb7b159bbc14a238ad73"
       },
       {
         "path": "services/api-nest/src/membership/membership.admin.service.ts",
-        "sha256": "f4c9b5a477c5af85cd4308776db499ca74781d8a5be55acf69450dc326a43494"
+        "sha256": "1820b7e97e4cd0d14b09d1d4b0ca887359573a24d686176d6a203050da44b1e9"
       },
       {
         "path": "services/api-nest/src/membership/membership.events.ts",
@@ -1375,7 +1302,7 @@
       },
       {
         "path": "services/api-nest/src/membership/membership.routes.ts",
-        "sha256": "46dded2c42874000c113a33aa4ef7b81e575a7ed8ffbff0647cc33f06791d9e2"
+        "sha256": "d466a05a36634cd9fc6c5e3c1dc87ce50fc7e5f7604998edd29df7341e8b6dca"
       },
       {
         "path": "services/api-nest/src/membership/membership.runtime.service.ts",
@@ -1963,7 +1890,7 @@
       },
       {
         "path": "services/api-nest/src/wallet/deposit-address.service.ts",
-        "sha256": "b868fe9868bb7b114c8020de0c220fc3a15b839f62e9c1aa4eac689ffdc7d921"
+        "sha256": "eaf08c4e0baa954d7f6c7fba25089bc63d9cbe9462a09d2e5bf6fa7cd69fc330"
       },
       {
         "path": "services/api-nest/src/wallet/deposit-config.admin.controller.ts",
@@ -2058,10 +1985,6 @@
         "sha256": "4332e9fbae80c12242c82de90319a0d4b53817d64fcc39c2e012e2e0b26acfda"
       },
       {
-        "path": "services/api-nest/src/wallet/user-deposit-address.admin.controller.ts",
-        "sha256": "cb143922a21a3f74d44f1a9c8167c948166a8fb7a9daacaf8edb01fc0cb71f77"
-      },
-      {
         "path": "services/api-nest/src/wallet/wallet.controller.ts",
         "sha256": "8072294fdcce4cccd4aa7bbff7c2a92628e955fda9ab55bc12503949d07c1199"
       },
@@ -2071,11 +1994,11 @@
       },
       {
         "path": "services/api-nest/src/wallet/wallet.module.ts",
-        "sha256": "cbe1f1b64a51fc688de8c1d782617d41213054ed01d480dfde4e38600900285d"
+        "sha256": "9adb9e685fd9382aaf421670ecf6db4ea1e0a4c10e9603827c6fb3b7fea089ff"
       },
       {
         "path": "services/api-nest/src/wallet/wallet.routes.ts",
-        "sha256": "7fd7a5b828ceda8919a97e26bfadfe7d4270cb1e8ddd73ffeb1cb4877d204456"
+        "sha256": "3f90fceee13d17b732b0b57e05288b7a7af4e0a80dccf4da2fb91ae0c00e2962"
       },
       {
         "path": "services/api-nest/src/wallet/wallet.types.ts",
@@ -2420,10 +2343,6 @@
       {
         "path": "supabase/migrations/20260916120000_operator_mall_product_simple_amounts.sql",
         "sha256": "a1b7f99ad4d10926bff07603c4f11879cd5f50575d5cc9c89022a4efe5a9a489"
-      },
-      {
-        "path": "supabase/migrations/20260916220000_cms_posts.sql",
-        "sha256": "0157c1f9a4e043f810ac55a5fa42ef128c8caee6317b3b650e4f18a52ef5fc93"
       }
     ]
   },
@@ -2433,8 +2352,8 @@
   "next": "QA1_DETERMINISTIC_TRUTH",
   "epoch": {
     "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
-    "rebase_id": "ea-rebase-d1479769a6ca-98e290e37fc6",
-    "predecessor_baseline_id": "ea-baseline-7f9590aebc26-f8542af95c2c",
+    "rebase_id": "ea-rebase-7f9590aebc26-f8542af95c2c",
+    "predecessor_baseline_id": "ea-baseline-12661a80e426-ad6275b2133b",
     "kind": "product_rebase"
   }
 }

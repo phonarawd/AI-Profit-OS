@@ -53,6 +53,7 @@ function copySrcCjsToDist() {
     "membership/operator-control.provider.cjs",
     "membership/admin-member-directory.core.cjs",
     "membership/admin-member-directory.persist.cjs",
+    "cms/cms.core.cjs",
     "membership/auto-downgrade.core.cjs",
     "membership/presentation-profile.core.cjs",
     "referral/reseller-id.persist.cjs",

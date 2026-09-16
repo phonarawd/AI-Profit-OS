@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-09-16T10:50:26.595Z",
- "headSha": "e31e718b6726b91e91ad8da9574b2db582ab58da",
+ "generatedAt": "2026-09-16T14:42:40.009Z",
+ "headSha": "759e29354a1d825fa43e9db3cec28c2a2388f33a",
  "edgeKinds": [
   "import",
   "require",
@@ -866,6 +866,12 @@
   },
   {
    "id": "governance/engine-acceptance/baselines/ea-baseline-74683b6e39a7-590263f0f273.json",
+   "type": "file",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP"
+  },
+  {
+   "id": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
    "type": "file",
    "class": "BACKEND_DOC",
    "decision": "KEEP"
@@ -3397,6 +3403,54 @@
    "decision": "KEEP"
   },
   {
+   "id": "services/api-nest/src/cms/cms.admin.controller.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/cms/cms.core.cjs",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/cms/cms.module.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/cms/cms.public.controller.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/cms/cms.routes.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/cms/cms.service.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/cms/cms.spec.runtime.cjs",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
+   "id": "services/api-nest/src/cms/index.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
    "id": "services/api-nest/src/common/admin-capabilities.ts",
    "type": "file",
    "class": "BACKEND_RUNTIME",
@@ -5161,6 +5215,12 @@
    "decision": "KEEP"
   },
   {
+   "id": "services/api-nest/src/wallet/user-deposit-address.admin.controller.ts",
+   "type": "file",
+   "class": "BACKEND_RUNTIME",
+   "decision": "KEEP"
+  },
+  {
    "id": "services/api-nest/src/wallet/wallet.controller.ts",
    "type": "file",
    "class": "BACKEND_RUNTIME",
@@ -6086,6 +6146,12 @@
   },
   {
    "id": "supabase/migrations/20260916120000_operator_mall_product_simple_amounts.sql",
+   "type": "file",
+   "class": "BACKEND_INFRA",
+   "decision": "KEEP"
+  },
+  {
+   "id": "supabase/migrations/20260916220000_cms_posts.sql",
    "type": "file",
    "class": "BACKEND_INFRA",
    "decision": "KEEP"
@@ -7376,6 +7442,18 @@
   },
   {
    "id": "tooling/verify/backend/benefit-referral/share-copy.cjs",
+   "type": "file",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
+   "id": "tooling/verify/backend/cms/cms-admin-http.runtime.cjs",
+   "type": "file",
+   "class": "BACKEND_TEST",
+   "decision": "KEEP"
+  },
+  {
+   "id": "tooling/verify/backend/cms/cms-posts.cjs",
    "type": "file",
    "class": "BACKEND_TEST",
    "decision": "KEEP"
@@ -9303,7 +9381,7 @@
   {
    "id": "dir:services/api-nest/**",
    "type": "glob",
-   "files": 403
+   "files": 412
   },
   {
    "id": "dir:services/engine-rust/**",
@@ -9323,7 +9401,7 @@
   {
    "id": "dir:supabase/migrations/**",
    "type": "glob",
-   "files": 59
+   "files": 60
   },
   {
    "id": "missing:.cursor/tmp",
@@ -9336,12 +9414,12 @@
   {
    "id": "dir:supabase/migrations",
    "type": "directory",
-   "files": 59
+   "files": 60
   },
   {
    "id": "dir:tooling/verify",
    "type": "directory",
-   "files": 248
+   "files": 250
   },
   {
    "id": "deleted:packages/ui/tokens",
@@ -9350,7 +9428,7 @@
   {
    "id": "dir:services/api-nest",
    "type": "directory",
-   "files": 403
+   "files": 412
   },
   {
    "id": "missing:tooling/verify/web-lint.cjs",
@@ -9766,7 +9844,7 @@
   {
    "id": "dir:supabase/migrations**",
    "type": "glob",
-   "files": 59
+   "files": 60
   },
   {
    "id": "deleted:packages/ui",
@@ -9956,7 +10034,7 @@
   {
    "id": "dir:supabase/migrations/",
    "type": "directory",
-   "files": 59
+   "files": 60
   },
   {
    "id": "missing:supabase/auth*",
@@ -9973,7 +10051,7 @@
   {
    "id": "dir:supabase/migrations/*.sql",
    "type": "glob",
-   "files": 59
+   "files": 60
   },
   {
    "id": "missing:services/realtime-service",
@@ -10004,7 +10082,7 @@
   {
    "id": "dir:supabase/migrations/*",
    "type": "glob",
-   "files": 59
+   "files": 60
   },
   {
    "id": "deleted:apps/admin/**",
@@ -10047,7 +10125,7 @@
   {
    "id": "dir:services/api-nest/src/wallet/",
    "type": "directory",
-   "files": 46
+   "files": 47
   },
   {
    "id": "dir:services/api-nest/src/compliance/",
@@ -10075,7 +10153,7 @@
   {
    "id": "dir:governance/engine-acceptance/**",
    "type": "glob",
-   "files": 51
+   "files": 52
   },
   {
    "id": "dir:.cursor/plans/",
@@ -10085,7 +10163,7 @@
   {
    "id": "dir:services/**",
    "type": "glob",
-   "files": 504
+   "files": 513
   },
   {
    "id": "missing:apps/**",
@@ -10104,7 +10182,7 @@
   {
    "id": "dir:governance/engine-acceptance/",
    "type": "directory",
-   "files": 51
+   "files": 52
   },
   {
    "id": "dir:tooling/engine-acceptance/",
@@ -10178,7 +10256,7 @@
   {
    "id": "dir:tooling/verify/",
    "type": "directory",
-   "files": 248
+   "files": 250
   },
   {
    "id": "deleted:packages/ui/brand/assets/markets/manifest.json",
@@ -10319,7 +10397,7 @@
   {
    "id": "dir:services/**/api*/**",
    "type": "glob",
-   "files": 403
+   "files": 412
   },
   {
    "id": "dir:.github/workflows/**",
@@ -10362,7 +10440,7 @@
   {
    "id": "dir:services/**/wallet*/**",
    "type": "glob",
-   "files": 46
+   "files": 47
   },
   {
    "id": "dir:services/**/ledger*/**",
@@ -10395,7 +10473,7 @@
   {
    "id": "dir:supabase/**",
    "type": "glob",
-   "files": 66
+   "files": 67
   },
   {
    "id": "missing:.cursor/plans/ai_profit_os_launch_*.plan.md",
@@ -10572,25 +10650,45 @@
   {
    "id": "dir:governance/engine-acceptance/baselines/",
    "type": "directory",
-   "files": 18
+   "files": 19
   },
   {
    "id": "dir:services/api-nest/src/**/*.admin.controller.ts",
    "type": "glob",
-   "files": 26
+   "files": 28
   },
   {
    "id": "dir:services/api-nest/src/wallet/*.controller.ts",
    "type": "glob",
-   "files": 7
+   "files": 8
   },
   {
    "id": "dir:services/api-nest/src/**",
    "type": "glob",
-   "files": 385
+   "files": 394
   },
   {
    "id": "missing:.cursor/hooks.json.bak-20260914-hook-temp-disable",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:.cursor/hooks.json.bak-20260916-login-font",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:.cursor/hooks.json.bak-20260916-ops-full-ux",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:.cursor/hooks.json.bak-20260916-ops-once",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:.cursor/hooks.json.bak-20260916-ops-screenshots",
+   "type": "missing-path"
+  },
+  {
+   "id": "missing:.cursor/hooks.json.bak-20260916-resume",
    "type": "missing-path"
   },
   {
@@ -11739,7 +11837,7 @@
   {
    "id": "dir:governance/*.vN",
    "type": "glob",
-   "files": 182
+   "files": 183
   },
   {
    "id": "dir:governance/platform-redesign/*",
@@ -13151,12 +13249,12 @@
   {
    "id": "dir:tooling/*",
    "type": "glob",
-   "files": 421
+   "files": 423
   },
   {
    "id": "dir:services/*",
    "type": "glob",
-   "files": 504
+   "files": 513
   },
   {
    "id": "dir:workers/*",
@@ -13175,7 +13273,7 @@
   {
    "id": "dir:services/api-nest/src",
    "type": "directory",
-   "files": 385
+   "files": 394
   },
   {
    "id": "missing:packages/sdk/src",
@@ -13316,7 +13414,7 @@
   {
    "id": "dir:tooling/verify/**",
    "type": "glob",
-   "files": 248
+   "files": 250
   },
   {
    "id": "dir:governance/release-master/**",
@@ -13919,7 +14017,7 @@
   {
    "id": "dir:tooling/verify/backend/",
    "type": "directory",
-   "files": 50
+   "files": 52
   },
   {
    "id": "missing:tooling/verify/lib/retired-ui-stubs.cjs",
@@ -14014,7 +14112,7 @@
   {
    "id": "dir:governance/engine-acceptance",
    "type": "directory",
-   "files": 51
+   "files": 52
   },
   {
    "id": "dir:governance/global-product",
@@ -14791,7 +14889,7 @@
   {
    "id": "dir:tooling/verify/*-closure.cjs",
    "type": "glob",
-   "files": 248
+   "files": 250
   },
   {
    "id": "missing:.github/workflows/{consumer-spark-worldclass",
@@ -15092,7 +15190,7 @@
   {
    "id": "dir:services/api-nest/src/**/*.routes.ts",
    "type": "glob",
-   "files": 31
+   "files": 32
   },
   {
    "id": "deleted:packages/ui/canon/contracts/*.md",
@@ -15231,7 +15329,7 @@
   {
    "id": "dir:governance/**",
    "type": "glob",
-   "files": 182
+   "files": 183
   },
   {
    "id": "missing:services/workers",
@@ -15446,7 +15544,7 @@
   {
    "id": "dir:tooling/verify/backend/**",
    "type": "glob",
-   "files": 50
+   "files": 52
   },
   {
    "id": "missing:CONSTITUTION/46b",
@@ -15814,7 +15912,7 @@
   {
    "id": "dir:services/**/ai",
    "type": "glob",
-   "files": 504
+   "files": 513
   },
   {
    "id": "deleted:apps/web/**/peotteok",
@@ -15828,7 +15926,7 @@
   {
    "id": "dir:tooling/verify/backend/**/*.cjs",
    "type": "glob",
-   "files": 50
+   "files": 52
   },
   {
    "id": "missing:.cursor/projects/${name}",
@@ -16000,7 +16098,7 @@
   {
    "id": "dir:governance/engine-acceptance/baselines",
    "type": "directory",
-   "files": 18
+   "files": 19
   },
   {
    "id": "env:QA7_LOCAL_HTTP",
@@ -16238,7 +16336,7 @@
   {
    "id": "dir:services/api-nest/src/wallet",
    "type": "directory",
-   "files": 46
+   "files": 47
   },
   {
    "id": "dir:services/engine-rust/testdata/golden",
@@ -16415,7 +16513,7 @@
   {
    "id": "dir:services/**/*.test.cjs",
    "type": "glob",
-   "files": 504
+   "files": 513
   },
   {
    "id": "missing:services/api-nest/dist/ledger/ledger.user-query.selftest.js",
@@ -23627,15 +23725,210 @@
   },
   {
    "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": ".cursor/rules/git-safety.mdc",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": ".cursor/rules/legal-out-of-plan.mdc",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": ".cursor/rules/money-ledger.mdc",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": ".cursor/rules/phase0-ram.mdc",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": ".cursor/rules/plan-file-serial.mdc",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": ".cursor/rules/product-drift-lock.mdc",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": ".cursor/rules/verify-before-done.mdc",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": ".github/workflows/deploy-cloudflare.yml",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": ".husky/pre-commit",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": ".husky/pre-push",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": ".vscode/extensions.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "governance/recovery/engine-drift-inventory.current.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "governance/recovery/engine-rebase-evidence.current.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "governance/release-master/MIGRATION_READINESS.md",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "governance/release-master/R7_BACKEND_ALIGNMENT.md",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "quality/migrations-draft/20260913220000_opportunities_supply_source.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "quality/operator-registered-catalog-investigation-2026-09-13.md",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "quality/operator-registered-catalog-revision-plan-2026-09-13.md",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "quality/operator-registered-catalog-s1-remediation-20260914.md",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "quality/operator-registered-catalog-s1-supplement-2026-09-14.md",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "services/market-intelligence/src/asset-image.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "services/market-intelligence/src/asset-master.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "services/market-intelligence/src/card-grade.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "services/market-intelligence/src/index.d.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "services/market-intelligence/src/membership.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "tooling/deploy/cf-preflight.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "tooling/github/apply-main-gate.ps1",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "tooling/schemas/_write-trade-license-html.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "tooling/verify/fixtures/migrations-applied.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "workers/chain-sweeper/wrangler.toml",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "workers/push-dispatcher/wrangler.toml",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "workers/yahoo-jp-adapter/src/index.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
    "to": "missing:.cursor/hooks.json.bak-20260914-hook-temp-disable",
    "kind": "verifier-reads",
    "spec": ".cursor/hooks.json.bak-20260914-hook-temp-disable"
   },
   {
    "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "missing:.cursor/hooks.json.bak-20260916-login-font",
+   "kind": "verifier-reads",
+   "spec": ".cursor/hooks.json.bak-20260916-login-font"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "missing:.cursor/hooks.json.bak-20260916-ops-full-ux",
+   "kind": "verifier-reads",
+   "spec": ".cursor/hooks.json.bak-20260916-ops-full-ux"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "missing:.cursor/hooks.json.bak-20260916-ops-once",
+   "kind": "verifier-reads",
+   "spec": ".cursor/hooks.json.bak-20260916-ops-once"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "missing:.cursor/hooks.json.bak-20260916-ops-screenshots",
+   "kind": "verifier-reads",
+   "spec": ".cursor/hooks.json.bak-20260916-ops-screenshots"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "missing:.cursor/hooks.json.bak-20260916-resume",
+   "kind": "verifier-reads",
+   "spec": ".cursor/hooks.json.bak-20260916-resume"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
    "to": "missing:governance/engine-acceptance/REBASE_EXECUTION_20260916_PR230.md",
    "kind": "verifier-reads",
    "spec": "governance/engine-acceptance/REBASE_EXECUTION_20260916_PR230.md"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "kind": "verifier-reads"
   },
   {
    "from": "governance/engine-acceptance/baseline.v1.json",
@@ -24817,6 +25110,46 @@
   {
    "from": "governance/engine-acceptance/baseline.v1.json",
    "to": "services/api-nest/src/auth/webauthn-rp.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "services/api-nest/src/cms/cms.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "services/api-nest/src/cms/cms.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "services/api-nest/src/cms/cms.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "services/api-nest/src/cms/cms.public.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "services/api-nest/src/cms/cms.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "services/api-nest/src/cms/cms.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "services/api-nest/src/cms/cms.spec.runtime.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "services/api-nest/src/cms/index.ts",
    "kind": "verifier-reads"
   },
   {
@@ -26291,6 +26624,11 @@
   },
   {
    "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "services/api-nest/src/wallet/user-deposit-address.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
    "to": "services/api-nest/src/wallet/wallet.controller.ts",
    "kind": "verifier-reads"
   },
@@ -26737,6 +27075,21 @@
   {
    "from": "governance/engine-acceptance/baseline.v1.json",
    "to": "supabase/migrations/20260916120000_operator_mall_product_simple_amounts.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "supabase/migrations/20260916220000_cms_posts.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": ".env.example",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baseline.v1.json",
+   "to": "COMPANY_REGISTRATION_SUMMARY.md",
    "kind": "verifier-reads"
   },
   {
@@ -53683,6 +54036,3120 @@
    "kind": "verifier-reads"
   },
   {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:.cursor/hooks.json.bak-20260914-hook-temp-disable",
+   "kind": "verifier-reads",
+   "spec": ".cursor/hooks.json.bak-20260914-hook-temp-disable"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/REBASE_EXECUTION_20260916_PR230.md",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/REBASE_EXECUTION_20260916_PR230.md"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_FOUNDER_LEFTOVER_RELEASE_BUILD_V1.md",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_FOUNDER_LEFTOVER_RELEASE_BUILD_V1.md"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_MAIN_FULL_DISPATCH_THEN_RELEASE_V1.json",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_MAIN_FULL_DISPATCH_THEN_RELEASE_V1.json"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_BLANKET_OFFICIAL_RELEASE_V1.json",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_BLANKET_OFFICIAL_RELEASE_V1.json"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_BLANKET_OFFICIAL_RELEASE_V1.md",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_BLANKET_OFFICIAL_RELEASE_V1.md"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_TRIGGERED_ACCEPTANCE_34998389520_V1.json",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_TRIGGERED_ACCEPTANCE_34998389520_V1.json"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_TRIGGERED_ACCEPTANCE_34998389520_V1.md",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_TRIGGERED_ACCEPTANCE_34998389520_V1.md"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_TRIGGERED_DEPLOY_34999084022_V1.json",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_TRIGGERED_DEPLOY_34999084022_V1.json"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_TRIGGERED_DEPLOY_34999084022_V1.md",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_TRIGGERED_DEPLOY_34999084022_V1.md"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_TRIGGERED_RELEASE_BUILD_34998016673_V1.json",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_TRIGGERED_RELEASE_BUILD_34998016673_V1.json"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_TRIGGERED_RELEASE_BUILD_34998016673_V1.md",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_OPERATOR_TRIGGERED_RELEASE_BUILD_34998016673_V1.md"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_POST001_TO_019_PLUS_ALERT_AUTO_V1.json",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_POST001_TO_019_PLUS_ALERT_AUTO_V1.json"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_POST001_TO_019_PLUS_ALERT_AUTO_V1.md",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_POST001_TO_019_PLUS_ALERT_AUTO_V1.md"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_PR228_MAIN_MERGE_V1.json",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_PR228_MAIN_MERGE_V1.json"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_PR229_MERGE_AND_RC_FORMAL_REBIND_V1.md",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_PR229_MERGE_AND_RC_FORMAL_REBIND_V1.md"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REBASE_V1.json",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REBASE_V1.json"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REBASE_V1.md",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REBASE_V1.md"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REL701_PRODUCTION_DISPATCH_V1.json",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REL701_PRODUCTION_DISPATCH_V1.json"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REL702_PRODUCTION_SMOKE_V1.json",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REL702_PRODUCTION_SMOKE_V1.json"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REL702_PRODUCTION_SMOKE_V1.md",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REL702_PRODUCTION_SMOKE_V1.md"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REL703_PRODUCTION_OBSERVABILITY_V1.json",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REL703_PRODUCTION_OBSERVABILITY_V1.json"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REL703_PRODUCTION_OBSERVABILITY_V1.md",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REL703_PRODUCTION_OBSERVABILITY_V1.md"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REL704_CLOSURE_V1.json",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REL704_CLOSURE_V1.json"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REL704_CLOSURE_V1.md",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_REL704_CLOSURE_V1.md"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_RELEASE_BUILD_ACCEPTANCE_V1.json",
+   "kind": "verifier-reads",
+   "spec": "governance/engine-acceptance/human-po-ack-ENGINE_ACCEPTANCE_RELEASE_BUILD_ACCEPTANCE_V1.json"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:governance/release-master/RELEASE_CLOSURE.md",
+   "kind": "verifier-reads",
+   "spec": "governance/release-master/RELEASE_CLOSURE.md"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:packages/sdk/",
+   "kind": "verifier-reads",
+   "spec": "packages/sdk/"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:services/_wip_unrelated_marketing/",
+   "kind": "verifier-reads",
+   "spec": "services/_wip_unrelated_marketing/"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:services/ads-budget-guardrail/",
+   "kind": "verifier-reads",
+   "spec": "services/ads-budget-guardrail/"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:services/ads-orchestrator/",
+   "kind": "verifier-reads",
+   "spec": "services/ads-orchestrator/"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:services/marketing-attribution/METRICS.md",
+   "kind": "verifier-reads",
+   "spec": "services/marketing-attribution/METRICS.md"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:tooling/engine-acceptance/harness/local-domain-executor.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/engine-acceptance/harness/local-domain-executor.cjs"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:tooling/engine-acceptance/selftest-local-domain-executor.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/engine-acceptance/selftest-local-domain-executor.cjs"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:tooling/verify/ads-budget-guardrail.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/verify/ads-budget-guardrail.cjs"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:tooling/verify/ads-orchestrator-boundary.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/verify/ads-orchestrator-boundary.cjs"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:tooling/verify/ads-provider-capability.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/verify/ads-provider-capability.cjs"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:tooling/verify/ads-standing-authorization.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/verify/ads-standing-authorization.cjs"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:tooling/verify/alert-oneshot-dry-run.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/verify/alert-oneshot-dry-run.cjs"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:tooling/verify/attribution-chain.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/verify/attribution-chain.cjs"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:tooling/verify/capi-config.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/verify/capi-config.cjs"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:tooling/verify/capi-consent.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/verify/capi-consent.cjs"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:tooling/verify/fixtures/attribution-chain.v1.json",
+   "kind": "verifier-reads",
+   "spec": "tooling/verify/fixtures/attribution-chain.v1.json"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:tooling/verify/heavy-qa-lock.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/verify/heavy-qa-lock.cjs"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:tooling/verify/heavy-qa-lock.isolation.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/verify/heavy-qa-lock.isolation.cjs"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:tooling/verify/heavy-qa-lock.ps1",
+   "kind": "verifier-reads",
+   "spec": "tooling/verify/heavy-qa-lock.ps1"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:tooling/verify/lib/attribution-chain-fixture.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/verify/lib/attribution-chain-fixture.cjs"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:tooling/verify/marketing-compliance.cjs",
+   "kind": "verifier-reads",
+   "spec": "tooling/verify/marketing-compliance.cjs"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "missing:workers/marketing-capi-dispatcher/src/capi-core.cjs",
+   "kind": "verifier-reads",
+   "spec": "workers/marketing-capi-dispatcher/src/capi-core.cjs"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "governance/engine-acceptance/protected-scope.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "eval/coach_redteam.jsonl",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "eval/g_no_money.jsonl",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "eval/g_scope_escape.jsonl",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "eval/p_fact.jsonl",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "eval/s_refuse.jsonl",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "eval/s_safe_refuse.jsonl",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/adapter-matching-kpi.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/admin-audit.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/admin-kill-switch.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/admin-match-control.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/admin-ops-mode.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/admin-policy-version.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/admin-rbac.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/ai-answer-trace.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/ai-eval-gate.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/ai-pick-score.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/asset-master.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/auth-session.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/balance-aware-fact.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/current-fx-approx.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/day-opportunity-pulse.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/deposit-config.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/deposit-dispute.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/deposit-suggest-query.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/execution-policy.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/fact-card.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/feature-vector.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/financial-report.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/fx-snapshot.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/governance-observation.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/home-money-read.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/home-read-model.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/krw-deposit-request.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/kyc-status.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/kyc-submission.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/ledger-admin-adjust.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/ledger-journal.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/ledger-recon-report.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/listing.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/manifest.day1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/market-partner.registry.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/market-partner.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/mission-accrual.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/mission-definition.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/notification-prefs.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/operator-entity.instance.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/operator-entity.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/opportunity-card.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/opportunity-pricing.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/ops-inbox-message.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/participate-proof.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/participate-request.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/practice-grant.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/price-observation.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/price-override-layers.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/public-ticker-event.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/push-channel-filter.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/push-kill.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/push-payload.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/push-subscription.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/referral-edge.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/referral-program.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/referral-season.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/risk-queue.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/risk-signal.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/shadow-replay-report.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/simulation-gate.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/simulation-report.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/support-ticket.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/tendency-memo.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/toast-codes.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/trade-execution-state.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/ui-copy-glossary.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/usdt-deposit-event.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/user-attribution.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/user-capability.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/user-deposit-address.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/user-financial-summary.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/user-match-policy-override.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/user-membership.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/user-opportunity-override.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/user-profile.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/user-risk-state.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/user-twin.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/user-ux-prefs.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/wallet-buckets.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/webauthn-challenge.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "schemas/withdraw-intent.v1.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/admin-audit.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/admin-kill-switch.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/admin-match-control.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/admin-ops.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/admin-policy-version.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/admin-staff-login.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/admin-staff-login.isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/admin-staff-login.persist.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/admin-staff-login.persist.isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/auth-rate-limit.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/catalog-external-write.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/clock.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/isolated-qa-pg.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/jwt.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/ledger-user-query.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/package.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/price-override.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/adapters/adapters.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/adapters/adapters.admin.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/adapters/adapters.events.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/adapters/adapters.ingest.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/adapters/adapters.mi.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/adapters/adapters.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/adapters/adapters.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/adapters/adapters.types.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/adapters/index.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/adapters/provider-health.selftest.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/adapters/provider-health.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/admin-ops/admin-ops.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/admin-ops/admin-ops.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/admin-ops/admin-ops.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/admin-ops/admin-ops.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ai/ai-logs.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ai/ai-logs.admin.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ai/ai-pick.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ai/ai-pick.admin.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ai/ai.engine.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ai/ai.events.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ai/ai.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ai/ai.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ai/ai.types.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ai/assistant.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ai/coach.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ai/coach.orchestrator.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ai/coach.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ai/conversation-state.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ai/fact-tool.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ai/fact-tool.types.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ai/help-rag.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ai/index.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ai/llm.adapter.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ai/memory.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ai/shadow-replay.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ai/shadow-replay.admin.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ai/user-twin.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/app.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/audit/admin-audit.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/audit/admin-audit.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/audit/audit-events.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/audit/audit.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/auth-rate-limit.guard.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/auth-rate-limit.selftest.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/auth.constants.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/auth.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/auth.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/auth.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/auth.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/auth.stage.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/classic-signup.policy.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/classic-signup.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/consent-versions.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/find-id.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/identity-proof.crypto.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/identity-proof.email.runtime.test.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/identity-proof.email.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/identity-proof.selftest.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/identity-proof.store.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/index.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/jwt-auth.guard.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/jwt-guard.selftest.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/magic-link.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/oauth-identity.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/passkey-registration.policy.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/password-auth.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/password-hash.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/password-reset.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/privacy-account.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/pwned-password.local-blocklist.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/pwned-password.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/webauthn-assert.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/auth/webauthn-rp.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/common/admin-capabilities.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/common/admin-guard.selftest.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/common/admin-operator.decorator.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/common/admin-rbac.policy.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/common/admin-session-login.admin-http.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/common/admin-session.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/common/admin-session.cookies.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/common/admin-session.csrf.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/common/admin-session.revoke.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/common/admin-session.runtime.test.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/common/admin-token.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/common/admin.guard.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/common/bearer-header.runtime.test.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/common/bearer-header.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/common/clock.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/common/common.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/common/index.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/common/security-headers.middleware.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/compliance/compliance.events.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/compliance/compliance.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/compliance/compliance.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/compliance/compliance.types.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/compliance/index.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/compliance/kyc-gate.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/compliance/kyc-r2.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/compliance/kyc.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/compliance/kyc.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/compliance/kyc.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/config/nest-provenance.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/config/phase0.env.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/db/postgres-recovery.selftest.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/db/postgres.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/events/events.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/events/in-process.bus.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/execution-policy/execution-policy.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/execution-policy/execution-policy.admin.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/execution-policy/execution-policy.events.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/execution-policy/execution-policy.mi.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/execution-policy/execution-policy.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/execution-policy/execution-policy.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/execution-policy/execution-policy.types.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/execution-policy/index.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/growth/growth-public.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/growth/growth.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/growth/growth.public.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/growth/growth.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/health.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/health.public.runtime.test.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/health.public.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/home-read/home-read.mi.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/home-read/home-read.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/home-read/home-read.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/home-read/home-read.user.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/home-read/home-read.user.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/home-read/index.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/home-read/trial-state.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/home-read/trial-state.user.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/home-read/trial-state.user.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/inbox/inbox.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/inbox/inbox.user.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/inbox/inbox.user.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/inbox/index.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/inbox/notification-prefs.defaults.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/inbox/notification-prefs.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/inbox/ops-inbox.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/inbox/ops-inbox.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/kill-switch/kill-switch.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/kill-switch/kill-switch.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/kill-switch/kill-switch.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/kill-switch/kill-switch.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ledger/idempotency-fingerprint.runtime.test.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ledger/idempotency-fingerprint.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ledger/index.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ledger/ledger.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ledger/ledger.admin.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ledger/ledger.buckets.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ledger/ledger.events.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ledger/ledger.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ledger/ledger.money.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ledger/ledger.outbox.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ledger/ledger.posting.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ledger/ledger.provision.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ledger/ledger.recon.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ledger/ledger.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ledger/ledger.types.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ledger/ledger.user-query.selftest.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ledger/ledger.user-query.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ledger/ledger.user.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ledger/money-authority.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ledger/money-authority.isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ledger/practice-grant.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/loop/day-pulse.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/loop/day-pulse.user.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/loop/day-pulse.user.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/loop/index.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/loop/loop.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/loop/preflight.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/main.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/match-control/match-control.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/match-control/match-control.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/match-control/match-control.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/match-control/match-control.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/admin-member-directory.admin-http.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/admin-member-directory.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/admin-member-directory.isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/admin-member-directory.persist.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/auto-downgrade.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/bonus-match-grant.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/bulk-operator-job.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/grade-daily-policy.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/index.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/jwt-revocation.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/ledger-adjustment.contract.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/member-360.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/member-daily-cap.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/member-daily-cap.http.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/member-daily-cap.isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/membership.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/membership.admin.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/membership.events.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/membership.hooks.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/membership.mi.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/membership.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/membership.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/membership.runtime.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/membership.types.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/membership.user.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/membership.user.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/operator-control.persist.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/operator-control.provider.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/operator-control.store.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/operator-quota-grade.admin-http.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/operator-quota-grade.isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/presentation-profile.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/membership/support-conversation.contract.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/missions/benefits.user.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/missions/benefits.user.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/missions/benefits.user.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/missions/index.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/missions/mission-reward.evaluator.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/missions/mission.accrual.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/missions/mission.events.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/missions/mission.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/missions/mission.program.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/missions/mission.types.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/missions/settlement-completed.fanout.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/observability/obs.exception-filter.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/asset-image-r2.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/balance-aware-feed.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/catalog-external-write.admin-writers.isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/catalog-external-write.guard.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/catalog-external-write.ingest-http.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/catalog-external-write.ingest-http.selftest.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/catalog-external-write.ingest-isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/catalog-external-write.pricing-writers.isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/catalog-external-write.runtime.test.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/catalog-external-write.ts-hook.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/current-fx-approx.map.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/current-fx-approx.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/current-fx-approx.user.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/current-fx-approx.user.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/fx-snapshot.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/index.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/operator-mall-ledger-posting.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/operator-mall-ledger-posting.isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/operator-mall-product.admin-http.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/operator-mall-product.admin.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/operator-mall-product.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/operator-mall-product.isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/operator-mall-product.persist.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/operator-mall-product.persist.isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/operator-mall-user-feed.runtime.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/opportunities-user-operator-only.isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/opportunities.admin.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/opportunities.events.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/opportunities.mi.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/opportunities.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/opportunities.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/opportunities.types.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/opportunities.user.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/opportunities.user.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/opportunities.user.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/opportunity-reprice.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/participate-amount.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/participate.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/user-opportunity-override.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/user-opportunity-override.admin.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/opportunities/user-opportunity-override.merge.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/price-override/price-override.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/price-override/price-override.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/push/push-dispatch.client.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/push/push-emit.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/push/push-kill.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/push/push-kill.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/push/push-subscription.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/push/push.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/push/push.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/push/push.user.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/redis/upstash.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/referral/index.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/referral/referral-code.util.runtime.test.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/referral/referral-code.util.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/referral/referral.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/referral/referral.bonus.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/referral/referral.clawback.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/referral/referral.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/referral/referral.edge.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/referral/referral.events.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/referral/referral.hooks.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/referral/referral.ladder.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/referral/referral.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/referral/referral.own-code.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/referral/referral.pool.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/referral/referral.program.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/referral/referral.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/referral/referral.share.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/referral/referral.types.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/referral/reseller-id.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/referral/reseller-id.isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/referral/reseller-id.persist.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/referral/reseller-id.persist.isolation.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/risk/index.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/risk/money-circuit.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/risk/risk.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/risk/risk.events.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/risk/risk.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/risk/risk.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/risk/risk.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/risk/risk.types.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/risk/rules/p49_catalog.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/risk/rules/p49_circuit.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/risk/rules/p49_guards.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/risk/rules/p49_practice.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/risk/rules/p49_status.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/risk/rules/p49_velocity.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/simulation/index.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/simulation/platform-reserve.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/simulation/platform-reserve.admin.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/simulation/simulation.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/simulation/simulation.admin.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/simulation/simulation.engine.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/simulation/simulation.events.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/simulation/simulation.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/simulation/simulation.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/simulation/simulation.types.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/source-policy/source-policy.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/source-policy/source-policy.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/source-policy/source-policy.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/source-policy/source-policy.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/trades/index.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/trades/trades.execution.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/trades/trades.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/trades/trades.user.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/trades/trades.user.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/types/market-intelligence-ptf-00c.d.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ux-prefs/user-ux-prefs.defaults.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ux-prefs/user-ux-prefs.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ux-prefs/user-ux-prefs.parse.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ux-prefs/user-ux-prefs.runtime.test.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ux-prefs/user-ux-prefs.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ux-prefs/user-ux-prefs.store.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ux-prefs/user-ux-prefs.user.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/ux-prefs/user-ux-prefs.user.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/balance-aware-fact.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/chain-sweeper.guards.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/chain-sweeper.phase0.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/chain-watcher.phase0.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/chain-watcher.stages.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/deposit-address.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/deposit-config.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/deposit-config.ready.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/deposit-config.safe-krw.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/deposit-config.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/deposit-dispute.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/deposit-dispute.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/deposit-suggest.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/feed-cache-invalidate.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/home-money-read.map.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/home-money-read.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/home-money-read.types.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/home-money-read.user.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/home-money-read.user.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/index.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/krw-deposit.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/krw-deposit.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/min-holding.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/network-plain-ko.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/profit-merge.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/resend-email.provider.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/tron-address.runtime.test.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/tron-address.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/usdt-deposit.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/wallet.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/wallet.events.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/wallet.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/wallet.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/wallet.types.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/withdraw-apply-block.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/withdraw-credentials.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/withdraw-credentials.admin.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/withdraw-fee.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/withdraw-intent.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/withdraw-kyc.guard.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/withdraw-review.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/withdraw-review.policy.runtime.test.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/withdraw-review.policy.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/withdraw-review.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/withdraw-stepup.policy.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/src/wallet/withdraw-stepup.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/api-nest/tsconfig.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/engine-rust/Cargo.lock",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/engine-rust/Cargo.toml",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/engine-rust/settlement_rule.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/engine-rust/src/lib.rs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/engine-rust/src/settlement_rule.rs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/engine-rust/testdata/golden/below_min_profit.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/engine-rust/testdata/golden/circuit_open.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/engine-rust/testdata/golden/g_strictness_lenient_ok.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/engine-rust/testdata/golden/g_strictness_tight_below_min.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/engine-rust/testdata/golden/match_success.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/engine-rust/testdata/golden/price_moved_stale.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/engine-rust/testdata/golden/requeue_then_success.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "services/engine-rust/testdata/golden/soft_version_ok.json",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260808205842_extensions_vector.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260808205844_identity_nest_auth.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260808205846_ledger_accounts_journals.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260808205848_wallet_deposit_withdraw.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260808205850_opportunities_pricing.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260808205853_ai_twin_memory.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260808205857_referral_support_attribution.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260808205901_rls_ledger_guards.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260808210600_rls_security_hardening.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260808224856_auth_oauth_passkey_stage_a_b.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260808234957_deposit_config_fee_min_holding.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260809000351_kyc_decision_audit.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260809001004_withdraw_stepup_auth.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260809002330_chain_sweeper.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260809003413_risk_p49_abuse.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260809010541_practice_grants_onboarding.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260809010849_deposit_disputes.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260809010858_referral_pool_fifo_clawback.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260809023230_market_intelligence.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260809023713_user_opportunity_overrides_schema_align.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260809042549_mission_auto_accrual_fanout.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260809100440_execution_policy_feed_audit.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260809101114_user_membership_match_policy.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260809102109_simulation_engine_m05_platform_reserve.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260809103208_ai_feature_platform_pick_eval_shadow.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260809142108_execution_policy_day1_bootstrap.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260809143754_user_opportunity_overrides_pin_cap_search_path.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260809144814_catalog_runtime_day1_fx_bootstrap.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260809222034_ops_inbox_hide_source_event.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260810024643_growth_ticker_config.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260811062000_idempotency_request_fingerprint.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260811062100_ledger_outbox_events.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260811194832_shadow_replay_advisory_label.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260813025116_ai_logs_answer_path_scope_redirect.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260813202305_privacy_purge_anonymize_indexes.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260814130000_ptf00c_fx_marketplace_normalization.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260814130100_ptf00c_provider_runtime_health.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260814130200_ptf00c_provider_health_last_tick_partial.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260814140000_ptf00c_r1_provider_tick_ledger.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260817154827_krw_deposit_fx_facts.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260819210000_source_observations.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260819220000_canonical_products.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260820013000_match_results.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260821090000_push_subscriptions_and_control.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260821223109_beginner_onboarding_experience.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260823160000_admin_audit_events.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260823170000_admin_kill_switches.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260823180000_opportunity_price_overrides.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260823190000_admin_ops_intents.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260823200000_admin_match_controls.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260823210000_admin_policy_versions.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260901224000_withdraw_stepup_token_single_use.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260902032000_production_schema_parity.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260902155632_withdraw_broadcast_tron.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260905110000_classic_signup_sessions_and_admin.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260916033000_opportunities_supply_source.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260916033100_operator_mall_product.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260916080000_admin_staff_credentials.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/baselines/ea-baseline-7f9590aebc26-f8542af95c2c.json",
+   "to": "supabase/migrations/20260916120000_operator_mall_product_simple_amounts.sql",
+   "kind": "verifier-reads"
+  },
+  {
    "from": "governance/engine-acceptance/baselines/ea-baseline-a6908eff1def-3db9e8f8832f.json",
    "to": "governance/engine-acceptance/acceptance-contract.v1.md",
    "kind": "verifier-reads"
@@ -71154,6 +74621,56 @@
   {
    "from": "governance/engine-acceptance/product-rebases.v1.json",
    "to": "supabase/migrations/20260916120000_operator_mall_product_simple_amounts.sql",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/product-rebases.v1.json",
+   "to": "services/api-nest/src/cms/cms.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/product-rebases.v1.json",
+   "to": "services/api-nest/src/cms/cms.core.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/product-rebases.v1.json",
+   "to": "services/api-nest/src/cms/cms.module.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/product-rebases.v1.json",
+   "to": "services/api-nest/src/cms/cms.public.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/product-rebases.v1.json",
+   "to": "services/api-nest/src/cms/cms.routes.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/product-rebases.v1.json",
+   "to": "services/api-nest/src/cms/cms.service.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/product-rebases.v1.json",
+   "to": "services/api-nest/src/cms/cms.spec.runtime.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/product-rebases.v1.json",
+   "to": "services/api-nest/src/cms/index.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/product-rebases.v1.json",
+   "to": "services/api-nest/src/wallet/user-deposit-address.admin.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "governance/engine-acceptance/product-rebases.v1.json",
+   "to": "supabase/migrations/20260916220000_cms_posts.sql",
    "kind": "verifier-reads"
   },
   {
@@ -92494,6 +96011,12 @@
   },
   {
    "from": "services/api-nest/src/app.module.ts",
+   "to": "services/api-nest/src/cms/cms.module.ts",
+   "kind": "import",
+   "spec": "./cms/cms.module"
+  },
+  {
+   "from": "services/api-nest/src/app.module.ts",
    "to": "services/api-nest/src/observability/obs.exception-filter.ts",
    "kind": "import",
    "spec": "./observability/obs.exception-filter"
@@ -93385,6 +96908,150 @@
    "to": "services/api-nest/src/auth/webauthn-rp.ts",
    "kind": "import",
    "spec": "./webauthn-rp"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.admin.controller.ts",
+   "to": "pkg:@nestjs/common",
+   "kind": "import",
+   "spec": "@nestjs/common"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.admin.controller.ts",
+   "to": "services/api-nest/src/common/admin.guard.ts",
+   "kind": "import",
+   "spec": "../common/admin.guard"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.admin.controller.ts",
+   "to": "services/api-nest/src/common/admin-operator.decorator.ts",
+   "kind": "import",
+   "spec": "../common/admin-operator.decorator"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.admin.controller.ts",
+   "to": "services/api-nest/src/cms/cms.routes.ts",
+   "kind": "import",
+   "spec": "./cms.routes"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.admin.controller.ts",
+   "to": "services/api-nest/src/cms/cms.service.ts",
+   "kind": "import",
+   "spec": "./cms.service"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.module.ts",
+   "to": "pkg:@nestjs/common",
+   "kind": "import",
+   "spec": "@nestjs/common"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.module.ts",
+   "to": "services/api-nest/src/events/events.module.ts",
+   "kind": "import",
+   "spec": "../events/events.module"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.module.ts",
+   "to": "services/api-nest/src/inbox/inbox.module.ts",
+   "kind": "import",
+   "spec": "../inbox/inbox.module"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.module.ts",
+   "to": "services/api-nest/src/push/push.module.ts",
+   "kind": "import",
+   "spec": "../push/push.module"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.module.ts",
+   "to": "services/api-nest/src/cms/cms.admin.controller.ts",
+   "kind": "import",
+   "spec": "./cms.admin.controller"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.module.ts",
+   "to": "services/api-nest/src/cms/cms.public.controller.ts",
+   "kind": "import",
+   "spec": "./cms.public.controller"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.module.ts",
+   "to": "services/api-nest/src/cms/cms.service.ts",
+   "kind": "import",
+   "spec": "./cms.service"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.public.controller.ts",
+   "to": "pkg:@nestjs/common",
+   "kind": "import",
+   "spec": "@nestjs/common"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.public.controller.ts",
+   "to": "services/api-nest/src/cms/cms.routes.ts",
+   "kind": "import",
+   "spec": "./cms.routes"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.public.controller.ts",
+   "to": "services/api-nest/src/cms/cms.service.ts",
+   "kind": "import",
+   "spec": "./cms.service"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.service.ts",
+   "to": "pkg:@nestjs/common",
+   "kind": "import",
+   "spec": "@nestjs/common"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.service.ts",
+   "to": "services/api-nest/src/db/postgres.ts",
+   "kind": "import",
+   "spec": "../db/postgres"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.service.ts",
+   "to": "services/api-nest/src/inbox/ops-inbox.service.ts",
+   "kind": "import",
+   "spec": "../inbox/ops-inbox.service"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.service.ts",
+   "to": "services/api-nest/src/push/push-emit.service.ts",
+   "kind": "import",
+   "spec": "../push/push-emit.service"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.service.ts",
+   "to": "services/api-nest/src/cms/cms.routes.ts",
+   "kind": "import",
+   "spec": "./cms.routes"
+  },
+  {
+   "from": "services/api-nest/src/cms/cms.spec.runtime.cjs",
+   "to": "services/api-nest/src/cms/cms.core.cjs",
+   "kind": "require",
+   "spec": "./cms.core.cjs"
+  },
+  {
+   "from": "services/api-nest/src/cms/index.ts",
+   "to": "services/api-nest/src/cms/cms.module.ts",
+   "kind": "import",
+   "spec": "./cms.module"
+  },
+  {
+   "from": "services/api-nest/src/cms/index.ts",
+   "to": "services/api-nest/src/cms/cms.service.ts",
+   "kind": "import",
+   "spec": "./cms.service"
+  },
+  {
+   "from": "services/api-nest/src/cms/index.ts",
+   "to": "services/api-nest/src/cms/cms.routes.ts",
+   "kind": "import",
+   "spec": "./cms.routes"
   },
   {
    "from": "services/api-nest/src/common/admin-capabilities.ts",
@@ -100288,6 +103955,30 @@
    "spec": "./wallet.types"
   },
   {
+   "from": "services/api-nest/src/wallet/user-deposit-address.admin.controller.ts",
+   "to": "pkg:@nestjs/common",
+   "kind": "import",
+   "spec": "@nestjs/common"
+  },
+  {
+   "from": "services/api-nest/src/wallet/user-deposit-address.admin.controller.ts",
+   "to": "services/api-nest/src/common/admin.guard.ts",
+   "kind": "import",
+   "spec": "../common/admin.guard"
+  },
+  {
+   "from": "services/api-nest/src/wallet/user-deposit-address.admin.controller.ts",
+   "to": "services/api-nest/src/wallet/deposit-address.service.ts",
+   "kind": "import",
+   "spec": "./deposit-address.service"
+  },
+  {
+   "from": "services/api-nest/src/wallet/user-deposit-address.admin.controller.ts",
+   "to": "services/api-nest/src/wallet/wallet.routes.ts",
+   "kind": "import",
+   "spec": "./wallet.routes"
+  },
+  {
    "from": "services/api-nest/src/wallet/wallet.controller.ts",
    "to": "pkg:@nestjs/common",
    "kind": "import",
@@ -100568,6 +104259,12 @@
    "to": "services/api-nest/src/wallet/withdraw-review.admin.controller.ts",
    "kind": "import",
    "spec": "./withdraw-review.admin.controller"
+  },
+  {
+   "from": "services/api-nest/src/wallet/wallet.module.ts",
+   "to": "services/api-nest/src/wallet/user-deposit-address.admin.controller.ts",
+   "kind": "import",
+   "spec": "./user-deposit-address.admin.controller"
   },
   {
    "from": "services/api-nest/src/wallet/wallet.module.ts",
@@ -109745,6 +113442,16 @@
   {
    "from": "tooling/verify/backend/benefit-referral/share-copy.cjs",
    "to": "services/api-nest/src/referral/referral.controller.ts",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/backend/cms/cms-posts.cjs",
+   "to": "services/api-nest/src/cms/cms.spec.runtime.cjs",
+   "kind": "verifier-reads"
+  },
+  {
+   "from": "tooling/verify/backend/cms/cms-posts.cjs",
+   "to": "services/api-nest/src/cms/cms.admin.controller.ts",
    "kind": "verifier-reads"
   },
   {
@@ -123294,6 +127001,12 @@
    "to": "script:verify:observability",
    "kind": "workflow-run",
    "spec": "pnpm verify:observability"
+  },
+  {
+   "from": ".github/workflows/backend-ci.yml",
+   "to": "tooling/verify/backend/run-all.cjs",
+   "kind": "workflow-run",
+   "spec": "node tooling/verify/backend/run-all.cjs"
   },
   {
    "from": ".github/workflows/backend-ci.yml",

@@ -27,6 +27,7 @@ import { WithdrawCredentialsAdminService } from "./withdraw-credentials.admin.se
 import { WithdrawFeeService } from "./withdraw-fee.service";
 import { WithdrawIntentService } from "./withdraw-intent.service";
 import { WithdrawReviewAdminController } from "./withdraw-review.admin.controller";
+import { UserDepositAddressAdminController } from "./user-deposit-address.admin.controller";
 import { WithdrawReviewService } from "./withdraw-review.service";
 import { WithdrawKycGuard } from "./withdraw-kyc.guard";
 import { WithdrawStepUpService } from "./withdraw-stepup.service";
@@ -48,6 +49,7 @@ import { WithdrawStepUpService } from "./withdraw-stepup.service";
     DepositDisputeAdminController,
     WithdrawCredentialsAdminController,
     WithdrawReviewAdminController,
+    UserDepositAddressAdminController,
   ],
   providers: [
     DepositConfigService,

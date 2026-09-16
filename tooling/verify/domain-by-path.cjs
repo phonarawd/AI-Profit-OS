@@ -346,6 +346,13 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^services\/api-nest\/src\/cms\//.test(f) ||
+      /^supabase\/migrations\/.*cms_posts\.sql$/.test(f) ||
+      /^tooling\/verify\/backend\/cms\//.test(f),
+    scripts: ["backend/cms/cms-posts.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/membership\//.test(f) ||
       /^services\/api-nest\/admin-staff-login\.(core|isolation|persist)(\.isolation)?\.cjs$/.test(f) ||
       /^services\/api-nest\/isolated-qa-pg\.cjs$/.test(f) ||
@@ -1254,6 +1261,7 @@ const RULES = [
       /^services\/api-nest\/src\/wallet\/withdraw-fee\.service\.ts$/.test(f) ||
       /^services\/api-nest\/src\/wallet\/min-holding\.service\.ts$/.test(f) ||
       /^services\/api-nest\/src\/wallet\/deposit-address\.service\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/wallet\/user-deposit-address\.admin\.controller\.ts$/.test(f) ||
       /^services\/api-nest\/src\/wallet\/tron-address\.ts$/.test(f) ||
       /^services\/api-nest\/src\/wallet\/withdraw-stepup\./.test(f) ||
       /^tooling\/verify\/withdraw-stepup-security/.test(f) ||

@@ -159,6 +159,7 @@ const CI_JOBS = {
   ],
   "admin-rbac": [
     "backend/run-all.cjs#admin-rbac",
+    "backend/run-all.cjs#cms",
     "rel-400-admin-control-plane.cjs",
     "rel-405-rbac-audit.cjs",
     "rel-406-kill-switch.cjs",

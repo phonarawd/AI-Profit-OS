@@ -2,6 +2,7 @@
 
 export const MEMBERSHIP_ADMIN_ROUTES = {
   userDirectory: "users",
+  userProfile: "users/:id",
   membership: "users/:id/membership",
   matchPolicyOverride: "users/:id/match-policy-override",
   effectivePreview: "users/:id/membership/effective-preview",

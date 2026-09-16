@@ -81,12 +81,24 @@ async function main() {
       lookups.push(input);
       const q = String((input && input.q) || "").trim();
       if (!q) {
-        throw new ServiceUnavailableException({
-          code: "STORE_UNREADY",
-          applied: false,
-          storeStatus: "unready",
-          statusCode: 503,
-        });
+        return {
+          items: [
+            {
+              userId: USER_A,
+              createdAt: "2026-09-16T00:00:00.000Z",
+              username: "alpha",
+              status: "active",
+              emailMasked: "a***m",
+              phoneMasked: "0***8",
+              resellerId: "AAAA1111",
+              membership: "sprout",
+              signupIp: null,
+            },
+          ],
+          nextCursor: null,
+          exact: false,
+          substituted: false,
+        };
       }
       if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(q)) {
         throw new BadRequestException("q must be uuid");
@@ -143,13 +155,13 @@ async function main() {
 
     const emptyQ = await call(port, "GET", LIST_PATH, { token: signAdmin("super") });
     record(
-      "empty q 503 STORE_UNREADY",
-      emptyQ.status === 503 && emptyQ.body.includes("STORE_UNREADY"),
+      "empty q 200 production list",
+      emptyQ.status === 200 && emptyQ.body.includes(USER_A),
       `status=${emptyQ.status} body=${emptyQ.body}`,
     );
     record(
-      "list unready applied false",
-      emptyQ.body.includes("\"applied\":false") || emptyQ.body.includes("STORE_UNREADY"),
+      "empty q has createdAt and signupIp null",
+      emptyQ.body.includes("createdAt") && emptyQ.body.includes("signupIp"),
       emptyQ.body,
     );
 

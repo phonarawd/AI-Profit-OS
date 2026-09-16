@@ -44,6 +44,8 @@ export const WALLET_ADMIN_ROUTES = {
   depositDisputes: "wallet/deposit-disputes",
   depositDisputeCredit: "wallet/deposit-disputes/:id/credit",
   depositDisputeReject: "wallet/deposit-disputes/:id/reject",
+  /** 회원별 기존 TRC20 조회 only · 발급/공유주소 금지 */
+  userDepositAddress: "users/:id/deposit-address",
   /** §43.6a · Admin §9.8.10E */
   withdrawPinReset: "users/:id/withdraw-pin/reset",
   webauthnRevoke: "users/:id/webauthn/revoke",

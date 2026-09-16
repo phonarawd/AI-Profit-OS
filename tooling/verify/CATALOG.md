@@ -275,4 +275,5 @@ mixed(UI+backend) 검증기 87개를 해체한 결과. 백엔드 어서션만 `t
 | ledger-wallet | `home-state-truth.cjs` · `practice-non-withdrawable.cjs` · `principal-profit-abuse.cjs` · `principal-withdraw-reachable.cjs` |
 | matching-membership | `day-pulse-live-only.cjs` (loop-psychology L3/L5 통합) · `match-strictness.cjs` · `membership-daily-cap.cjs` · `membership-ladder.cjs` · `operator-quota-grade.cjs` · `no-fulfill-rate-as-rule.cjs` · `no-success-rate-percent.cjs` · `participate-proof.cjs` · `preflight-may-stop.cjs` · `soft-hard-requeue-sla.cjs` · `trades-web-wire.cjs` |
 | notification | `ops-inbox.cjs` · `ticker-pii-0.cjs` |
+| cms | `cms-posts.cjs` (공지/이벤트/혜택/배너/알림 draft→publish→end · 손님 published만 · 시드 0) |
 | opportunity-engine | `adapter-matching-kpi.cjs` · `arbitrage-type-label.cjs` · `asset-image-surface.cjs` · `balance-aware-feed.cjs` · `capital-tier-catalog.cjs` · `luxury-bag-vertical.cjs` · `margin-compare-surface.cjs` · `market-intel-engine.cjs` · `simulation-gate.cjs` · `trading-card-vertical.cjs` · `ultra-watch-whale.cjs` · `user-trader-jargon-0.cjs` |

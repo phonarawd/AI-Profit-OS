@@ -482,6 +482,9 @@ jobs:
       - name: verify:backend --domain admin-rbac
         if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
         run: node tooling/verify/backend/run-all.cjs --domain admin-rbac
+      - name: verify:backend --domain cms
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: node tooling/verify/backend/run-all.cjs --domain cms
       - name: verify:rel-400-admin-control-plane
         if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
         run: pnpm verify:rel-400-admin-control-plane
