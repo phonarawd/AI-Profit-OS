@@ -26,6 +26,8 @@ const PRODUCT_COLS = [
   "product_revision",
   "supply_source",
   "register_idempotency_key",
+  "required_capital_usdt",
+  "expected_profit_krw_approx",
 ];
 const PARTICIPATION_COLS = [
   "id",
@@ -53,6 +55,9 @@ const OPP_MALL_COLS = [
   "composition_qty",
   "product_revision",
   "configured_payout_usdt",
+  "expected_profit_usdt",
+  "expected_profit_krw_approx",
+  "required_capital_usdt",
 ];
 
 const SQL = Object.freeze({
@@ -90,10 +95,12 @@ SELECT
 INSERT INTO public.operator_mall_products (
   id, name, description, photos, composition_qty, configured_payout_usdt,
   currency, visibility, selected_member_ids, price_confirmation_memo,
-  product_revision, supply_source, register_idempotency_key, updated_at
+  product_revision, supply_source, register_idempotency_key,
+  required_capital_usdt, expected_profit_krw_approx, updated_at
 ) VALUES (
   $1::uuid, $2, $3, $4::jsonb, $5, $6::numeric,
-  $7, $8, $9::uuid[], $10, $11, 'operator', $12, now()
+  $7, $8, $9::uuid[], $10, $11, 'operator', $12,
+  $13::numeric, $14::numeric, now()
 )
 ON CONFLICT (id) DO NOTHING
 RETURNING id::text`.trim(),
@@ -101,7 +108,8 @@ RETURNING id::text`.trim(),
 SELECT id::text, name, description, photos, composition_qty,
        configured_payout_usdt::text, currency, visibility, selected_member_ids,
        price_confirmation_memo, product_revision, supply_source,
-       register_idempotency_key, created_at, updated_at
+       register_idempotency_key, required_capital_usdt::text,
+       expected_profit_krw_approx::text, created_at, updated_at
   FROM public.operator_mall_products
  WHERE register_idempotency_key = $1`.trim(),
   updateProductIfRevision: `
@@ -116,6 +124,8 @@ UPDATE public.operator_mall_products
        selected_member_ids = $10::uuid[],
        price_confirmation_memo = $11,
        product_revision = $12,
+       required_capital_usdt = $13::numeric,
+       expected_profit_krw_approx = $14::numeric,
        updated_at = now()
  WHERE id = $1::uuid
    AND product_revision = $2
@@ -124,21 +134,24 @@ RETURNING id::text`.trim(),
 SELECT id::text, name, description, photos, composition_qty,
        configured_payout_usdt::text, currency, visibility, selected_member_ids,
        price_confirmation_memo, product_revision, supply_source,
-       register_idempotency_key, created_at, updated_at
+       register_idempotency_key, required_capital_usdt::text,
+       expected_profit_krw_approx::text, created_at, updated_at
   FROM public.operator_mall_products
  WHERE id = $1::uuid`.trim(),
   listProducts: `
 SELECT id::text, name, description, photos, composition_qty,
        configured_payout_usdt::text, currency, visibility, selected_member_ids,
        price_confirmation_memo, product_revision, supply_source,
-       register_idempotency_key, created_at, updated_at
+       register_idempotency_key, required_capital_usdt::text,
+       expected_profit_krw_approx::text, created_at, updated_at
   FROM public.operator_mall_products
  ORDER BY created_at ASC`.trim(),
   listProductsPage: `
 SELECT id::text, name, description, photos, composition_qty,
        configured_payout_usdt::text, currency, visibility, selected_member_ids,
        price_confirmation_memo, product_revision, supply_source,
-       register_idempotency_key, created_at, updated_at
+       register_idempotency_key, required_capital_usdt::text,
+       expected_profit_krw_approx::text, created_at, updated_at
   FROM public.operator_mall_products
  WHERE ($3::text IS NULL OR visibility = $3)
  ORDER BY created_at ASC
@@ -151,6 +164,9 @@ UPDATE public.opportunities
        composition_qty = $5,
        product_revision = $6,
        configured_payout_usdt = $7::numeric,
+       expected_profit_usdt = $7::numeric,
+       expected_profit_krw_approx = $8::numeric,
+       required_capital_usdt = $9::numeric,
        updated_at = now()
  WHERE id = $1::uuid
    AND supply_source = 'operator'`.trim(),
@@ -165,10 +181,6 @@ ON CONFLICT (asset_id) DO UPDATE SET
   image_url = EXCLUDED.image_url,
   image_alt_ko = EXCLUDED.image_alt_ko,
   updated_at = now()`.trim(),
-  latestFxSnapshot: `
-SELECT id FROM public.fx_snapshots
- ORDER BY captured_at DESC
- LIMIT 1`.trim(),
   ensureOperatorFx: `
 INSERT INTO public.fx_snapshots (id, usd_krw, source, captured_at)
 VALUES ('operator_mall_fx', 1, 'operator_mall', now())
@@ -185,13 +197,13 @@ INSERT INTO public.opportunities (
   composition_qty, product_revision, configured_payout_usdt
 ) VALUES (
   $1::uuid, $2, $3, now(), $4::numeric,
-  NULL, $5, 3600,
-  0, 'normal', '{}', 0,
-  'orchestrate', '{}', 'trading_card', $6,
-  $7, 'admin_r2', $6,
-  'benefit', '혜택', $8::jsonb, now() + interval '10 years', 'available',
-  'operator', $9, $10::uuid[], $11,
-  $12, $13, $4::numeric
+  $5::numeric, $6, 3600,
+  0, 'normal', '{}', $7::numeric,
+  'orchestrate', '{}', 'trading_card', $8,
+  $9, 'admin_r2', $8,
+  'benefit', '혜택', $10::jsonb, now() + interval '10 years', 'available',
+  'operator', $11, $12::uuid[], $13,
+  $14, $15, $4::numeric
 )
 ON CONFLICT (id) DO NOTHING`.trim(),
   peekOpportunitySupply: `
@@ -354,6 +366,14 @@ function rowToProduct(row) {
     photos: Array.isArray(row.photos) ? row.photos : [],
     compositionQty: Number(row.composition_qty),
     payoutAmount: String(row.configured_payout_usdt),
+    requiredCapitalUsdt:
+      row.required_capital_usdt != null && row.required_capital_usdt !== ""
+        ? String(row.required_capital_usdt)
+        : null,
+    expectedProfitKrwApprox:
+      row.expected_profit_krw_approx != null && row.expected_profit_krw_approx !== ""
+        ? String(row.expected_profit_krw_approx)
+        : null,
     currency: row.currency || "USDT",
     visibility: row.visibility,
     selectedMemberIds: Array.isArray(row.selected_member_ids)
@@ -403,11 +423,9 @@ async function ensureOperatorUserSurface(q, p) {
     /* asset 표가 없으면 유저면 행만 생략 */
     return;
   }
-  let fxId = "operator_mall_fx";
+  const fxId = "operator_mall_fx";
   try {
-    const latest = await q.query(SQL.latestFxSnapshot, []);
-    if (latest.rows[0] && latest.rows[0].id) fxId = String(latest.rows[0].id);
-    else await q.query(SQL.ensureOperatorFx, []);
+    await q.query(SQL.ensureOperatorFx, []);
   } catch {
     return;
   }
@@ -423,7 +441,9 @@ async function ensureOperatorUserSurface(q, p) {
         assetId,
         p.revision || 1,
         p.payoutAmount,
+        p.expectedProfitKrwApprox == null ? null : p.expectedProfitKrwApprox,
         fxId,
+        p.requiredCapitalUsdt,
         label,
         imageUrl,
         JSON.stringify({
@@ -506,6 +526,8 @@ async function createPersistMallStore(db, opts) {
             p.priceConfirmationMemo || null,
             p.revision,
             p.registerIdempotencyKey || null,
+            p.requiredCapitalUsdt,
+            p.expectedProfitKrwApprox == null ? null : p.expectedProfitKrwApprox,
           ]);
         } catch (err) {
           if (err && err.code === "23505") {
@@ -532,6 +554,8 @@ async function createPersistMallStore(db, opts) {
               p.compositionQty,
               p.revision,
               p.payoutAmount,
+              p.expectedProfitKrwApprox == null ? null : p.expectedProfitKrwApprox,
+              p.requiredCapitalUsdt,
             ]);
           } catch {
             /* 기회 행이 없으면 스탬프만 생략. 상품 persist 는 유지 */
@@ -563,6 +587,8 @@ async function createPersistMallStore(db, opts) {
         next.selectedMemberIds || [],
         next.priceConfirmationMemo || null,
         next.revision,
+        next.requiredCapitalUsdt,
+        next.expectedProfitKrwApprox == null ? null : next.expectedProfitKrwApprox,
       ]);
       if (!r.rows[0]) return false;
       if (stampOpportunity) {
@@ -575,6 +601,8 @@ async function createPersistMallStore(db, opts) {
             next.compositionQty,
             next.revision,
             next.payoutAmount,
+            next.expectedProfitKrwApprox == null ? null : next.expectedProfitKrwApprox,
+            next.requiredCapitalUsdt,
           ]);
         } catch {
           /* 스탬프 생략 */
@@ -856,6 +884,8 @@ function createFakePersistMallDb(opts) {
           price_confirmation_memo: params[9],
           product_revision: params[10],
           register_idempotency_key: key,
+          required_capital_usdt: params[12],
+          expected_profit_krw_approx: params[13],
           supply_source: "operator",
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
@@ -885,6 +915,8 @@ function createFakePersistMallDb(opts) {
           selected_member_ids: params[9],
           price_confirmation_memo: params[10],
           product_revision: params[11],
+          required_capital_usdt: params[12],
+          expected_profit_krw_approx: params[13],
           updated_at: new Date().toISOString(),
         });
         return { rows: [{ id: hit.id }], rowCount: 1 };
@@ -928,6 +960,9 @@ function createFakePersistMallDb(opts) {
           composition_qty: params[4],
           product_revision: params[5],
           configured_payout_usdt: params[6],
+          expected_profit_usdt: params[6],
+          expected_profit_krw_approx: params[7],
+          required_capital_usdt: params[8],
         });
         return { rows: [], rowCount: 1 };
       }
@@ -1041,6 +1076,7 @@ function officialSqlPaths() {
   return [
     "supabase/migrations/20260916033000_opportunities_supply_source.sql",
     "supabase/migrations/20260916033100_operator_mall_product.sql",
+    "supabase/migrations/20260916120000_operator_mall_product_simple_amounts.sql",
   ];
 }
 

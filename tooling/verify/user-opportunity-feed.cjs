@@ -116,6 +116,9 @@ if (!svc.includes("buildBalanceAwareFeedWithOverrides")) {
 if (!svc.includes("projectCapitalProviderUserSurface")) {
   fails.push("user service must project via projectCapitalProviderUserSurface");
 }
+if (svc.includes("? Number(krwRaw) : 0")) {
+  fails.push("toUserCard must not coerce missing expectedProfitKrwApprox to 0");
+}
 if (!svc.includes("arbitrage_type_ko") && !svc.includes("arbitrageTypeKo")) {
   fails.push("user service must pass-through arbitrageTypeKo");
 }

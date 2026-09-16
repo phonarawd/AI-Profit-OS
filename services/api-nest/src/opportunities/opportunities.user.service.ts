@@ -401,8 +401,11 @@ export class OpportunitiesUserService {
     });
 
     const krwRaw = row.expected_profit_krw_approx;
-    const expectedProfitKrwApprox =
-      krwRaw != null && krwRaw !== "" ? Number(krwRaw) : 0;
+    let expectedProfitKrwApprox: number | null = null;
+    if (krwRaw != null && String(krwRaw).trim() !== "") {
+      const n = Number(krwRaw);
+      expectedProfitKrwApprox = Number.isFinite(n) ? n : null;
+    }
 
     /** INTERNAL fields present before user strip (never leak to response) */
     const internal: Record<string, unknown> = {
@@ -411,9 +414,7 @@ export class OpportunitiesUserService {
       pricedAt: new Date(row.priced_at).toISOString(),
       expectedProfitUsdt:
         classified.expectedProfitUsdt ?? row.expected_profit_usdt,
-      expectedProfitKrwApprox: Number.isFinite(expectedProfitKrwApprox)
-        ? expectedProfitKrwApprox
-        : 0,
+      expectedProfitKrwApprox,
       fxSnapshotId: row.fx_snapshot_id,
       estimatedDurationSec: row.estimated_duration_sec,
       aiConfidenceScore: Number(row.ai_confidence_score),

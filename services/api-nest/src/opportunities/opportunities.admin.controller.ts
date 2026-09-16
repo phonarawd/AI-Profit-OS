@@ -1,5 +1,6 @@
 import {
   Body,
+  ConflictException,
   Controller,
   Get,
   Headers,
@@ -158,7 +159,27 @@ export class OpportunitiesAdminController {
       reasonCode: String(body.reasonCode ?? ""),
       role: req.admin?.role ?? "unknown",
     };
-    return this.opportunities.patchPricing(id, patch);
+    return this.opportunities.patchPricing(id, patch).catch((err: unknown) => {
+      const code =
+        err && typeof err === "object" && "code" in err
+          ? String((err as { code?: string }).code)
+          : "";
+      if (
+        code === "OPERATOR_PROTECTED" ||
+        code === "SOURCE_DISABLED" ||
+        code === "GATE_ON" ||
+        code === "GATE_UNRESOLVED" ||
+        code === "SCHEMA_UNREADY" ||
+        code === "PRICE_STALE"
+      ) {
+        throw new ConflictException({
+          code,
+          wrote: false,
+          statusCode: 409,
+        });
+      }
+      throw err;
+    });
   }
 
   @Put(OPPORTUNITY_ADMIN_ROUTES.assets)

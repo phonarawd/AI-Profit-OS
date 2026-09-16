@@ -20,6 +20,8 @@ function spec(extra) {
     photos: ["https://cdn.example/p.jpg"],
     compositionQty: 2,
     payoutAmount: "12.5",
+    requiredCapitalUsdt: "10",
+    expectedProfitKrwApprox: "14000",
     currency: "USDT",
     visibility: core.VISIBILITY.ALL_PUBLIC,
     priceConfirmationMemo: "확인: 12.5 USDT",
@@ -49,6 +51,9 @@ async function main() {
   await check("neg_and_auth", async () => {
     const store = mem([{ userId: A, cap: 5 }]);
     assert.equal((await core.registerProduct(spec({ payoutAmount: "-1" }), { store })).code, "INVALID_AMOUNT");
+    assert.equal((await core.registerProduct(spec({ payoutAmount: "0" }), { store })).code, "INVALID_AMOUNT");
+    assert.equal((await core.registerProduct(spec({ requiredCapitalUsdt: "0" }), { store })).code, "INVALID_AMOUNT");
+    assert.equal((await core.registerProduct(spec({ requiredCapitalUsdt: undefined }), { store })).code, "INVALID_AMOUNT");
     assert.equal((await core.registerProduct(spec({ unauthenticated: true }), { store })).code, "ADMIN_AUTH_REQUIRED");
     assert.equal((await core.registerProduct(spec({ actorKind: "ai_tool", name: "ai" }), { store })).ok, true);
   }, fails);
@@ -173,6 +178,17 @@ async function main() {
     const p = (await core.registerProduct(spec(), { store })).product;
     assert.equal(p.priceConfirmationMemo, "확인: 12.5 USDT");
     assert.equal(p.payoutAmount, "12.5");
+    assert.equal(p.requiredCapitalUsdt, "10");
+    assert.equal(p.expectedProfitKrwApprox, "14000");
+    const omittedKrw = (await core.registerProduct(spec({
+      idempotencyKey: "no-krw",
+      expectedProfitKrwApprox: undefined,
+    }), { store })).product;
+    assert.equal(omittedKrw.expectedProfitKrwApprox, null);
+    const listed = await core.adminListProducts({ operatorId: OP, limit: 10 }, { store });
+    const shown = listed.items.find((x) => x.id === p.id);
+    assert.equal(shown.requiredCapitalUsdt, "10");
+    assert.equal(shown.expectedProfitKrwApprox, "14000");
     const pub = (await core.getForUser(A, p.id, { store })).product;
     assert.equal(pub.moneyAuthority.configuredPayoutUsdt, "12.5");
     assert.equal(Object.prototype.hasOwnProperty.call(pub, "priceConfirmationMemo"), false);

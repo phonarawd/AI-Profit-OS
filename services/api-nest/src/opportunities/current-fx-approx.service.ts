@@ -2,6 +2,8 @@
  * REL-508 POST /api/v1/me/current-fx/approx
  * Display-only. Client amounts are not ledger truth.
  * Rate owner = latest fx_snapshots. Client FX math 0.
+ * 몰 상품 금액(payoutAmount / expectedProfitKrwApprox / requiredCapitalUsdt)을
+ * 여기서 만들지 않는다. 지갑 표시용만. 키 없으면 200 + null.
  */
 
 import { Injectable } from "@nestjs/common";
