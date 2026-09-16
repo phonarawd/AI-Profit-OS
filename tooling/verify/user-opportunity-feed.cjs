@@ -192,6 +192,24 @@ if (!/DEFAULT_PRICE_STALE_MAX_SEC/.test(svc)) {
 if (!/isRowFresh/.test(svc) || !/\.filter\(\(r\) => this\.isRowFresh/.test(svc)) {
   fails.push("C-01: listFeed must filter rows through isRowFresh before classification (exclude already-stale)");
 }
+{
+  const listSql = svc.slice(
+    svc.indexOf("private async loadFeedCandidateRows"),
+    svc.indexOf("private async loadRowById"),
+  );
+  if (!listSql.includes("supply_source = 'operator'")) {
+    fails.push("listFeed must stay operator-only");
+  }
+  if (listSql.includes("pricing->>'compareReady'")) {
+    fails.push("listFeed must not require compareReady (getById does not)");
+  }
+  if (listSql.includes("NULLIF(BTRIM(asset_image_url)")) {
+    fails.push("listFeed must include operator products with no photo");
+  }
+  if (listSql.includes("arbitrage_type = ANY") || svc.includes("isV1FeedArbitrageType")) {
+    fails.push("listFeed must not hide benefit/operator types via V1_FEED filter");
+  }
+}
 if (!/getById[\s\S]{0,400}isRowFresh/.test(svc)) {
   fails.push("C-01: getById must apply the same freshness authority as the feed");
 }
@@ -254,6 +272,10 @@ if (fails.length) {
   console.error("[verify:user-opportunity-feed] FAIL\n- " + fails.join("\n- "));
   process.exit(1);
 }
+require(path.join(
+  root,
+  "services/api-nest/src/opportunities/operator-mall-user-feed.runtime.cjs",
+));
 console.log(
   "[verify:user-opportunity-feed] PASS (OpportunitiesUserController · feed+get · strip platforms · arbitrageTypeKo)",
 );

@@ -63,8 +63,14 @@ if (/\bhttps?:\/\/putduk\.com\b/.test(corsSrc)) {
 if (!corsSrc.includes("env.appHost") || !corsSrc.includes("enableCors")) {
   fails.push("Nest CORS must keep APP_HOST user-web allowlist");
 }
-if (!corsSrc.includes("https://hiptk.app")) {
+if (!/origins\.add\(\s*"https:\/\/hiptk\.app"\s*\)/.test(corsSrc)) {
   fails.push("Nest CORS must allow apex https://hiptk.app");
+}
+if (!/origins\.add\(\s*"https:\/\/www\.hiptk\.app"\s*\)/.test(corsSrc)) {
+  fails.push("Nest CORS must allow https://www.hiptk.app");
+}
+if (!/origins\.add\(\s*"https:\/\/app\.hiptk\.app"\s*\)/.test(corsSrc)) {
+  fails.push("Nest CORS must allow https://app.hiptk.app");
 }
 
 const contract = JSON.parse(read("governance/pwa/webauthn-rp.v1.json"));
