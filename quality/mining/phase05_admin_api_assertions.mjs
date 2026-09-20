@@ -84,6 +84,7 @@ must(killCore.includes("mining_new_positions"), "new-position kill path missing"
 must(killCore.includes("mining_settlement"), "settlement kill path missing");
 must(coordinator.includes('assertPath("mining_new_positions")'), "new-position server enforcement missing");
 must(coordinator.includes('assertPath("mining_settlement")'), "settlement server enforcement missing");
+must(coordinator.includes("async assertSettlementAllowed()"), "settlement hold helper missing");
 must(migration.includes("MINING_NEW_POSITIONS_PAUSE"), "kill switch DB constraint migration missing new-position switch");
 must(migration.includes("MINING_SETTLEMENT_PAUSE"), "kill switch DB constraint migration missing settlement switch");
 
@@ -110,7 +111,12 @@ must(moduleSource.includes("MiningAdminController"), "admin controller not wired
 must(moduleSource.includes("MiningAdminService"), "admin service not wired");
 must(moduleSource.includes("KillSwitchModule"), "kill switch module not wired");
 must(moduleSource.includes("MiningRateActivationService"), "rate activation service not wired");
-must(internal.includes("rateActivation.activateDue(now)"), "rate activation must run before daily settlement");
+const holdIndex = internal.indexOf("operations.assertSettlementAllowed()");
+const activationIndex = internal.indexOf("rateActivation.activateDue(now)");
+const settlementIndex = internal.indexOf("operations.settleDueDaily(");
+must(holdIndex >= 0, "settlement hold check missing from internal tick");
+must(activationIndex > holdIndex, "rate activation occurs before settlement hold check");
+must(settlementIndex > activationIndex, "daily settlement must follow rate activation");
 must(activation.includes("status='SCHEDULED'"), "scheduled rate activation query missing");
 must(activation.includes("m.status <> 'ENDED'"), "ended mine rate activation guard missing");
 must(activation.includes("status='ENDED',ended_at=$3::timestamptz"), "previous active rate exact end boundary missing");
