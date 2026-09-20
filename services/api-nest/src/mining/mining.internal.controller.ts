@@ -7,15 +7,17 @@ import {
 } from "@nestjs/common";
 import { loadPhase0Env } from "../config/phase0.env";
 import { MiningOperationCoordinatorService } from "./mining-operation-coordinator.service";
+import { MiningRateActivationService } from "./mining-rate-activation.service";
 
 @Controller("internal/mining")
 export class MiningInternalController {
   constructor(
     private readonly operations: MiningOperationCoordinatorService,
+    private readonly rateActivation: MiningRateActivationService,
   ) {}
 
   @Post("settlement-tick")
-  tick(
+  async tick(
     @Headers("x-internal-mining-token") token: string | undefined,
     @Query("limit") limit?: string,
   ) {
@@ -23,9 +25,12 @@ export class MiningInternalController {
     if (!expected || !token || token !== expected) {
       throw new UnauthorizedException("인증할 수 없습니다.");
     }
-    return this.operations.settleDueDaily(
-      new Date(),
+    const now = new Date();
+    const rates = await this.rateActivation.activateDue(now);
+    const settlements = await this.operations.settleDueDaily(
+      now,
       limit ? Number(limit) : undefined,
     );
+    return { rates, settlements };
   }
 }
