@@ -101,7 +101,9 @@ pub fn calculate_mining_profit(
     input: &MiningProfitInput<'_>,
 ) -> Result<MiningProfitOutput, MiningProfitError> {
     if input.output_scale > DB_DECIMAL_SCALE {
-        return Err(MiningProfitError::UnsupportedOutputScale(input.output_scale));
+        return Err(MiningProfitError::UnsupportedOutputScale(
+            input.output_scale,
+        ));
     }
 
     let elapsed_micros = input
@@ -130,11 +132,8 @@ pub fn calculate_mining_profit(
     let second_divisor = second_scale * MICROS_PER_DAY as u128;
     let (mut units, second_remainder) = after_first_scale.div_rem_u128(second_divisor);
 
-    let relation_to_half = compare_combined_remainder_to_half(
-        first_remainder,
-        second_remainder,
-        second_divisor,
-    );
+    let relation_to_half =
+        compare_combined_remainder_to_half(first_remainder, second_remainder, second_divisor);
 
     let increment = match input.rounding_mode {
         RoundingMode::Truncate => false,
@@ -195,10 +194,7 @@ fn compare_combined_remainder_to_half(
     }
 }
 
-fn parse_numeric_36_18(
-    raw: &str,
-    field: &'static str,
-) -> Result<BigUInt, MiningProfitError> {
+fn parse_numeric_36_18(raw: &str, field: &'static str) -> Result<BigUInt, MiningProfitError> {
     let value = raw.trim();
     if value.is_empty() {
         return Err(MiningProfitError::EmptyDecimal(field));
@@ -255,10 +251,7 @@ fn parse_numeric_36_18(
     }
 }
 
-fn format_numeric_units(
-    units: &BigUInt,
-    scale: u32,
-) -> Result<String, MiningProfitError> {
+fn format_numeric_units(units: &BigUInt, scale: u32) -> Result<String, MiningProfitError> {
     let digits = units.to_decimal_string();
     let scale = scale as usize;
     let integer_digits = if scale == 0 {
@@ -445,12 +438,7 @@ impl BigUInt {
 mod tests {
     use super::*;
 
-    fn calc(
-        principal: &str,
-        rate: &str,
-        start_micros: i64,
-        end_micros: i64,
-    ) -> String {
+    fn calc(principal: &str, rate: &str, start_micros: i64, end_micros: i64) -> String {
         calculate_mining_profit(&MiningProfitInput {
             principal,
             daily_rate: rate,
@@ -566,10 +554,7 @@ mod tests {
     #[test]
     fn end_boundary_is_exclusive_by_period_contract() {
         let end = sec(86_400);
-        assert_eq!(
-            calc("1000000", "0.01", 0, end),
-            "10000.000000000000000000"
-        );
+        assert_eq!(calc("1000000", "0.01", 0, end), "10000.000000000000000000");
         let err = calculate_mining_profit(&MiningProfitInput {
             principal: "1000000",
             daily_rate: "0.01",
@@ -585,7 +570,12 @@ mod tests {
     #[test]
     fn tiny_and_large_numeric_36_18_values_are_exact() {
         assert_eq!(
-            calc("0.000000000000000001", "0.000000000000000001", 0, sec(86_400)),
+            calc(
+                "0.000000000000000001",
+                "0.000000000000000001",
+                0,
+                sec(86_400)
+            ),
             "0.000000000000000000"
         );
         assert_eq!(
@@ -614,17 +604,26 @@ mod tests {
 
         let mut half_up = base.clone();
         half_up.rounding_mode = RoundingMode::HalfUp;
-        assert_eq!(calculate_mining_profit(&half_up).unwrap().accrued_profit, "1");
+        assert_eq!(
+            calculate_mining_profit(&half_up).unwrap().accrued_profit,
+            "1"
+        );
 
         let mut half_even = base.clone();
         half_even.rounding_mode = RoundingMode::HalfEven;
-        assert_eq!(calculate_mining_profit(&half_even).unwrap().accrued_profit, "0");
+        assert_eq!(
+            calculate_mining_profit(&half_even).unwrap().accrued_profit,
+            "0"
+        );
 
         let odd_tie = MiningProfitInput {
             principal: "3",
             ..half_even
         };
-        assert_eq!(calculate_mining_profit(&odd_tie).unwrap().accrued_profit, "2");
+        assert_eq!(
+            calculate_mining_profit(&odd_tie).unwrap().accrued_profit,
+            "2"
+        );
     }
 
     #[test]
