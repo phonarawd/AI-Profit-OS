@@ -158,3 +158,31 @@ cargo check
 ```
 
 그 후 마스터플랜의 `completed_through`를 PHASE_03으로 갱신하고 `next_phase`를 PHASE_04로 변경한다.
+
+## 8. 2026-09-20 후속 검증 시도
+
+관리자 지시에 따라 PHASE 03 검증을 재개했다.
+
+실제 실행 시도:
+
+- 현재 작업 컨테이너에서 `rustc --version` / `cargo --version`: 명령 없음
+- `apt-get update && apt-get install rustc cargo`: 네트워크/DNS 제한으로 완료 불가
+- Python package 경유 Rust parser 설치: DNS 제한으로 설치 불가
+- 외부 Rust Playground 브라우저 자동화: 자동화 제공자 지갑 잔액 부족으로 실행 시작 전 차단
+- GitHub branch HEAD의 Actions status/workflow: 실행된 검증 없음
+- 프로젝트 규칙에 따라 Actions quota가 소진된 상태에서 전체 backend CI를 억지로 발생시키지 않음
+
+추가 정적 전수검사:
+
+- `mining_profit.rs` 전체 구현/테스트를 다시 읽고 Rust 2021 문법, 소유권/clone/move 사용, 공개 타입 export 정합성을 확인
+- base-1e9 `BigUInt` 곱셈/나눗셈의 현재 `numeric(36,18)` 입력 범위에서 `u128` 중간 계산 상한을 재검토
+- staged division remainder의 half-up/half-even 비교 로직 재검토
+- 18자리 출력 포맷과 최대 18자리 정수부 제한 재검토
+- 경계 테스트의 struct update / clone / expected 값 정합성 재검토
+- 새 결함 발견 0
+
+Render 계정에는 `My Workspace` 하나가 확인되었으나, Render 도구 안전 규칙상 사용자의 명시적 workspace 확인 없이 임시 검증 서비스를 생성하지 않았다. 또한 임시 서비스 생성은 외부 리소스를 새로 만드는 행위이므로 자동으로 수행하지 않았다.
+
+따라서 후속 검증 이후에도 판정은 변경하지 않는다.
+
+`PHASE 03 = IMPLEMENTED / VALIDATION PENDING`
