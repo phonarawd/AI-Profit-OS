@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -eu
+export PATH="/opt/render/project/nodes/node-22.14.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+EXPECTED="61fe6a6aa4c5ecc57c18b1937f6738111330c6b4"
+DIR="/tmp/putduk-web-phase07-build"
+rm -rf "$DIR"
+git clone --quiet https://github.com/phonarawd/putduk-web.git "$DIR"
+cd "$DIR"
+git checkout --quiet --detach "$EXPECTED"
+ACTUAL=$(git rev-parse HEAD)
+echo PHASE07_VERIFY_HEAD=$ACTUAL
+test "$ACTUAL" = "$EXPECTED"
+corepack enable
+corepack prepare pnpm@11.4.0 --activate
+pnpm --version
+pnpm install --frozen-lockfile
+node quality/mining/phase07_web_state_assertions.mjs
+pnpm exec tsc --noEmit
+pnpm lint
+pnpm test
+pnpm build
+echo PHASE07_VERIFY_OK
+printf 'v22.14.0\n'
