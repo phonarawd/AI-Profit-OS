@@ -314,7 +314,7 @@ impl BigUInt {
         debug_assert!(!digits.is_empty());
         debug_assert!(digits.bytes().all(|b| b.is_ascii_digit()));
 
-        let mut limbs = Vec::with_capacity((digits.len() + 8) / 9);
+        let mut limbs = Vec::with_capacity(digits.len().div_ceil(9));
         let mut end = digits.len();
         while end > 0 {
             let start = end.saturating_sub(9);
