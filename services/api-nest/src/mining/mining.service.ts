@@ -10,6 +10,7 @@ type Position = { id:string; user_id:string; mine_id:string; status:string; prin
 
 @Injectable()
 export class MiningService {
+  private readonly mutationTails = new Map<string, Promise<void>>();
   constructor(private readonly db: PostgresService, private readonly ledger: LedgerPostingService, private readonly engine: MiningProfitEngineService) {}
 
   async listMines() {
@@ -38,6 +39,10 @@ export class MiningService {
   async listSettlements(userId:string) { const r=await this.db.query(`SELECT s.*,m.display_name,m.code FROM public.mine_settlements s JOIN public.mines m ON m.id=s.mine_id WHERE s.user_id=$1 ORDER BY s.period_end DESC,s.id DESC`,[userId]); return r.rows.map((x:any)=>({id:x.id,positionId:x.position_id,mineId:x.mine_id,mineName:x.display_name,status:x.status,periodStart:x.period_start,periodEnd:x.period_end,calculatedProfitUsdt:x.calculated_profit_usdt,creditedProfitUsdt:x.credited_profit_usdt,createdAt:x.created_at})); }
 
   async start(userId:string,mineId:string,rawAmount:string,key:string) {
+    return this.withMutationLock(`start:${userId}:${mineId}`, () => this.startLocked(userId,mineId,rawAmount,key));
+  }
+
+  private async startLocked(userId:string,mineId:string,rawAmount:string,key:string) {
     const amount=this.mutationInput(rawAmount,key); const mine=await this.lockableMine(mineId);
     if(mine.status!=="ACTIVE") throw new ConflictException("MINE_NOT_ACCEPTING_POSITIONS"); this.assertBounds(amount,mine.min,mine.max);
     let p=(await this.db.query<Position>(`SELECT id,user_id,mine_id,status,principal_usdt::text,requested_principal_usdt::text,started_at,ended_at FROM public.mine_positions WHERE start_idempotency_key=$1`,[key])).rows[0];
@@ -49,6 +54,10 @@ export class MiningService {
   }
 
   async change(userId:string,id:string,type:Exclude<EventType,"START">,rawAmount:string|null,key:string) {
+    return this.withMutationLock(`position:${id}`, () => this.changeLocked(userId,id,type,rawAmount,key));
+  }
+
+  private async changeLocked(userId:string,id:string,type:Exclude<EventType,"START">,rawAmount:string|null,key:string) {
     if(!key || key.length<8) throw new BadRequestException("IDEMPOTENCY_KEY_REQUIRED");
     const existing=await this.db.query(`SELECT position_id,event_type,amount_usdt::text FROM public.mine_position_events WHERE idempotency_key=$1`,[key]);
     if(existing.rows[0]) { const e:any=existing.rows[0]; if(e.position_id!==id||e.event_type!==type||(rawAmount!==null&&cmpAmount(e.amount_usdt,assertAmountUsdt(rawAmount))!==0)) throw new ConflictException("IDEMPOTENCY_KEY_REUSED"); return this.getPosition(userId,id); }
@@ -84,4 +93,14 @@ export class MiningService {
   private mineView=(x:any)=>({id:x.id,code:x.code,displayName:x.display_name,description:x.description,assetCode:x.asset_code,status:x.status,principalCurrency:x.principal_currency,minPositionUsdt:x.min_position_usdt,maxPositionUsdt:x.max_position_usdt,metadata:x.metadata,activeRate:x.rate_version_id?{rateVersionId:x.rate_version_id,dailyRate:x.daily_rate,effectiveAt:x.effective_at}:null});
   private positionView=(x:any)=>({id:x.id,mineId:x.mine_id,mineCode:x.code,mineName:x.display_name,status:x.status,principalUsdt:x.principal_usdt,requestedPrincipalUsdt:x.requested_principal_usdt,startedAt:x.started_at,endedAt:x.ended_at,createdAt:x.created_at,updatedAt:x.updated_at});
   private pgCode(e:unknown){ return e&&typeof e==="object"&&"code" in e?String((e as {code?:unknown}).code??""):null; }
+  private async withMutationLock<T>(scope:string,work:()=>Promise<T>):Promise<T>{
+    const previous=this.mutationTails.get(scope)??Promise.resolve();
+    let release!:()=>void;
+    const current=new Promise<void>(resolve=>{ release=resolve; });
+    const tail=previous.then(()=>current);
+    this.mutationTails.set(scope,tail);
+    await previous;
+    try { return await work(); }
+    finally { release(); if(this.mutationTails.get(scope)===tail) this.mutationTails.delete(scope); }
+  }
 }
