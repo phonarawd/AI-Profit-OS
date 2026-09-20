@@ -1,5 +1,5 @@
 /**
- * REL-406 Kill Switch 9종 — Nest/DB 밖에서도 동일 enforce fixture가 돈다.
+ * REL-406 Kill Switch + PUTDUK mining controls.
  *
  * engaged=true 이면 해당 경로 block. UI 토글만 있고 이 함수를 안 타면 EXIT_GATE FAIL.
  * MONEY_CIRCUIT / PUSH_KILL / REFERRAL_ACCRUAL_HALT 는 기존 테이블 선례를 wrap.
@@ -17,6 +17,8 @@ const KILL_SWITCH_IDS = Object.freeze([
   "PUSH_KILL",
   "GROWTH_PAUSE",
   "REFERRAL_ACCRUAL_HALT",
+  "MINING_NEW_POSITIONS_PAUSE",
+  "MINING_SETTLEMENT_PAUSE",
 ]);
 
 const KILL_SWITCH_ID_SET = new Set(KILL_SWITCH_IDS);
@@ -26,6 +28,8 @@ const ALIASES = Object.freeze({
   push_kill: "PUSH_KILL",
   growth_enabled: "GROWTH_PAUSE",
   referral_accrual_halt: "REFERRAL_ACCRUAL_HALT",
+  mining_new_positions_pause: "MINING_NEW_POSITIONS_PAUSE",
+  mining_settlement_pause: "MINING_SETTLEMENT_PAUSE",
 });
 
 const PATH_SWITCHES = Object.freeze({
@@ -41,6 +45,14 @@ const PATH_SWITCHES = Object.freeze({
   push: Object.freeze(["PUSH_KILL"]),
   growth: Object.freeze(["GROWTH_PAUSE"]),
   referral_accrual: Object.freeze(["REFERRAL_ACCRUAL_HALT"]),
+  mining_new_positions: Object.freeze([
+    "MINING_NEW_POSITIONS_PAUSE",
+    "MONEY_CIRCUIT",
+  ]),
+  mining_settlement: Object.freeze([
+    "MINING_SETTLEMENT_PAUSE",
+    "MONEY_CIRCUIT",
+  ]),
 });
 
 const BLOCK_CODE = "CIRCUIT_OPEN";
