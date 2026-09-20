@@ -9,15 +9,10 @@ const cookieParser = require("cookie-parser");
 import { AppModule } from "./app.module";
 import { securityHeadersMiddleware } from "./common/security-headers.middleware";
 import { loadPhase0Env } from "./config/phase0.env";
+import { runPhase06StagingSelftest } from "./mining/phase06-staging.selftest";
 
 async function bootstrap() {
   const env = loadPhase0Env();
-  const phase06ProdRef = "gaugwamwceqdnqdqrxqg";
-  const phase06ConfiguredRef = String(process.env.SUPABASE_PROJECT_REF ?? "").trim();
-  const phase06DatabaseUrl = String(process.env.DATABASE_URL ?? "");
-  // Phase06 staging safety probe: expose only a boolean, never credentials or URLs.
-  // eslint-disable-next-line no-console
-  console.log(`PHASE06_DB_TARGET_PRODUCTION=${phase06ConfiguredRef === phase06ProdRef || phase06DatabaseUrl.includes(phase06ProdRef)}`);
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   // PART9-pre2 — httpOnly 세션쿠키 파싱 (JwtAuthGuard cookie fallback)
   app.use(cookieParser());
@@ -52,6 +47,14 @@ async function bootstrap() {
   console.log(
     `[api-nest] :${env.port} · phase0 · bus=in-process · hosts app=${env.appHost} ops=${env.opsHost}`,
   );
+
+  if (process.env.PHASE06_STAGING_SELFTEST === "1") {
+    void runPhase06StagingSelftest(env.port).catch((error: unknown) => {
+      const message = error instanceof Error ? error.message : String(error);
+      // eslint-disable-next-line no-console
+      console.error(`PHASE06_STAGING_E2E_FAIL ${message}`);
+    });
+  }
 }
 
 void bootstrap();
