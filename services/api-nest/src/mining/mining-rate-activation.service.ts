@@ -19,20 +19,27 @@ export class MiningRateActivationService {
 
   async activateDue(now = new Date()) {
     const due = await this.db.query<DueRate>(
-      `SELECT id::text,mine_id::text,effective_at
-         FROM public.mine_rate_versions
-        WHERE status='SCHEDULED'
-          AND approved_at IS NOT NULL
-          AND effective_at IS NOT NULL
-          AND effective_at <= $1::timestamptz
-        ORDER BY mine_id,effective_at,id`,
+      `SELECT r.id::text,r.mine_id::text,r.effective_at
+         FROM public.mine_rate_versions r
+         JOIN public.mines m ON m.id=r.mine_id
+        WHERE r.status='SCHEDULED'
+          AND r.approved_at IS NOT NULL
+          AND r.effective_at IS NOT NULL
+          AND r.effective_at <= $1::timestamptz
+          AND m.status <> 'ENDED'
+        ORDER BY r.mine_id,r.effective_at,r.id`,
       [now.toISOString()],
     );
 
     let activated = 0;
     for (const candidate of due.rows) {
       const changed = await this.db.withTransaction(async (client) => {
-        await client.query(`SELECT id FROM public.mines WHERE id=$1::uuid FOR UPDATE`, [candidate.mine_id]);
+        const mine = await client.query<{ status: string }>(
+          `SELECT status FROM public.mines WHERE id=$1::uuid FOR UPDATE`,
+          [candidate.mine_id],
+        );
+        if (mine.rows[0]?.status === "ENDED") return false;
+
         const current = await client.query<DueRate & { status: string; approved_at: string | Date | null }>(
           `SELECT id::text,mine_id::text,status,effective_at,approved_at
              FROM public.mine_rate_versions
