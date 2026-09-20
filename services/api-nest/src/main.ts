@@ -47,7 +47,7 @@ async function bootstrapPhase06Database(): Promise<void> {
   }
 
   const username = `putduk_mine_staging_api.${projectRef}`;
-  process.env.DATABASE_URL = `postgresql://${encodeURIComponent(username)}:${encodeURIComponent(password)}@${poolerHost}:${poolerPort}/postgres?sslmode=require`;
+  process.env.DATABASE_URL = `postgresql://${encodeURIComponent(username)}:${encodeURIComponent(password)}@${poolerHost}:${poolerPort}/postgres`;
   // eslint-disable-next-line no-console
   console.log("PHASE06_STAGING_DB_BOOTSTRAP_OK");
 }
