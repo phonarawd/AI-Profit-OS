@@ -12,6 +12,12 @@ import { loadPhase0Env } from "./config/phase0.env";
 
 async function bootstrap() {
   const env = loadPhase0Env();
+  const phase06ProdRef = "gaugwamwceqdnqdqrxqg";
+  const phase06ConfiguredRef = String(process.env.SUPABASE_PROJECT_REF ?? "").trim();
+  const phase06DatabaseUrl = String(process.env.DATABASE_URL ?? "");
+  // Phase06 staging safety probe: expose only a boolean, never credentials or URLs.
+  // eslint-disable-next-line no-console
+  console.log(`PHASE06_DB_TARGET_PRODUCTION=${phase06ConfiguredRef === phase06ProdRef || phase06DatabaseUrl.includes(phase06ProdRef)}`);
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   // PART9-pre2 — httpOnly 세션쿠키 파싱 (JwtAuthGuard cookie fallback)
   app.use(cookieParser());
