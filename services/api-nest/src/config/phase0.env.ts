@@ -56,6 +56,8 @@ export type Phase0Env = {
   adapterIngestToken: string | null;
   /** Money practice expire tick · fail-closed machine-auth (header x-internal-wallet-token) */
   internalWalletTickToken: string | null;
+  /** Mining daily settlement tick · fail-closed machine-auth (header x-internal-mining-token) */
+  internalMiningTickToken: string | null;
   phase: 0;
   bus: "in-process";
 };
@@ -135,6 +137,7 @@ export function loadPhase0Env(): Phase0Env {
     ),
     adapterIngestToken: read("ADAPTER_INGEST_TOKEN"),
     internalWalletTickToken: read("INTERNAL_WALLET_TICK_TOKEN"),
+    internalMiningTickToken: read("INTERNAL_MINING_TICK_TOKEN"),
     phase: 0,
     bus: "in-process",
   };
