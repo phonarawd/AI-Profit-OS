@@ -7,6 +7,7 @@ import { MineCatalogController, MiningController } from "./mining.controller";
 import { MiningInternalController } from "./mining.internal.controller";
 import { MiningOperationCoordinatorService } from "./mining-operation-coordinator.service";
 import { MiningProfitEngineService } from "./mining-profit-engine.service";
+import { MiningRateActivationService } from "./mining-rate-activation.service";
 import { MiningReadService } from "./mining-read.service";
 import { MiningService } from "./mining.service";
 
@@ -24,6 +25,7 @@ import { MiningService } from "./mining.service";
     MiningReadService,
     MiningOperationCoordinatorService,
     MiningAdminService,
+    MiningRateActivationService,
   ],
   exports: [MiningService],
 })
