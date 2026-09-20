@@ -9,51 +9,8 @@ const cookieParser = require("cookie-parser");
 import { AppModule } from "./app.module";
 import { securityHeadersMiddleware } from "./common/security-headers.middleware";
 import { loadPhase0Env } from "./config/phase0.env";
-import { runPhase06StagingSelftest } from "./mining/phase06-staging.selftest";
-
-async function bootstrapPhase06Database(): Promise<void> {
-  if (process.env.PHASE06_STAGING_SELFTEST !== "1" || process.env.DATABASE_URL) return;
-
-  const projectRef = String(process.env.SUPABASE_PROJECT_REF ?? "").trim();
-  const token = String(process.env.JWT_ADMIN_SECRET ?? "");
-  if (projectRef !== "mgsytcetsiecllmhcyox" || token.length < 32) {
-    throw new Error("PHASE06 staging database bootstrap refused: environment mismatch");
-  }
-
-  const response = await fetch(
-    `https://${projectRef}.supabase.co/functions/v1/phase06-db-bootstrap`,
-    {
-      method: "POST",
-      headers: {
-        "x-phase06-bootstrap-token": token,
-        Accept: "application/json",
-      },
-    },
-  );
-  if (!response.ok) {
-    throw new Error(`PHASE06 staging database bootstrap failed with ${response.status}`);
-  }
-  const body = (await response.json()) as {
-    secret?: unknown;
-    poolerHost?: unknown;
-    poolerPort?: unknown;
-  };
-  const password = typeof body.secret === "string" ? body.secret : "";
-  const poolerHost = typeof body.poolerHost === "string" ? body.poolerHost : "";
-  const poolerPort = Number(body.poolerPort);
-  if (!password) throw new Error("PHASE06 staging database bootstrap returned no credential");
-  if (!/^aws-\d+-ap-northeast-2\.pooler\.supabase\.com$/.test(poolerHost) || poolerPort !== 5432) {
-    throw new Error("PHASE06 staging database bootstrap returned invalid pooler endpoint");
-  }
-
-  const username = `putduk_mine_staging_api.${projectRef}`;
-  process.env.DATABASE_URL = `postgresql://${encodeURIComponent(username)}:${encodeURIComponent(password)}@${poolerHost}:${poolerPort}/postgres`;
-  // eslint-disable-next-line no-console
-  console.log("PHASE06_STAGING_DB_BOOTSTRAP_OK");
-}
 
 async function bootstrap() {
-  await bootstrapPhase06Database();
   const env = loadPhase0Env();
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   // PART9-pre2 — httpOnly 세션쿠키 파싱 (JwtAuthGuard cookie fallback)
@@ -89,14 +46,6 @@ async function bootstrap() {
   console.log(
     `[api-nest] :${env.port} · phase0 · bus=in-process · hosts app=${env.appHost} ops=${env.opsHost}`,
   );
-
-  if (process.env.PHASE06_STAGING_SELFTEST === "1") {
-    void runPhase06StagingSelftest(env.port).catch((error: unknown) => {
-      const message = error instanceof Error ? error.message : String(error);
-      // eslint-disable-next-line no-console
-      console.error(`PHASE06_STAGING_E2E_FAIL ${message}`);
-    });
-  }
 }
 
 void bootstrap();
