@@ -738,7 +738,7 @@ export class MiningAdminService {
     await this.db.query(
       `INSERT INTO public.admin_audit_events (
          actor_key,actor_id,role,action,target_type,target_id,occurred_at,mode,result,reason,idempotency_key,payload
-       ) VALUES ($1,$1::uuid,$2,$3,'mine_settlement',$4,now(),'LIVE','applied',$5,$6,$7::jsonb)
+       ) VALUES ($1::uuid::text,$1::uuid,$2,$3,'mine_settlement',$4,now(),'LIVE','applied',$5,$6,$7::jsonb)
        ON CONFLICT (idempotency_key) DO NOTHING`,
       [input.actor.adminId, input.actor.role, "MiningAdminController.retrySettlement", input.settlementId, reason, idem,
        JSON.stringify({ fingerprint: fp, resourceId: input.settlementId })],
@@ -795,7 +795,7 @@ export class MiningAdminService {
       await client.query(
         `INSERT INTO public.admin_audit_events (
            actor_key,actor_id,role,action,target_type,target_id,occurred_at,mode,result,reason,idempotency_key,payload
-         ) VALUES ($1,$1::uuid,$2,$3,$4,$5,now(),'LIVE','applied',$6,$7,$8::jsonb)`,
+         ) VALUES ($1::uuid::text,$1::uuid,$2,$3,$4,$5,now(),'LIVE','applied',$6,$7,$8::jsonb)`,
         [
           opts.actor.adminId,
           opts.actor.role,
