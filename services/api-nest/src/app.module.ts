@@ -30,6 +30,7 @@ import { AdminOpsModule } from "./admin-ops/admin-ops.module";
 import { MatchControlModule } from "./match-control/match-control.module";
 import { SourcePolicyModule } from "./source-policy/source-policy.module";
 import { CmsModule } from "./cms/cms.module";
+import { MiningModule } from "./mining/mining.module";
 import { ObsExceptionFilter } from "./observability/obs.exception-filter";
 
 @Module({
@@ -62,6 +63,7 @@ import { ObsExceptionFilter } from "./observability/obs.exception-filter";
     MatchControlModule,
     SourcePolicyModule,
     CmsModule,
+    MiningModule,
   ],
   controllers: [HealthController],
   // Global admin boundary — an admin controller added without @UseGuards is
