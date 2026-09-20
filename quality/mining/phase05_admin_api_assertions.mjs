@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { createRequire } from "node:module";
 
 const root = process.cwd();
 const read = (p) => fs.readFileSync(path.join(root, p), "utf8");
@@ -86,14 +87,37 @@ must(coordinator.includes('assertPath("mining_settlement")'), "settlement server
 must(migration.includes("MINING_NEW_POSITIONS_PAUSE"), "kill switch DB constraint migration missing new-position switch");
 must(migration.includes("MINING_SETTLEMENT_PAUSE"), "kill switch DB constraint migration missing settlement switch");
 
+const require = createRequire(import.meta.url);
+const kill = require(path.join(root, "services/api-nest/admin-kill-switch.core.cjs"));
+must(
+  kill.evaluatePath("mining_new_positions", { MINING_NEW_POSITIONS_PAUSE: true }).blocked === true,
+  "new-position switch does not block runtime path",
+);
+must(
+  kill.evaluatePath("mining_settlement", { MINING_SETTLEMENT_PAUSE: true }).blocked === true,
+  "settlement switch does not block runtime path",
+);
+must(
+  kill.evaluatePath("mining_settlement", { MONEY_CIRCUIT: true }).blocked === true,
+  "money circuit does not block mining settlement",
+);
+must(
+  kill.evaluatePath("mining_new_positions", {}).blocked === false,
+  "mining new-position path defaults blocked",
+);
+
 must(moduleSource.includes("MiningAdminController"), "admin controller not wired");
 must(moduleSource.includes("MiningAdminService"), "admin service not wired");
 must(moduleSource.includes("KillSwitchModule"), "kill switch module not wired");
 must(moduleSource.includes("MiningRateActivationService"), "rate activation service not wired");
 must(internal.includes("rateActivation.activateDue(now)"), "rate activation must run before daily settlement");
 must(activation.includes("status='SCHEDULED'"), "scheduled rate activation query missing");
+must(activation.includes("m.status <> 'ENDED'"), "ended mine rate activation guard missing");
 must(activation.includes("status='ENDED',ended_at=$3::timestamptz"), "previous active rate exact end boundary missing");
 must(reads.includes("r.status='SCHEDULED' AND r.approved_at IS NOT NULL"), "due scheduled rate read support missing");
+must(reads.includes("calculateLiveAccrued"), "multi-rate live accrued calculator missing");
+must(reads.includes("status IN ('ACTIVE','ENDED')"), "historical rate segments missing from live accrued read");
+must(reads.includes("total = addAmount(total, profit)"), "live accrued segments are not summed");
 
 must(!controller.includes("trial-config"), "PHASE11 trial admin leaked into PHASE05");
 must(!controller.includes("high-value"), "PHASE17 high-value admin leaked into PHASE05");
