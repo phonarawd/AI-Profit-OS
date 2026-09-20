@@ -12,14 +12,13 @@ git checkout --quiet --detach ${expected}
 ACTUAL=$(git rev-parse HEAD)
 echo PHASE07_VERIFY_HEAD=$ACTUAL
 test "$ACTUAL" = "${expected}"
-corepack enable
-corepack prepare pnpm@11.4.0 --activate
-pnpm install --frozen-lockfile
+corepack pnpm --version
+corepack pnpm install --frozen-lockfile
 node quality/mining/phase07_web_state_assertions.mjs
-pnpm exec tsc --noEmit
-pnpm lint
-pnpm test
-pnpm build
+corepack pnpm exec tsc --noEmit
+corepack pnpm lint
+corepack pnpm test
+corepack pnpm build
 echo PHASE07_VERIFY_OK
 `;
 
