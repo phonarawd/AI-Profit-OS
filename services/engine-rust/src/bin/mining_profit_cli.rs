@@ -1,36 +1,50 @@
 use engine_rust::{calculate_mining_profit, MiningProfitInput, RoundingMode};
-use std::collections::HashMap;
-
-fn main() {
-    let args: Vec<String> = std::env::args().skip(1).collect();
-    let mut values = HashMap::new();
-    let mut i = 0;
-    while i + 1 < args.len() {
-        values.insert(args[i].as_str(), args[i + 1].as_str());
-        i += 2;
-    }
-    let required = |key: &str| values.get(key).copied().unwrap_or_else(|| fail("missing argument"));
-    let rounding = match required("--rounding") {
-        "truncate" => RoundingMode::Truncate,
-        "half-up" => RoundingMode::HalfUp,
-        "half-even" => RoundingMode::HalfEven,
-        _ => fail("invalid rounding"),
-    };
-    let input = MiningProfitInput {
-        principal: required("--principal"),
-        daily_rate: required("--daily-rate"),
-        period_start_unix_micros: required("--start-micros").parse().unwrap_or_else(|_| fail("invalid start")),
-        period_end_unix_micros: required("--end-micros").parse().unwrap_or_else(|_| fail("invalid end")),
-        output_scale: required("--scale").parse().unwrap_or_else(|_| fail("invalid scale")),
-        rounding_mode: rounding,
-    };
-    match calculate_mining_profit(&input) {
-        Ok(out) => println!("{{\"accrued_profit\":\"{}\",\"calc_version\":\"{}\"}}", out.accrued_profit, out.calc_version),
-        Err(err) => fail(&err.to_string()),
-    }
-}
+use std::env;
+use std::process;
 
 fn fail(message: &str) -> ! {
-    eprintln!("{}", message.replace('"', "'"));
-    std::process::exit(2)
+    eprintln!("{message}");
+    process::exit(2);
+}
+
+fn parse_i64(raw: Option<String>, name: &str) -> i64 {
+    raw.unwrap_or_else(|| fail(name))
+        .parse::<i64>()
+        .unwrap_or_else(|_| fail(name))
+}
+
+fn parse_u32(raw: Option<String>, name: &str) -> u32 {
+    raw.unwrap_or_else(|| fail(name))
+        .parse::<u32>()
+        .unwrap_or_else(|_| fail(name))
+}
+
+fn main() {
+    let mut args = env::args().skip(1);
+    let principal = args.next().unwrap_or_else(|| fail("principal required"));
+    let daily_rate = args.next().unwrap_or_else(|| fail("daily_rate required"));
+    let period_start_unix_micros = parse_i64(args.next(), "period_start_unix_micros required");
+    let period_end_unix_micros = parse_i64(args.next(), "period_end_unix_micros required");
+    let output_scale = parse_u32(args.next(), "output_scale required");
+    let rounding_mode = match args.next().as_deref() {
+        Some("truncate") => RoundingMode::Truncate,
+        Some("half-up") => RoundingMode::HalfUp,
+        Some("half-even") => RoundingMode::HalfEven,
+        _ => fail("rounding_mode must be truncate|half-up|half-even"),
+    };
+    if args.next().is_some() {
+        fail("unexpected extra argument");
+    }
+
+    let result = calculate_mining_profit(&MiningProfitInput {
+        principal: &principal,
+        daily_rate: &daily_rate,
+        period_start_unix_micros,
+        period_end_unix_micros,
+        output_scale,
+        rounding_mode,
+    })
+    .unwrap_or_else(|err| fail(&err.to_string()));
+
+    println!("{}", result.accrued_profit);
 }
