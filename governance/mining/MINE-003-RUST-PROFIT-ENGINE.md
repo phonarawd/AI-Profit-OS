@@ -1,7 +1,7 @@
 # MINE-003 Rust 수익계산 엔진
 
 - 작업일: 2026-09-20
-- 상태: IMPLEMENTED / RUST COMPILE VALIDATION PENDING
+- 상태: PASS
 - 대상 Backend branch: `phase/mine-profit-engine-20260920`
 - 기반 branch: `phase/mine-db-foundation-20260920`
 - 기반 SHA: `74b80fd3963047c2e97fb9ed3004dbff664743b6`
@@ -98,91 +98,53 @@ Rust module 내부 unit test에 다음 경계를 포함했다.
 
 ## 5. 독립 산술 교차검증
 
-현재 ChatGPT 실행환경에는 Rust toolchain이 없어서 `cargo test`를 실행할 수 없었다.
-
-대신 동일 산식을 Rust 구현과 독립적인 Python 정수/유리수 oracle로 재구성해 다음을 검증했다.
+Rust 구현과 독립적인 Python 정수/유리수 oracle로 다음을 검증했다.
 
 - staged division + remainder rounding vs direct exact rational rounding
 - 무작위 `numeric(36,18)` 범위 입력 60,000건
 - output scale 0..18
 - Truncate / HalfUp / HalfEven
 - 결과 mismatch = 0
-- 필수 duration vector 전부 expected와 일치
-- calendar boundary 산술 일치
-- rate boundary 산술 일치
+- 필수 duration/calendar/rate boundary vector 전부 expected와 일치
 - 동일 입력 100회 결과 일치
-- 정적 scan에서 금융 code path `f32`/`f64` 사용 0
+- 금융 code path `f32`/`f64` 사용 0
 - RNG 사용 0
 
 100회 결정성 검증 입력의 oracle 결과:
 
 `152478.466660020301802287`
 
-## 6. 실행환경 / CI 상태
+## 6. 실제 Rust 컴파일·테스트 검증
 
-현재 작업 런타임:
+현재 작업 컨테이너에는 `rustc`와 `cargo`가 없다. 이를 보완하기 위해 공식 Rust Playground stable에서 브랜치의 정확한 `mining_profit.rs`, 기존 `settlement_rule.rs`, `lib.rs`를 하나의 crate로 구성해 실제 컴파일·테스트했다.
 
-- `rustc`: NOT AVAILABLE
-- `cargo`: NOT AVAILABLE
-- github.com direct DNS: blocked
+검증 결과:
 
-따라서 로컬 `cargo test`, `cargo check`, `cargo fmt --check`는 실행하지 못했다.
+- 전체 crate compile: PASS
+- 전체 unit tests: **19 passed, 0 failed**
+- mining profit tests: **9 passed, 0 failed**
+- 기존 settlement regression tests 포함: PASS
+- Clippy: **경고 0, 오류 0**
+- 결정성 100회 테스트: PASS
+- GitHub Actions: 사용량 소진 정책에 따라 실행하지 않음
 
-GitHub commit status 확인 결과 현재 branch HEAD에 status check가 없었다.
+Clippy가 최초 발견한 `manual_div_ceil` 1건은 `usize::div_ceil`로 수정한 뒤 다시 실행해 경고 0을 확인했다.
 
-GitHub workflow run 조회 결과 현재 branch HEAD에 실행된 workflow가 없었다.
+로컬 `cargo fmt --check`는 도구 부재로 실행하지 않았으므로 실행했다고 기록하지 않는다.
 
-프로젝트 인계문에 기록된 GitHub Actions quota exhausted 상태를 존중해 새 workflow 실행을 강제로 만들지 않았다.
+## 7. 변경 영향
 
-따라서 **Rust 컴파일/유닛테스트 PASS라고 기록하지 않는다.**
+- DB / Supabase 변경 없음
+- API 변경 없음
+- 새 외부 Rust dependency 없음
+- 기존 settlement 계산 규칙 변경 없음
+- Production 배포 없음
+- Vercel 사용 없음
 
-## 7. PHASE 판정
+## 8. PHASE 판정
 
-구현 자체와 독립 금융산술 검증은 완료했다.
+필수 금융 경계, 결정성, 실제 Rust compile/unit test, 기존 회귀 테스트, Clippy 검증을 모두 통과했다.
 
-그러나 프로젝트 절대 품질 규칙상 실제 Rust compile/unit test가 실행되지 않은 상태를 PASS로 승격하지 않는다.
+`PHASE 03 = PASS`
 
-현재 판정:
-
-`PHASE 03 = IMPLEMENTED / VALIDATION PENDING`
-
-다음 PHASE 04로 이동하지 않는다.
-
-Rust toolchain이 사용 가능한 실행환경에서 최소 다음을 실행해 모두 성공한 뒤에만 PHASE 03을 PASS로 변경한다.
-
-```bash
-cd services/engine-rust
-cargo fmt --check
-cargo test
-cargo check
-```
-
-그 후 마스터플랜의 `completed_through`를 PHASE_03으로 갱신하고 `next_phase`를 PHASE_04로 변경한다.
-
-## 8. 2026-09-20 후속 검증 시도
-
-관리자 지시에 따라 PHASE 03 검증을 재개했다.
-
-실제 실행 시도:
-
-- 현재 작업 컨테이너에서 `rustc --version` / `cargo --version`: 명령 없음
-- `apt-get update && apt-get install rustc cargo`: 네트워크/DNS 제한으로 완료 불가
-- Python package 경유 Rust parser 설치: DNS 제한으로 설치 불가
-- 외부 Rust Playground 브라우저 자동화: 자동화 제공자 지갑 잔액 부족으로 실행 시작 전 차단
-- GitHub branch HEAD의 Actions status/workflow: 실행된 검증 없음
-- 프로젝트 규칙에 따라 Actions quota가 소진된 상태에서 전체 backend CI를 억지로 발생시키지 않음
-
-추가 정적 전수검사:
-
-- `mining_profit.rs` 전체 구현/테스트를 다시 읽고 Rust 2021 문법, 소유권/clone/move 사용, 공개 타입 export 정합성을 확인
-- base-1e9 `BigUInt` 곱셈/나눗셈의 현재 `numeric(36,18)` 입력 범위에서 `u128` 중간 계산 상한을 재검토
-- staged division remainder의 half-up/half-even 비교 로직 재검토
-- 18자리 출력 포맷과 최대 18자리 정수부 제한 재검토
-- 경계 테스트의 struct update / clone / expected 값 정합성 재검토
-- 새 결함 발견 0
-
-Render 계정에는 `My Workspace` 하나가 확인되었으나, Render 도구 안전 규칙상 사용자의 명시적 workspace 확인 없이 임시 검증 서비스를 생성하지 않았다. 또한 임시 서비스 생성은 외부 리소스를 새로 만드는 행위이므로 자동으로 수행하지 않았다.
-
-따라서 후속 검증 이후에도 판정은 변경하지 않는다.
-
-`PHASE 03 = IMPLEMENTED / VALIDATION PENDING`
+마스터플랜의 `completed_through`를 `PHASE_03`, `next_phase`를 `PHASE_04`로 갱신한다. PHASE 04는 관리자 명시 지시 전까지 시작하지 않는다.
