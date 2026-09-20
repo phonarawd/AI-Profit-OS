@@ -45,7 +45,7 @@ export class MiningOperationCoordinatorService {
     assetCode: unknown;
     idempotencyKey: unknown;
   }): Promise<void> {
-    await this.killSwitch.assertPath("mining_settlement");
+    await this.assertSettlementAllowed();
     await this.withWriteLock(async () => {
       await this.assertPositionAssetCode(
         input.userId,
@@ -68,7 +68,7 @@ export class MiningOperationCoordinatorService {
     assetCode: unknown;
     idempotencyKey: unknown;
   }): Promise<void> {
-    await this.killSwitch.assertPath("mining_settlement");
+    await this.assertSettlementAllowed();
     await this.withWriteLock(async () => {
       await this.assertPositionAssetCode(
         input.userId,
@@ -89,7 +89,7 @@ export class MiningOperationCoordinatorService {
     positionId: string;
     idempotencyKey: unknown;
   }): Promise<void> {
-    await this.killSwitch.assertPath("mining_settlement");
+    await this.assertSettlementAllowed();
     await this.withWriteLock(async () => {
       await this.mining.endPosition({
         userId: input.userId,
@@ -99,13 +99,17 @@ export class MiningOperationCoordinatorService {
     });
   }
 
-  async settleDueDaily(now = new Date(), limit?: number) {
+  async assertSettlementAllowed(): Promise<void> {
     await this.killSwitch.assertPath("mining_settlement");
+  }
+
+  async settleDueDaily(now = new Date(), limit?: number) {
+    await this.assertSettlementAllowed();
     return this.withWriteLock(() => this.mining.settleDueDaily(now, limit));
   }
 
   async retrySettlement(settlementId: string) {
-    await this.killSwitch.assertPath("mining_settlement");
+    await this.assertSettlementAllowed();
     return this.withWriteLock(() => this.mining.retrySettlement(settlementId));
   }
 
