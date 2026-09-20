@@ -19,6 +19,9 @@ export const JOURNAL_TYPES = [
   "practice_expire",
   "mission_reward",
   "mission_clawback",
+  "mine_position_lock",
+  "mine_position_unlock",
+  "mine_profit_settlement",
   "fee",
   "other",
 ] as const;
@@ -26,6 +29,7 @@ export type JournalType = (typeof JOURNAL_TYPES)[number];
 
 export const SYSTEM_ACCOUNT_CODES = {
   OPPORTUNITY_POOL: "SYS:OPPORTUNITY_POOL",
+  MINING_POOL: "SYS:MINING_POOL",
   OPS_POOL: "SYS:OPS_POOL",
   /** Engine §0.0.4.3 · S2 input · ops.platform_reserve_usdt */
   PLATFORM_RESERVE: "ops.platform_reserve_usdt",
@@ -44,10 +48,11 @@ export const DEBIT_NORMAL_KINDS = new Set([
   "suspense",
 ]);
 
-/** Account kinds where credit increases balance_usdt (liability/revenue). */
+/** Account kinds where credit increases balance_usdt (liability/revenue/pool). */
 export const CREDIT_NORMAL_KINDS = new Set([
   "user_bucket",
   "opportunity_pool",
+  "mining_pool",
   "promo_pool",
   "fee_revenue",
 ]);
@@ -62,6 +67,9 @@ export const PRACTICE_FORBIDDEN_JOURNAL_TYPES = new Set<JournalType>([
   "participate_unlock",
   "settlement",
   "merge_profit_to_principal",
+  "mine_position_lock",
+  "mine_position_unlock",
+  "mine_profit_settlement",
   "fee",
   "referral_reward",
   "referral_clawback",
