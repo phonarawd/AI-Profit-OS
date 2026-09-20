@@ -4,6 +4,7 @@ import {
   ServiceUnavailableException,
 } from "@nestjs/common";
 import { PostgresService } from "../db/postgres";
+import { KillSwitchService } from "../kill-switch/kill-switch.service";
 import { MiningService } from "./mining.service";
 
 const MINING_WRITE_LOCK_NAMESPACE = 1_347_769_165;
@@ -14,6 +15,7 @@ export class MiningOperationCoordinatorService {
   constructor(
     private readonly db: PostgresService,
     private readonly mining: MiningService,
+    private readonly killSwitch: KillSwitchService,
   ) {}
 
   async startPosition(input: {
@@ -23,6 +25,7 @@ export class MiningOperationCoordinatorService {
     assetCode: unknown;
     idempotencyKey: unknown;
   }): Promise<{ positionId: string }> {
+    await this.killSwitch.assertPath("mining_new_positions");
     return this.withWriteLock(async () => {
       await this.assertMineAssetCode(input.mineId, input.assetCode);
       const result = await this.mining.startPosition({
@@ -42,6 +45,7 @@ export class MiningOperationCoordinatorService {
     assetCode: unknown;
     idempotencyKey: unknown;
   }): Promise<void> {
+    await this.killSwitch.assertPath("mining_settlement");
     await this.withWriteLock(async () => {
       await this.assertPositionAssetCode(
         input.userId,
@@ -64,6 +68,7 @@ export class MiningOperationCoordinatorService {
     assetCode: unknown;
     idempotencyKey: unknown;
   }): Promise<void> {
+    await this.killSwitch.assertPath("mining_settlement");
     await this.withWriteLock(async () => {
       await this.assertPositionAssetCode(
         input.userId,
@@ -84,6 +89,7 @@ export class MiningOperationCoordinatorService {
     positionId: string;
     idempotencyKey: unknown;
   }): Promise<void> {
+    await this.killSwitch.assertPath("mining_settlement");
     await this.withWriteLock(async () => {
       await this.mining.endPosition({
         userId: input.userId,
@@ -94,7 +100,13 @@ export class MiningOperationCoordinatorService {
   }
 
   async settleDueDaily(now = new Date(), limit?: number) {
+    await this.killSwitch.assertPath("mining_settlement");
     return this.withWriteLock(() => this.mining.settleDueDaily(now, limit));
+  }
+
+  async retrySettlement(settlementId: string) {
+    await this.killSwitch.assertPath("mining_settlement");
+    return this.withWriteLock(() => this.mining.retrySettlement(settlementId));
   }
 
   private async withWriteLock<T>(work: () => Promise<T>): Promise<T> {
