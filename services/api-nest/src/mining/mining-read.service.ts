@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PostgresService } from "../db/postgres";
-import { cmpAmount } from "../ledger/ledger.money";
+import { addAmount, cmpAmount } from "../ledger/ledger.money";
 import { MiningProfitEngineService } from "./mining-profit-engine.service";
 
 type MineReadRow = {
@@ -26,6 +26,12 @@ type PositionReadRow = {
   rate_effective_at: string | Date | null;
   last_complete_settlement_at: string | Date | null;
   last_event_at: string | Date | null;
+};
+
+type RateReadRow = {
+  daily_rate: string;
+  effective_at: string | Date;
+  ended_at: string | Date | null;
 };
 
 type SettlementReadRow = {
@@ -252,21 +258,11 @@ export class MiningReadService {
       row.started_at,
       row.last_complete_settlement_at,
       row.last_event_at,
-      row.rate_effective_at,
     ]);
-    let accruedProfitAmount = "0";
-    if (active && baselineAt && row.current_daily_rate) {
-      const start = new Date(baselineAt).getTime();
-      const end = now.getTime();
-      if (Number.isFinite(start) && end > start) {
-        accruedProfitAmount = await this.engine.calculate({
-          principalUsdt: row.principal_usdt,
-          dailyRate: row.current_daily_rate,
-          periodStartMicros: BigInt(start) * 1_000n,
-          periodEndMicros: BigInt(end) * 1_000n,
-        });
-      }
-    }
+    const accruedProfitAmount =
+      active && baselineAt
+        ? await this.calculateLiveAccrued(row.mine_id, row.principal_usdt, baselineAt, now)
+        : "0";
     return {
       positionId: row.id,
       mineId: row.mine_id,
@@ -279,6 +275,65 @@ export class MiningReadService {
       nextSettlementAt: active ? nextUtcMidnight(now) : null,
       endedAt: toIso(row.ended_at),
     };
+  }
+
+  private async calculateLiveAccrued(
+    mineId: string,
+    principalAmount: string,
+    baselineAt: string,
+    now: Date,
+  ): Promise<string> {
+    const startMs = Date.parse(baselineAt);
+    const endMs = now.getTime();
+    if (!Number.isFinite(startMs) || endMs <= startMs) return "0";
+
+    const rates = await this.db.query<RateReadRow>(
+      `SELECT daily_rate::text,effective_at,ended_at
+         FROM public.mine_rate_versions
+        WHERE mine_id=$1::uuid
+          AND effective_at IS NOT NULL
+          AND effective_at < $3::timestamptz
+          AND (ended_at IS NULL OR ended_at > $2::timestamptz)
+          AND (status IN ('ACTIVE','ENDED')
+               OR (status='SCHEDULED' AND approved_at IS NOT NULL))
+        ORDER BY effective_at ASC`,
+      [mineId, baselineAt, now.toISOString()],
+    );
+    if (rates.rows.length === 0) return "0";
+
+    const boundaries = new Set<number>([startMs, endMs]);
+    for (const rate of rates.rows) {
+      const effectiveMs = new Date(rate.effective_at).getTime();
+      const endedMs = rate.ended_at ? new Date(rate.ended_at).getTime() : null;
+      if (effectiveMs > startMs && effectiveMs < endMs) boundaries.add(effectiveMs);
+      if (endedMs !== null && endedMs > startMs && endedMs < endMs) boundaries.add(endedMs);
+    }
+
+    const ordered = [...boundaries].sort((a, b) => a - b);
+    let total = "0";
+    for (let index = 0; index + 1 < ordered.length; index += 1) {
+      const segmentStart = ordered[index]!;
+      const segmentEnd = ordered[index + 1]!;
+      if (segmentEnd <= segmentStart) continue;
+      const rate = [...rates.rows]
+        .reverse()
+        .find((candidate) => {
+          const effectiveMs = new Date(candidate.effective_at).getTime();
+          const endedMs = candidate.ended_at
+            ? new Date(candidate.ended_at).getTime()
+            : null;
+          return effectiveMs <= segmentStart && (endedMs === null || endedMs > segmentStart);
+        });
+      if (!rate) continue;
+      const profit = await this.engine.calculate({
+        principalUsdt: principalAmount,
+        dailyRate: rate.daily_rate,
+        periodStartMicros: BigInt(segmentStart) * 1_000n,
+        periodEndMicros: BigInt(segmentEnd) * 1_000n,
+      });
+      total = addAmount(total, profit);
+    }
+    return total;
   }
 
   private settlementPublic(row: SettlementReadRow) {
