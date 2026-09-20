@@ -33,11 +33,21 @@ async function bootstrapPhase06Database(): Promise<void> {
   if (!response.ok) {
     throw new Error(`PHASE06 staging database bootstrap failed with ${response.status}`);
   }
-  const body = (await response.json()) as { secret?: unknown };
+  const body = (await response.json()) as {
+    secret?: unknown;
+    poolerHost?: unknown;
+    poolerPort?: unknown;
+  };
   const password = typeof body.secret === "string" ? body.secret : "";
+  const poolerHost = typeof body.poolerHost === "string" ? body.poolerHost : "";
+  const poolerPort = Number(body.poolerPort);
   if (!password) throw new Error("PHASE06 staging database bootstrap returned no credential");
+  if (!/^aws-\d+-ap-northeast-2\.pooler\.supabase\.com$/.test(poolerHost) || poolerPort !== 5432) {
+    throw new Error("PHASE06 staging database bootstrap returned invalid pooler endpoint");
+  }
 
-  process.env.DATABASE_URL = `postgresql://putduk_mine_staging_api:${encodeURIComponent(password)}@db.${projectRef}.supabase.co:5432/postgres?sslmode=require`;
+  const username = `putduk_mine_staging_api.${projectRef}`;
+  process.env.DATABASE_URL = `postgresql://${encodeURIComponent(username)}:${encodeURIComponent(password)}@${poolerHost}:${poolerPort}/postgres?sslmode=require`;
   // eslint-disable-next-line no-console
   console.log("PHASE06_STAGING_DB_BOOTSTRAP_OK");
 }
