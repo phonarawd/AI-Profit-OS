@@ -2,9 +2,9 @@
 name: PUTDUK Mining Release Master
 overview: 퍼뜩 광산 전환의 단일 실행 권위. 2026-09-20부터 PHASE 00~26만 현재 실행 큐로 사용한다. 기존 REL 계획은 PUTDUK_RELEASE_MASTER.legacy-rel.plan.md에 역사 보존하며 현재 자동 실행 권위는 없다.
 plan_locked: true
-current_phase: PHASE_03
-completed_through: PHASE_03
-next_phase: PHASE_04
+current_phase: PHASE_04
+completed_through: PHASE_04
+next_phase: PHASE_05
 next_phase_requires_admin_command: true
 ---
 
@@ -26,7 +26,10 @@ next_phase_requires_admin_command: true
 배포 경계:
 - User Web: Cloudflare only
 - Admin/Ops: Cloudflare only
-- Backend API: Render
+- Backend API: Render — 신규 PUTDUK 광산 전용 서비스만 사용
+- 기존 리셀/eBay Render 서비스: 동결. 광산 백엔드로 재사용·설정변경 금지, 이후 명시적 정리 PHASE 전까지 보존
+- Public API: Cloudflare가 관리하는 도메인/DNS/proxy를 통해 광산 전용 Render backend로 연결
+- Supabase: DB / ledger / mining data authority
 - Vercel: 다른 프로젝트. 조회·연동·설정 변경·배포에 사용 금지.
 
 기존 REL 계획은 `.cursor/plans/PUTDUK_RELEASE_MASTER.legacy-rel.plan.md`에 바이트 그대로 보존한다. 과거 완료 증거는 재사용할 수 있으나, 현재 광산 전환 단계의 완료를 대신하지 않는다.
