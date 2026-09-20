@@ -81,7 +81,8 @@ export class MiningReadService {
               (SELECT r.daily_rate::text
                  FROM public.mine_rate_versions r
                 WHERE r.mine_id=m.id
-                  AND r.status='ACTIVE'
+                  AND (r.status='ACTIVE'
+                       OR (r.status='SCHEDULED' AND r.approved_at IS NOT NULL))
                   AND r.effective_at <= now()
                 ORDER BY r.effective_at DESC
                 LIMIT 1) AS current_daily_rate
@@ -100,7 +101,8 @@ export class MiningReadService {
               (SELECT r.daily_rate::text
                  FROM public.mine_rate_versions r
                 WHERE r.mine_id=m.id
-                  AND r.status='ACTIVE'
+                  AND (r.status='ACTIVE'
+                       OR (r.status='SCHEDULED' AND r.approved_at IS NOT NULL))
                   AND r.effective_at <= now()
                 ORDER BY r.effective_at DESC
                 LIMIT 1) AS current_daily_rate
@@ -207,7 +209,8 @@ export class MiningReadService {
                 SELECT r.daily_rate::text AS daily_rate, r.effective_at
                   FROM public.mine_rate_versions r
                  WHERE r.mine_id=p.mine_id
-                   AND r.status='ACTIVE'
+                   AND (r.status='ACTIVE'
+                        OR (r.status='SCHEDULED' AND r.approved_at IS NOT NULL))
                    AND r.effective_at <= now()
                  ORDER BY r.effective_at DESC
                  LIMIT 1
