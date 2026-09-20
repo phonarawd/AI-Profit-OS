@@ -7,6 +7,7 @@
 - 기반 SHA: `74b80fd3963047c2e97fb9ed3004dbff664743b6`
 - 계산기 버전: `mine-profit-v1`
 - DB 정밀도 기준: `numeric(36,18)`
+- 최종 Rust 검증 코드 SHA: `2f394a9c6a3fbf3757c18485ca3930deb316278a`
 
 ## 1. 범위
 
@@ -116,9 +117,9 @@ Rust 구현과 독립적인 Python 정수/유리수 oracle로 다음을 검증�
 
 ## 6. 실제 Rust 컴파일·테스트 검증
 
-현재 작업 컨테이너에는 `rustc`와 `cargo`가 없다. 이를 보완하기 위해 공식 Rust Playground stable에서 브랜치의 정확한 `mining_profit.rs`, 기존 `settlement_rule.rs`, `lib.rs`를 하나의 crate로 구성해 실제 컴파일·테스트했다.
+1차 검증은 공식 Rust Playground stable에서 브랜치의 정확한 `mining_profit.rs`, 기존 `settlement_rule.rs`, `lib.rs`를 하나의 crate로 구성해 수행했다.
 
-검증 결과:
+1차 검증 결과:
 
 - 전체 crate compile: PASS
 - 전체 unit tests: **19 passed, 0 failed**
@@ -126,11 +127,24 @@ Rust 구현과 독립적인 Python 정수/유리수 oracle로 다음을 검증�
 - 기존 settlement regression tests 포함: PASS
 - Clippy: **경고 0, 오류 0**
 - 결정성 100회 테스트: PASS
-- GitHub Actions: 사용량 소진 정책에 따라 실행하지 않음
 
-Clippy가 최초 발견한 `manual_div_ceil` 1건은 `usize::div_ceil`로 수정한 뒤 다시 실행해 경고 0을 확인했다.
+이후 Render `My Workspace`의 PHASE 03 전용 검증 서비스에서 저장소 브랜치를 직접 체크아웃해 Rust toolchain `1.85.0`(`rust-toolchain.toml`)으로 최종 검증했다.
 
-로컬 `cargo fmt --check`는 도구 부재로 실행하지 않았으므로 실행했다고 기록하지 않는다.
+최종 검증 코드 SHA:
+
+`2f394a9c6a3fbf3757c18485ca3930deb316278a`
+
+최종 연속 게이트:
+
+- `cargo fmt --check`: **PASS**
+- `cargo test`: **PASS — 19 passed, 0 failed**
+- `cargo check`: **PASS**
+- mining profit 경계/결정성 tests: PASS
+- 기존 settlement regression tests: PASS
+
+초기 Render 검증에서 `mining_profit.rs`의 rustfmt 차이를 발견했으며, 계산 로직 변경 없이 rustfmt 결과만 반영했다. 포맷 커밋은 파일 1개만 변경했고, Render 작업트리에서 `27 insertions / 28 deletions`의 formatting-only diff로 확인했다.
+
+GitHub Actions는 사용량 소진 정책에 따라 실행하지 않았다. 상태는 `NOT RUN / quota exhausted`로 기록한다.
 
 ## 7. 변경 영향
 
@@ -143,8 +157,8 @@ Clippy가 최초 발견한 `manual_div_ceil` 1건은 `usize::div_ceil`로 수정
 
 ## 8. PHASE 판정
 
-필수 금융 경계, 결정성, 실제 Rust compile/unit test, 기존 회귀 테스트, Clippy 검증을 모두 통과했다.
+필수 금융 경계, 결정성, 실제 Rust compile/unit test, 기존 회귀 테스트, Clippy, `cargo fmt --check`, `cargo check` 검증을 모두 통과했다.
 
 `PHASE 03 = PASS`
 
-마스터플랜의 `completed_through`를 `PHASE_03`, `next_phase`를 `PHASE_04`로 갱신한다. PHASE 04는 관리자 명시 지시 전까지 시작하지 않는다.
+마스터플랜의 `completed_through`는 `PHASE_03`, `next_phase`는 `PHASE_04`다. PHASE 04는 관리자 명시 지시 전까지 시작하지 않는다.
