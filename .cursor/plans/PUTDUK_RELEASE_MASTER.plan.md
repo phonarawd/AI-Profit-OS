@@ -2,9 +2,9 @@
 name: PUTDUK Mining Release Master
 overview: 퍼뜩 광산 전환의 단일 실행 권위. 2026-09-20부터 PHASE 00~26만 현재 실행 큐로 사용한다. 기존 REL 계획은 PUTDUK_RELEASE_MASTER.legacy-rel.plan.md에 역사 보존하며 현재 자동 실행 권위는 없다.
 plan_locked: true
-current_phase: PHASE_02
-completed_through: PHASE_02
-next_phase: PHASE_03
+current_phase: PHASE_03
+completed_through: PHASE_03
+next_phase: PHASE_04
 next_phase_requires_admin_command: true
 ---
 

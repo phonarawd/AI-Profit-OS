@@ -1,7 +1,12 @@
-//! engine-rust — Phase0 MATCH_SUCCESS / settlement rules (§48.13)
+//! engine-rust — deterministic financial rule engine
 
+pub mod mining_profit;
 pub mod settlement_rule;
 
+pub use mining_profit::{
+    calculate_mining_profit, MiningProfitError, MiningProfitInput, MiningProfitOutput,
+    RoundingMode, DB_DECIMAL_SCALE, MICROS_PER_DAY, MICROS_PER_SECOND, MINING_CALC_VERSION,
+};
 pub use settlement_rule::{
     evaluate_execution, evaluate_match_success, guard_participate, hard_deadline_ms,
     soft_deadline_ms, ExecutionPolicy, ExecutionResultCode, ParticipateContext,
@@ -25,5 +30,11 @@ mod tests {
     fn walls_reexported() {
         assert_eq!(SOFT_SEC, 60);
         assert_eq!(HARD_SEC, 90);
+    }
+
+    #[test]
+    fn mining_contract_reexported() {
+        assert_eq!(DB_DECIMAL_SCALE, 18);
+        assert_eq!(MINING_CALC_VERSION, "mine-profit-v1");
     }
 }
