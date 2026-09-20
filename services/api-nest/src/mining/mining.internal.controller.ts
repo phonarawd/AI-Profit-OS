@@ -26,6 +26,7 @@ export class MiningInternalController {
       throw new UnauthorizedException("인증할 수 없습니다.");
     }
     const now = new Date();
+    await this.operations.assertSettlementAllowed();
     const rates = await this.rateActivation.activateDue(now);
     const settlements = await this.operations.settleDueDaily(
       now,
