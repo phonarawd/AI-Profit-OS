@@ -107,7 +107,8 @@ export class MiningHighValueService {
 
   /**
    * Returns a pending position when high-value review is required.
-   * Returns null only when the request is below the configured threshold.
+   * Returns null only when the ordinary mining start path owns the intent.
+   * Existing review intent wins over later threshold changes.
    * Missing/malformed threshold fails closed; it never bypasses review.
    */
   async requestReviewIfRequired(input: {
@@ -124,51 +125,83 @@ export class MiningHighValueService {
     }
     this.assertWithinLimits(principal, mine.min_position_usdt, mine.max_position_usdt);
     const threshold = this.thresholdFromMetadata(mine.metadata);
-    if (cmpAmount(principal, threshold) < 0) return null;
+    const needsReview = cmpAmount(principal, threshold) >= 0;
 
-    await this.provision.provisionUserBucketAccounts(input.userId);
+    if (needsReview) {
+      await this.provision.provisionUserBucketAccounts(input.userId);
+    }
 
     return this.db.withTransaction(async (client) => {
-      await client.query(`SELECT pg_advisory_xact_lock(hashtext($1))`, [idem]);
-      const inserted = await client.query<{ id: string }>(
-        `INSERT INTO public.mine_positions (
-           user_id,mine_id,status,requested_principal_usdt,principal_usdt,start_idempotency_key
-         ) VALUES ($1::uuid,$2::uuid,'START_PENDING',$3::numeric,0,$4)
-         ON CONFLICT (start_idempotency_key) DO NOTHING
-         RETURNING id::text`,
-        [input.userId, input.mineId, principal, idem],
-      );
-      let positionId = inserted.rows[0]?.id;
-      if (!positionId) {
-        const existing = await client.query<PositionRow>(
-          `SELECT id::text,user_id::text,mine_id::text,status,
-                  requested_principal_usdt::text,principal_usdt::text
-             FROM public.mine_positions WHERE start_idempotency_key=$1 FOR UPDATE`,
-          [idem],
-        );
-        const row = existing.rows[0];
-        if (
-          !row ||
-          row.user_id !== input.userId ||
-          row.mine_id !== input.mineId ||
-          cmpAmount(row.requested_principal_usdt, principal) !== 0
-        ) {
-          throw new ConflictException("같은 요청 키를 다른 내용으로 사용할 수 없습니다.");
-        }
-        positionId = row.id;
-      }
+      await client.query(`SELECT pg_advisory_xact_lock(hashtext($1))`, [
+        `mine:high-value:start:${idem}`,
+      ]);
 
-      const current = await client.query<PositionRow>(
+      const existing = await client.query<PositionRow>(
         `SELECT id::text,user_id::text,mine_id::text,status,
                 requested_principal_usdt::text,principal_usdt::text
-           FROM public.mine_positions WHERE id=$1::uuid FOR UPDATE`,
-        [positionId],
+           FROM public.mine_positions
+          WHERE start_idempotency_key=$1
+          FOR UPDATE`,
+        [idem],
       );
-      const position = current.rows[0];
-      if (!position) throw new NotFoundException("운용 내역을 찾을 수 없습니다.");
-      if (position.status === "ACTIVE") return { positionId };
-      if (position.status !== "START_PENDING") {
-        throw new ConflictException("현재 검토할 수 없는 운용 상태입니다.");
+      const priorPosition = existing.rows[0];
+      if (priorPosition) {
+        this.assertSameStartIntent(priorPosition, input.userId, input.mineId, principal);
+        const priorReview = await client.query<ReviewRow>(
+          `SELECT id::text,position_id::text,user_id::text,mine_id::text,status,
+                  requested_principal_usdt::text,threshold_usdt::text,idempotency_key,
+                  approval_request_id::text,reviewed_by_admin_id::text,review_reason,
+                  requested_at,reviewed_at,created_at,updated_at
+             FROM public.mine_high_value_reviews
+            WHERE position_id=$1::uuid`,
+          [priorPosition.id],
+        );
+        const review = priorReview.rows[0];
+        if (review) {
+          if (
+            review.user_id !== input.userId ||
+            review.mine_id !== input.mineId ||
+            cmpAmount(review.requested_principal_usdt, principal) !== 0
+          ) {
+            throw new ConflictException("같은 요청 키를 다른 내용으로 사용할 수 없습니다.");
+          }
+          // The snapshotted review is authoritative for this idempotent intent.
+          // Do not re-evaluate it against a later administrator threshold change.
+          return { positionId: priorPosition.id };
+        }
+
+        if (priorPosition.status === "ACTIVE") return null;
+        if (!needsReview) return null;
+        if (priorPosition.status !== "START_PENDING") {
+          throw new ConflictException("현재 검토할 수 없는 운용 상태입니다.");
+        }
+
+        // A normal start may have posted its stable lock journal and crashed before
+        // activating the position. In that case preserve the original ordinary
+        // intent rather than retroactively introducing review after a threshold edit.
+        const posted = await client.query<{ id: string }>(
+          `SELECT id::text FROM public.ledger_journals
+            WHERE idempotency_key=$1`,
+          [`mine:position:start:${priorPosition.id}`],
+        );
+        if (posted.rows[0]) return null;
+      } else if (!needsReview) {
+        return null;
+      }
+
+      let positionId = priorPosition?.id;
+      if (!positionId) {
+        const inserted = await client.query<{ id: string }>(
+          `INSERT INTO public.mine_positions (
+             user_id,mine_id,status,requested_principal_usdt,principal_usdt,start_idempotency_key
+           ) VALUES ($1::uuid,$2::uuid,'START_PENDING',$3::numeric,0,$4)
+           RETURNING id::text`,
+          [input.userId, input.mineId, principal, idem],
+        );
+        positionId = inserted.rows[0]?.id;
+      }
+      if (!positionId) {
+        throw new ServiceUnavailableException("고액운용 검토 요청을 만들 수 없습니다.");
       }
 
       const reviewKey = `mine:high-value:${positionId}`;
@@ -271,30 +304,42 @@ export class MiningHighValueService {
     const idem = requestKey(input.idempotencyKey);
     const why = reason(input.reason);
     const fp = fingerprint(["approveHighValueReview", input.reviewId, why]);
-    const replay = await this.adminReplay(idem, "MiningAdminController.approveHighValueReview", fp);
-    if (replay) return this.getReview(input.reviewId);
 
-    const review = await this.loadReview(input.reviewId);
-    if (review.status === "REJECTED" || review.status === "CANCELLED") {
-      throw new ConflictException("거절되거나 취소된 요청은 승인할 수 없습니다.");
-    }
-    if (review.status === "PENDING") {
-      await this.activatePendingPosition(review);
-      await this.db.query(
-        `UPDATE public.mine_high_value_reviews
-            SET status='APPROVED',reviewed_by_admin_id=$2::uuid,review_reason=$3,
-                reviewed_at=COALESCE(reviewed_at,now())
-          WHERE id=$1::uuid AND status='PENDING'`,
-        [input.reviewId, input.actor.adminId, why],
-      );
-    }
-    await this.writeAudit({
-      actor: input.actor,
-      idempotencyKey: idem,
-      action: "MiningAdminController.approveHighValueReview",
-      targetId: input.reviewId,
-      reason: why,
-      fingerprint: fp,
+    await this.db.withTransaction(async (client) => {
+      await this.lockAdminMutation(client, idem, input.reviewId);
+      if (
+        await this.adminReplay(
+          client,
+          idem,
+          "MiningAdminController.approveHighValueReview",
+          fp,
+        )
+      ) {
+        return;
+      }
+
+      const review = await this.lockReview(client, input.reviewId);
+      if (review.status === "REJECTED" || review.status === "CANCELLED") {
+        throw new ConflictException("거절되거나 취소된 요청은 승인할 수 없습니다.");
+      }
+      if (review.status === "PENDING") {
+        await this.activatePendingPosition(review);
+        await client.query(
+          `UPDATE public.mine_high_value_reviews
+              SET status='APPROVED',reviewed_by_admin_id=$2::uuid,review_reason=$3,
+                  reviewed_at=COALESCE(reviewed_at,now())
+            WHERE id=$1::uuid AND status='PENDING'`,
+          [input.reviewId, input.actor.adminId, why],
+        );
+      }
+      await this.writeAudit(client, {
+        actor: input.actor,
+        idempotencyKey: idem,
+        action: "MiningAdminController.approveHighValueReview",
+        targetId: input.reviewId,
+        reason: why,
+        fingerprint: fp,
+      });
     });
     return this.getReview(input.reviewId);
   }
@@ -308,18 +353,39 @@ export class MiningHighValueService {
     const idem = requestKey(input.idempotencyKey);
     const why = reason(input.reason);
     const fp = fingerprint(["rejectHighValueReview", input.reviewId, why]);
-    const replay = await this.adminReplay(idem, "MiningAdminController.rejectHighValueReview", fp);
-    if (replay) return this.getReview(input.reviewId);
 
     await this.db.withTransaction(async (client) => {
+      await this.lockAdminMutation(client, idem, input.reviewId);
+      if (
+        await this.adminReplay(
+          client,
+          idem,
+          "MiningAdminController.rejectHighValueReview",
+          fp,
+        )
+      ) {
+        return;
+      }
+
       const review = await this.lockReview(client, input.reviewId);
       if (review.status === "APPROVED") {
         throw new ConflictException("이미 승인된 요청은 거절할 수 없습니다.");
       }
-      if (review.status === "REJECTED") return;
+      if (review.status === "REJECTED") {
+        await this.writeAudit(client, {
+          actor: input.actor,
+          idempotencyKey: idem,
+          action: "MiningAdminController.rejectHighValueReview",
+          targetId: input.reviewId,
+          reason: why,
+          fingerprint: fp,
+        });
+        return;
+      }
       if (review.status !== "PENDING") {
         throw new ConflictException("현재 거절할 수 없는 검토 상태입니다.");
       }
+
       const position = await client.query<PositionRow>(
         `SELECT id::text,user_id::text,mine_id::text,status,
                 requested_principal_usdt::text,principal_usdt::text
@@ -328,6 +394,17 @@ export class MiningHighValueService {
       );
       const p = position.rows[0];
       if (!p) throw new NotFoundException("운용 내역을 찾을 수 없습니다.");
+
+      const approvalJournal = await client.query<{ id: string }>(
+        `SELECT id::text FROM public.ledger_journals WHERE idempotency_key=$1`,
+        [`mine:position:start:${review.position_id}`],
+      );
+      if (approvalJournal.rows[0]) {
+        throw new ConflictException(
+          "승인 원장 처리가 시작된 요청은 거절할 수 없습니다.",
+        );
+      }
+
       if (p.status !== "START_PENDING" && p.status !== "ENDED") {
         throw new ConflictException("이미 시작된 운용은 거절할 수 없습니다.");
       }
@@ -341,18 +418,19 @@ export class MiningHighValueService {
       }
       await client.query(
         `UPDATE public.mine_high_value_reviews
-            SET status='REJECTED',reviewed_by_admin_id=$2::uuid,review_reason=$3,reviewed_at=now()
+            SET status='REJECTED',reviewed_by_admin_id=$2::uuid,
+                review_reason=$3,reviewed_at=now()
           WHERE id=$1::uuid`,
         [input.reviewId, input.actor.adminId, why],
       );
-    });
-    await this.writeAudit({
-      actor: input.actor,
-      idempotencyKey: idem,
-      action: "MiningAdminController.rejectHighValueReview",
-      targetId: input.reviewId,
-      reason: why,
-      fingerprint: fp,
+      await this.writeAudit(client, {
+        actor: input.actor,
+        idempotencyKey: idem,
+        action: "MiningAdminController.rejectHighValueReview",
+        targetId: input.reviewId,
+        reason: why,
+        fingerprint: fp,
+      });
     });
     return this.getReview(input.reviewId);
   }
@@ -472,6 +550,21 @@ export class MiningHighValueService {
     }
   }
 
+  private assertSameStartIntent(
+    position: PositionRow,
+    userId: string,
+    mineId: string,
+    principal: string,
+  ) {
+    if (
+      position.user_id !== userId ||
+      position.mine_id !== mineId ||
+      cmpAmount(position.requested_principal_usdt, principal) !== 0
+    ) {
+      throw new ConflictException("같은 요청 키를 다른 내용으로 사용할 수 없습니다.");
+    }
+  }
+
   private async loadReview(reviewId: string): Promise<ReviewRow> {
     const result = await this.db.query<ReviewRow>(
       `SELECT id::text,position_id::text,user_id::text,mine_id::text,status,
@@ -500,8 +593,26 @@ export class MiningHighValueService {
     return row;
   }
 
-  private async adminReplay(idempotencyKey: string, action: string, fp: string) {
-    const result = await this.db.query<AuditRow>(
+  private async lockAdminMutation(
+    client: PoolClient,
+    idempotencyKey: string,
+    reviewId: string,
+  ) {
+    await client.query(`SELECT pg_advisory_xact_lock(hashtext($1))`, [
+      `mine:high-value:idem:${idempotencyKey}`,
+    ]);
+    await client.query(`SELECT pg_advisory_xact_lock(hashtext($1))`, [
+      `mine:high-value:review:${reviewId}`,
+    ]);
+  }
+
+  private async adminReplay(
+    client: PoolClient,
+    idempotencyKey: string,
+    action: string,
+    fp: string,
+  ) {
+    const result = await client.query<AuditRow>(
       `SELECT action,target_id,payload
          FROM public.admin_audit_events WHERE idempotency_key=$1`,
       [idempotencyKey],
@@ -514,15 +625,18 @@ export class MiningHighValueService {
     return true;
   }
 
-  private async writeAudit(input: {
-    actor: AdminActor;
-    idempotencyKey: string;
-    action: string;
-    targetId: string;
-    reason: string;
-    fingerprint: string;
-  }) {
-    await this.db.query(
+  private async writeAudit(
+    client: PoolClient,
+    input: {
+      actor: AdminActor;
+      idempotencyKey: string;
+      action: string;
+      targetId: string;
+      reason: string;
+      fingerprint: string;
+    },
+  ) {
+    await client.query(
       `INSERT INTO public.admin_audit_events (
          actor_key,actor_id,role,action,target_type,target_id,occurred_at,
          mode,result,reason,idempotency_key,payload
