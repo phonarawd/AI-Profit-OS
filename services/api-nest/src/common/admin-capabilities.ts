@@ -136,7 +136,6 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     patchProgram: write("growth"),
     audit: read("growth"),
     poolStatus: read("growth"),
-    // Pool top-up / release / clawback move real money — finance authority, not marketing.
     poolTopUp: write("balanceAdjust"),
     holdQueue: read("growth"),
     release: write("balanceAdjust"),
@@ -234,6 +233,10 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     listSettlements: read("ledger"),
     getSettlement: read("ledger"),
     retrySettlement: write("balanceAdjust"),
+    listHighValueReviews: read("ledger"),
+    getHighValueReview: read("ledger"),
+    approveHighValueReview: write("balanceAdjust"),
+    rejectHighValueReview: write("balanceAdjust"),
   },
   KillSwitchAdminController: {
     list: read("circuit"),
