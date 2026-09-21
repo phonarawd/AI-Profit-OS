@@ -238,6 +238,10 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     approveHighValueReview: write("balanceAdjust"),
     rejectHighValueReview: write("balanceAdjust"),
   },
+  MiningTrialAdminController: {
+    getTrialConfig: read("all"),
+    updateTrialConfig: write("all"),
+  },
   KillSwitchAdminController: {
     list: read("circuit"),
     put: write("circuit"),
