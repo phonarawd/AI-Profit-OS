@@ -27,9 +27,9 @@ export class MiningInternalController {
   ) {}
 
   /**
-   * PHASE21 isolated-staging attestation. The mutation E2E runner must prove the
-   * remote API's configured Supabase ref before it is allowed to move money.
-   * It is protected by the same fail-closed internal mining token as settlement.
+   * PHASE21 isolated-staging attestation. The mutation E2E runner must prove
+   * both the remote API commit and configured Supabase ref before moving money.
+   * This is protected by the same fail-closed internal mining token as ticks.
    */
   @Get("staging-identity")
   stagingIdentity(
@@ -40,6 +40,10 @@ export class MiningInternalController {
       supabaseProjectRef: env.supabaseProjectRef,
       supabaseRegion: env.supabaseRegion,
       nodeEnv: env.nodeEnv,
+      gitCommit:
+        process.env.RENDER_GIT_COMMIT?.trim() ||
+        process.env.GIT_COMMIT_SHA?.trim() ||
+        null,
     };
   }
 
