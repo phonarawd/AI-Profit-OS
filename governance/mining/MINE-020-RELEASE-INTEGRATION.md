@@ -1,7 +1,8 @@
 # MINE-020 — BACKEND RELEASE INTEGRATION
 
-Status: **IN PROGRESS — BACKEND CONTRACT ROUTES INTEGRATED / DB BASELINE + STAGING E2E BLOCKED**  
+Status: **IN PROGRESS — BACKEND CONTRACT + CANONICAL BUILD VERIFIED / DB BASELINE + STAGING E2E BLOCKED**  
 Base SHA: `d6e279841aaa62b7b75f26a7b33d1768923d551b`  
+Canonical verified implementation SHA: `72bb62e59f9d472229a7160f8ac5565175d939da`  
 Branch: `phase/mine-release-integration-20260921`  
 Safety: **Production untouched.**
 
@@ -145,11 +146,49 @@ This blocker is stronger than “mining migration not yet applied”: the curren
 
 - current E2E must be rebuilt from the integrated backend line; historical E2E tip is verifier residue
 - isolated staging Supabase must be provisioned/recovered and identity-checked as non-Production
-- current integration SHA still requires canonical typecheck/build/assertion verification
 - user web still requires a fresh audit/wiring pass for the newly available trial endpoints
 - Production migration remains approval-gated after compatibility rehearsal
 
-## 7. Verification gate
+## 7. Canonical verification evidence
+
+Canonical verified implementation SHA:
+
+`72bb62e59f9d472229a7160f8ac5565175d939da`
+
+Verifier service:
+
+- Render service: `putduk-mine-phase04-contract-verify`
+- service id: `srv-dao0do8ae00c73aar74g`
+- verification deploy: `dep-daolg88473hc73csdt60`
+- Node: `22.14.0`
+
+Observed PASS markers:
+
+- `PHASE20_VERIFY_HEAD=72bb62e59f9d472229a7160f8ac5565175d939da`
+- `PHASE20_RELEASE_INTEGRATION_ASSERTIONS_PASS`
+- `PHASE20_ASSERTIONS_PASS`
+- `[verify:api-nest-build] PASS (services/api-nest tsc build clean)`
+- `PHASE20_BUILD_PASS`
+- `PHASE04_API_ASSERTIONS_PASS`
+- `PHASE04_CONTRACT_VERIFY_OK`
+- Render build successful
+
+The first wrapper attempt failed before target verification because Render's checkout did not expose an `origin` remote. The wrapper was corrected to use the explicit repository URL. A subsequent gate attempt identified only an assertion case-sensitivity defect (`Threshold` versus `threshold` in a migration comment); the gate itself was normalized without changing product behavior. The exact corrected implementation SHA above then passed the full static integration + TypeScript build gate.
+
+After verification, the historical verifier branch was force-restored to:
+
+`a79826aaeb7f97b70fae881f1d423ce0f70a49fe`
+
+Recovery evidence:
+
+- `VERIFY_HEAD=a79826aaeb7f97b70fae881f1d423ce0f70a49fe`
+- `PHASE04_API_ASSERTIONS_PASS`
+- `PHASE04_CONTRACT_VERIFY_OK`
+- recovery build successful
+
+No temporary verifier wrapper remains in the historical branch.
+
+## 8. Verification gate
 
 Static integration gate:
 
@@ -157,7 +196,7 @@ Static integration gate:
 node quality/mining/phase20_release_integration_assertions.mjs
 ```
 
-It now requires:
+It requires:
 
 - exact high-value contract routes
 - high-value controller/RBAC wiring
@@ -177,14 +216,13 @@ It now requires:
 - repeated-trial schema compatibility
 - Production baseline blocker documentation
 
-## 8. Next safe order
+## 9. Next safe order
 
-1. Canonically verify the current integration exact SHA with PHASE20 assertions + typecheck + build.
-2. Audit/wire the consumer trial calls against the now-integrated backend routes.
-3. Rebuild current mutation E2E from the verified integration SHA.
-4. Provision/recover isolated staging DB and rehearse the complete historical + mining migration chain there.
-5. Design the Production baseline compatibility bridge only after staging evidence exists.
-6. Freeze RC only after DB compatibility, consumer trial, staging, and E2E blockers close.
-7. Production migration/deployment requires separate explicit approval.
+1. Audit/wire the consumer trial calls against the now-verified backend routes.
+2. Rebuild current mutation E2E from the verified integration SHA.
+3. Provision/recover isolated staging DB and rehearse the complete historical + mining migration chain there.
+4. Design the Production baseline compatibility bridge only after staging evidence exists.
+5. Freeze RC only after DB compatibility, consumer trial, staging, and E2E blockers close.
+6. Production migration/deployment requires separate explicit approval.
 
 **Production untouched.**
