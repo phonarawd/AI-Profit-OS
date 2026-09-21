@@ -48,7 +48,7 @@ must(highValue.includes("mine:position:start:${review.position_id}"), "approval 
 must(highValue.includes('bucket: "principal"'), "approval principal debit missing");
 must(highValue.includes('bucket: "locked"'), "approval locked credit missing");
 must(highValue.includes('assertPath("mining_new_positions")'), "approval bypasses new-position kill switch");
-must(foundation.includes("threshold is snapshotted, never hardcoded"), "foundation high-value threshold rule missing");
+must(foundation.toLowerCase().includes("threshold is snapshotted, never hardcoded"), "foundation high-value threshold rule missing");
 
 must(contract.userApi?.getTrialStatus?.method === "GET", "getTrialStatus method drift");
 must(contract.userApi?.getTrialStatus?.path === "/api/v1/mining/trial", "getTrialStatus route drift");
