@@ -1,7 +1,8 @@
 # MINE-021 — ISOLATED STAGING MUTATION E2E REBUILD
 
-Status: **READY IN CODE / EXECUTION BLOCKED BY ISOLATED STAGING**  
+Status: **READY IN CODE + CANONICAL BUILD VERIFIED / EXECUTION BLOCKED BY ISOLATED STAGING**  
 Base product SHA: `72bb62e59f9d472229a7160f8ac5565175d939da`  
+Canonical verified PHASE21 implementation SHA: `b25572f9c7259993263292265776e999911cf915`  
 Branch: `phase/mine-staging-e2e-rebuild-20260922`  
 Safety: **Production untouched. No Production mutation is permitted by this runner.**
 
@@ -145,13 +146,50 @@ Provisioning a Supabase branch/project may incur cost and remains explicit-appro
 
 ### BLOCKER-STAGING-E2E-01 — READY IN CODE / EXECUTION BLOCKED
 
-The current mutation runner and safety contract are implemented, but execution remains blocked because:
+The current mutation runner and safety contract are implemented and canonically build-verified, but execution remains blocked because:
 
 - the historical staging API currently returns 502;
 - the historical E2E service has no required JWT/fixture secrets; and
 - there is no isolated Supabase target to attest.
 
-## 7. Static gate
+## 7. Canonical verification evidence
+
+Canonical PHASE21 implementation SHA:
+
+`b25572f9c7259993263292265776e999911cf915`
+
+Static/syntax verification used Render service `putduk-mine-phase04-contract-verify` and deploy `dep-daolqup42hec738pmcag`.
+
+Observed before the wrapper environment moved onto an incompatible Node runtime for dependency install:
+
+- `PHASE21_VERIFY_HEAD=b25572f9c7259993263292265776e999911cf915`
+- `PHASE21_RUNNER_SYNTAX_PASS`
+- `PHASE21_STAGING_E2E_ASSERTIONS_PASS`
+- `PHASE21_ASSERTIONS_PASS`
+
+The wrapper-only install step then saw Node `24.21.0`, while the repository requires Node `>=22.14.0 <23`. This was a verifier-wrapper environment issue, not a target source failure.
+
+A second direct canonical build was therefore run on Render service `putduk-mine-phase04-integrated-verify` using deploy `dep-daolrt142hec738pps4g`. That service checked out the exact target SHA directly under Node `22.14.0`.
+
+Observed PASS evidence:
+
+- `VERIFY_HEAD=b25572f9c7259993263292265776e999911cf915`
+- Rust tests: `19 passed; 0 failed`
+- `cargo check` PASS
+- release `mining_profit_cli` build PASS
+- `[verify:api-nest-build] PASS (services/api-nest tsc build clean)`
+- `PHASE04_VERIFY_OK`
+- Render deploy status: `live`
+
+The historical verifier branch was restored immediately to:
+
+`a79826aaeb7f97b70fae881f1d423ce0f70a49fe`
+
+The contract verifier recovery build also passed from that historical SHA. The integrated verifier recovery deploy is `dep-daols96ol0ds7381fr70`.
+
+No mutation runner was executed during canonical verification.
+
+## 8. Static gate
 
 Run:
 
@@ -175,16 +213,15 @@ The gate requires:
 - trial config/start/replay/24-hour window
 - cleanup fail-closed markers
 
-## 8. Next safe order
+## 9. Next safe order
 
-1. Canonically typecheck/build this E2E branch and run the PHASE21 static gate.
-2. Keep the runner in preflight mode until isolated staging exists.
-3. With explicit cost approval, provision or recover an isolated Supabase target.
-4. Apply/rehearse the historical ledger + mining migration chain only on that isolated target.
-5. Deploy this exact E2E branch to the staging API with `SUPABASE_PROJECT_REF` and `INTERNAL_MINING_TICK_TOKEN` configured.
-6. Configure a dedicated staging user and maker/checker fixtures.
-7. Run mutation mode once against the exact attested backend SHA/ref.
-8. Use the resulting mutation evidence to close staging E2E and then address the Production baseline compatibility bridge.
-9. Production migration/deployment remains separately approval-gated.
+1. Keep the runner in preflight mode until isolated staging exists.
+2. With explicit cost approval, provision or recover an isolated Supabase target.
+3. Apply/rehearse the historical ledger + mining migration chain only on that isolated target.
+4. Deploy the exact PHASE21 E2E branch to the staging API with `SUPABASE_PROJECT_REF` and `INTERNAL_MINING_TICK_TOKEN` configured.
+5. Configure a dedicated staging user and maker/checker fixtures.
+6. Run mutation mode once against the exact attested backend SHA/ref.
+7. Use the resulting mutation evidence to close staging E2E and then address the Production baseline compatibility bridge.
+8. Production migration/deployment remains separately approval-gated.
 
 **Production untouched.**
