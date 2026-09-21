@@ -1,8 +1,9 @@
 # MINE-020 — BACKEND RELEASE INTEGRATION
 
-Status: **IN PROGRESS — BACKEND CONTRACT + CANONICAL BUILD VERIFIED / DB BASELINE + STAGING E2E BLOCKED**  
+Status: **IN PROGRESS — BACKEND + CONSUMER CONTRACT VERIFIED / DB BASELINE + STAGING E2E BLOCKED**  
 Base SHA: `d6e279841aaa62b7b75f26a7b33d1768923d551b`  
-Canonical verified implementation SHA: `72bb62e59f9d472229a7160f8ac5565175d939da`  
+Canonical verified backend implementation SHA: `72bb62e59f9d472229a7160f8ac5565175d939da`  
+Canonical verified consumer implementation SHA: `5163be4946a8c495b974e2cf845602f539eb9b17`  
 Branch: `phase/mine-release-integration-20260921`  
 Safety: **Production untouched.**
 
@@ -144,12 +145,13 @@ This blocker is stronger than “mining migration not yet applied”: the curren
 
 ## 6. Other open release blockers
 
-- current E2E must be rebuilt from the integrated backend line; historical E2E tip is verifier residue
+- current mutation E2E must be rebuilt from the integrated backend line; historical E2E tip is only a `PHASE07_GATE_VERIFIER` HTTP stub
 - isolated staging Supabase must be provisioned/recovered and identity-checked as non-Production
-- user web still requires a fresh audit/wiring pass for the newly available trial endpoints
 - Production migration remains approval-gated after compatibility rehearsal
 
 ## 7. Canonical verification evidence
+
+### Backend
 
 Canonical verified implementation SHA:
 
@@ -175,54 +177,82 @@ Observed PASS markers:
 
 The first wrapper attempt failed before target verification because Render's checkout did not expose an `origin` remote. The wrapper was corrected to use the explicit repository URL. A subsequent gate attempt identified only an assertion case-sensitivity defect (`Threshold` versus `threshold` in a migration comment); the gate itself was normalized without changing product behavior. The exact corrected implementation SHA above then passed the full static integration + TypeScript build gate.
 
-After verification, the historical verifier branch was force-restored to:
+### Consumer trial client
+
+Canonical verified consumer SHA:
+
+`5163be4946a8c495b974e2cf845602f539eb9b17`
+
+Consumer branch:
+
+`phase/mine-trial-integration-20260922`
+
+Observed PASS markers:
+
+- `PHASE20_CONSUMER_VERIFY_HEAD=5163be4946a8c495b974e2cf845602f539eb9b17`
+- `PHASE20_TRIAL_CLIENT_ASSERTIONS_PASS`
+- `PHASE20_CONSUMER_ASSERTIONS_PASS`
+- `PHASE20_CONSUMER_TYPEGEN_PASS`
+- `PHASE20_CONSUMER_TYPECHECK_PASS`
+- `PHASE20_CONSUMER_LINT_PASS`
+- `PHASE20_CONSUMER_TEST_PASS`
+- `PHASE20_CONSUMER_BUILD_PASS`
+- `PHASE20_CONSUMER_VERIFY_OK`
+
+Quality:
+
+- ESLint: 0 errors; 15 pre-existing warnings
+- tests: 21 pass / 0 fail
+- Next build: 36 / 36 static pages
+
+After each temporary verification, the historical verifier branch was force-restored to:
 
 `a79826aaeb7f97b70fae881f1d423ce0f70a49fe`
 
-Recovery evidence:
+Final recovery evidence:
 
 - `VERIFY_HEAD=a79826aaeb7f97b70fae881f1d423ce0f70a49fe`
 - `PHASE04_API_ASSERTIONS_PASS`
 - `PHASE04_CONTRACT_VERIFY_OK`
 - recovery build successful
+- recovery service live
 
 No temporary verifier wrapper remains in the historical branch.
 
-## 8. Verification gate
+## 8. Verification gates
 
-Static integration gate:
+Backend static integration gate:
 
 ```bash
 node quality/mining/phase20_release_integration_assertions.mjs
 ```
 
-It requires:
+Consumer trial gate:
 
-- exact high-value contract routes
-- high-value controller/RBAC wiring
-- fail-closed configurable high-value threshold
-- pending-before-approval behavior
-- stable ledger start idempotency key
-- principal-to-locked approval posting
-- exact user/admin trial contract routes
-- trial controller/module wiring
-- trial admin deny-by-default RBAC classification
-- restored historical trial ledger migration
-- `trial_principal` / `trial_locked` isolation
-- historical welcome grant authority and idempotency vocabulary
-- 24-hour trial window
-- canonical Rust mining profit engine use
-- trial lock/unlock ledger paths
-- repeated-trial schema compatibility
+```bash
+node quality/mining/phase20_trial_client_assertions.mjs
+```
+
+Together they lock:
+
+- high-value review contract and finance authority
+- fail-closed high-value threshold
+- trial user/admin backend routes
+- restored historical trial ledger authority
+- trial bucket isolation and repeated-session compatibility
+- consumer trial GET/POST paths
+- client Idempotency-Key behavior
+- authenticated trial refresh and logout clearing
+- shared mining mutation lock
+- server-authoritative trial state
 - Production baseline blocker documentation
 
 ## 9. Next safe order
 
-1. Audit/wire the consumer trial calls against the now-verified backend routes.
-2. Rebuild current mutation E2E from the verified integration SHA.
-3. Provision/recover isolated staging DB and rehearse the complete historical + mining migration chain there.
-4. Design the Production baseline compatibility bridge only after staging evidence exists.
-5. Freeze RC only after DB compatibility, consumer trial, staging, and E2E blockers close.
-6. Production migration/deployment requires separate explicit approval.
+1. Rebuild real mutation E2E from the verified backend `72bb62e5…` and consumer `5163be49…` lines.
+2. Provision/recover isolated staging DB and rehearse the complete historical + mining migration chain there.
+3. Design the Production baseline compatibility bridge only after staging evidence exists.
+4. Freeze RC only after DB compatibility, staging, and E2E blockers close.
+5. Production migration/deployment requires separate explicit approval.
 
 **Production untouched.**
