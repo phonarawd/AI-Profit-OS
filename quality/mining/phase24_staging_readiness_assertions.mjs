@@ -26,7 +26,7 @@ for (const marker of [
   'PHASE21_E2E_MODE=preflight node quality/mining/phase21_staging_e2e.mjs',
   'BLOCKER-STAGING-DB-01',
   'BLOCKER-STAGING-E2E-01',
-  'No Production SQL proposal is approved',
+  'BLOCKER-PROD-MIGRATION-01',
   '**Production untouched.**',
 ]) must(doc, marker, 'MINE-024');
 
