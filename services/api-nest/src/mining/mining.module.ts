@@ -10,6 +10,11 @@ import { MiningOperationCoordinatorService } from "./mining-operation-coordinato
 import { MiningProfitEngineService } from "./mining-profit-engine.service";
 import { MiningRateActivationService } from "./mining-rate-activation.service";
 import { MiningReadService } from "./mining-read.service";
+import {
+  MiningTrialAdminController,
+  MiningTrialController,
+} from "./mining-trial.controller";
+import { MiningTrialService } from "./mining-trial.service";
 import { MiningService } from "./mining.service";
 
 @Module({
@@ -17,14 +22,17 @@ import { MiningService } from "./mining.service";
   controllers: [
     MineCatalogController,
     MiningController,
+    MiningTrialController,
     MiningInternalController,
     MiningAdminController,
+    MiningTrialAdminController,
   ],
   providers: [
     MiningService,
     MiningProfitEngineService,
     MiningReadService,
     MiningHighValueService,
+    MiningTrialService,
     MiningOperationCoordinatorService,
     MiningAdminService,
     MiningRateActivationService,
