@@ -1,6 +1,6 @@
 # MINE-020 — BACKEND RELEASE INTEGRATION
 
-Status: **IN PROGRESS — HIGH-VALUE INTEGRATED / TRIAL + DB BASELINE BLOCKED**  
+Status: **IN PROGRESS — BACKEND CONTRACT ROUTES INTEGRATED / DB BASELINE + STAGING E2E BLOCKED**  
 Base SHA: `d6e279841aaa62b7b75f26a7b33d1768923d551b`  
 Branch: `phase/mine-release-integration-20260921`  
 Safety: **Production untouched.**
@@ -44,9 +44,9 @@ RBAC:
 
 The threshold is not hardcoded in code or the review table; the request-time value is snapshotted into `mine_high_value_reviews.threshold_usdt`.
 
-## 3. Remaining contract completeness scope
+## 3. Trial contract integration
 
-Still intentionally open:
+Backend contract routes are now wired:
 
 User:
 
@@ -58,38 +58,63 @@ Admin:
 - `GET /api/v1/admin/mining/trial-config`
 - `PATCH /api/v1/admin/mining/trial-config`
 
-These routes are not being faked or marked complete before the trial ledger prerequisite is reconciled.
+The routes are implemented by dedicated `MiningTrialController` and `MiningTrialAdminController` classes and registered in `MiningModule`. Admin trial-config is deny-by-default classified as `all:read` / `all:write` because the canonical RBAC vocabulary has no narrower unambiguous trial-program capability.
 
-## 4. Historical trial ledger prerequisite
+Trial runtime rules:
 
-PHASE02 governance records that the historical staging database `mgsytcetsiecllmhcyox` already contained:
+1. Trial welcome capital uses the historical `trial_grant_welcome` grant key.
+2. The grant journal moves `SYS:OPS_POOL -> user.trial_principal` and is idempotent at `trial:trial_grant_welcome:{userId}`.
+3. Trial start moves `trial_principal -> trial_locked` through the existing ledger posting service.
+4. The trial window is 24 hours, matching the release master flow of returning the next day for completion.
+5. Profit is calculated by the canonical Rust mining profit engine over exact rate-version time segments.
+6. Trial profit is stored on `mine_trial_sessions.accrued_profit_usdt`; it is not credited into the user's real `profit` bucket.
+7. Completion unlocks only the trial principal: `trial_locked -> trial_principal`.
+8. Trial start is covered by the existing `mining_new_positions` kill switch.
+9. Admin trial config mutations require Idempotency-Key, reason, admin audit, and deny-by-default RBAC.
 
-- `trial_grants`
+## 4. BLOCKER-TRIAL-LEDGER-PREREQ-01 — RESOLVED
+
+Historical Supabase project `mgsytcetsiecllmhcyox` retained the exact original migration registry entry for:
+
+`20260909040657_trial_welcome_grant`
+
+The exact historical SQL has been restored to the repository as:
+
+`supabase/migrations/20260909040657_trial_welcome_grant.sql`
+
+Recovered authority includes:
+
 - `trial_principal`
 - `trial_locked`
+- six-bucket `provision_user_bucket_accounts()` behavior
+- `wallet_buckets.trial_principal_usdt`
+- `wallet_buckets.trial_locked_usdt`
+- `trial_program_config`
+- `trial_grants`
+- `trial_user_state`
+- `trial_settlements`
+- journal type `trial_grant`
+- welcome grant rule: no journal without a valid FX snapshot
 
-and `mine_trial_sessions` was deliberately designed to reuse those objects.
+Historical live data also confirmed the real grant flow:
 
-The repo's older base ledger migration, however, only creates:
+- source: `SYS:OPS_POOL`
+- destination: `USER:{userId}:trial_principal`
+- reference type: `trial_grant`
+- reference id: `trial_grant_welcome`
+- idempotency: `trial:trial_grant_welcome:{userId}`
 
-- principal
-- profit
-- locked
-- practice
+No `practice` balance is reused for mining trial and no independent balance system was introduced.
 
-The mining foundation migration references `trial_grants` and `wallet_buckets.trial_principal_usdt` / `trial_locked_usdt` but does not create those prerequisites itself.
+### Sequential trial compatibility
 
-### BLOCKER-TRIAL-LEDGER-PREREQ-01
+`trial_program_config.default_max_participations` and `trial_user_state.max_participations` allow values 1 through 3, while the original mining foundation declared `mine_trial_sessions.trial_grant_id` unique. That would prevent a single historical welcome grant from funding a second sequential trial session.
 
-Before implementing trial start as a real financial path, recover or reconstruct the exact migration/source-of-truth that created the historical trial ledger objects. Do not map trial mining onto `practice`, and do not invent an independent balance system.
+The additive compatibility migration:
 
-Required evidence:
+`supabase/migrations/20260922010000_mining_trial_repeatability_v1.sql`
 
-- exact DDL for `trial_grants`
-- exact ledger bucket constraint for `trial_principal` / `trial_locked`
-- exact user-bucket provisioning behavior
-- exact `wallet_buckets` projection including trial buckets
-- ledger posting vocabulary/idempotency rules for trial grant/lock/unlock
+removes only that one-grant/one-session uniqueness constraint and replaces it with a normal lookup index. The welcome grant remains one-time; the same isolated trial capital may be reused across sequential sessions subject to `trial_user_state` participation limits.
 
 ## 5. Current Production baseline mismatch
 
@@ -99,7 +124,7 @@ Current connected Production Supabase:
 - ref: `gaugwamwceqdnqdqrxqg`
 - current public tables observed include `profiles`, `wallet_accounts`, `task_runs`, `work_submissions`, etc.
 
-The mining foundation migration explicitly depends on historical-schema objects such as:
+The historical mining migration chain depends on objects such as:
 
 - `public.users`
 - `public.admin_rbac`
@@ -120,7 +145,8 @@ This blocker is stronger than “mining migration not yet applied”: the curren
 
 - current E2E must be rebuilt from the integrated backend line; historical E2E tip is verifier residue
 - isolated staging Supabase must be provisioned/recovered and identity-checked as non-Production
-- trial contract completeness remains open until ledger prerequisite recovery
+- current integration SHA still requires canonical typecheck/build/assertion verification
+- user web still requires a fresh audit/wiring pass for the newly available trial endpoints
 - Production migration remains approval-gated after compatibility rehearsal
 
 ## 7. Verification gate
@@ -131,27 +157,34 @@ Static integration gate:
 node quality/mining/phase20_release_integration_assertions.mjs
 ```
 
-It verifies:
+It now requires:
 
 - exact high-value contract routes
-- controller wiring
-- RBAC classification
-- fail-closed configurable threshold
+- high-value controller/RBAC wiring
+- fail-closed configurable high-value threshold
 - pending-before-approval behavior
 - stable ledger start idempotency key
 - principal-to-locked approval posting
-- kill-switch enforcement
-- trial routes remain explicitly open rather than silently claimed complete
-- DB/trial prerequisite blocker markers remain documented
+- exact user/admin trial contract routes
+- trial controller/module wiring
+- trial admin deny-by-default RBAC classification
+- restored historical trial ledger migration
+- `trial_principal` / `trial_locked` isolation
+- historical welcome grant authority and idempotency vocabulary
+- 24-hour trial window
+- canonical Rust mining profit engine use
+- trial lock/unlock ledger paths
+- repeated-trial schema compatibility
+- Production baseline blocker documentation
 
 ## 8. Next safe order
 
-1. Canonically verify the high-value integration exact SHA with build/typecheck/assertions.
-2. Recover historical trial ledger DDL/source or produce a reviewed compatibility bridge.
-3. Implement the remaining 4 trial/trial-config routes only against that authoritative ledger model.
-4. Rebuild current mutation E2E from the resulting integration SHA.
-5. Provision/recover isolated staging DB and rehearse the complete migration chain there.
-6. Freeze RC only after DB compatibility, trial, staging, and E2E blockers close.
+1. Canonically verify the current integration exact SHA with PHASE20 assertions + typecheck + build.
+2. Audit/wire the consumer trial calls against the now-integrated backend routes.
+3. Rebuild current mutation E2E from the verified integration SHA.
+4. Provision/recover isolated staging DB and rehearse the complete historical + mining migration chain there.
+5. Design the Production baseline compatibility bridge only after staging evidence exists.
+6. Freeze RC only after DB compatibility, consumer trial, staging, and E2E blockers close.
 7. Production migration/deployment requires separate explicit approval.
 
 **Production untouched.**
