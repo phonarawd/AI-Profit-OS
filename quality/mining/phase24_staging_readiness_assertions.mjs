@@ -39,7 +39,12 @@ for (const marker of [
   'SET_OUT_OF_REPO',
 ]) must(envExample, marker, 'env example');
 mustNot(envExample, PROD_REF, 'env example');
-mustNot(envExample, 'PHASE21_ALLOW_MUTATION_E2E=YES', 'env example');
+if (/^PHASE21_ALLOW_MUTATION_E2E=YES\s*$/m.test(envExample)) {
+  throw new Error('env example: mutation mode must not be enabled by default');
+}
+if (/^PHASE21_ALLOW_TRIAL_RESIDUE=YES\s*$/m.test(envExample)) {
+  throw new Error('env example: trial residue must not be enabled by default');
+}
 
 const runner = read(RUNNER);
 for (const marker of [
