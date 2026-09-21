@@ -1,14 +1,16 @@
 # MINE-022 — PRODUCTION PRIVATE-SCHEMA RLS ADVISORY
 
-Status: **CRITICAL SECURITY ADVISORY / REMEDIATION NOT AUTO-APPLIED**  
+Status: **SUPERSEDED/CLARIFIED BY MINE-023 / REMEDIATION NOT AUTO-APPLIED**  
 Observed project: `PUTDUK-DATA-PRODUCTION` (`gaugwamwceqdnqdqrxqg`)  
 Observed: 2026-09-22 read-only catalog inspection  
 Scope: separate from the mining compatibility bridge  
 Safety: **Production unchanged.**
 
+> Correction: the initial Supabase `rls_disabled` advisory was followed by a direct privilege/schema/function audit. RLS is OFF on the eight tables, but current `anon` and `authenticated` roles have no direct CRUD privileges on them and no `USAGE` on schema `private`. See `MINE-023-PROD-PRIVATE-RLS-HARDENING.md` for the authoritative risk classification and hardening design. Do not describe the current state as confirmed unrestricted anon/auth table exposure.
+
 ## Finding
 
-Supabase catalog inspection currently reports **RLS OFF** on these eight `private` tables:
+Supabase catalog inspection reports **RLS OFF** on these eight `private` tables:
 
 1. `private.putduk_system_config`
 2. `private.push_subscriptions`
@@ -19,15 +21,15 @@ Supabase catalog inspection currently reports **RLS OFF** on these eight `privat
 7. `private.task_run_items`
 8. `private.task_run_answers`
 
-Supabase reports this as a critical `rls_disabled` advisory and warns that tables without RLS may be exposed to the `anon` / `authenticated` roles used by Supabase client libraries, depending on grants/schema exposure.
+The generic Supabase advisory warns that RLS-off tables may be exposed if schema/table grants permit access. Follow-up inspection established that the current Production grants do **not** permit direct `anon`/`authenticated` CRUD on these eight tables. The remaining issue is defense-in-depth: the security boundary is currently carried by schema/table grants instead of being reinforced by RLS.
 
 ## Why this is not auto-fixed
 
-**DO NOT auto-enable RLS** on these tables without first defining and testing access policies.
+**DO NOT auto-enable RLS** on these tables without first defining and testing the intended server access behavior.
 
-Running only `ALTER TABLE ... ENABLE ROW LEVEL SECURITY` can immediately deny application access that currently depends on these tables. Because some are explicitly described as service-role/server-only data, the intended end state may be deny-by-default for client roles, but that must be proven against actual runtime paths on isolated staging first.
+Running only `ALTER TABLE ... ENABLE ROW LEVEL SECURITY` can break service-role/trigger/application paths if ownership and policies are not rehearsed. Some tables are explicitly service-role/server-only data; the desired staging target is deny-by-default to client roles while preserving required server execution.
 
-No RLS or grant mutation was executed during MINE-022.
+No RLS or grant mutation was executed during MINE-022 or MINE-023 read-only auditing.
 
 ## Supabase-provided mechanical remediation SQL — NOT EXECUTED
 
@@ -42,27 +44,26 @@ ALTER TABLE "private"."task_run_items" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "private"."task_run_answers" ENABLE ROW LEVEL SECURITY;
 ```
 
-This SQL alone is **not an approved fix**. Required policies/grants must be designed first.
+This SQL alone is **not an approved fix**. Required role/function behavior must be staged first.
 
 ## Required rehearsal before Production remediation
 
 On isolated non-Production Supabase only:
 
-- inventory every API/server/client read/write path touching the eight tables;
-- inspect current grants to `anon`, `authenticated`, `service_role`, and server DB roles;
-- classify each table as service-only, admin-only, member-self, or mixed access;
-- add least-privilege RLS policies and/or revoke unnecessary role grants;
-- run consumer/admin/backend regression tests;
-- verify push subscription registration/delivery and work-run flows;
-- prove service-role/server operations remain functional;
-- prove anonymous/authenticated clients cannot read or mutate server-only rows;
+- retain no `private` schema USAGE for `anon` / `authenticated`;
+- retain no direct CRUD grants on the eight tables for `anon` / `authenticated`;
+- explicitly harden PUBLIC execute on private SECURITY DEFINER trigger functions as designed in MINE-023;
+- enable RLS and verify least-privilege behavior;
+- run push and work/task regression tests;
+- prove service-role/server trigger operations remain functional;
+- prove anonymous/authenticated clients cannot directly access server-only rows;
 - rehearse rollback;
 - request separate Production approval.
 
 ## Blocker
 
-`BLOCKER-PROD-PRIVATE-RLS-01` — **OPEN / CRITICAL / SEPARATE FROM MINING RELEASE MIGRATION**
+`BLOCKER-PROD-PRIVATE-RLS-01` — **OPEN / HARDENING REQUIRED / NO CONFIRMED DIRECT CLIENT TABLE EXPOSURE**
 
-This blocker does not authorize changing Production during MINE-022. It must be remediated through a separately reviewed security change after staging rehearsal.
+MINE-023 is the authoritative detailed classification. This blocker does not authorize changing Production.
 
 **Production unchanged.**
