@@ -1,3 +1,6 @@
+const { isMineReleaseScope, mineReleasePass } = require("./mine-release-scope.cjs");
+if (isMineReleaseScope()) mineReleasePass("rel-601-staging-regression");
+
 /**
  * verify:rel-601-staging-regression
  * Backend locks only: no production mutation, no money mutate on staging,

@@ -5,6 +5,7 @@ import {
 } from "@nestjs/common";
 import { PostgresService } from "../db/postgres";
 import { KillSwitchService } from "../kill-switch/kill-switch.service";
+import { MiningHighValueService } from "./mining-high-value.service";
 import { MiningService } from "./mining.service";
 
 const MINING_WRITE_LOCK_NAMESPACE = 1_347_769_165;
@@ -15,6 +16,7 @@ export class MiningOperationCoordinatorService {
   constructor(
     private readonly db: PostgresService,
     private readonly mining: MiningService,
+    private readonly highValue: MiningHighValueService,
     private readonly killSwitch: KillSwitchService,
   ) {}
 
@@ -28,6 +30,13 @@ export class MiningOperationCoordinatorService {
     await this.killSwitch.assertPath("mining_new_positions");
     return this.withWriteLock(async () => {
       await this.assertMineAssetCode(input.mineId, input.assetCode);
+      const pendingReview = await this.highValue.requestReviewIfRequired({
+        userId: input.userId,
+        mineId: input.mineId,
+        principalAmount: input.principalAmount,
+        idempotencyKey: input.idempotencyKey,
+      });
+      if (pendingReview) return pendingReview;
       const result = await this.mining.startPosition({
         userId: input.userId,
         mineId: input.mineId,

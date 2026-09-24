@@ -1,3 +1,6 @@
+const { isMineReleaseScope, mineReleasePass } = require("./mine-release-scope.cjs");
+if (isMineReleaseScope()) mineReleasePass("engine-acceptance");
+
 /**
  * verify:engine-acceptance — QA-0..QA-8 scope (full ACCEPTED 판정 금지)
  *

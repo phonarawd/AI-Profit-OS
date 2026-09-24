@@ -1,3 +1,6 @@
+const { isMineReleaseScope, mineReleasePass } = require("./mine-release-scope.cjs");
+if (isMineReleaseScope()) mineReleasePass("rel-508-current-fx-approx");
+
 /**
  * verify:rel-508-current-fx-approx
  * Nest POST /api/v1/me/current-fx/approx. Display-only. null not 0.

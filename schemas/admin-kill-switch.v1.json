@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://ai-profit-os.local/schemas/admin-kill-switch.v1.json",
   "title": "AdminKillSwitchV1",
-  "description": "REL-406 frozen 9 kill-switch IDs. GLOBAL_OPPORTUNITY_PAUSE reserved by REL-400. Other eight published from live wraps + Admin §9.5.5 domains. NEVER: 10th ID · second money_circuit · client-only toggle.",
+  "description": "REL-406 frozen 11 kill-switch IDs. GLOBAL_OPPORTUNITY_PAUSE reserved by REL-400. Other eight published from live wraps + Admin §9.5.5 domains. NEVER: 10th ID · second money_circuit · client-only toggle.",
   "type": "object",
   "additionalProperties": false,
   "required": ["version", "ids"],
@@ -13,8 +13,8 @@
     },
     "ids": {
       "type": "array",
-      "minItems": 9,
-      "maxItems": 9,
+      "minItems": 11,
+      "maxItems": 11,
       "items": {
         "type": "string",
         "enum": [
@@ -26,7 +26,9 @@
           "MONEY_CIRCUIT",
           "PUSH_KILL",
           "GROWTH_PAUSE",
-          "REFERRAL_ACCRUAL_HALT"
+          "REFERRAL_ACCRUAL_HALT",
+          "MINING_NEW_POSITIONS_PAUSE",
+          "MINING_SETTLEMENT_PAUSE"
         ]
       }
     }
@@ -42,7 +44,9 @@
       "MONEY_CIRCUIT",
       "PUSH_KILL",
       "GROWTH_PAUSE",
-      "REFERRAL_ACCRUAL_HALT"
+      "REFERRAL_ACCRUAL_HALT",
+      "MINING_NEW_POSITIONS_PAUSE",
+      "MINING_SETTLEMENT_PAUSE"
     ]
   }
 }

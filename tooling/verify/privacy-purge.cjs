@@ -197,6 +197,12 @@ const RETAIN_DOCUMENTED = new Set([
   "user_membership_audit",
   "user_opportunity_override_audit",
   "user_match_policy_override_audit",
+  // Mine Position is financial/operational history. Retain for Ledger reconciliation,
+  // settlement traceability, and audit; account deletion must not erase the money trail.
+  "mine_positions",
+  // Trial sessions are operator-controlled mining history used for reconciliation,
+  // abuse review, and audit; they are retained under the current Mine contract.
+  "mine_trial_sessions",
 ]);
 const USER_FK_COLUMN_NAMES = new Set([
   "user_id",

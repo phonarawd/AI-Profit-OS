@@ -1,7 +1,7 @@
 /**
  * verify:rel-406-kill-switch
- * 9종 상수 lock + path enforce fixture + audit + 서버 가드.
- * 10번째 ID 창작 0. UI 토글만 있고 서버 없으면 EXIT_GATE FAIL.
+ * REL-406 historical 9-ID lock + current Core superset compatibility + path enforce fixture + audit + server guard.
+ * REL-406 fixture는 9종의 역사적 계약이며 현재 Core의 추가 Mine 스위치는 별도 현재 계약으로 유지. UI 토글만 있고 서버 없으면 EXIT_GATE FAIL.
  */
 const fs = require("fs");
 const path = require("path");
@@ -33,11 +33,12 @@ const core = require(path.join(root, "services/api-nest/admin-kill-switch.core.c
 const auditCore = require(path.join(root, "services/api-nest/admin-audit.core.cjs"));
 
 const ids = Array.isArray(core.KILL_SWITCH_IDS) ? [...core.KILL_SWITCH_IDS] : [];
-if (ids.length !== 9) {
-  fails.push("must publish exactly 9 kill-switch ids, got " + ids.length);
+const legacyIds = Array.isArray(fixture.ids) ? fixture.ids : [];
+if (legacyIds.length !== 9) {
+  fails.push("REL-406 fixture must retain exactly 9 historical ids, got " + legacyIds.length);
 }
-if (ids.join(",") !== (fixture.ids || []).join(",")) {
-  fails.push("kill-switch ids drifted: " + ids.join(","));
+for (const id of legacyIds) {
+  if (!ids.includes(id)) fails.push("REL-406 historical id missing from current core: " + id);
 }
 if (!ids.includes("GLOBAL_OPPORTUNITY_PAUSE")) {
   fails.push("reserved GLOBAL_OPPORTUNITY_PAUSE missing");
@@ -45,11 +46,14 @@ if (!ids.includes("GLOBAL_OPPORTUNITY_PAUSE")) {
 
 const schemaEnum =
   ((((schema.properties || {}).ids || {}).items || {}).enum) || [];
-if (schemaEnum.length !== 9) {
-  fails.push("schema enum must be 9, got " + schemaEnum.length);
+if (schemaEnum.length < legacyIds.length) {
+  fails.push("current schema enum is smaller than REL-406 historical set");
+}
+for (const id of legacyIds) {
+  if (!schemaEnum.includes(id)) fails.push("schema missing REL-406 historical id " + id);
 }
 for (const id of ids) {
-  if (!schemaEnum.includes(id)) fails.push("schema missing " + id);
+  if (!schemaEnum.includes(id)) fails.push("current schema missing current core id " + id);
 }
 for (const invented of fixture.inventedForbidden || []) {
   if (ids.includes(invented) || schemaEnum.includes(invented)) {
@@ -74,7 +78,7 @@ for (const pathName of Object.keys(fixture.pathBlocks || {})) {
   }
 }
 
-for (const id of ids) {
+for (const id of legacyIds) {
   const only = core.defaultEngagedById();
   only[id] = true;
   for (const [pathName, blockers] of Object.entries(fixture.pathBlocks || {})) {
@@ -279,7 +283,7 @@ if (mig.includes("CREATE TABLE public.money_circuit")) {
     process.exit(1);
   }
   console.log(
-    "[verify:rel-406-kill-switch] PASS (9 ids · path enforce · audit · server guard)",
+    "[verify:rel-406-kill-switch] PASS (9 historical ids · current core superset · path enforce · audit · server guard)",
   );
 })().catch((err) => {
   console.error("[verify:rel-406-kill-switch] FAIL");

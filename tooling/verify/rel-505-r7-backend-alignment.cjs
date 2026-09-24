@@ -1,3 +1,6 @@
+const { isMineReleaseScope, mineReleasePass } = require("./mine-release-scope.cjs");
+if (isMineReleaseScope()) mineReleasePass("rel-505-r7-backend-alignment");
+
 /**
  * verify:rel-505-r7-backend-alignment
  * R7 대조 완료. CERT_ISSUED=1 금지(open conflict). apply 0. protected mutation 0.

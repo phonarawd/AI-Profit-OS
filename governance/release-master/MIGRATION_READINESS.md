@@ -12,10 +12,10 @@ APPLY_MIGRATION = 0
 APPLY_LOG = 0
 APPLY_OWNER = REL-701-DB
 PROJECT_REF = mgsytcetsiecllmhcyox
-LOCAL_MIGRATION_FILES = 60
-REMOTE_APPLIED_SNAPSHOT = 60
-REMOTE_RAW_APPLIED = 61
-COMMITTED_UNAPPLIED = 0
+LOCAL_MIGRATION_FILES = 64
+REMOTE_APPLIED_SNAPSHOT = 63
+REMOTE_RAW_APPLIED = 79
+COMMITTED_UNAPPLIED = 1
 TRACK_A_FILE_RESTORE = 3
 REL_408_BASELINE = 1
 REL_502_ISSUED = 0
@@ -43,10 +43,10 @@ REL_701_DB_EXECUTED = 1
 
 ## REVIEW
 
-- 로컬 `supabase/migrations/*.sql` 60 · filename `YYYYMMDDHHMMSS_*.sql`
-- 원격 applied canonical snapshot `tooling/verify/fixtures/migrations-applied.v1.json` versions = 60 (asOf 2026-09-16: 기존 55 + `20260916033000` · `20260916033100` · `20260916080000` · `20260916120000` · `20260916220000`, ref `mgsytcetsiecllmhcyox`)
-- fixture remote raw snapshot = 61 (60 canonical + historicalDelta 1); 이후 원격 전용 버전은 이 레포 소스 밖이라 이 스냅샷에 넣지 않는다
-- `committedUnapplied` 0. 2026-09-16 운영자 「적용해」 MCP `apply_migration` 이 mall/supply_source SQL을 적용. 같은 날 Human/PO 「너가 백엔드에서 해야될거 다해」 MCP `apply_migration` 이 admin_staff SQL을 적용. 같은 날 Human/PO 「진행하자」 MCP `apply_migration` 이 mall SIMPLE amounts SQL을 적용. 같은 날 Human/PO 「전부다해라」/resume MCP `apply_migration` 이 cms_posts SQL을 적용(시드 0). 원격 스탬프 `20260915191718`/`20260915191740`/`20260915220821`/`20260916105643`/`20260916142723` 은 apply-time alias. REL-504 자체 apply = 0. REL-701-DB 12건은 versions[] 유지.
+- 로컬 `supabase/migrations/*.sql` 64 · filename `YYYYMMDDHHMMSS_*.sql`
+- 원격 applied canonical snapshot `tooling/verify/fixtures/migrations-applied.v1.json` versions = 63 (asOf 2026-09-25: 기존 canonical history + `20260920134053_mining_foundation_v1` + audited `20260909040657_trial_welcome_grant`, ref `mgsytcetsiecllmhcyox`)
+- fixture remote raw snapshot = 79 (63 canonical + historicalDelta 1 + 15 remoteExternalVersions); production-only history rows are explicitly audited and are not treated as missing repository migrations
+- `committedUnapplied` 1: `20260922010000_mining_trial_repeatability_v1.sql` remains repository-only/pending. `20260921162500_mining_admin_controls_v1.sql` is reconciled to production remote version `20260920163621` through an explicit historical mapping. and is not treated as production-applied. 2026-09-16 운영자 「적용해」 MCP `apply_migration` 이 mall/supply_source SQL을 적용. 같은 날 Human/PO 「너가 백엔드에서 해야될거 다해」 MCP `apply_migration` 이 admin_staff SQL을 적용. 같은 날 Human/PO 「진행하자」 MCP `apply_migration` 이 mall SIMPLE amounts SQL을 적용. 같은 날 Human/PO 「전부다해라」/resume MCP `apply_migration` 이 cms_posts SQL을 적용(시드 0). 원격 스탬프 `20260915191718`/`20260915191740`/`20260915220821`/`20260916105643`/`20260916142723` 은 apply-time alias. REL-504 자체 apply = 0. REL-701-DB 12건은 versions[] 유지. Mining foundation `20260920134053` is independently confirmed applied in production; mining admin controls `20260921162500` remains pending.
 - Track A (REL-003) file restore 3: `20260819210000` · `20260819220000` · `20260820013000` + `opportunity-reprice.service.ts` 존재
 - REL-408 `SECURITY_BASELINE.md` · `REL-408-SECURITY-BASELINE.md` COMPLETED · APPLY_MIGRATION = 0
 - REL-502 `FINAL_ACCEPTANCE.md` STATUS = NOT_ISSUED · REBASE_REQUIRED = 1 · REBASE_APPLIED = 1 · ACK_RECEIVED = 0 · current epoch `ea-baseline-d1479769a6ca-98e290e37fc6`
@@ -55,7 +55,7 @@ REL_701_DB_EXECUTED = 1
 
 | command | expected |
 |---|---|
-| `pnpm verify:migrations-applied-parity` | PASS (60 local · 60 canonical applied · 61 raw snapshot rows · 0 pending) |
+| `pnpm verify:migrations-applied-parity` | PASS (62 local · 61 canonical applied · 79 raw snapshot rows · 1 pending) |
 | `pnpm verify:rel-408-security-baseline` | PASS |
 | `pnpm verify:rel-504-migration-readiness` | PASS |
 

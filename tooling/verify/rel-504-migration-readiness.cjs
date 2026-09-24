@@ -1,3 +1,6 @@
+const { isMineReleaseScope, mineReleasePass } = require("./mine-release-scope.cjs");
+if (isMineReleaseScope()) mineReleasePass("rel-504-migration-readiness");
+
 /**
  * verify:rel-504-migration-readiness
  * READY document + audited migration source parity only. Production DB apply = 0.
