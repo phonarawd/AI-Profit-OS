@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
         with:
           version: 10.14.0
@@ -76,7 +76,7 @@ jobs:
     timeout-minutes: 20
     if: ${{ (github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa1' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'full' || inputs.qa_phase == 'qa0') && (github.head_ref != 'release/mine-os-control-center-20260925' && github.ref != 'refs/heads/release/mine-os-control-center-20260925') }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
         with:
           version: 10.14.0
@@ -117,7 +117,7 @@ jobs:
     needs: [qa1-deterministic]
     if: ${{ (github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'full') && (github.head_ref != 'release/mine-os-control-center-20260925' && github.ref != 'refs/heads/release/mine-os-control-center-20260925') }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
         with:
           version: 10.14.0
@@ -163,7 +163,7 @@ jobs:
       matrix:
         suite: [QA3, QA4, QA5, QA6, QA8]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
         with:
           version: 10.14.0
@@ -299,7 +299,7 @@ jobs:
       AIPO_QA_HOSTNAME: localhost
       AIPO_QA_SYNTHETIC_NS: qa-synth-ci
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
         with:
           version: 10.14.0
@@ -392,7 +392,7 @@ jobs:
       AIPO_QA_HARNESS_OUT: /tmp/aipo-harness/qa5-fault
       AIPO_QA5_EXECUTE_FAULTS: "1"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
         with:
           version: 10.14.0
@@ -460,7 +460,7 @@ jobs:
       AIPO_QA_MEASUREMENT_ONLY: "1"
       AIPO_QA_PERF_BUDGET_STATUS: UNSPECIFIED_PERF_BUDGET
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
         with:
           version: 10.14.0
@@ -532,7 +532,7 @@ jobs:
       AIPO_QA_SYNTHETIC_NS: qa-synth-ci
       AIPO_QA_HARNESS_OUT: /tmp/aipo-harness/qa8-adversarial
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
         with:
           version: 10.14.0
@@ -574,7 +574,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
         with:
           version: 10.14.0
