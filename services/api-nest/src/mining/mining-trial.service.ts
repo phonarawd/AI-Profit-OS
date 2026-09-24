@@ -538,25 +538,43 @@ export class MiningTrialService {
     if (new Date(session.expires_at).getTime() > Date.now()) return;
 
     const profit = await this.calculateTrialProfit(session);
+    const lines = [
+      {
+        account: { userId: session.user_id, bucket: "trial_locked" as const },
+        direction: "debit" as const,
+        amountUsdt: session.principal_usdt,
+      },
+      {
+        account: { userId: session.user_id, bucket: "trial_principal" as const },
+        direction: "credit" as const,
+        amountUsdt: session.principal_usdt,
+      },
+    ];
+    const journalType = cmpAmount(profit, "0") > 0 ? "mine_profit_settlement" as const : "mine_position_unlock" as const;
+    if (cmpAmount(profit, "0") > 0) {
+      lines.push(
+        {
+          account: { systemCode: SYSTEM_ACCOUNT_CODES.MINING_POOL },
+          direction: "debit",
+          amountUsdt: profit,
+        },
+        {
+          account: { userId: session.user_id, bucket: "profit" as const },
+          direction: "credit",
+          amountUsdt: profit,
+        },
+      );
+    }
     const journal = await this.ledger.postJournal({
       idempotencyKey: `mine:trial:unlock:${session.id}`,
-      journalType: "mine_position_unlock",
+      journalType,
       referenceType: "mine_trial_session",
       referenceId: session.id,
-      memo: "mining trial principal unlock",
+      memo: cmpAmount(profit, "0") > 0
+        ? "mining trial principal unlock and profit settlement"
+        : "mining trial principal unlock",
       createdBy: session.user_id,
-      lines: [
-        {
-          account: { userId: session.user_id, bucket: "trial_locked" },
-          direction: "debit",
-          amountUsdt: session.principal_usdt,
-        },
-        {
-          account: { userId: session.user_id, bucket: "trial_principal" },
-          direction: "credit",
-          amountUsdt: session.principal_usdt,
-        },
-      ],
+      lines,
     });
 
     await this.db.withTransaction(async (client) => {
