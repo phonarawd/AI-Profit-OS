@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "rootDomain": "hiptk.app",
+  "rootDomain": "putduk.com",
   "cloudflare": {
     "accountId": "190a1476a068cfe96dfe1029877587ef",
     "zoneId": "a8f07448b300cf7f0215a3bbb9cf705e",
@@ -8,18 +8,18 @@
     "workersDevSubdomain": "ebay-adapter"
   },
   "env": {
-    "ROOT_DOMAIN": "hiptk.app",
-    "APP_HOST": "app.hiptk.app",
-    "OPS_HOST": "ops.hiptk.app",
-    "API_HOST": "api.hiptk.app",
-    "GO_HOST": "go.hiptk.app"
+    "ROOT_DOMAIN": "putduk.com",
+    "APP_HOST": "app.putduk.com",
+    "OPS_HOST": "ops.putduk.com",
+    "API_HOST": "api.putduk.com",
+    "GO_HOST": "go.putduk.com"
   },
   "bridgeWorkers": {
     "api-stub": {
       "worker": "hiptk-api-stub",
       "path": "workers/api-stub",
       "hostnames": [
-        "api.hiptk.app"
+        "api.putduk.com"
       ],
       "target": "https://ai-profit-os.onrender.com",
       "note": "Phase0 Nest on Render · workers/_shared/api-origin.ts SSOT · cloudflared 로컬 터널 폐기"
@@ -30,8 +30,8 @@
     "deploy": "pnpm cf:domain:bridge"
   },
   "email": {
-    "support": "support@hiptk.app",
-    "fromDefault": "noreply@hiptk.app",
+    "support": "support@putduk.com",
+    "fromDefault": "noreply@putduk.com",
     "provider": "resend",
     "note": "Resend dashboard 도메인 검증 · RESEND_FROM_EMAIL + RESEND_API_KEY in .env"
   },
@@ -53,11 +53,11 @@
     ".open-next/cloudflare as deploy root"
   ],
   "productionHosts": [
-    "app.hiptk.app",
-    "ops.hiptk.app",
-    "api.hiptk.app",
-    "hiptk.app",
-    "go.hiptk.app",
+    "app.putduk.com",
+    "ops.putduk.com",
+    "api.putduk.com",
+    "putduk.com",
+    "go.putduk.com",
     "ai-profit-os.onrender.com"
   ],
   "customerWebHandoff": {
@@ -66,12 +66,12 @@
     "restore": "git checkout 97b07908 -- infra/web infra/ops workers/web-proxy workers/ops-proxy workers/_shared/opennext-origin.ts tooling/deploy/cf-pages-web.cjs tooling/deploy/cf-pages-ops.cjs"
   },
   "domainRoles": {
-    "landingOnly": ["putduk.com"],
-    "userWeb": ["hiptk.app", "app.hiptk.app"],
+    "landingOnly": [],
+    "userWeb": ["putduk.com", "www.putduk.com"],
     "userWebOwner": "putduk-web",
-    "opsHost": "ops.hiptk.app",
-    "thisRepoHosts": ["api.hiptk.app"],
+    "opsHost": "ops.putduk.com",
+    "thisRepoHosts": ["api.putduk.com"],
     "thisRepoWorkers": ["hiptk-api-stub", "push-dispatcher"],
-    "note": "putduk.com is landing-only. Never treat as customer-app origin, CORS allowlist, cookie domain, or WebAuthn RP. User web origin is hiptk.app and app.hiptk.app (putduk-web). This repo deploys API stub / push-dispatcher / R2 / backend Workers only — no OpenNext, pages, or landing."
+    "note": "putduk.com is landing-only. Never treat as customer-app origin, CORS allowlist, cookie domain, or WebAuthn RP. User web origin is putduk.com and app.putduk.com (putduk-web). This repo deploys API stub / push-dispatcher / R2 / backend Workers only — no OpenNext, pages, or landing."
   }
 }
