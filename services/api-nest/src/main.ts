@@ -27,15 +27,9 @@ async function bootstrap() {
       origins.add(`https://${host}`);
     }
   }
-  // Founder ACK 2026-09-13: apex user-web. Landing putduk.com never allowed.
-  origins.add("https://hiptk.app");
-  origins.add("https://www.hiptk.app");
-  origins.add("https://app.hiptk.app");
-  for (const o of [...origins]) {
-    if (/(^|[/.])putduk\.com$/i.test(o.replace(/^https?:\/\//, ""))) {
-      origins.delete(o);
-    }
-  }
+  // Production customer web is the putduk.com apex; ops is a separate subdomain.
+  origins.add("https://putduk.com");
+  origins.add("https://www.putduk.com");
   app.enableCors({
     origin: [...origins],
     credentials: true,
