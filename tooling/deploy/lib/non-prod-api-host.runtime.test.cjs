@@ -13,19 +13,19 @@ const root = path.resolve(__dirname, "../../..");
 const forbidden = loadForbiddenHosts(root);
 
 test("manifest denies production API hosts", () => {
-  assert.equal(forbidden.has("api.hiptk.app"), true);
+  assert.equal(forbidden.has("api.putduk.com"), true);
   assert.equal(forbidden.has("ai-profit-os.onrender.com"), true);
-  assert.equal(forbidden.has("app.hiptk.app"), true);
+  assert.equal(forbidden.has("putduk.com"), true);
 });
 
 test("missing STAGING_API_HOST fails closed", () => {
-  const result = resolveNonProdApiHost({ API_HOST: "https://api.hiptk.app" }, forbidden);
+  const result = resolveNonProdApiHost({ API_HOST: "https://api.putduk.com" }, forbidden);
   assert.equal(result.ok, false);
   assert.equal(result.reason, "missing_staging_api_host");
 });
 
 test("production hostname is rejected even as STAGING_API_HOST", () => {
-  for (const host of ["api.hiptk.app", "https://api.hiptk.app", "ai-profit-os.onrender.com"]) {
+  for (const host of ["api.putduk.com", "https://api.putduk.com", "ai-profit-os.onrender.com"]) {
     const result = resolveNonProdApiHost({ STAGING_API_HOST: host }, forbidden);
     assert.equal(result.ok, false);
     assert.equal(result.reason, "production_host");
@@ -57,7 +57,7 @@ test("production target skips isolation", () => {
 });
 
 test("preview target does not inherit production API_HOST", () => {
-  const env = { API_HOST: "https://api.hiptk.app" };
+  const env = { API_HOST: "https://api.putduk.com" };
   let exited = false;
   const originalExit = process.exit;
   process.exit = () => {
