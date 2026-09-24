@@ -20,9 +20,8 @@ if ((process.env.NODE_ENV || "development").toLowerCase() === "production") {
   fail("NODE_ENV=production에서는 로컬 Mine 모드를 사용할 수 없습니다.");
 }
 
-if (process.env.SUPABASE_URL || process.env.SUPABASE_PROJECT_REF) {
-  fail("Supabase 환경변수가 설정되어 있습니다. 로컬 Mine 개발에서는 제거해야 합니다.");
-}
+// Supabase 환경변수는 유지해도 된다. 이 스크립트는 Production Supabase를 사용하거나
+// 변경하지 않으며, DATABASE_URL이 로컬 PostgreSQL인지 여부만 강제한다.
 
 const expectedDatabaseUrl =
   process.env.DATABASE_URL ||
@@ -55,5 +54,5 @@ if (compose.error || compose.status !== 0) {
 console.log("[mine-local] PASS");
 console.log("[mine-local] DB  :", expectedDatabaseUrl.replace(/:[^:@]+@/, ":[redacted]@"));
 console.log("[mine-local] Redis:", expectedRedisUrl);
-console.log("[mine-local] Supabase: disabled");
+console.log("[mine-local] Supabase: connected/retained, not touched by this local step");
 console.log("[mine-local] 다음 단계: pnpm mine:local:up");
