@@ -8,29 +8,69 @@
     "MONEY_CIRCUIT",
     "PUSH_KILL",
     "GROWTH_PAUSE",
-    "REFERRAL_ACCRUAL_HALT"
+    "REFERRAL_ACCRUAL_HALT",
+    "MINING_NEW_POSITIONS_PAUSE",
+    "MINING_SETTLEMENT_PAUSE"
   ],
   "aliases": {
     "money_circuit": "MONEY_CIRCUIT",
     "push_kill": "PUSH_KILL",
     "growth_enabled": "GROWTH_PAUSE",
-    "referral_accrual_halt": "REFERRAL_ACCRUAL_HALT"
+    "referral_accrual_halt": "REFERRAL_ACCRUAL_HALT",
+    "mining_new_positions_pause": "MINING_NEW_POSITIONS_PAUSE",
+    "mining_settlement_pause": "MINING_SETTLEMENT_PAUSE"
   },
   "pathBlocks": {
-    "opportunity": ["GLOBAL_OPPORTUNITY_PAUSE", "GLOBAL_ALL_PAUSE"],
+    "opportunity": [
+      "GLOBAL_OPPORTUNITY_PAUSE",
+      "GLOBAL_ALL_PAUSE"
+    ],
     "matching": [
       "GLOBAL_MATCHING_PAUSE",
       "GLOBAL_OPPORTUNITY_PAUSE",
       "MONEY_CIRCUIT",
       "GLOBAL_ALL_PAUSE"
     ],
-    "withdraw": ["GLOBAL_WITHDRAW_PAUSE", "MONEY_CIRCUIT", "GLOBAL_ALL_PAUSE"],
-    "deposit": ["GLOBAL_DEPOSIT_PAUSE", "GLOBAL_ALL_PAUSE"],
-    "merge": ["MONEY_CIRCUIT", "GLOBAL_ALL_PAUSE"],
-    "push": ["PUSH_KILL", "GLOBAL_ALL_PAUSE"],
-    "growth": ["GROWTH_PAUSE", "GLOBAL_ALL_PAUSE"],
-    "referral_accrual": ["REFERRAL_ACCRUAL_HALT", "GLOBAL_ALL_PAUSE"]
+    "withdraw": [
+      "GLOBAL_WITHDRAW_PAUSE",
+      "MONEY_CIRCUIT",
+      "GLOBAL_ALL_PAUSE"
+    ],
+    "deposit": [
+      "GLOBAL_DEPOSIT_PAUSE",
+      "GLOBAL_ALL_PAUSE"
+    ],
+    "merge": [
+      "MONEY_CIRCUIT",
+      "GLOBAL_ALL_PAUSE"
+    ],
+    "push": [
+      "PUSH_KILL",
+      "GLOBAL_ALL_PAUSE"
+    ],
+    "growth": [
+      "GROWTH_PAUSE",
+      "GLOBAL_ALL_PAUSE"
+    ],
+    "referral_accrual": [
+      "REFERRAL_ACCRUAL_HALT",
+      "GLOBAL_ALL_PAUSE"
+    ],
+    "mining_new_positions": [
+      "MINING_NEW_POSITIONS_PAUSE",
+      "MONEY_CIRCUIT",
+      "GLOBAL_ALL_PAUSE"
+    ],
+    "mining_settlement": [
+      "MINING_SETTLEMENT_PAUSE",
+      "MONEY_CIRCUIT",
+      "GLOBAL_ALL_PAUSE"
+    ]
   },
-  "inventedForbidden": ["GLOBAL_SIGNUP_PAUSE", "FAKE_KILL", "role_6"],
+  "inventedForbidden": [
+    "GLOBAL_SIGNUP_PAUSE",
+    "FAKE_KILL",
+    "role_6"
+  ],
   "denyAction": "KillSwitchAdminController.put"
 }
