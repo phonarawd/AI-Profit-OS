@@ -18,58 +18,6 @@ import { requireMiningIdempotencyKey } from "./mining.service";
 
 function actor(adminId: string, req: RequestWithAdmin) {
   return { adminId, role: req.admin?.role ?? "unknown" };
-  @Get("mining/high-value-reviews")
-  listHighValueReviews(
-    @Query("mineId") mineId?: string,
-    @Query("userId") userId?: string,
-    @Query("status") status?: string,
-    @Query("limit") limit?: string,
-  ) {
-    return this.highValue.listReviews({
-      mineId,
-      userId,
-      status,
-      limit: limit ? Number(limit) : undefined,
-    });
-  }
-
-  @Get("mining/high-value-reviews/:reviewId")
-  getHighValueReview(@Param("reviewId") reviewId: string) {
-    return this.highValue.getReview(reviewId);
-  }
-
-  @Post("mining/high-value-reviews/:reviewId/approve")
-  approveHighValueReview(
-    @Param("reviewId") reviewId: string,
-    @Headers("idempotency-key") idempotencyKey: string | undefined,
-    @Body() body: Record<string, unknown>,
-    @AdminOperator() adminId: string,
-    @Req() req: RequestWithAdmin,
-  ) {
-    return this.highValue.approve({
-      actor: actor(adminId, req),
-      idempotencyKey: idem(idempotencyKey),
-      reviewId,
-      reason: body.reason,
-    });
-  }
-
-  @Post("mining/high-value-reviews/:reviewId/reject")
-  rejectHighValueReview(
-    @Param("reviewId") reviewId: string,
-    @Headers("idempotency-key") idempotencyKey: string | undefined,
-    @Body() body: Record<string, unknown>,
-    @AdminOperator() adminId: string,
-    @Req() req: RequestWithAdmin,
-  ) {
-    return this.highValue.reject({
-      actor: actor(adminId, req),
-      idempotencyKey: idem(idempotencyKey),
-      reviewId,
-      reason: body.reason,
-    });
-  }
-
 }
 
 function idem(raw: string | undefined): string {
@@ -313,6 +261,58 @@ export class MiningAdminController {
       actor: actor(adminId, req),
       idempotencyKey: idem(idempotencyKey),
       settlementId,
+      reason: body.reason,
+    });
+  }
+
+  @Get("mining/high-value-reviews")
+  listHighValueReviews(
+    @Query("mineId") mineId?: string,
+    @Query("userId") userId?: string,
+    @Query("status") status?: string,
+    @Query("limit") limit?: string,
+  ) {
+    return this.highValue.listReviews({
+      mineId,
+      userId,
+      status,
+      limit: limit ? Number(limit) : undefined,
+    });
+  }
+
+  @Get("mining/high-value-reviews/:reviewId")
+  getHighValueReview(@Param("reviewId") reviewId: string) {
+    return this.highValue.getReview(reviewId);
+  }
+
+  @Post("mining/high-value-reviews/:reviewId/approve")
+  approveHighValueReview(
+    @Param("reviewId") reviewId: string,
+    @Headers("idempotency-key") idempotencyKey: string | undefined,
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() adminId: string,
+    @Req() req: RequestWithAdmin,
+  ) {
+    return this.highValue.approve({
+      actor: actor(adminId, req),
+      idempotencyKey: idem(idempotencyKey),
+      reviewId,
+      reason: body.reason,
+    });
+  }
+
+  @Post("mining/high-value-reviews/:reviewId/reject")
+  rejectHighValueReview(
+    @Param("reviewId") reviewId: string,
+    @Headers("idempotency-key") idempotencyKey: string | undefined,
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() adminId: string,
+    @Req() req: RequestWithAdmin,
+  ) {
+    return this.highValue.reject({
+      actor: actor(adminId, req),
+      idempotencyKey: idem(idempotencyKey),
+      reviewId,
       reason: body.reason,
     });
   }
