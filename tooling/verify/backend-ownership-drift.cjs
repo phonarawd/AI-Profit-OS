@@ -22,6 +22,7 @@ if (r.status !== 0) {
   const allowedMineIntegrationDrift = new Set([
     ".github/workflows/deploy-api-edge.yml",
     "services/api-nest/src/mining/mining-high-value.service.ts",
+    "services/api-nest/src/mining/mining-high-value.admin.controller.ts",
     "services/api-nest/src/mining/mining-trial.admin.controller.ts",
     "services/api-nest/src/mining/mining-trial.controller.ts",
     "services/api-nest/src/mining/mining-trial.service.ts",

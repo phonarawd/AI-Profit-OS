@@ -13,7 +13,6 @@ import {
 import { AdminOperator } from "../common/admin-operator.decorator";
 import { AdminGuard, type RequestWithAdmin } from "../common/admin.guard";
 import { MiningAdminService } from "./mining-admin.service";
-import { MiningHighValueService } from "./mining-high-value.service";
 import { requireMiningIdempotencyKey } from "./mining.service";
 
 function actor(adminId: string, req: RequestWithAdmin) {
@@ -29,7 +28,6 @@ function idem(raw: string | undefined): string {
 export class MiningAdminController {
   constructor(
     private readonly mining: MiningAdminService,
-    private readonly highValue: MiningHighValueService,
   ) {}
 
   @Get("mines")
@@ -265,55 +263,4 @@ export class MiningAdminController {
     });
   }
 
-  @Get("mining/high-value-reviews")
-  listHighValueReviews(
-    @Query("mineId") mineId?: string,
-    @Query("userId") userId?: string,
-    @Query("status") status?: string,
-    @Query("limit") limit?: string,
-  ) {
-    return this.highValue.listReviews({
-      mineId,
-      userId,
-      status,
-      limit: limit ? Number(limit) : undefined,
-    });
-  }
-
-  @Get("mining/high-value-reviews/:reviewId")
-  getHighValueReview(@Param("reviewId") reviewId: string) {
-    return this.highValue.getReview(reviewId);
-  }
-
-  @Post("mining/high-value-reviews/:reviewId/approve")
-  approveHighValueReview(
-    @Param("reviewId") reviewId: string,
-    @Headers("idempotency-key") idempotencyKey: string | undefined,
-    @Body() body: Record<string, unknown>,
-    @AdminOperator() adminId: string,
-    @Req() req: RequestWithAdmin,
-  ) {
-    return this.highValue.approve({
-      actor: actor(adminId, req),
-      idempotencyKey: idem(idempotencyKey),
-      reviewId,
-      reason: body.reason,
-    });
-  }
-
-  @Post("mining/high-value-reviews/:reviewId/reject")
-  rejectHighValueReview(
-    @Param("reviewId") reviewId: string,
-    @Headers("idempotency-key") idempotencyKey: string | undefined,
-    @Body() body: Record<string, unknown>,
-    @AdminOperator() adminId: string,
-    @Req() req: RequestWithAdmin,
-  ) {
-    return this.highValue.reject({
-      actor: actor(adminId, req),
-      idempotencyKey: idem(idempotencyKey),
-      reviewId,
-      reason: body.reason,
-    });
-  }
 }
