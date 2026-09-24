@@ -19,14 +19,14 @@
 - PostgreSQL 17: `127.0.0.1:5432`
 - Redis 7: `127.0.0.1:6379`
 - Docker compose: `docker-compose.dev.yml`
-- Supabase Cloud: 사용하지 않음
+- Supabase Cloud: 기존 Production SSOT로 유지하되 이 작업 단계에서는 변경하지 않음
 
 기존 백엔드는 이미 PostgreSQL `DATABASE_URL`을 직접 사용하는 구조이며, Supabase Auth를 사용하지 않는다.
 
 ## 현재 단계의 원칙
 
-1. Production Supabase 변경 금지.
-2. 로컬 개발 시 `SUPABASE_URL`, `SUPABASE_PROJECT_REF`를 사용하지 않는다.
+1. Production Supabase는 SSOT로 보존하며, 현재 단계에서는 변경 금지.
+2. 로컬 개발은 `DATABASE_URL`을 로컬 PostgreSQL로 지정할 수 있으며, 기존 `SUPABASE_URL`, `SUPABASE_PROJECT_REF` 연결 정보는 삭제하지 않는다.
 3. 새로운 Supabase 직접 호출 코드를 추가하지 않는다.
 4. Mine UI/UX와 운영자 Control 흐름은 로컬 환경에서 먼저 완성한다.
 5. 실제 Ledger/Wallet 영속성 검증은 별도의 격리 DB 단계에서 진행한다.
