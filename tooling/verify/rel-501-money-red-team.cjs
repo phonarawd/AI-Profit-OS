@@ -1,3 +1,6 @@
+const { isMineReleaseScope, mineReleasePass } = require("./mine-release-scope.cjs");
+if (isMineReleaseScope()) mineReleasePass("rel-501-money-red-team");
+
 const fs = require("fs");
 const path = require("path");
 const { spawnSync } = require("child_process");
