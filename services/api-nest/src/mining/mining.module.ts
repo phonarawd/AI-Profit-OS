@@ -3,6 +3,7 @@ import { KillSwitchModule } from "../kill-switch/kill-switch.module";
 import { LedgerModule } from "../ledger/ledger.module";
 import { MiningAdminController } from "./mining.admin.controller";
 import { MiningAdminService } from "./mining-admin.service";
+import { MiningHighValueAdminController } from "./mining-high-value.admin.controller";
 import { MiningHighValueService } from "./mining-high-value.service";
 import { MineCatalogController, MiningController } from "./mining.controller";
 import { MiningInternalController } from "./mining.internal.controller";
@@ -23,6 +24,7 @@ import { MiningService } from "./mining.service";
     MiningTrialController,
     MiningInternalController,
     MiningAdminController,
+    MiningHighValueAdminController,
     MiningTrialAdminController,
   ],
   providers: [
