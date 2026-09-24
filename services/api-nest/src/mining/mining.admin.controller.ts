@@ -26,7 +26,9 @@ function idem(raw: string | undefined): string {
 @UseGuards(AdminGuard)
 @Controller("admin")
 export class MiningAdminController {
-  constructor(private readonly mining: MiningAdminService) {}
+  constructor(
+    private readonly mining: MiningAdminService,
+  ) {}
 
   @Get("mines")
   listMines(@Query("limit") limit?: string) {
@@ -260,4 +262,5 @@ export class MiningAdminController {
       reason: body.reason,
     });
   }
+
 }
