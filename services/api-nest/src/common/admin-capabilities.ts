@@ -234,6 +234,8 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     listSettlements: read("ledger"),
     getSettlement: read("ledger"),
     retrySettlement: write("balanceAdjust"),
+  },
+  MiningHighValueAdminController: {
     listHighValueReviews: read("ledger"),
     getHighValueReview: read("ledger"),
     approveHighValueReview: write("balanceAdjust"),
