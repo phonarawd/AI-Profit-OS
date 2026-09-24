@@ -550,6 +550,8 @@ export class MiningTrialService {
         amountUsdt: session.principal_usdt,
       },
     ];
+    // Trial completion is one idempotent ledger journal: unlock the trial principal,
+    // and when profit exists, debit the mining pool and credit withdrawable user profit.
     const journalType = cmpAmount(profit, "0") > 0 ? "mine_profit_settlement" as const : "mine_position_unlock" as const;
     if (cmpAmount(profit, "0") > 0) {
       lines.push(
