@@ -1,14 +1,14 @@
-# Admin Kill Switch 9 (REL-406)
+# Admin Kill Switch 11 (REL-406)
 
 STATUS: LOCKED
-LOCKED_SWITCHES = 9
+LOCKED_SWITCHES = 11
 INVENTED_SWITCHES = 0
 SERVER_ENFORCE = 1
 UI_OWNER = REL-213
 PRODUCTION_DB_APPLY = 0
 HOME_GEOMETRY_DIFF = 0
 
-9종은 코드 상수다. REL-400이 예약한 `GLOBAL_OPPORTUNITY_PAUSE` + Admin §9.5.5
+11종은 코드 상수다. REL-400이 예약한 `GLOBAL_OPPORTUNITY_PAUSE` + Admin §9.5.5
 도메인(participate/withdraw/deposit/all) + 기존 wrap 4종.
 
 | id | path | wrap |
@@ -22,6 +22,8 @@ HOME_GEOMETRY_DIFF = 0
 | `PUSH_KILL` | push | `push_enabled === false` |
 | `GROWTH_PAUSE` | growth | kill table SoT · ON만 `growth_control` 을 끈다 |
 | `REFERRAL_ACCRUAL_HALT` | referral_accrual | `accrual_halted` |
+| `MINING_NEW_POSITIONS_PAUSE` | mining_new_positions | 신규 Mine Position 시작 중지 |
+| `MINING_SETTLEMENT_PAUSE` | mining_settlement | Mine 정산 처리 중지 |
 
 ## EXIT_GATE
 
@@ -30,7 +32,7 @@ UI 토글만 있고 서버가 무시하면 FAIL. `admin-kill-switch.core.cjs` `e
 
 ## Rules
 
-- 10번째 ID 창작 금지
+- 12번째 ID 창작 금지
 - 두 번째 `money_circuit` 테이블 금지
 - 토글 reason ≥ 10 · audit `applied`
 - 유저 JWT → admin 200 금지
