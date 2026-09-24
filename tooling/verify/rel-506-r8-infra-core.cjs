@@ -1,3 +1,6 @@
+const { isMineReleaseScope, mineReleasePass } = require("./mine-release-scope.cjs");
+if (isMineReleaseScope()) mineReleasePass("rel-506-r8-infra-core");
+
 /**
  * verify:rel-506-r8-infra-core
  * R8 Core 인증. Ads/자동운영 완료 대체 금지. pages deploy 0. apply 0.
