@@ -72,10 +72,9 @@ jobs:
         run: node tooling/engine-acceptance/tiny-smoke.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
 
   qa1-deterministic:
-    if: ${{ github.event_name != 'pull_request' || github.head_ref != 'release/mine-os-control-center-20260925' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    if: ${{ (github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa1' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'full' || inputs.qa_phase == 'qa0') && (github.event_name != 'pull_request' || github.head_ref != 'release/mine-os-control-center-20260925') }}
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa1' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'full' || inputs.qa_phase == 'qa0' }}
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v6
@@ -113,11 +112,10 @@ jobs:
           if-no-files-found: error
 
   qa2-synthetic-personas:
-    if: ${{ github.event_name != 'pull_request' || github.head_ref != 'release/mine-os-control-center-20260925' }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
     needs: [qa1-deterministic]
-    if: ${{ (github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'full') && (github.event_name != 'pull_request' || github.head_ref != 'release/mine-os-control-center-20260925') }}
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'full' }}
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v6
@@ -156,11 +154,10 @@ jobs:
 
   # QA3+ matrix — fail-fast:false (전수 조사 · 조기 취소 금지)
   qa-matrix:
-    if: ${{ github.event_name != 'pull_request' || github.head_ref != 'release/mine-os-control-center-20260925' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: [qa2-synthetic-personas]
-    if: ${{ (github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'qa8' || inputs.qa_phase == 'full') && (github.event_name != 'pull_request' || github.head_ref != 'release/mine-os-control-center-20260925') }}
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'qa8' || inputs.qa_phase == 'full' }}
     strategy:
       fail-fast: false
       matrix:
@@ -287,10 +284,9 @@ jobs:
 
   # QA7 AI eval — workflow_dispatch only (qa7 | full) · pull_request/push 자동 실행 금지
   qa7-ai-eval:
-    if: ${{ github.event_name != 'pull_request' || github.head_ref != 'release/mine-os-control-center-20260925' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    if: ${{ (github.event_name == 'workflow_dispatch' && (inputs.qa_phase == 'qa7' || inputs.qa_phase == 'full')) && (github.event_name != 'pull_request' || github.head_ref != 'release/mine-os-control-center-20260925') }}
+    if: ${{ github.event_name == 'workflow_dispatch' && (inputs.qa_phase == 'qa7' || inputs.qa_phase == 'full') }}
     env:
       TMPDIR: /tmp
       PORT: 4000
@@ -368,7 +364,7 @@ jobs:
     if: ${{ github.event_name != 'pull_request' || github.head_ref != 'release/mine-os-control-center-20260925' }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
-    if: ${{ (github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa5-fault' || inputs.qa_phase == 'full') && (github.event_name != 'pull_request' || github.head_ref != 'release/mine-os-control-center-20260925') }}
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa5-fault' || inputs.qa_phase == 'full' }}
     services:
       postgres:
         image: pgvector/pgvector:pg16
@@ -436,7 +432,7 @@ jobs:
     if: ${{ github.event_name != 'pull_request' || github.head_ref != 'release/mine-os-control-center-20260925' }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
-    if: ${{ (github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa6-measure' || inputs.qa_phase == 'full') && (github.event_name != 'pull_request' || github.head_ref != 'release/mine-os-control-center-20260925') }}
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa6-measure' || inputs.qa_phase == 'full' }}
     services:
       postgres:
         image: pgvector/pgvector:pg16
@@ -511,7 +507,7 @@ jobs:
     if: ${{ github.event_name != 'pull_request' || github.head_ref != 'release/mine-os-control-center-20260925' }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
-    if: ${{ (github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa8-adversarial' || inputs.qa_phase == 'full') && (github.event_name != 'pull_request' || github.head_ref != 'release/mine-os-control-center-20260925') }}
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa8-adversarial' || inputs.qa_phase == 'full' }}
     services:
       postgres:
         image: pgvector/pgvector:pg16
@@ -577,7 +573,7 @@ jobs:
   # 선행 job 실패/스킵 후에도 최종 증거 집계 (전수 조사 철학 · if: always())
   aggregator:
     needs: [qa0-baseline, qa1-deterministic, qa2-synthetic-personas, qa-matrix]
-    if: ${{ (always()) && (github.event_name != 'pull_request' || github.head_ref != 'release/mine-os-control-center-20260925') }}
+    if: ${{ always() }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
