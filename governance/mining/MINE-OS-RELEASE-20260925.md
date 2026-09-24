@@ -51,3 +51,8 @@ Production Supabase에는 다음 Mining 영역이 이미 적용되어 있다.
 5. 각 PR은 `main`으로 merge commit 방식으로 병합한다.
 6. 병합 후 `main` HEAD SHA와 PR merge SHA를 재확인한다.
 7. Production Supabase migration은 이 릴리스에서 실행하지 않는다.
+
+## Ownership graph sync
+
+- Backend ownership graph was regenerated on 2026-09-25 after Mine OS files were added.
+- Final graph has `UNKNOWN=0`; the temporary sync workflow removed itself after committing the generated artifacts.
