@@ -30,7 +30,6 @@ export const JOURNAL_TYPES = [
   "mine_position_lock",
   "mine_position_unlock",
   "mine_profit_settlement",
-  "trial_grant",
   "fee",
   "other",
 ] as const;
@@ -79,6 +78,7 @@ export const PRACTICE_FORBIDDEN_JOURNAL_TYPES = new Set<JournalType>([
   "mine_position_lock",
   "mine_position_unlock",
   "mine_profit_settlement",
+  "trial_grant",
   "fee",
   "referral_reward",
   "referral_clawback",
