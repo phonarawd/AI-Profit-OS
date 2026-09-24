@@ -73,9 +73,16 @@
       "name": "cms_posts",
       "kind": "apply-time-version-alias",
       "rawCountDelta": 0
+    },
+    {
+      "remoteVersion": "20260920163621",
+      "localVersion": "20260921162500",
+      "name": "mining_admin_controls_v1",
+      "kind": "apply-time-version-alias",
+      "rawCountDelta": 0
     }
   ],
-  "note": "Production migration history remains audited from Supabase project mgsytcetsiecllmhcyox. Repository-owned canonical applied history now includes the verified trial_welcome_grant source restored from the audited production version; the repeatability migration remains committedUnapplied pending isolated staging verification. No Production migration was applied by this integration.",
+  "note": "Production migration history is reconciled against Supabase project mgsytcetsiecllmhcyox as of 2026-09-25. Canonical repository sources now include the audited trial welcome grant and mining admin controls migrations through historical version mappings; mining trial repeatability remains committedUnapplied pending isolated staging verification. No Production migration was applied by this integration.",
   "rel701db": {
     "status": "APPLIED",
     "appliedAtUtc": "2026-09-04T02:33:15Z",
@@ -251,10 +258,10 @@
     "20260916080000",
     "20260916120000",
     "20260916220000",
-    "20260920134053"
+    "20260920134053",
+    "20260921162500"
   ],
   "committedUnapplied": [
-    "20260921162500",
     "20260922010000"
   ],
   "remoteExternalVersions": [
@@ -270,7 +277,6 @@
     "20260908164000",
     "20260908181000",
     "20260920153557",
-    "20260920163621",
     "20260920190651",
     "20260920191544",
     "20260920192627"
