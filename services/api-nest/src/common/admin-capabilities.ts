@@ -234,6 +234,14 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     listSettlements: read("ledger"),
     getSettlement: read("ledger"),
     retrySettlement: write("balanceAdjust"),
+    listHighValueReviews: read("ledger"),
+    getHighValueReview: read("ledger"),
+    approveHighValueReview: write("balanceAdjust"),
+    rejectHighValueReview: write("balanceAdjust"),
+  },
+  MiningTrialAdminController: {
+    getTrialConfig: read("all"),
+    updateTrialConfig: write("all"),
   },
   KillSwitchAdminController: {
     list: read("circuit"),
