@@ -1,22 +1,16 @@
 {
- "generatedAt": "2026-09-15T09:40:00.000Z",
- "headSha": "b98f5664919d5af7d271e675f5ec5130c0afe868",
+ "generatedAt": "2026-09-25T00:00:00.000Z",
+ "headSha": "release/mine-os-control-center-20260925",
  "generator": "tooling/backend/_p5-write-ownership.cjs",
  "note": "All remaining .md/.mdc paths. decision KEEP. UNKNOWN 0. boundary markdown rule reads keep[].path.",
  "totals": {
-  "docs": 151,
+  "docs": 162,
   "unknown": 0,
   "byClass": {
-   "BACKEND_DOC": 146
+   "BACKEND_DOC": 162
   }
  },
  "keep": [
-  {
-   "path": ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md",
-   "class": "BACKEND_DOC",
-   "decision": "KEEP",
-   "reason": "active backend plan or release-master YAML todos required by KEEP verifiers"
-  },
   {
    "path": ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md",
    "class": "BACKEND_DOC",
@@ -49,6 +43,18 @@
   },
   {
    "path": ".cursor/plans/ai_profit_os_06_infra_a7b8c9d0.plan.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "active backend plan or release-master YAML todos required by KEEP verifiers"
+  },
+  {
+   "path": ".cursor/plans/PUTDUK_RELEASE_MASTER.legacy-rel.plan.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "active backend release plan required by release gates"
+  },
+  {
+   "path": ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
    "reason": "active backend plan or release-master YAML todos required by KEEP verifiers"
@@ -324,18 +330,6 @@
    "reason": "backend constitution (money/engine/admin/security)"
   },
   {
-   "path": "README.md",
-   "class": "BACKEND_DOC",
-   "decision": "KEEP",
-   "reason": "backend-only root readme"
-  },
-  {
-   "path": "TOOLCHAIN.md",
-   "class": "BACKEND_DOC",
-   "decision": "KEEP",
-   "reason": "backend-only agent/toolchain/readme"
-  },
-  {
    "path": "docs/ADR-016-AGENT-AUTOMATION.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
@@ -352,12 +346,6 @@
    "class": "BACKEND_DOC",
    "decision": "KEEP",
    "reason": "ADR or bootstrap record"
-  },
-  {
-   "path": "governance/admin/R6_CERTIFICATION.md",
-   "class": "BACKEND_DOC",
-   "decision": "KEEP",
-   "reason": "admin API/RBAC/audit evidence KEEP"
   },
   {
    "path": "governance/admin/admin-ops-3mode.md",
@@ -390,6 +378,12 @@
    "reason": "admin API/RBAC/audit evidence KEEP"
   },
   {
+   "path": "governance/admin/R6_CERTIFICATION.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "admin API/RBAC/audit evidence KEEP"
+  },
+  {
    "path": "governance/admin/rbac-audit-foundation.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
@@ -408,6 +402,12 @@
    "reason": "db recon evidence KEEP"
   },
   {
+   "path": "governance/engine-acceptance/acceptance-contract.v1.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "engine-acceptance evidence KEEP"
+  },
+  {
    "path": "governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
@@ -415,6 +415,12 @@
   },
   {
    "path": "governance/engine-acceptance/FINAL_ACCEPTANCE.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "engine-acceptance evidence KEEP"
+  },
+  {
+   "path": "governance/engine-acceptance/invariants.v1.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
    "reason": "engine-acceptance evidence KEEP"
@@ -444,18 +450,6 @@
    "reason": "engine-acceptance evidence KEEP"
   },
   {
-   "path": "governance/engine-acceptance/acceptance-contract.v1.md",
-   "class": "BACKEND_DOC",
-   "decision": "KEEP",
-   "reason": "engine-acceptance evidence KEEP"
-  },
-  {
-   "path": "governance/engine-acceptance/invariants.v1.md",
-   "class": "BACKEND_DOC",
-   "decision": "KEEP",
-   "reason": "engine-acceptance evidence KEEP"
-  },
-  {
    "path": "governance/engine-acceptance/severity-policy.v1.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
@@ -474,6 +468,66 @@
    "reason": "FX/parser contract KEEP"
   },
   {
+   "path": "governance/mining/MINE-000-CURRENT-BASELINE.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "Mine OS backend governance / release evidence"
+  },
+  {
+   "path": "governance/mining/MINE-001-CONTRACT-LOCK.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "Mine OS backend governance / release evidence"
+  },
+  {
+   "path": "governance/mining/MINE-002-DB-FOUNDATION.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "Mine OS backend governance / release evidence"
+  },
+  {
+   "path": "governance/mining/MINE-003-RUST-PROFIT-ENGINE.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "Mine OS backend governance / release evidence"
+  },
+  {
+   "path": "governance/mining/MINE-004-OPERATIONS-SETTLEMENT-API.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "Mine OS backend governance / release evidence"
+  },
+  {
+   "path": "governance/mining/MINE-005-ADMIN-API.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "Mine OS backend governance / release evidence"
+  },
+  {
+   "path": "governance/mining/MINE-DEPLOYMENT-BOUNDARY.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "Mine OS backend governance / release evidence"
+  },
+  {
+   "path": "governance/mining/MINE-INTEGRATED-LOCAL-BASELINE-20260925.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "Mine OS backend governance / release evidence"
+  },
+  {
+   "path": "governance/mining/MINE-LOCAL-DEV-BASELINE-20260925.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "Mine OS backend governance / release evidence"
+  },
+  {
+   "path": "governance/mining/MINE-OS-RELEASE-20260925.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "Mine OS backend governance / release evidence"
+  },
+  {
    "path": "governance/platform-redesign/change-control.v1.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
@@ -486,12 +540,6 @@
    "reason": "VAPID/push backend evidence KEEP"
   },
   {
-   "path": "governance/recovery/INTEGRATION_PACKET_20260904.md",
-   "class": "BACKEND_DOC",
-   "decision": "KEEP",
-   "reason": "recovery evidence KEEP"
-  },
-  {
    "path": "governance/recovery/archive/engine-pre-rebase-20260902.INDEX.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
@@ -499,6 +547,12 @@
   },
   {
    "path": "governance/recovery/founder-gates-executed-20260904.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "recovery evidence KEEP"
+  },
+  {
+   "path": "governance/recovery/INTEGRATION_PACKET_20260904.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
    "reason": "recovery evidence KEEP"
@@ -762,6 +816,12 @@
    "reason": "backend quality or putduk-web handoff KEEP"
   },
   {
+   "path": "quality/contracts/operator-control/preserved-b3/README.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "B3 표시 계약 원본 보존 설명. 실행 정책 DAY1과 분리."
+  },
+  {
    "path": "quality/contracts/operator-control/PUTDUK_OPS-handoff-mall-admin-v5.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
@@ -778,12 +838,6 @@
    "class": "BACKEND_DOC",
    "decision": "KEEP",
    "reason": "운영 제어 계약 인덱스. product-admin-http.v6 및 persist-status 포인터."
-  },
-  {
-   "path": "quality/contracts/operator-control/preserved-b3/README.md",
-   "class": "BACKEND_DOC",
-   "decision": "KEEP",
-   "reason": "B3 표시 계약 원본 보존 설명. 실행 정책 DAY1과 분리."
   },
   {
    "path": "quality/live-ruleset-backend-required-evidence.md",
@@ -894,13 +948,25 @@
    "reason": "backend quality or putduk-web handoff KEEP"
   },
   {
-   "path": "tooling/e2e/README.md",
+   "path": "README.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend-only root readme"
+  },
+  {
+   "path": "TOOLCHAIN.md",
+   "class": "BACKEND_DOC",
+   "decision": "KEEP",
+   "reason": "backend-only agent/toolchain/readme"
+  },
+  {
+   "path": "tooling/e2e/money/red-team-report.v1.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
    "reason": "backend tooling README KEEP"
   },
   {
-   "path": "tooling/e2e/money/red-team-report.v1.md",
+   "path": "tooling/e2e/README.md",
    "class": "BACKEND_DOC",
    "decision": "KEEP",
    "reason": "backend tooling README KEEP"

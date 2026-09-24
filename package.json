@@ -223,7 +223,11 @@
     "engine-acceptance:rebase-baseline": "node tooling/engine-acceptance/rebase-acceptance-baseline.cjs",
     "engine-acceptance:selftest-workflow-amendment": "node tooling/engine-acceptance/selftest-workflow-amendment.cjs",
     "engine-acceptance:selftest-product-rebase": "node tooling/engine-acceptance/selftest-product-rebase.cjs",
-    "engine-acceptance:selftest-pre-rebase-harness": "node tooling/engine-acceptance/selftest-pre-rebase-harness.cjs"
+    "engine-acceptance:selftest-pre-rebase-harness": "node tooling/engine-acceptance/selftest-pre-rebase-harness.cjs",
+    "mine:local:preflight": "node tooling/dev/mine-local-preflight.cjs",
+    "mine:local:up": "node tooling/dev/mine-local.cjs up",
+    "mine:local:down": "node tooling/dev/mine-local.cjs down",
+    "mine:local:status": "node tooling/dev/mine-local.cjs status"
   },
   "pnpm": {
     "overrides": {

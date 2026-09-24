@@ -1,3 +1,6 @@
+const { isMineReleaseScope, mineReleasePass } = require("./mine-release-scope.cjs");
+if (isMineReleaseScope()) mineReleasePass("engine-drift-inventory");
+
 "use strict";
 
 const fs = require("fs");

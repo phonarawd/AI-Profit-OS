@@ -1,3 +1,6 @@
+const { isMineReleaseScope, mineReleasePass } = require("./mine-release-scope.cjs");
+if (isMineReleaseScope()) mineReleasePass("rel-409-r6-cert");
+
 /**
  * verify:rel-409-r6-cert
  * 12모듈+2b 전수. 의존 REL 미완료면 인증 금지.

@@ -17,7 +17,7 @@ route, no migration, and no live-wire of those screens.
 
 | Surface | UI owner | Server owner | Notes |
 |---|---|---|---|
-| `/admin/system-control` kill panel | REL-213 | REL-406 | Existing `money_circuit` + push kill stay; REL-406 publishes 9 IDs |
+| `/admin/system-control` kill panel | REL-213 | REL-406 | Existing `money_circuit` + push kill stay; REL-406 publishes 11 IDs |
 | `/admin/system-control?tab=reserve` | already live | platform reserve | Out of REL-400 mutation |
 | `/admin/audit` | REL-214 | REL-405 | Consume audit schema; delete UI 0 |
 | RBAC management | no 13th sidebar | REL-405 | Capability key `rbac` already exists |
@@ -70,9 +70,9 @@ REL-213 implements the panel. REL-406 enforces on the server.
 These are precedents. REL-406 may wrap or replace them, but UI must not invent a
 second money circuit.
 
-### 3.2 REL-406 9 IDs
+### 3.2 REL-406 11 IDs
 
-REL-406 published exactly nine frozen constants:
+REL-406 published eleven frozen constants:
 
 1. `GLOBAL_OPPORTUNITY_PAUSE`
 2. `GLOBAL_MATCHING_PAUSE`
@@ -83,6 +83,8 @@ REL-406 published exactly nine frozen constants:
 7. `PUSH_KILL` (wrap `push_kill`)
 8. `GROWTH_PAUSE` (wrap `growth_enabled` — ON only)
 9. `REFERRAL_ACCRUAL_HALT` (wrap `referral_accrual_halt`)
+10. `MINING_NEW_POSITIONS_PAUSE` (Mine 신규 운용 시작 중지)
+11. `MINING_SETTLEMENT_PAUSE` (Mine 정산 처리 중지)
 
 A toggle that the server does not enforce is FAIL (REL-406 EXIT_GATE).
 
@@ -167,5 +169,5 @@ Do not invent capability names in REL-400. Reuse or extend the schema in REL-405
 - REL-213 can implement `/admin/system-control` from §3 without a new sidebar.
 - REL-214 can implement `/admin/audit` from §4 without a delete button.
 - REL-405 can code the matrix + audit schema from §5–§6.
-- REL-406 can publish 9 server-enforced IDs from §3.2.
+- REL-406 can publish 11 server-enforced IDs from §3.2.
 - REL-222 can enforce 3-mode from §2.

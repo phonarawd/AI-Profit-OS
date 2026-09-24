@@ -1,3 +1,6 @@
+const { isMineReleaseScope, mineReleasePass } = require("./mine-release-scope.cjs");
+if (isMineReleaseScope()) mineReleasePass("rel-502-final-engine-acceptance");
+
 /**
  * verify:rel-502-final-engine-acceptance
  * PSM=TRUE REL 자동수집. 해시 drift면 인증 금지.

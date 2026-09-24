@@ -114,6 +114,7 @@ const GOVERNANCE_BACKEND_DIRS = Object.freeze([
   "governance/security/",
   "governance/release-master/evidence/",
   "governance/release-master/rel-b3-promotion/",
+  "governance/mining/",
 ]);
 /** release-master 제목 규칙 (고객 화면 REL-1xx · 어드민 화면 REL-20x · 웹 lint/axe/pwa/device/webauthn-ux · lighthouse · age cohort) */
 const RELEASE_MASTER_UI_TITLE = /^governance\/release-master\/(REL-01[1-4]-|REL-01[89]-|REL-02[0-3]-|REL-1\d\d-|rel-1\d\d-|REL-20\d-|AGE_SPOTCHECK\.md|REL-404-)/;
@@ -638,6 +639,7 @@ function seedRules() {
   add('infra-domain-manifest', (f) => f === 'infra/domain.manifest.json', 'BACKEND_INFRA', 'KEEP', S.NONE, 'hiptk.app DNS + api-stub + forbiddenDeploy + productionHosts');
   add('infra-hosts-manifest', (f) => f === 'infra/hosts.manifest.json', 'BACKEND_INFRA', 'KEEP', S.NONE, 'Phase0 bus/DB/R2/API hosts');
   add('infra', re(/^infra\//), 'BACKEND_INFRA', 'KEEP', S.NONE, 'API/R2/workers 인프라 매니페스트');
+  add('contracts-mining', re(/^contracts\/mining\//), 'BACKEND_CONTRACT', 'KEEP', S.NONE, 'Mine OS 계약 SSOT');
   add('schemas', re(/^schemas\/[^/]+\.json$/), 'BACKEND_CONTRACT', 'KEEP', S.NONE, 'JSON 계약 SSOT (소비자 그래프로 재판정)');
 
   // .github

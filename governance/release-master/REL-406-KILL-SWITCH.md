@@ -15,7 +15,7 @@ HOME_GEOMETRY_DIFF = 0
 
 ## IMPLEMENTATION
 
-- 9종 상수: `schemas/admin-kill-switch.v1.json` + `admin-kill-switch.core.cjs`
+- 9종 역사적 상수: `tooling/verify/fixtures/rel-406-kill-switch.v1.json` + 현재 `admin-kill-switch.core.cjs` subset
 - 서버 강제: opportunity / matching / withdraw / deposit / merge / push / growth / referral
 - wrap: `money_circuit` · `push_control` · `referral_program_config` (두 번째 회로 0)
 - GROWTH_PAUSE ON만 growth를 끈다. OFF가 Growth 게이트를 우회하지 않는다
@@ -27,11 +27,11 @@ HOME_GEOMETRY_DIFF = 0
 
 | command | result |
 |---|---|
-| `node tooling/verify/rel-406-kill-switch.cjs` | PASS (9 ids · path enforce · audit · server guard) |
+| `node tooling/verify/rel-406-kill-switch.cjs` | PASS (9 historical ids · current core superset · path enforce · audit · server guard) |
 
 ## ACCEPTANCE
 
-9종 서버 강제. 스위치 ON이면 해당 경로 block.
+11종 서버 강제. 스위치 ON이면 해당 경로 block.
 
 ## EXIT_GATE
 

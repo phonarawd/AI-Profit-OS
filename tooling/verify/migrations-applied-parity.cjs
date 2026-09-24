@@ -91,6 +91,16 @@ if (!fs.existsSync(fixturePath)) {
     const mappings = Array.isArray(fixture.remoteHistoricalMappings)
       ? fixture.remoteHistoricalMappings
       : [];
+    const remoteExternal = Array.isArray(fixture.remoteExternalVersions)
+      ? fixture.remoteExternalVersions
+      : [];
+    const externalSet = new Set();
+    for (const v of remoteExternal) {
+      if (!/^\d{14}$/.test(String(v))) fails.push(`bad external remote version: ${v}`);
+      if (externalSet.has(String(v))) fails.push(`duplicate external remote version: ${v}`);
+      externalSet.add(String(v));
+      if (localSet.has(String(v))) fails.push(`external remote version is local-owned: ${v}`);
+    }
     if (!Number.isInteger(rawCount) || rawCount < 1) {
       fails.push("remoteRawAppliedCount must be a positive integer");
     }
@@ -120,10 +130,10 @@ if (!fs.existsSync(fixturePath)) {
     }
 
     if (Number.isInteger(rawCount)) {
-      const expectedRawCount = expected.length + rawCountDelta;
+      const expectedRawCount = expected.length + rawCountDelta + externalSet.size;
       if (rawCount !== expectedRawCount) {
         fails.push(
-          `remote raw count mismatch raw=${rawCount} canonical=${expected.length} historicalDelta=${rawCountDelta}`,
+          `remote raw count mismatch raw=${rawCount} canonical=${expected.length} historicalDelta=${rawCountDelta} external=${externalSet.size}`,
         );
       }
     }

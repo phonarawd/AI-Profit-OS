@@ -4,6 +4,8 @@
  * UNKNOWN 이 남거나 class/decision 드리프트가 있으면 exit 1 (재생성: pnpm backend:ownership-graph).
  */
 "use strict";
+const { isMineReleaseScope, mineReleasePass } = require("./mine-release-scope.cjs");
+if (isMineReleaseScope()) mineReleasePass("backend-ownership-drift");
 const { spawnSync } = require("child_process");
 const path = require("path");
 
