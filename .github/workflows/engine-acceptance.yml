@@ -74,7 +74,7 @@ jobs:
   qa1-deterministic:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    if: ${{ ({{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa1' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'full' || inputs.qa_phase == 'qa0' }}) && (github.head_ref != 'release/mine-os-control-center-20260925' && github.ref != 'refs/heads/release/mine-os-control-center-20260925') }}
+    if: ${{ (github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa1' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'full' || inputs.qa_phase == 'qa0') && (github.head_ref != 'release/mine-os-control-center-20260925' && github.ref != 'refs/heads/release/mine-os-control-center-20260925') }}
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v6
@@ -115,7 +115,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     needs: [qa1-deterministic]
-    if: ${{ ({{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'full' }}) && (github.head_ref != 'release/mine-os-control-center-20260925' && github.ref != 'refs/heads/release/mine-os-control-center-20260925') }}
+    if: ${{ (github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'full') && (github.head_ref != 'release/mine-os-control-center-20260925' && github.ref != 'refs/heads/release/mine-os-control-center-20260925') }}
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v6
@@ -157,7 +157,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: [qa2-synthetic-personas]
-    if: ${{ ({{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'qa8' || inputs.qa_phase == 'full' }}) && (github.head_ref != 'release/mine-os-control-center-20260925' && github.ref != 'refs/heads/release/mine-os-control-center-20260925') }}
+    if: ${{ (github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'qa8' || inputs.qa_phase == 'full') && (github.head_ref != 'release/mine-os-control-center-20260925' && github.ref != 'refs/heads/release/mine-os-control-center-20260925') }}
     strategy:
       fail-fast: false
       matrix:
@@ -286,7 +286,7 @@ jobs:
   qa7-ai-eval:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    if: ${{ ({{ github.event_name == 'workflow_dispatch' && (inputs.qa_phase == 'qa7' || inputs.qa_phase == 'full') }}) && (github.head_ref != 'release/mine-os-control-center-20260925' && github.ref != 'refs/heads/release/mine-os-control-center-20260925') }}
+    if: ${{ (github.event_name == 'workflow_dispatch' && (inputs.qa_phase == 'qa7' || inputs.qa_phase == 'full')) && (github.head_ref != 'release/mine-os-control-center-20260925' && github.ref != 'refs/heads/release/mine-os-control-center-20260925') }}
     env:
       TMPDIR: /tmp
       PORT: 4000
@@ -363,7 +363,7 @@ jobs:
   qa5-fault:
     runs-on: ubuntu-latest
     timeout-minutes: 40
-    if: ${{ ({{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa5-fault' || inputs.qa_phase == 'full' }}) && (github.head_ref != 'release/mine-os-control-center-20260925' && github.ref != 'refs/heads/release/mine-os-control-center-20260925') }}
+    if: ${{ (github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa5-fault' || inputs.qa_phase == 'full') && (github.head_ref != 'release/mine-os-control-center-20260925' && github.ref != 'refs/heads/release/mine-os-control-center-20260925') }}
     services:
       postgres:
         image: pgvector/pgvector:pg16
@@ -430,7 +430,7 @@ jobs:
   qa6-measure:
     runs-on: ubuntu-latest
     timeout-minutes: 40
-    if: ${{ ({{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa6-measure' || inputs.qa_phase == 'full' }}) && (github.head_ref != 'release/mine-os-control-center-20260925' && github.ref != 'refs/heads/release/mine-os-control-center-20260925') }}
+    if: ${{ (github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa6-measure' || inputs.qa_phase == 'full') && (github.head_ref != 'release/mine-os-control-center-20260925' && github.ref != 'refs/heads/release/mine-os-control-center-20260925') }}
     services:
       postgres:
         image: pgvector/pgvector:pg16
@@ -504,7 +504,7 @@ jobs:
   qa8-adversarial:
     runs-on: ubuntu-latest
     timeout-minutes: 40
-    if: ${{ ({{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa8-adversarial' || inputs.qa_phase == 'full' }}) && (github.head_ref != 'release/mine-os-control-center-20260925' && github.ref != 'refs/heads/release/mine-os-control-center-20260925') }}
+    if: ${{ (github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa8-adversarial' || inputs.qa_phase == 'full') && (github.head_ref != 'release/mine-os-control-center-20260925' && github.ref != 'refs/heads/release/mine-os-control-center-20260925') }}
     services:
       postgres:
         image: pgvector/pgvector:pg16
@@ -570,7 +570,7 @@ jobs:
   # 선행 job 실패/스킵 후에도 최종 증거 집계 (전수 조사 철학 · if: always())
   aggregator:
     needs: [qa0-baseline, qa1-deterministic, qa2-synthetic-personas, qa-matrix]
-    if: ${{ ({{ always() }}) && (github.head_ref != 'release/mine-os-control-center-20260925' && github.ref != 'refs/heads/release/mine-os-control-center-20260925') }}
+    if: ${{ (always()) && (github.head_ref != 'release/mine-os-control-center-20260925' && github.ref != 'refs/heads/release/mine-os-control-center-20260925') }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
