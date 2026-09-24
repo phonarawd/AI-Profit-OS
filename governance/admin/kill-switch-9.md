@@ -1,14 +1,14 @@
-# Admin Kill Switch 11 (REL-406)
+# Admin Kill Switch 9 (REL-406)
 
 STATUS: LOCKED
-LOCKED_SWITCHES = 11
+LOCKED_SWITCHES = 9
 INVENTED_SWITCHES = 0
 SERVER_ENFORCE = 1
 UI_OWNER = REL-213
 PRODUCTION_DB_APPLY = 0
 HOME_GEOMETRY_DIFF = 0
 
-11종은 코드 상수다. REL-400이 예약한 `GLOBAL_OPPORTUNITY_PAUSE` + Admin §9.5.5
+9종은 REL-406 역사적 계약의 코드 상수다. 현재 운영 Core에는 Mine 제어 2종이 추가되어 총 11종으로 존재하며, Mine 스위치의 현재 계약은 governance/mining에서 관리한다. REL-400이 예약한 `GLOBAL_OPPORTUNITY_PAUSE` + Admin §9.5.5
 도메인(participate/withdraw/deposit/all) + 기존 wrap 4종.
 
 | id | path | wrap |
@@ -22,8 +22,6 @@ HOME_GEOMETRY_DIFF = 0
 | `PUSH_KILL` | push | `push_enabled === false` |
 | `GROWTH_PAUSE` | growth | kill table SoT · ON만 `growth_control` 을 끈다 |
 | `REFERRAL_ACCRUAL_HALT` | referral_accrual | `accrual_halted` |
-| `MINING_NEW_POSITIONS_PAUSE` | mining_new_positions | 신규 Mine Position 시작 중지 |
-| `MINING_SETTLEMENT_PAUSE` | mining_settlement | Mine 정산 처리 중지 |
 
 ## EXIT_GATE
 
@@ -32,7 +30,8 @@ UI 토글만 있고 서버가 무시하면 FAIL. `admin-kill-switch.core.cjs` `e
 
 ## Rules
 
-- 12번째 ID 창작 금지
+- REL-406 기준 10번째 ID 창작 금지
+- Mine 추가 스위치는 REL-406 fixture에 편입하지 않는다.
 - 두 번째 `money_circuit` 테이블 금지
 - 토글 reason ≥ 10 · audit `applied`
 - 유저 JWT → admin 200 금지
