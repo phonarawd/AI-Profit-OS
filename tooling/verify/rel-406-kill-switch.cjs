@@ -1,7 +1,7 @@
 /**
  * verify:rel-406-kill-switch
- * 9종 상수 lock + path enforce fixture + audit + 서버 가드.
- * 10번째 ID 창작 0. UI 토글만 있고 서버 없으면 EXIT_GATE FAIL.
+ * 11종 상수 lock + path enforce fixture + audit + 서버 가드.
+ * 12번째 ID 창작 0. UI 토글만 있고 서버 없으면 EXIT_GATE FAIL.
  */
 const fs = require("fs");
 const path = require("path");
@@ -33,7 +33,7 @@ const core = require(path.join(root, "services/api-nest/admin-kill-switch.core.c
 const auditCore = require(path.join(root, "services/api-nest/admin-audit.core.cjs"));
 
 const ids = Array.isArray(core.KILL_SWITCH_IDS) ? [...core.KILL_SWITCH_IDS] : [];
-if (ids.length !== 9) {
+if (ids.length !== 11) {
   fails.push("must publish exactly 9 kill-switch ids, got " + ids.length);
 }
 if (ids.join(",") !== (fixture.ids || []).join(",")) {
@@ -45,7 +45,7 @@ if (!ids.includes("GLOBAL_OPPORTUNITY_PAUSE")) {
 
 const schemaEnum =
   ((((schema.properties || {}).ids || {}).items || {}).enum) || [];
-if (schemaEnum.length !== 9) {
+if (schemaEnum.length !== 11) {
   fails.push("schema enum must be 9, got " + schemaEnum.length);
 }
 for (const id of ids) {
@@ -279,7 +279,7 @@ if (mig.includes("CREATE TABLE public.money_circuit")) {
     process.exit(1);
   }
   console.log(
-    "[verify:rel-406-kill-switch] PASS (9 ids · path enforce · audit · server guard)",
+    "[verify:rel-406-kill-switch] PASS (11 ids · path enforce · audit · server guard)",
   );
 })().catch((err) => {
   console.error("[verify:rel-406-kill-switch] FAIL");
