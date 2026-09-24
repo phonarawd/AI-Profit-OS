@@ -16,7 +16,7 @@ import {
 } from "../ledger/ledger.money";
 import { LedgerPostingService } from "../ledger/ledger.posting.service";
 import { LedgerProvisionService } from "../ledger/ledger.provision.service";
-import { SYSTEM_ACCOUNT_CODES } from "../ledger/ledger.types";
+import { SYSTEM_ACCOUNT_CODES, type PostingLineInput } from "../ledger/ledger.types";
 import { MiningProfitEngineService } from "./mining-profit-engine.service";
 
 const TRIAL_GRANT_KEY = "trial_grant_welcome";
@@ -538,7 +538,7 @@ export class MiningTrialService {
     if (new Date(session.expires_at).getTime() > Date.now()) return;
 
     const profit = await this.calculateTrialProfit(session);
-    const lines = [
+    const lines: PostingLineInput[] = [
       {
         account: { userId: session.user_id, bucket: "trial_locked" as const },
         direction: "debit" as const,
