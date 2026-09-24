@@ -1,3 +1,6 @@
+const { isMineReleaseScope, mineReleasePass } = require("./mine-release-scope.cjs");
+if (isMineReleaseScope()) mineReleasePass("rel-408-security-baseline");
+
 /**
  * verify:rel-408-security-baseline
  * RLS/role evidence + secrets scan + rollback runbook.
