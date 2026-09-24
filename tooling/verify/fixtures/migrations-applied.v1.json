@@ -75,7 +75,7 @@
       "rawCountDelta": 0
     }
   ],
-  "note": "Production migration history is 79 raw rows as of 2026-09-25. Repository-owned canonical applied history is 61 versions, including mining_foundation_v1 confirmed applied in production; 1 local migration remains committedUnapplied (mining admin controls). Ten apply-time aliases are represented through remoteHistoricalMappings, with one historical duplicate row (rawCountDelta=1). Seventeen production-only history rows are retained in remoteExternalVersions and are not treated as missing repository migrations. This audit update does not apply or repair any production migration.",
+  "note": "Production migration history remains audited from Supabase project mgsytcetsiecllmhcyox. Repository-owned canonical applied history now includes the verified trial_welcome_grant source restored from the audited production version; the repeatability migration remains committedUnapplied pending isolated staging verification. No Production migration was applied by this integration.",
   "rel701db": {
     "status": "APPLIED",
     "appliedAtUtc": "2026-09-04T02:33:15Z",
@@ -245,6 +245,7 @@
     "20260902032000",
     "20260902155632",
     "20260905110000",
+    "20260909040657",
     "20260916033000",
     "20260916033100",
     "20260916080000",
@@ -253,7 +254,8 @@
     "20260920134053"
   ],
   "committedUnapplied": [
-    "20260921162500"
+    "20260921162500",
+    "20260922010000"
   ],
   "remoteExternalVersions": [
     "20260904060000",
@@ -267,7 +269,6 @@
     "20260908052954",
     "20260908164000",
     "20260908181000",
-    "20260909040657",
     "20260920153557",
     "20260920163621",
     "20260920190651",
