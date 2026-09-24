@@ -13,5 +13,5 @@ name = "hiptk-api-stub-preview"
 name = "hiptk-api-stub"
 
 [[env.production.routes]]
-pattern = "api.hiptk.app"
+pattern = "api.putduk.com"
 custom_domain = true
