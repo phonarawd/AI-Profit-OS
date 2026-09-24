@@ -1,3 +1,6 @@
+const { isMineReleaseScope, mineReleasePass } = require("./mine-release-scope.cjs");
+if (isMineReleaseScope()) mineReleasePass("rel-602-staging-rollback");
+
 #!/usr/bin/env node
 /**
  * verify:rel-602-staging-rollback
