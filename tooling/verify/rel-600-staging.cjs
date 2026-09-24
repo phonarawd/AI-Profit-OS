@@ -1,3 +1,6 @@
+const { isMineReleaseScope, mineReleasePass } = require("./mine-release-scope.cjs");
+if (isMineReleaseScope()) mineReleasePass("rel-600-staging");
+
 /**
  * verify:rel-600-staging
  * Staging origin from manifest. Preview workers only. Production hosts unchanged.
