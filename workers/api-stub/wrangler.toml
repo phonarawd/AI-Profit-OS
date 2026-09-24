@@ -1,8 +1,6 @@
 # Phase0 API_HOST → Nest on Render
-# Deploy: pnpm cf:domain:bridge
-
 name = "hiptk-api-stub"
-account_id = "190a1476a068cfe96dfe1029877587ef"
+account_id = "9dc502d4ef06b3b5374591de6e6933ca"
 main = "src/index.ts"
 compatibility_date = "2025-03-01"
 
