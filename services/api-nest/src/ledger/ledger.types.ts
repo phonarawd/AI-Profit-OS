@@ -1,6 +1,13 @@
 /** Money §11 · §43.5 · §49 — ledger posting contracts */
 
-export const USER_BUCKETS = ["principal", "profit", "locked", "practice"] as const;
+export const USER_BUCKETS = [
+  "principal",
+  "profit",
+  "locked",
+  "practice",
+  "trial_principal",
+  "trial_locked",
+] as const;
 export type UserBucket = (typeof USER_BUCKETS)[number];
 
 export const JOURNAL_TYPES = [
@@ -19,9 +26,11 @@ export const JOURNAL_TYPES = [
   "practice_expire",
   "mission_reward",
   "mission_clawback",
+  "trial_grant",
   "mine_position_lock",
   "mine_position_unlock",
   "mine_profit_settlement",
+  "trial_grant",
   "fee",
   "other",
 ] as const;
